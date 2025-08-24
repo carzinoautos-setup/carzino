@@ -478,7 +478,7 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Search Section */}
-        <div className="mb-4 pb-4 border-b border-gray-200">
+        <div className="mb-4">
           <div className="relative">
             <input
               type="text"
