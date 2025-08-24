@@ -168,15 +168,15 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
 });
 
 const ColorSwatch = memo(({ color, name, count, checked, onChange, category }) => (
-  <label className="flex items-center py-1 cursor-pointer hover:bg-gray-50 -mx-1 px-1 rounded">
+  <label className="flex items-center py-1.5 cursor-pointer hover:bg-gray-50 -mx-1 px-1 rounded">
     <input
       type="checkbox"
-      className="carzino-checkbox mr-3"
+      className="carzino-checkbox mr-4"
       checked={checked}
       onChange={(e) => onChange(category, name, e.target.checked)}
     />
     <div
-      className="w-4 h-4 rounded border border-gray-300 mr-2 flex-shrink-0"
+      className="w-4 h-4 rounded border border-gray-300 mr-3 flex-shrink-0"
       style={{ backgroundColor: color }}
     />
     <span className="text-sm text-gray-800 flex-1">{name} ({count.toLocaleString()})</span>
