@@ -503,10 +503,10 @@ const SearchResultsHeader = ({
                     Clear All
                   </button>
                   {activeFilters.map((filter, index) => (
-                    <span key={index} className="filter-pill">
+                    <span key={`${filter.category}-${index}`} className="filter-pill">
                       <Check className="check-icon" />
                       <span>{filter.value}</span>
-                      <button 
+                      <button
                         className="remove-filter"
                         onClick={() => onRemoveFilter && onRemoveFilter(filter.category, filter.value)}
                       >
