@@ -267,7 +267,7 @@ function App() {
         )}
 
         {/* Results Section */}
-        <main className="flex-1 min-w-0 bg-gray-50">
+        <main className="flex-1 min-w-0 bg-white">
           {/* Search Results Header */}
           <SearchResultsHeader
             totalResults={totalResults}
