@@ -380,16 +380,18 @@ const VehicleSearchFilter = ({
   // Get filter counts
   const getFilterCount = useCallback((category) => {
     if (category === 'price') {
-      return (filters.priceMin || filters.priceMax) ? 1 : 0;
+      return ((filters.priceMin && filters.priceMin.toString().trim() !== '') ||
+              (filters.priceMax && filters.priceMax.toString().trim() !== '')) ? 1 : 0;
     }
     if (category === 'payment') {
-      return (filters.paymentMin || filters.paymentMax) ? 1 : 0;
+      return ((filters.paymentMin && filters.paymentMin.toString().trim() !== '') ||
+              (filters.paymentMax && filters.paymentMax.toString().trim() !== '')) ? 1 : 0;
     }
     const value = filters[category];
     if (Array.isArray(value)) {
       return value.length;
     }
-    if (value && value !== '') {
+    if (value && value.toString().trim() !== '') {
       return 1;
     }
     return 0;
