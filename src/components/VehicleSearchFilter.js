@@ -70,7 +70,7 @@ const PriceRangeInput = memo(({ min, max, onMinChange, onMaxChange }) => {
           value={localMin}
           onChange={(e) => setLocalMin(e.target.value.replace(/[^0-9]/g, ''))}
           onBlur={handleMinBlur}
-          className="carzino-search-input carzino-input w-1/2 px-2 py-1 border border-gray-300 rounded focus:outline-none"
+          className="carzino-search-input carzino-input w-1/2 px-2 py-2.5 border border-gray-300 rounded focus:outline-none"
         />
         <input
           type="text"
@@ -78,7 +78,7 @@ const PriceRangeInput = memo(({ min, max, onMinChange, onMaxChange }) => {
           value={localMax}
           onChange={(e) => setLocalMax(e.target.value.replace(/[^0-9]/g, ''))}
           onBlur={handleMaxBlur}
-          className="carzino-search-input carzino-input w-1/2 px-2 py-1 border border-gray-300 rounded focus:outline-none"
+          className="carzino-search-input carzino-input w-1/2 px-2 py-2.5 border border-gray-300 rounded focus:outline-none"
         />
       </div>
     </div>
