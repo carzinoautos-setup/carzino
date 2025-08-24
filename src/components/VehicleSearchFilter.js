@@ -512,7 +512,8 @@ const VehicleSearchFilter = ({
             <input
               type="text"
               placeholder="Search Vehicles"
-              className="carzino-search-input carzino-input w-full px-3 py-5 pr-10 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 bg-white"
+              className="carzino-search-input carzino-input w-full px-3 py-8 pr-12 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 bg-white"
+              style={{ height: '55px' }}
             />
             <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600">
               <Search className="w-4 h-4" style={{ color: '#dc2626' }} />
