@@ -37,6 +37,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           border-radius: 12px;
           overflow: hidden;
           transition: box-shadow 200ms ease-in-out;
+          box-sizing: border-box;
         }
 
         .vehicle-card:hover {
@@ -46,6 +47,8 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         @media (max-width: 640px) {
           .vehicle-card {
             max-width: 100%;
+            width: 100%;
+            margin: 0;
           }
         }
 
