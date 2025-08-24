@@ -559,11 +559,11 @@ const VehicleSearchFilter = ({
                   value.forEach((item, index) => {
                     if (item && item.toString().trim() !== '') {
                       filterPills.push(
-                        <span key={`${category}-${index}`} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 max-w-full">
+                        <span key={`${category}-${index}`} className="bg-black text-white px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 max-w-full">
                           <span className="truncate flex-1">{item}</span>
                           <button
                             onClick={() => removeAppliedFilter(category, item)}
-                            className="ml-1 bg-black text-white hover:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-xs flex-shrink-0"
+                            className="ml-1 bg-black text-white hover:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0"
                           >
                             ×
                           </button>
