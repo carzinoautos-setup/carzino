@@ -73,15 +73,15 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             <>
               <button
                 onClick={prevImage}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-1.5 rounded-full transition-all"
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-all"
               >
-                <ChevronLeft className="w-4 h-4 text-white" />
+                <ChevronLeft className="w-5 h-5 text-white" />
               </button>
               <button
                 onClick={nextImage}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-1.5 rounded-full transition-all"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-all"
               >
-                <ChevronRight className="w-4 h-4 text-white" />
+                <ChevronRight className="w-5 h-5 text-white" />
               </button>
               <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full carzino-image-counter">
                 {currentIndex + 1}/{totalImages}
