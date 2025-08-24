@@ -397,33 +397,6 @@ body {
   border: 1px solid var(--color-gray-200);
 }
 
-/* Enhanced filter section styling */
-.filter-section {
-  position: relative;
-  transition: all var(--transition-base);
-}
-
-.filter-section:hover {
-  background: var(--color-gray-50);
-  border-radius: var(--radius-lg);
-  margin: 0 -4px;
-  padding: 0 4px;
-}
-
-/* Better spacing for filter sections */
-.filter-section + .filter-section {
-  margin-top: var(--spacing-md);
-}
-
-/* Style the filter section headers */
-.filter-section-header {
-  position: relative;
-  z-index: 1;
-}
-
-.filter-section-header:hover .filter-section-chevron {
-  transform: scale(1.1);
-}
 
 /* ============================================
    ANIMATIONS
