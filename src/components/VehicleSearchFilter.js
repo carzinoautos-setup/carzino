@@ -547,7 +547,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('make')}
           count={getFilterCount('make')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             {displayedMakes.map((make) => (
               <CheckboxOption
                 key={make.name}
