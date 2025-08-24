@@ -344,6 +344,12 @@ export const fetchFilterOptions = async () => {
       years: Array.from(years.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.name - a.name),
       conditions: Array.from(conditions.entries()).map(([name, count]) => ({ name, count })),
       bodyTypes: Array.from(bodyTypes.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
+      transmissions: Array.from(transmissions.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
+      drivetrains: Array.from(drivetrains.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
+      fuelTypes: Array.from(fuelTypes.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
+      trims: Array.from(trims.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
+      exteriorColors: Array.from(exteriorColors.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
+      interiorColors: Array.from(interiorColors.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
       total: allProducts.total
     };
   } catch (error) {
