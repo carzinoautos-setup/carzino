@@ -377,7 +377,7 @@ function App() {
             <Pagination
               currentPage={currentPage}
               totalPages={totalPages}
-              totalResults={totalResults}
+              totalResults={totalVehicles}
               resultsPerPage={resultsPerPage}
               onPageChange={handlePageChange}
             />
