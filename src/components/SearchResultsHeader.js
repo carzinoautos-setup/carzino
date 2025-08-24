@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid3X3, List, Filter } from 'lucide-react';
+import { Grid, List, Filter } from 'lucide-react';
 
 const SearchResultsHeader = ({ 
   totalResults, 
