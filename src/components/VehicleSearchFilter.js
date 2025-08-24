@@ -486,14 +486,14 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Search Section */}
-        <div className="mb-6 pb-6 border-b border-gray-200">
+        <div className="mb-4 pb-4 border-b border-gray-200">
           <div className="relative">
             <input
               type="text"
               placeholder="Search Vehicles"
-              className="carzino-search-input carzino-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 transition-all duration-200"
+              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600"
             />
-            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600 p-1 hover:bg-red-50 rounded-md transition-colors">
+            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-600">
               <Search className="w-4 h-4" style={{ color: '#dc2626' }} />
             </button>
           </div>
