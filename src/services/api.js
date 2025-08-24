@@ -126,7 +126,28 @@ export const fetchVehicles = async (params = {}) => {
     console.log('📄 Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('❌ API Response Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        responseText: errorText.substring(0, 200) + '...'
+      });
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
+    }
+
+    // Check if response is actually JSON
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      const responseText = await response.text();
+      console.error('❌ Expected JSON but got:', contentType);
+      console.error('❌ Response text:', responseText.substring(0, 300));
+
+      // If we get HTML, it means the API endpoint doesn't exist or has issues
+      if (responseText.includes('<!DOCTYPE') || responseText.includes('<html')) {
+        throw new Error('WooCommerce API returned HTML instead of JSON. Check if WooCommerce REST API is enabled and endpoint exists.');
+      }
+
+      throw new Error('Invalid response format - expected JSON');
     }
 
     const products = await response.json();
