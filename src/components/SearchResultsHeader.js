@@ -207,7 +207,7 @@ const SearchResultsHeader = ({
         .filter-pill {
           background: var(--text-black);
           color: white;
-          padding: 6px 16px;
+          padding: 6px 15px 6px 10px;
           border-radius: 20px;
           font-size: 12px;
           font-weight: 500;
