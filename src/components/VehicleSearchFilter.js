@@ -628,7 +628,7 @@ const VehicleSearchFilter = ({
                       <span className="truncate flex-1">{paymentRange.join(' to ')}</span>
                       <button
                         onClick={() => removeAppliedFilter('paymentMin', '')}
-                        className="bg-black text-white hover:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0"
+                        className="text-white hover:text-gray-300 text-xs flex-shrink-0 ml-2"
                       >
                         ×
                       </button>
