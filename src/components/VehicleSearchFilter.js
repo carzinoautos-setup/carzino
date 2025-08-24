@@ -198,26 +198,23 @@ const VehicleSearchFilter = ({
   const [showMoreModels, setShowMoreModels] = useState(false);
   const [showMoreTrims, setShowMoreTrims] = useState(false);
   
-  // Collapsed sections state
+  // Collapsed sections state (default to collapsed to match your uploaded image)
   const [collapsedFilters, setCollapsedFilters] = useState({
-    vehicleType: true,
-    condition: false,
-    mileage: true,
-    make: false,
-    model: false,
+    make: true,
+    model: true,
     trim: true,
     price: true,
     payment: true,
-    bodyType: true,
+    condition: true,
+    mileage: true,
+    vehicleType: true,
     driveType: true,
     transmissionSpeed: true,
     exteriorColor: true,
     interiorColor: true,
-    sellerType: true,
     dealer: true,
     state: true,
-    city: true,
-    zipCodeFilter: true
+    city: true
   });
 
   // Toggle filter section
