@@ -81,7 +81,13 @@ function App() {
         } else {
           setApiConnected(false);
           console.error('❌ API Connection Failed:', result.message);
-          setError(`API Connection Failed: ${result.message}`);
+
+          // Show specific CORS error message
+          if (result.message.includes('CORS Error')) {
+            setError('CORS Error: Your live site cannot access the WooCommerce API. Using sample data instead. See console for fix instructions.');
+          } else {
+            setError(`API Connection Failed: ${result.message}`);
+          }
         }
       } catch (err) {
         console.error('❌ API Connection Error:', err);
