@@ -98,7 +98,7 @@ function App() {
     if (apiConnected) {
       loadVehiclesAndFilters();
     }
-  }, [apiConnected, currentPage, sortBy, filters]);
+  }, [apiConnected, currentPage, sortBy, filters]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Load vehicles and filter options
   const loadVehiclesAndFilters = async () => {
