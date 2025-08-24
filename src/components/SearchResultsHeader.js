@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, List, Filter, Search, Heart, Check, ChevronDown } from 'lucide-react';
+import { Filter, Search, Heart, Check, ChevronDown } from 'lucide-react';
 
 const SearchResultsHeader = ({ 
   totalResults, 
