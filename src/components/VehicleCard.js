@@ -302,6 +302,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           justify-content: space-between;
           align-items: start;
           margin-top: auto;
+          border-radius: 0 0 12px 12px;
         }
 
         .dealer-info {
