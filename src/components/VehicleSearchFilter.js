@@ -344,13 +344,6 @@ const VehicleSearchFilter = ({
     { name: "Model 3", count: 23 }
   ];
 
-  const allTrims = filterOptions.trims || [
-    { name: "Base", count: 234 },
-    { name: "EX", count: 89 },
-    { name: "Limited", count: 145 },
-    { name: "Premium", count: 178 },
-    { name: "Sport", count: 134 }
-  ];
 
 
 
