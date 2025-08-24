@@ -111,7 +111,7 @@ export const fetchVehicles = async (params = {}) => {
       return cachedData;
     }
 
-    console.log('���� Fetching fresh vehicle data from API...');
+    console.log('🔄 Fetching fresh vehicle data from API...');
     const fullUrl = `${WC_API_BASE}/products?${queryParams}`;
     console.log('📍 Full API URL:', fullUrl);
     console.log('🔐 Auth headers:', getAuthHeaders());
@@ -218,54 +218,61 @@ export const fetchFilterOptions = async () => {
     const years = new Map();
     
     allProducts.results.forEach(product => {
-      // Extract data from product attributes
+      // Extract ACF data from product meta_data
+      const metaData = product.meta_data || [];
       const attributes = product.attributes || [];
-      
-      // Look for make in attributes or extract from title
-      const makeAttr = attributes.find(attr => 
-        attr.name.toLowerCase().includes('make') || 
-        attr.name.toLowerCase().includes('brand')
-      );
-      
-      let make = makeAttr?.options?.[0];
-      if (!make && product.title) {
-        // Extract make from title (first word usually)
-        const titleParts = product.title.split(' ');
-        if (titleParts.length > 1) {
-          make = titleParts[1]; // Skip year, get make
-        }
-      }
-      
+
+      // Helper function to get ACF field value
+      const getACFValue = (fieldName) => {
+        const acfField = metaData.find(meta => meta.key === fieldName);
+        return acfField?.value || null;
+      };
+
+      // Helper function to get attribute value
+      const getAttributeValue = (attrName) => {
+        const attr = attributes.find(attr =>
+          attr.name.toLowerCase().includes(attrName.toLowerCase())
+        );
+        return attr?.options?.[0] || null;
+      };
+
+      // Extract MAKE from ACF field 'make'
+      const make = getACFValue('make') || getAttributeValue('make');
       if (make) {
         makes.set(make, (makes.get(make) || 0) + 1);
       }
-      
-      // Extract year from title (first 4 digits)
-      const yearMatch = product.title.match(/(\d{4})/);
-      if (yearMatch) {
-        const year = yearMatch[1];
-        years.set(year, (years.get(year) || 0) + 1);
+
+      // Extract MODEL from ACF field 'model'
+      const model = getACFValue('model') || getAttributeValue('model');
+      if (model) {
+        models.set(model, (models.get(model) || 0) + 1);
       }
-      
-      // Extract model from title (third word usually)
-      if (product.title) {
-        const titleParts = product.title.split(' ');
-        if (titleParts.length > 2) {
-          const model = titleParts[2];
-          models.set(model, (models.get(model) || 0) + 1);
-        }
+
+      // Extract YEAR from ACF field 'year'
+      const year = getACFValue('year') || getAttributeValue('year');
+      if (year) {
+        years.set(year.toString(), (years.get(year.toString()) || 0) + 1);
       }
-      
-      // Get categories for body types
-      product.categories.forEach(cat => {
-        if (cat.name !== 'Uncategorized') {
-          bodyTypes.set(cat.name, (bodyTypes.get(cat.name) || 0) + 1);
-        }
-      });
-      
-      // Default conditions based on stock status
-      const condition = product.stock_status === 'instock' ? 'Available' : 'Sold';
-      conditions.set(condition, (conditions.get(condition) || 0) + 1);
+
+      // Extract CONDITION from ACF field 'condition'
+      const condition = getACFValue('condition') ||
+                       (product.stock_status === 'instock' ? 'Available' : 'Sold');
+      if (condition) {
+        conditions.set(condition, (conditions.get(condition) || 0) + 1);
+      }
+
+      // Extract BODY TYPE from categories or ACF 'body_type'
+      const bodyType = getACFValue('body_type');
+      if (bodyType) {
+        bodyTypes.set(bodyType, (bodyTypes.get(bodyType) || 0) + 1);
+      } else {
+        // Fallback to categories
+        product.categories.forEach(cat => {
+          if (cat.name !== 'Uncategorized') {
+            bodyTypes.set(cat.name, (bodyTypes.get(cat.name) || 0) + 1);
+          }
+        });
+      }
     });
     
     return {
