@@ -63,7 +63,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       </div>
 
       <div className="p-4 flex-1 flex flex-col">
-        <div className="flex gap-2 mb-2 items-center justify-between">
+        <div className="flex gap-2 mb-1.5 items-center justify-between">
           <div className="flex gap-2 items-center">
             {vehicle.badges?.map((badge, index) => (
               <span 
