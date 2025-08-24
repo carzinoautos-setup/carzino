@@ -555,11 +555,16 @@ const VehicleSearchFilter = ({
                 }
               });
 
-              // Handle price range
-              if (filters.priceMin || filters.priceMax) {
+              // Handle price range (only if actual values are entered)
+              if ((filters.priceMin && filters.priceMin.toString().trim() !== '') ||
+                  (filters.priceMax && filters.priceMax.toString().trim() !== '')) {
                 const priceRange = [];
-                if (filters.priceMin) priceRange.push(`$${filters.priceMin}+`);
-                if (filters.priceMax) priceRange.push(`$${filters.priceMax}-`);
+                if (filters.priceMin && filters.priceMin.toString().trim() !== '') {
+                  priceRange.push(`$${filters.priceMin}+`);
+                }
+                if (filters.priceMax && filters.priceMax.toString().trim() !== '') {
+                  priceRange.push(`$${filters.priceMax}-`);
+                }
                 if (priceRange.length > 0) {
                   filterPills.push(
                     <span key="price" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
@@ -575,11 +580,16 @@ const VehicleSearchFilter = ({
                 }
               }
 
-              // Handle payment range
-              if (filters.paymentMin || filters.paymentMax) {
+              // Handle payment range (only if actual values are entered)
+              if ((filters.paymentMin && filters.paymentMin.toString().trim() !== '') ||
+                  (filters.paymentMax && filters.paymentMax.toString().trim() !== '')) {
                 const paymentRange = [];
-                if (filters.paymentMin) paymentRange.push(`$${filters.paymentMin}+`);
-                if (filters.paymentMax) paymentRange.push(`$${filters.paymentMax}-`);
+                if (filters.paymentMin && filters.paymentMin.toString().trim() !== '') {
+                  paymentRange.push(`$${filters.paymentMin}+`);
+                }
+                if (filters.paymentMax && filters.paymentMax.toString().trim() !== '') {
+                  paymentRange.push(`$${filters.paymentMax}-`);
+                }
                 if (paymentRange.length > 0) {
                   filterPills.push(
                     <span key="payment" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
