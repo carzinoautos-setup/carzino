@@ -136,6 +136,30 @@ export const fetchVehicles = async (params = {}) => {
   }
 };
 
+// Fallback filter options for when API is not available
+const getFallbackFilterOptions = () => ({
+  makes: [
+    { name: 'Chevrolet', count: 1 },
+    { name: 'Ford', count: 1 }
+  ],
+  models: [
+    { name: 'Trax', count: 1 },
+    { name: 'Mustang', count: 1 }
+  ],
+  years: [
+    { name: '2021', count: 1 },
+    { name: '2020', count: 1 }
+  ],
+  conditions: [
+    { name: 'Available', count: 2 }
+  ],
+  bodyTypes: [
+    { name: 'SUV', count: 1 },
+    { name: 'Coupe', count: 1 }
+  ],
+  total: 2
+});
+
 // Fetch filter options based on real data
 export const fetchFilterOptions = async () => {
   try {
