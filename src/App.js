@@ -241,71 +241,67 @@ function App() {
 
       {/* Main Content */}
       <div className="main-container">
-        <div className="flex gap-6">
-          {/* Desktop Sidebar */}
-          {!isMobile && (
-            <aside className="w-80 flex-shrink-0">
-              <div className="sticky top-4">
-                <VehicleSearchFilter
-                  filters={filters}
-                  onFiltersChange={handleFiltersChange}
-                  filterOptions={{}}
-                  isLoading={false}
-                  isMobile={false}
-                />
-              </div>
-            </aside>
-          )}
-
-          {/* Mobile Filter Overlay */}
-          {isMobile && isMobileFiltersOpen && (
+        {/* Desktop Sidebar */}
+        {!isMobile && (
+          <aside className="flex-shrink-0">
             <VehicleSearchFilter
               filters={filters}
               onFiltersChange={handleFiltersChange}
               filterOptions={{}}
               isLoading={false}
-              isMobile={true}
-              onClose={handleMobileFiltersClose}
+              isMobile={false}
+            />
+          </aside>
+        )}
+
+        {/* Mobile Filter Overlay */}
+        {isMobile && isMobileFiltersOpen && (
+          <VehicleSearchFilter
+            filters={filters}
+            onFiltersChange={handleFiltersChange}
+            filterOptions={{}}
+            isLoading={false}
+            isMobile={true}
+            onClose={handleMobileFiltersClose}
+          />
+        )}
+
+        {/* Results Section */}
+        <main className="flex-1 min-w-0 bg-gray-50">
+          {/* Search Results Header */}
+          <SearchResultsHeader
+            totalResults={totalResults}
+            currentFilters={filters}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            sortBy={sortBy}
+            onSortChange={handleSortChange}
+            onMobileFiltersOpen={handleMobileFiltersOpen}
+          />
+
+          {/* Vehicle Grid */}
+          <div className={`vehicle-grid ${viewMode === 'grid' ? 'grid-view' : 'list-view'} p-4`}>
+            {currentVehicles.map((vehicle) => (
+              <VehicleCard
+                key={vehicle.id}
+                vehicle={vehicle}
+                favorites={favorites}
+                onFavoriteToggle={handleFavoriteToggle}
+              />
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              totalResults={totalResults}
+              resultsPerPage={resultsPerPage}
+              onPageChange={handlePageChange}
             />
           )}
-
-          {/* Results Section */}
-          <main className="flex-1 min-w-0">
-            {/* Search Results Header */}
-            <SearchResultsHeader
-              totalResults={totalResults}
-              currentFilters={filters}
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
-              sortBy={sortBy}
-              onSortChange={handleSortChange}
-              onMobileFiltersOpen={handleMobileFiltersOpen}
-            />
-
-            {/* Vehicle Grid */}
-            <div className={`vehicle-grid ${viewMode === 'grid' ? 'grid-view' : 'list-view'} p-4`}>
-              {currentVehicles.map((vehicle) => (
-                <VehicleCard
-                  key={vehicle.id}
-                  vehicle={vehicle}
-                  favorites={favorites}
-                  onFavoriteToggle={handleFavoriteToggle}
-                />
-              ))}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                totalResults={totalResults}
-                resultsPerPage={resultsPerPage}
-                onPageChange={handlePageChange}
-              />
-            )}
-          </main>
-        </div>
+        </main>
       </div>
     </div>
   );
