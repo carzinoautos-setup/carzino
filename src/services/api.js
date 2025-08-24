@@ -111,12 +111,19 @@ export const fetchVehicles = async (params = {}) => {
       return cachedData;
     }
 
-    console.log('🔄 Fetching fresh vehicle data from API...');
-    const response = await fetch(`${WC_API_BASE}/products?${queryParams}`, {
+    console.log('���� Fetching fresh vehicle data from API...');
+    const fullUrl = `${WC_API_BASE}/products?${queryParams}`;
+    console.log('📍 Full API URL:', fullUrl);
+    console.log('🔐 Auth headers:', getAuthHeaders());
+
+    const response = await fetch(fullUrl, {
       method: 'GET',
       headers: getAuthHeaders(),
       mode: 'cors', // Explicitly set CORS mode
     });
+
+    console.log('📡 Response status:', response.status);
+    console.log('📄 Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       throw new Error(`API Error: ${response.status} ${response.statusText}`);
