@@ -297,9 +297,14 @@ function App() {
   };
 
   // Get current page vehicles
+  const favoritesCount = Object.keys(favorites).length;
+  const vehiclesToShow = showingFavorites
+    ? SAMPLE_VEHICLES.filter(vehicle => favorites[vehicle.id])
+    : SAMPLE_VEHICLES;
+  const totalVehicles = vehiclesToShow.length;
   const startIndex = (currentPage - 1) * resultsPerPage;
   const endIndex = startIndex + resultsPerPage;
-  const currentVehicles = SAMPLE_VEHICLES.slice(startIndex, endIndex);
+  const currentVehicles = vehiclesToShow.slice(startIndex, endIndex);
 
   return (
     <div className="app">
