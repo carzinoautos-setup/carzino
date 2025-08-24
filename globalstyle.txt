@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Styles - Vehicle Search</title>
+  
+  <!-- Albert Sans Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    /* ============================================
+       CSS RESET & BASE STYLES
+    ============================================ */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #111827;
+      background-color: #ffffff;
+    }
+
+    /* ============================================
+       CSS VARIABLES / DESIGN TOKENS
+    ============================================ */
+    :root {
+      /* Colors */
+      --color-primary: #dc2626;
+      --color-primary-hover: #b91c1c;
+      --color-primary-light: #fef2f2;
+      
+      --color-secondary: #152b6d;
+      --color-secondary-light: #f9fafb;
+      
+      --color-gray-50: #f9fafb;
+      --color-gray-100: #f3f4f6;
+      --color-gray-200: #e5e7eb;
+      --color-gray-300: #d1d5db;
+      --color-gray-400: #9ca3af;
+      --color-gray-500: #6b7280;
+      --color-gray-600: #4b5563;
+      --color-gray-700: #374151;
+      --color-gray-800: #1f2937;
+      --color-gray-900: #111827;
+      
+      --color-black: #000000;
+      --color-white: #ffffff;
+      
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 12px;
+      --spacing-lg: 16px;
+      --spacing-xl: 24px;
+      --spacing-2xl: 32px;
+      --spacing-3xl: 48px;
+      
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+      --radius-xl: 12px;
+      --radius-full: 9999px;
+      
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+      
+      /* Transitions */
+      --transition-fast: 150ms ease;
+      --transition-base: 200ms ease;
+      --transition-slow: 300ms ease;
+      
+      /* Z-index layers */
+      --z-base: 1;
+      --z-dropdown: 10;
+      --z-sticky: 20;
+      --z-overlay: 30;
+      --z-modal: 40;
+      --z-popover: 50;
+      --z-tooltip: 60;
+      
+      /* Breakpoints */
+      --breakpoint-xs: 480px;
+      --breakpoint-sm: 640px;
+      --breakpoint-md: 768px;
+      --breakpoint-lg: 1024px;
+      --breakpoint-xl: 1280px;
+      --breakpoint-2xl: 1536px;
+      
+      /* Container widths */
+      --container-sm: 640px;
+      --container-md: 768px;
+      --container-lg: 1024px;
+      --container-xl: 1280px;
+      --container-max: 1325px;
+    }
+
+    /* ============================================
+       TYPOGRAPHY SCALES
+    ============================================ */
+    
+    /* Desktop Typography */
+    :root {
+      --carzino-featured-badge: 12px;
+      --carzino-badge-label: 12px;
+      --carzino-vehicle-title: 16px;
+      --carzino-vehicle-details: 12px;
+      --carzino-price-label: 12px;
+      --carzino-price-value: 16px;
+      --carzino-dealer-info: 10px;
+      --carzino-image-counter: 12px;
+      --carzino-filter-title: 16px;
+      --carzino-filter-option: 14px;
+      --carzino-filter-count: 14px;
+      --carzino-search-input: 14px;
+      --carzino-location-label: 14px;
+      --carzino-dropdown-option: 14px;
+      --carzino-vehicle-type-name: 12px;
+      --carzino-vehicle-type-count: 11px;
+      --carzino-show-more: 14px;
+    }
+
+    /* Tablet Typography */
+    @media (max-width: 768px) {
+      :root {
+        --carzino-vehicle-title: 17px;
+        --carzino-price-value: 17px;
+        --carzino-dealer-info: 11px;
+        --carzino-filter-title: 17px;
+        --carzino-filter-option: 15px;
+        --carzino-filter-count: 15px;
+        --carzino-search-input: 15px;
+        --carzino-location-label: 15px;
+        --carzino-dropdown-option: 15px;
+        --carzino-vehicle-type-name: 13px;
+        --carzino-vehicle-type-count: 12px;
+        --carzino-show-more: 15px;
+      }
+    }
+
+    /* Mobile Typography */
+    @media (max-width: 640px) {
+      :root {
+        --carzino-featured-badge: 14px;
+        --carzino-badge-label: 14px;
+        --carzino-vehicle-title: 18px;
+        --carzino-vehicle-details: 13px;
+        --carzino-price-label: 14px;
+        --carzino-price-value: 18px;
+        --carzino-dealer-info: 12px;
+        --carzino-image-counter: 14px;
+        --carzino-filter-title: 18px;
+        --carzino-filter-option: 16px;
+        --carzino-filter-count: 16px;
+        --carzino-search-input: 16px;
+        --carzino-location-label: 16px;
+        --carzino-dropdown-option: 16px;
+        --carzino-vehicle-type-name: 14px;
+        --carzino-vehicle-type-count: 13px;
+        --carzino-show-more: 16px;
+      }
+    }
+
+    /* ============================================
+       COMPONENT SPECIFIC CLASSES
+    ============================================ */
+    
+    /* Typography Classes */
+    .carzino-featured-badge { 
+      font-size: var(--carzino-featured-badge) !important; 
+      font-weight: 500 !important; 
+    }
+    
+    .carzino-badge-label { 
+      font-size: var(--carzino-badge-label) !important; 
+      font-weight: 500 !important; 
+    }
+    
+    .carzino-vehicle-title { 
+      font-size: var(--carzino-vehicle-title) !important; 
+      font-weight: 600 !important; 
+    }
+    
+    .carzino-vehicle-details { 
+      font-size: var(--carzino-vehicle-details) !important; 
+      font-weight: 400 !important; 
+    }
+    
+    .carzino-price-label { 
+      font-size: var(--carzino-price-label) !important; 
+      font-weight: 400 !important; 
+    }
+    
+    .carzino-price-value { 
+      font-size: var(--carzino-price-value) !important; 
+      font-weight: 700 !important; 
+    }
+    
+    .carzino-dealer-info { 
+      font-size: 12px !important; 
+      font-weight: 500 !important; 
+    }
+    
+    .carzino-image-counter { 
+      font-size: var(--carzino-image-counter) !important; 
+      font-weight: 400 !important; 
+    }
+    
+    .carzino-filter-title { 
+      font-size: var(--carzino-filter-title) !important; 
+      font-weight: 600 !important; 
+    }
+    
+    .carzino-filter-option { 
+      font-size: var(--carzino-filter-option) !important; 
+      font-weight: 400 !important; 
+    }
+    
+    .carzino-filter-count { 
+      font-size: var(--carzino-filter-count) !important; 
+      font-weight: 400 !important; 
+      color: var(--color-gray-500) !important; 
+    }
+    
+    .carzino-search-input { 
+      font-size: var(--carzino-search-input) !important; 
+      font-weight: 400 !important; 
+    }
+    
+    .carzino-location-label { 
+      font-size: var(--carzino-location-label) !important; 
+      font-weight: 500 !important; 
+    }
+    
+    .carzino-dropdown-option { 
+      font-size: var(--carzino-dropdown-option) !important; 
+      font-weight: 400 !important; 
+    }
+    
+    .carzino-vehicle-type-name { 
+      font-size: var(--carzino-vehicle-type-name) !important; 
+      font-weight: 500 !important; 
+    }
+    
+    .carzino-vehicle-type-count { 
+      font-size: var(--carzino-vehicle-type-count) !important; 
+      font-weight: 400 !important; 
+      color: var(--color-gray-500) !important; 
+    }
+    
+    .carzino-show-more { 
+      font-size: var(--carzino-show-more) !important; 
+      font-weight: 500 !important; 
+    }
+
+    /* ============================================
+       FORM ELEMENTS
+    ============================================ */
+    
+    /* Custom Checkbox */
+    input[type="checkbox"] {
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border: 1px solid var(--color-gray-300);
+      border-radius: 3px;
+      background-color: var(--color-white);
+      position: relative;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+    }
+    
+    input[type="checkbox"]:hover {
+      border-color: var(--color-gray-500);
+      background-color: var(--color-gray-50);
+    }
+    
+    input[type="checkbox"]:checked {
+      background-color: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    
+    input[type="checkbox"]:checked::after {
+      content: '✓';
+      position: absolute;
+      color: var(--color-white);
+      font-size: 12px;
+      top: -2px;
+      left: 2px;
+    }
+
+    input[type="checkbox"]:focus {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    /* Input and Select Styles */
+    input[type="text"],
+    input[type="number"],
+    select {
+      font-family: inherit;
+      transition: all var(--transition-fast);
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+    }
+
+    /* ============================================
+       LAYOUT UTILITIES
+    ============================================ */
+    
+    .main-container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+    }
+
+    /* Vehicle Grid Responsive */
+    .vehicle-grid {
+      display: grid;
+      gap: var(--spacing-xl);
+    }
+
+    @media (max-width: 639px) {
+      .vehicle-grid {
+        grid-template-columns: 1fr;
+        gap: var(--spacing-lg);
+      }
+      
+      .vehicle-card {
+        border-radius: var(--radius-lg);
+        margin: 0 var(--spacing-md);
+      }
+    }
+    
+    @media (min-width: 640px) and (max-width: 1023px) {
+      .vehicle-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--spacing-xl);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .vehicle-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--spacing-xl);
+      }
+    }
+
+    /* ============================================
+       MOBILE SPECIFIC STYLES
+    ============================================ */
+    
+    @media (max-width: 1023px) {
+      /* Mobile Filter Overlay */
+      .mobile-filter-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: var(--z-overlay);
+        opacity: 0;
+        visibility: hidden;
+        transition: all var(--transition-slow);
+      }
+      
+      .mobile-filter-overlay.open {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .mobile-filter-sidebar {
+        position: fixed !important;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        background: var(--color-white);
+        z-index: var(--z-modal);
+        transform: translateX(-100%);
+        transition: transform var(--transition-slow);
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-y: auto !important;
+        overflow-x: hidden;
+        display: block !important;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      .mobile-filter-sidebar.open {
+        transform: translateX(0);
+      }
+      
+      /* Larger chevrons on mobile for better tap targets */
+      .mobile-chevron {
+        width: 22px !important;
+        height: 22px !important;
+      }
+
+      /* Sticky mobile header behavior */
+      .sticky-mobile-header {
+        position: sticky;
+        top: 0;
+        z-index: var(--z-sticky);
+        background: var(--color-white);
+        box-shadow: var(--shadow-md);
+      }
+
+      /* Safe area padding for notched devices */
+      .safe-area-padding {
+        padding-bottom: env(safe-area-inset-bottom, 20px);
+      }
+    }
+
+    /* ============================================
+       COMPONENT STATES
+    ============================================ */
+    
+    /* Filter Tag Pills */
+    .filter-tag {
+      background-color: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      color: var(--color-gray-700);
+      transition: all var(--transition-fast);
+    }
+
+    .filter-tag:hover .remove-x {
+      color: var(--color-primary);
+    }
+
+    .filter-tag-active {
+      background-color: var(--color-black);
+      color: var(--color-white);
+      border-color: var(--color-black);
+    }
+
+    /* View Switcher */
+    .view-switcher {
+      display: inline-flex;
+      background: var(--color-white);
+      border: 1px solid var(--color-gray-200);
+      border-radius: var(--radius-md);
+      padding: 2px;
+    }
+
+    .view-switcher button {
+      padding: 6px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 500;
+      transition: all var(--transition-base);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .view-switcher button.active {
+      background: var(--color-primary);
+      color: var(--color-white);
+    }
+
+    .view-switcher button:not(.active) {
+      background: transparent;
+      color: var(--color-gray-500);
+    }
+
+    .view-switcher button:not(.active):hover {
+      color: var(--color-gray-700);
+      background: var(--color-gray-50);
+    }
+
+    /* ============================================
+       ANIMATIONS
+    ============================================ */
+    
+    @keyframes slideIn {
+      from {
+        transform: translateX(-100%);
+      }
+      to {
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.5;
+      }
+    }
+
+    .animate-slide-in {
+      animation: slideIn var(--transition-slow) ease-out;
+    }
+
+    .animate-fade-in {
+      animation: fadeIn var(--transition-base) ease-out;
+    }
+
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* ============================================
+       UTILITY CLASSES
+    ============================================ */
+    
+    /* Display */
+    .hidden { display: none !important; }
+    .block { display: block !important; }
+    .inline-block { display: inline-block !important; }
+    .flex { display: flex !important; }
+    .inline-flex { display: inline-flex !important; }
+    .grid { display: grid !important; }
+
+    /* Flexbox */
+    .flex-row { flex-direction: row !important; }
+    .flex-col { flex-direction: column !important; }
+    .flex-wrap { flex-wrap: wrap !important; }
+    .items-center { align-items: center !important; }
+    .items-start { align-items: flex-start !important; }
+    .items-end { align-items: flex-end !important; }
+    .justify-center { justify-content: center !important; }
+    .justify-between { justify-content: space-between !important; }
+    .justify-start { justify-content: flex-start !important; }
+    .justify-end { justify-content: flex-end !important; }
+    .flex-1 { flex: 1 1 0% !important; }
+    .flex-shrink-0 { flex-shrink: 0 !important; }
+
+    /* Spacing */
+    .gap-1 { gap: var(--spacing-xs) !important; }
+    .gap-2 { gap: var(--spacing-sm) !important; }
+    .gap-3 { gap: var(--spacing-md) !important; }
+    .gap-4 { gap: var(--spacing-lg) !important; }
+    .gap-6 { gap: var(--spacing-xl) !important; }
+
+    /* Text */
+    .text-left { text-align: left !important; }
+    .text-center { text-align: center !important; }
+    .text-right { text-align: right !important; }
+    .font-normal { font-weight: 400 !important; }
+    .font-medium { font-weight: 500 !important; }
+    .font-semibold { font-weight: 600 !important; }
+    .font-bold { font-weight: 700 !important; }
+    .truncate {
+      overflow: hidden !important;
+      text-overflow: ellipsis !important;
+      white-space: nowrap !important;
+    }
+
+    /* Colors */
+    .text-primary { color: var(--color-primary) !important; }
+    .text-gray-500 { color: var(--color-gray-500) !important; }
+    .text-gray-600 { color: var(--color-gray-600) !important; }
+    .text-gray-700 { color: var(--color-gray-700) !important; }
+    .text-gray-900 { color: var(--color-gray-900) !important; }
+    .text-white { color: var(--color-white) !important; }
+    .text-black { color: var(--color-black) !important; }
+
+    .bg-primary { background-color: var(--color-primary) !important; }
+    .bg-white { background-color: var(--color-white) !important; }
+    .bg-gray-50 { background-color: var(--color-gray-50) !important; }
+    .bg-gray-100 { background-color: var(--color-gray-100) !important; }
+    .bg-gray-200 { background-color: var(--color-gray-200) !important; }
+    .bg-black { background-color: var(--color-black) !important; }
+
+    /* Borders */
+    .border { border-width: 1px !important; }
+    .border-t { border-top-width: 1px !important; }
+    .border-b { border-bottom-width: 1px !important; }
+    .border-l { border-left-width: 1px !important; }
+    .border-r { border-right-width: 1px !important; }
+    .border-gray-200 { border-color: var(--color-gray-200) !important; }
+    .border-gray-300 { border-color: var(--color-gray-300) !important; }
+    .border-gray-400 { border-color: var(--color-gray-400) !important; }
+    .rounded { border-radius: var(--radius-sm) !important; }
+    .rounded-md { border-radius: var(--radius-md) !important; }
+    .rounded-lg { border-radius: var(--radius-lg) !important; }
+    .rounded-xl { border-radius: var(--radius-xl) !important; }
+    .rounded-full { border-radius: var(--radius-full) !important; }
+
+    /* Shadows */
+    .shadow-sm { box-shadow: var(--shadow-sm) !important; }
+    .shadow-md { box-shadow: var(--shadow-md) !important; }
+    .shadow-lg { box-shadow: var(--shadow-lg) !important; }
+    .shadow-xl { box-shadow: var(--shadow-xl) !important; }
+
+    /* Transitions */
+    .transition-all { transition: all var(--transition-base) !important; }
+    .transition-colors { transition: color var(--transition-fast), background-color var(--transition-fast) !important; }
+    .transition-transform { transition: transform var(--transition-base) !important; }
+    .transition-shadow { transition: box-shadow var(--transition-base) !important; }
+
+    /* Hover States */
+    .hover\:bg-gray-50:hover { background-color: var(--color-gray-50) !important; }
+    .hover\:bg-gray-100:hover { background-color: var(--color-gray-100) !important; }
+    .hover\:bg-gray-200:hover { background-color: var(--color-gray-200) !important; }
+    .hover\:bg-primary-hover:hover { background-color: var(--color-primary-hover) !important; }
+    .hover\:text-gray-600:hover { color: var(--color-gray-600) !important; }
+    .hover\:text-gray-700:hover { color: var(--color-gray-700) !important; }
+    .hover\:text-primary:hover { color: var(--color-primary) !important; }
+    .hover\:shadow-lg:hover { box-shadow: var(--shadow-lg) !important; }
+
+    /* Responsive Display Utilities */
+    @media (min-width: 640px) {
+      .sm\:hidden { display: none !important; }
+      .sm\:block { display: block !important; }
+      .sm\:flex { display: flex !important; }
+      .sm\:grid-cols-2 { grid-template-columns: repeat(2, 1fr) !important; }
+    }
+
+    @media (min-width: 768px) {
+      .md\:hidden { display: none !important; }
+      .md\:block { display: block !important; }
+      .md\:flex { display: flex !important; }
+    }
+
+    @media (min-width: 1024px) {
+      .lg\:hidden { display: none !important; }
+      .lg\:block { display: block !important; }
+      .lg\:flex { display: flex !important; }
+      .lg\:grid-cols-3 { grid-template-columns: repeat(3, 1fr) !important; }
+      .lg\:rounded-xl { border-radius: var(--radius-xl) !important; }
+    }
+
+    /* ============================================
+       ACCESSIBILITY
+    ============================================ */
+    
+    /* Focus Visible */
+    :focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+
+    /* Screen Reader Only */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border-width: 0;
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* High Contrast Mode */
+    @media (prefers-contrast: high) {
+      :root {
+        --color-primary: #cc0000;
+        --color-gray-200: #cccccc;
+        --color-gray-500: #666666;
+      }
+    }
+
+    /* Dark Mode Support (optional) */
+    @media (prefers-color-scheme: dark) {
+      /* Add dark mode overrides here if needed */
+    }
+  </style>
+</head>
+<body>
+  <div class="main-container p-4">
+    <h1 class="text-2xl font-bold mb-4">Vehicle Search Global Styles</h1>
+    <p class="text-gray-600 mb-6">This file contains all the global styles, CSS variables, and utility classes for the vehicle search interface.</p>
+    
+    <div class="grid gap-6">
+      <section>
+        <h2 class="text-xl font-semibold mb-3">Features Included:</h2>
+        <ul class="list-disc pl-6 space-y-2">
+          <li>Albert Sans font family integration</li>
+          <li>CSS variables for consistent theming</li>
+          <li>Responsive typography scales</li>
+          <li>Component-specific classes (carzino-*)</li>
+          <li>Form element styling (checkboxes, inputs)</li>
+          <li>Mobile-specific behaviors and sticky positioning</li>
+          <li>Utility classes for rapid development</li>
+          <li>Accessibility features (focus states, screen reader support)</li>
+          <li>Animation keyframes</li>
+          <li>Responsive breakpoints and containers</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
