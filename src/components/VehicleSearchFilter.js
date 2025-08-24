@@ -784,22 +784,22 @@ const VehicleSearchFilter = ({
 
         {/* Mobile Footer */}
         {isMobile && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex gap-3 z-50">
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex gap-4 z-50 shadow-lg">
             <button
               onClick={clearAllFilters}
-              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors relative"
+              className="flex-1 px-6 py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200 relative disabled:opacity-50"
               disabled={activeFilterCount === 0}
             >
               Clear {activeFilterCount > 0 && `(${activeFilterCount})`}
             </button>
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 text-white rounded-lg font-medium hover:bg-red-700 transition-colors relative"
+              className="flex-1 px-6 py-4 text-white rounded-xl font-semibold hover:bg-red-700 transition-all duration-200 relative shadow-lg"
               style={{ backgroundColor: '#dc2626' }}
             >
               Apply Filters
               {activeFilterCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-7 h-7 flex items-center justify-center font-bold">
                   {activeFilterCount}
                 </span>
               )}
