@@ -518,18 +518,18 @@ const VehicleSearchFilter = ({
         </div>
 
         {/* Distance */}
-        <div className="mb-4">
+        <div className="mb-6">
           <label className="block mb-2 text-sm font-normal text-gray-900">Distance</label>
-          <div className="space-y-2 ml-2">
+          <div className="space-y-2">
             <input
               type="text"
               placeholder="ZIP Code"
-              value={filters.zipCode || ''}
+              value={filters.zipCode || '98498'}
               onChange={(e) => handleFilterChange('zipCode', e.target.value, true)}
               className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600"
             />
             <select
-              value={filters.radius || '10'}
+              value={filters.radius || '200'}
               onChange={(e) => handleFilterChange('radius', e.target.value, true)}
               className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600"
             >
