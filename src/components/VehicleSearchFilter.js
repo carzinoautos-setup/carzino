@@ -141,7 +141,7 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
               placeholder="8"
               value={filters.interestRate || ''}
               onChange={(e) => onChange('interestRate', e.target.value.replace(/[^0-9.]/g, ''), true)}
-              className="carzino-search-input carzino-input w-full pr-6 px-2 py-3 border border-gray-300 rounded focus:outline-none"
+              className="carzino-search-input carzino-input w-full pr-6 px-2 py-2.5 border border-gray-300 rounded focus:outline-none"
             />
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">%</span>
           </div>
