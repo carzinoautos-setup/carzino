@@ -399,6 +399,15 @@ const VehicleSearchFilter = ({
 
   // Calculate active filter count
   const activeFilterCount = useMemo(() => {
+    // Define default values that shouldn't count as applied filters
+    const defaultValues = {
+      zipCode: '98498',
+      radius: '200',
+      termLength: '72',
+      interestRate: '8',
+      downPayment: '2000'
+    };
+
     return Object.entries(filters).reduce((count, [key, value]) => {
       // Skip configuration/default fields that shouldn't count as active filters
       if (key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') {
@@ -432,8 +441,8 @@ const VehicleSearchFilter = ({
         return count + value.length;
       }
 
-      // Handle single value filters (exclude empty values)
-      if (value && value.toString().trim() !== '') {
+      // Handle single value filters (exclude empty values and default values)
+      if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[key] || '')) {
         return count + 1;
       }
 
