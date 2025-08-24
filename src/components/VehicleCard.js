@@ -102,7 +102,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           {vehicle.title}
         </h3>
 
-        <div className="flex items-center justify-start mb-3 pb-2 border-b border-gray-200 carzino-vehicle-details">
+        <div className="flex items-center justify-start mb-2 pb-2 border-b border-gray-200 carzino-vehicle-details">
           <div className="flex items-center gap-1 mr-4">
             <Gauge className="w-4 h-4 text-gray-600" />
             <span className="text-black font-medium">{vehicle.mileage} miles</span>
