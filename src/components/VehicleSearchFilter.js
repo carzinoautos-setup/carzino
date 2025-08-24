@@ -559,11 +559,11 @@ const VehicleSearchFilter = ({
                   value.forEach((item, index) => {
                     if (item && item.toString().trim() !== '') {
                       filterPills.push(
-                        <span key={`${category}-${index}`} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
-                          {item}
+                        <span key={`${category}-${index}`} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 max-w-full">
+                          <span className="truncate flex-1">{item}</span>
                           <button
                             onClick={() => removeAppliedFilter(category, item)}
-                            className="ml-1 text-white hover:text-gray-300"
+                            className="ml-1 bg-black text-white hover:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-xs flex-shrink-0"
                           >
                             ×
                           </button>
@@ -573,11 +573,11 @@ const VehicleSearchFilter = ({
                   });
                 } else if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[category] || '')) {
                   filterPills.push(
-                    <span key={category} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
-                      {value}
+                    <span key={category} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 max-w-full">
+                      <span className="truncate flex-1">{value}</span>
                       <button
                         onClick={() => removeAppliedFilter(category, value)}
-                        className="ml-1 text-white hover:text-gray-300"
+                        className="ml-1 bg-black text-white hover:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-xs flex-shrink-0"
                       >
                         ×
                       </button>
@@ -598,11 +598,11 @@ const VehicleSearchFilter = ({
                 }
                 if (priceRange.length > 0) {
                   filterPills.push(
-                    <span key="price" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
-                      {priceRange.join(' to ')}
+                    <span key="price" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 max-w-full">
+                      <span className="truncate flex-1">{priceRange.join(' to ')}</span>
                       <button
                         onClick={() => removeAppliedFilter('priceMin', '')}
-                        className="ml-1 text-white hover:text-gray-300"
+                        className="ml-1 bg-black text-white hover:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-xs flex-shrink-0"
                       >
                         ×
                       </button>
@@ -623,11 +623,11 @@ const VehicleSearchFilter = ({
                 }
                 if (paymentRange.length > 0) {
                   filterPills.push(
-                    <span key="payment" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
-                      {paymentRange.join(' to ')}
+                    <span key="payment" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 max-w-full">
+                      <span className="truncate flex-1">{paymentRange.join(' to ')}</span>
                       <button
                         onClick={() => removeAppliedFilter('paymentMin', '')}
-                        className="ml-1 text-white hover:text-gray-300"
+                        className="ml-1 bg-black text-white hover:bg-gray-800 rounded-full w-4 h-4 flex items-center justify-center text-xs flex-shrink-0"
                       >
                         ×
                       </button>
