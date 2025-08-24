@@ -16,10 +16,11 @@ function App() {
     vehicleType: [],
     bodyType: [],
     driveType: [],
-    mileage: '',
+    transmission: [], // Updated from transmissionSpeed to match ACF
+    fuelType: [], // New ACF field
     exteriorColor: [],
     interiorColor: [],
-    transmissionSpeed: [],
+    mileage: '',
     sellerType: [],
     dealer: [],
     state: [],
