@@ -148,7 +148,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         </div>
       </div>
 
-      <div className="border-t border-gray-100 px-4 py-2 mt-auto" style={{ backgroundColor: '#f9fafb' }}>
+      <div className="border-t border-gray-100 px-6 py-3 mt-auto" style={{ backgroundColor: '#f9fafb' }}>
         <div className="flex justify-between items-start">
           <div className="flex-1 min-w-0">
             <div className="text-gray-900 truncate" style={{ fontSize: '12px', fontWeight: 500 }}>{vehicle.dealer}</div>
