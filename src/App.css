@@ -339,7 +339,7 @@ body {
   width: 100%;
   padding: 0;
   display: flex;
-  gap: 0;
+  gap: var(--spacing-xl);
 }
 
 /* ============================================
@@ -354,7 +354,7 @@ body {
 /* Grid View */
 .vehicle-grid.grid-view {
   grid-template-columns: 1fr;
-  gap: var(--spacing-lg);
+  gap: var(--spacing-xl);
 }
 
 @media (min-width: 640px) {
