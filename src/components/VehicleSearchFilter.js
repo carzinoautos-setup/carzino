@@ -691,12 +691,12 @@ const VehicleSearchFilter = ({
             ))}
           </div>
           {allMakes.length > 8 && (
-            <button
+            <span
               onClick={() => setShowMoreMakes(!showMoreMakes)}
-              className="text-red-600 hover:text-red-700 text-sm mt-3 font-medium underline"
+              className="text-red-600 hover:text-red-700 text-sm mt-3 font-medium cursor-pointer"
             >
               {showMoreMakes ? 'Show Less' : 'Show More'}
-            </button>
+            </span>
           )}
         </FilterSection>
 
