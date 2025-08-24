@@ -71,17 +71,17 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           
           {vehicle.images && vehicle.images.length > 1 && (
             <>
-              <button 
+              <button
                 onClick={prevImage}
                 className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-1.5 rounded-full transition-all"
               >
-                <ChevronDown className="w-4 h-4 transform rotate-90 text-white" />
+                <ChevronLeft className="w-4 h-4 text-white" />
               </button>
-              <button 
+              <button
                 onClick={nextImage}
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-1.5 rounded-full transition-all"
               >
-                <ChevronDown className="w-4 h-4 transform -rotate-90 text-white" />
+                <ChevronRight className="w-4 h-4 text-white" />
               </button>
               <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full carzino-image-counter">
                 {currentIndex + 1}/{totalImages}
