@@ -438,19 +438,23 @@ const SearchResultsHeader = ({
           border-color: var(--primary-red);
         }
 
-        /* Tablet and Desktop Responsive */
+        /* Tablet and Desktop Responsive - Hide Mobile Elements */
         @media (min-width: 768px) {
           .mobile-header {
-            display: none;
+            display: none !important;
+          }
+          .applied-filters {
+            display: none !important;
           }
           .desktop-header {
             display: block;
           }
         }
 
+        /* Mobile Only - Hide Desktop Elements */
         @media (max-width: 767px) {
           .desktop-header {
-            display: none;
+            display: none !important;
           }
         }
       `}</style>
