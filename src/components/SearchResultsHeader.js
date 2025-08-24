@@ -187,6 +187,8 @@ const SearchResultsHeader = ({
           overflow-x: auto;
           -webkit-overflow-scrolling: touch;
           padding-bottom: 4px;
+          align-items: center;
+          max-width: 100%;
         }
 
         .clear-all-btn {
