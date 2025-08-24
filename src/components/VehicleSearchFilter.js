@@ -4,33 +4,24 @@ import { Search, ChevronDown, Check, X } from 'lucide-react';
 // Filter Section Components
 const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) => {
   return (
-    <div className="border-b border-gray-200 pb-4 mb-4">
+    <div className="border-b border-gray-200 pb-3 mb-3">
       <div
-        className="flex items-center justify-between cursor-pointer py-3 px-2 -mx-2 rounded-lg hover:bg-gray-50 transition-all duration-200 group"
+        className="flex items-center justify-between cursor-pointer py-2"
         onClick={onToggle}
       >
-        <h3 className="carzino-filter-title font-semibold text-gray-900 pointer-events-none flex-1">{title}</h3>
-        <div className="flex items-center gap-2 pointer-events-none">
-          {count !== undefined && count > 0 && (
-            <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full font-medium min-w-[20px] text-center">
-              {count}
-            </span>
-          )}
-          <ChevronDown
-            className={`w-5 h-5 text-red-600 transition-all duration-300 group-hover:text-red-700 ${
-              !isCollapsed ? 'rotate-180' : 'rotate-0'
-            }`}
-            style={{ color: '#dc2626' }}
-          />
+        <h3 className="text-base font-normal text-gray-900 pointer-events-none flex-1">{title}</h3>
+        <ChevronDown
+          className={`w-4 h-4 text-red-600 transition-transform duration-200 ${
+            !isCollapsed ? 'rotate-180' : 'rotate-0'
+          }`}
+          style={{ color: '#dc2626' }}
+        />
+      </div>
+      {!isCollapsed && (
+        <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+          {children}
         </div>
-      </div>
-      <div className={`overflow-hidden transition-all duration-300 ${isCollapsed ? 'max-h-0 opacity-0' : 'max-h-[800px] opacity-100'}`}>
-        {!isCollapsed && (
-          <div className="pt-2 pb-1" onClick={(e) => e.stopPropagation()}>
-            {children}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 });
