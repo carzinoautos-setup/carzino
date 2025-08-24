@@ -35,25 +35,25 @@ const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) =
   );
 });
 
-const CheckboxOption = memo(({ 
-  label, 
-  count, 
-  checked, 
-  onChange, 
+const CheckboxOption = memo(({
+  label,
+  count,
+  checked,
+  onChange,
   value,
-  category 
+  category
 }) => {
   return (
-    <label className="flex items-center hover:bg-gray-50 p-1 rounded cursor-pointer">
-      <input 
-        type="checkbox" 
-        className="carzino-checkbox mr-2"
+    <label className="flex items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer transition-all duration-150 group">
+      <input
+        type="checkbox"
+        className="carzino-checkbox mr-3 flex-shrink-0"
         checked={checked}
         onChange={(e) => onChange(category, value, e.target.checked)}
       />
-      <span className="carzino-filter-option flex-1">{label}</span>
+      <span className="carzino-filter-option flex-1 text-gray-800 group-hover:text-gray-900">{label}</span>
       {count !== undefined && (
-        <span className="carzino-filter-count ml-1">({count.toLocaleString()})</span>
+        <span className="carzino-filter-count ml-2 text-gray-500 text-sm">({count.toLocaleString()})</span>
       )}
     </label>
   );
