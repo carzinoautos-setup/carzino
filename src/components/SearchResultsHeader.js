@@ -76,10 +76,6 @@ const SearchResultsHeader = ({
     { value: 'mileage_low', label: 'Mileage: Low to High' }
   ];
 
-  const getCurrentSortLabel = () => {
-    const option = sortOptions.find(opt => opt.value === sortBy);
-    return option ? option.label : 'Sort by Relevance';
-  };
 
   return (
     <>
