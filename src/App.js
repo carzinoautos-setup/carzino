@@ -159,6 +159,7 @@ function App() {
   const [sortBy, setSortBy] = useState('relevance');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const [showingFavorites, setShowingFavorites] = useState(false);
 
   const resultsPerPage = 25;
   const totalResults = SAMPLE_VEHICLES.length;
