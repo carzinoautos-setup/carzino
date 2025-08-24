@@ -508,13 +508,13 @@ const VehicleSearchFilter = ({
         {/* Search Section */}
         <div className="mb-6">
           <h3 className="text-sm font-medium text-gray-900 mb-3">Search Vehicles</h3>
-          <div className="relative overflow-hidden rounded-md">
+          <div className="relative rounded-md overflow-hidden">
             <input
               type="text"
               placeholder="Search Vehicles"
-              className="carzino-search-input carzino-input w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:border-red-600"
+              className="carzino-search-input carzino-input w-full px-3 py-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 bg-white"
             />
-            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-600 p-1">
+            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600">
               <Search className="w-4 h-4" style={{ color: '#dc2626' }} />
             </button>
           </div>
