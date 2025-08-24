@@ -296,6 +296,14 @@ export const testAPIConnection = async () => {
       };
     }
   } catch (error) {
+    // Check if it's a CORS error
+    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+      return {
+        success: false,
+        message: `CORS Error: Cannot connect to ${process.env.REACT_APP_WP_SITE_URL} from GitHub Pages. Enable CORS on your WordPress site.`
+      };
+    }
+
     return {
       success: false,
       message: `Connection Error: ${error.message}`
