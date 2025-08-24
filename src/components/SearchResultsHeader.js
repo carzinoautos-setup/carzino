@@ -207,13 +207,13 @@ const SearchResultsHeader = ({
         .filter-pill {
           background: var(--text-black);
           color: white;
-          padding: 6px 12px;
+          padding: 6px 16px;
           border-radius: 20px;
           font-size: 12px;
           font-weight: 500;
           display: flex;
           align-items: center;
-          gap: 4px;
+          gap: 8px;
           max-width: 200px;
           flex-shrink: 0;
         }
