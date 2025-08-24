@@ -657,7 +657,7 @@ const VehicleSearchFilter = ({
             <select
               value={filters.radius || '200'}
               onChange={(e) => handleFilterChange('radius', e.target.value, true)}
-              className="carzino-select w-full px-3 py-5 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
+              className="carzino-select w-full px-3 py-4 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
             >
               <option value="10">10 Miles</option>
               <option value="25">25 Miles</option>
