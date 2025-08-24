@@ -23,38 +23,56 @@ const SearchResultsHeader = ({
   // Calculate active filters for display
   const getActiveFilters = () => {
     const filters = [];
+    const processedCategories = new Set();
+
     Object.entries(currentFilters).forEach(([key, value]) => {
+      // Skip system/config fields
       if (key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') {
         return;
       }
+
+      // Handle array-based filters
       if (Array.isArray(value) && value.length > 0) {
-        value.forEach(item => filters.push({ category: key, value: item }));
-      } else if (value && value !== '') {
-        if (key === 'priceMin' || key === 'priceMax') {
-          const existing = filters.find(f => f.category === 'price');
-          if (!existing) {
-            const priceRange = [];
-            if (currentFilters.priceMin) priceRange.push(`$${currentFilters.priceMin}+`);
-            if (currentFilters.priceMax) priceRange.push(`$${currentFilters.priceMax}-`);
-            if (priceRange.length > 0) {
-              filters.push({ category: 'price', value: priceRange.join(' to ') });
-            }
+        value.forEach(item => {
+          if (item && item.toString().trim() !== '') {
+            filters.push({ category: key, value: item.toString().trim() });
           }
-        } else if (key === 'paymentMin' || key === 'paymentMax') {
-          const existing = filters.find(f => f.category === 'payment');
-          if (!existing) {
-            const paymentRange = [];
-            if (currentFilters.paymentMin) paymentRange.push(`$${currentFilters.paymentMin}+`);
-            if (currentFilters.paymentMax) paymentRange.push(`$${currentFilters.paymentMax}-`);
-            if (paymentRange.length > 0) {
-              filters.push({ category: 'payment', value: paymentRange.join(' to ') });
-            }
-          }
-        } else {
-          filters.push({ category: key, value });
+        });
+      }
+      // Handle price range
+      else if ((key === 'priceMin' || key === 'priceMax') && !processedCategories.has('price')) {
+        const priceRange = [];
+        if (currentFilters.priceMin && currentFilters.priceMin.toString().trim() !== '') {
+          priceRange.push(`$${currentFilters.priceMin}+`);
+        }
+        if (currentFilters.priceMax && currentFilters.priceMax.toString().trim() !== '') {
+          priceRange.push(`$${currentFilters.priceMax}-`);
+        }
+        if (priceRange.length > 0) {
+          filters.push({ category: 'price', value: priceRange.join(' to ') });
+          processedCategories.add('price');
         }
       }
+      // Handle payment range
+      else if ((key === 'paymentMin' || key === 'paymentMax') && !processedCategories.has('payment')) {
+        const paymentRange = [];
+        if (currentFilters.paymentMin && currentFilters.paymentMin.toString().trim() !== '') {
+          paymentRange.push(`$${currentFilters.paymentMin}+`);
+        }
+        if (currentFilters.paymentMax && currentFilters.paymentMax.toString().trim() !== '') {
+          paymentRange.push(`$${currentFilters.paymentMax}-`);
+        }
+        if (paymentRange.length > 0) {
+          filters.push({ category: 'payment', value: paymentRange.join(' to ') });
+          processedCategories.add('payment');
+        }
+      }
+      // Handle single value filters
+      else if (value && value.toString().trim() !== '' && key !== 'priceMin' && key !== 'priceMax' && key !== 'paymentMin' && key !== 'paymentMax') {
+        filters.push({ category: key, value: value.toString().trim() });
+      }
     });
+
     return filters;
   };
 
