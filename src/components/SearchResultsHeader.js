@@ -212,7 +212,7 @@ const SearchResultsHeader = ({
           display: flex;
           align-items: center;
           gap: 4px;
-          white-space: nowrap;
+          max-width: 200px;
           flex-shrink: 0;
         }
 
@@ -220,6 +220,7 @@ const SearchResultsHeader = ({
           width: 12px;
           height: 12px;
           color: var(--primary-red);
+          flex-shrink: 0;
         }
 
         .remove-filter {
@@ -230,6 +231,27 @@ const SearchResultsHeader = ({
           cursor: pointer;
           padding: 0;
           margin-left: 4px;
+        }
+
+        .remove-filter-black {
+          background: var(--text-black);
+          border: none;
+          color: white;
+          font-size: 12px;
+          cursor: pointer;
+          padding: 0;
+          margin-left: 4px;
+          border-radius: 50%;
+          width: 16px;
+          height: 16px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .remove-filter-black:hover {
+          background: #374151;
         }
 
         .control-bar {
