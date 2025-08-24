@@ -29,42 +29,365 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   return (
     <>
       <style>{`
-        .carzino-featured-badge { font-size: 12px; font-weight: 500; }
-        .carzino-badge-label { font-size: 12px; font-weight: 500; }
-        .carzino-vehicle-title { font-size: 16px; font-weight: 600; }
-        .carzino-vehicle-details { font-size: 12px; font-weight: 400; }
-        .carzino-price-label { font-size: 12px; font-weight: 400; }
-        .carzino-price-value { font-size: 16px; font-weight: 700; }
-        .carzino-image-counter { font-size: 12px; font-weight: 400; }
-
-        /* Mobile responsive - increases font sizes */
-        @media (max-width: 640px) {
-          .carzino-featured-badge { font-size: 14px; }
-          .carzino-badge-label { font-size: 14px; }
-          .carzino-vehicle-title { font-size: 18px; }
-          .carzino-vehicle-details { font-size: 13px; }
-          .carzino-price-label { font-size: 14px; }
-          .carzino-price-value { font-size: 18px; }
-          .carzino-image-counter { font-size: 14px; }
+        .vehicle-card {
+          width: 100%;
+          max-width: 380px;
+          background: #FFFFFF;
+          border: 1px solid #E5E7EB;
+          border-radius: 8px;
+          transition: box-shadow 200ms ease-in-out;
         }
 
-        /* Card max width constraints */
-        .vehicle-card {
-          max-width: 380px;
+        .vehicle-card:hover {
+          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        @media (min-width: 1024px) {
+          .vehicle-card {
+            border-radius: 12px;
+          }
+        }
+
+        @media (max-width: 640px) {
+          .vehicle-card {
+            max-width: 100%;
+          }
+        }
+
+        .image-container {
+          position: relative;
           width: 100%;
+          height: 200px;
+          overflow: hidden;
+        }
+
+        .vehicle-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          aspect-ratio: 16/9;
+        }
+
+        .featured-badge {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          background: #CF0D0D;
+          color: white;
+          padding: 6px 12px;
+          border-radius: 50px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+
+        .nav-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 24px;
+          height: 24px;
+          background: rgba(0, 0, 0, 0.5);
+          color: white;
+          border: none;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background-color 200ms ease-in-out;
+          padding: 0;
+        }
+
+        .nav-arrow:hover {
+          background: rgba(0, 0, 0, 0.7);
+        }
+
+        .nav-arrow-left {
+          left: 8px;
+        }
+
+        .nav-arrow-right {
+          right: 8px;
+        }
+
+        .nav-arrow svg {
+          width: 16px;
+          height: 16px;
+        }
+
+        .image-counter {
+          position: absolute;
+          bottom: 12px;
+          right: 12px;
+          background: rgba(0, 0, 0, 0.6);
+          color: white;
+          padding: 4px 8px;
+          border-radius: 50px;
+          font-size: 12px;
+          font-weight: 400;
+        }
+
+        .content-section {
+          padding: 12px;
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+
+        .badges-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 8px;
+          height: 24px;
+          margin-bottom: 8px;
+        }
+
+        .badges-group {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+        }
+
+        .status-badge {
+          background: #F9FAFB;
+          color: rgb(21, 41, 109);
+          padding: 4px 8px;
+          border-radius: 7px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+
+        .viewed-badge {
+          background: white;
+          border: 1px solid #E5E7EB;
+          color: rgb(21, 41, 109);
+          padding: 4px 8px;
+          border-radius: 7px;
+          font-size: 12px;
+          font-weight: 500;
+          display: flex;
+          align-items: center;
+          gap: 2px;
+        }
+
+        .viewed-badge svg {
+          width: 12px;
+          height: 12px;
+        }
+
+        .favorite-heart {
+          width: 16px;
+          height: 16px;
+          color: #CF0D0D;
+          cursor: pointer;
+          transition: color 200ms ease-in-out;
+          margin-left: 4px;
+        }
+
+        .keeper-message {
+          font-size: 12px;
+          color: #6B7280;
+          margin-left: 4px;
+          animation: pulse 2s ease-in-out;
+        }
+
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.5; }
+        }
+
+        .vehicle-title {
+          font-size: 16px;
+          font-weight: 600;
+          color: #111827;
+          line-height: 1.2;
+          margin-bottom: 8px;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+
+        @media (max-width: 640px) {
+          .vehicle-title {
+            font-size: 18px;
+          }
+        }
+
+        .details-bar {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          margin-bottom: 12px;
+          padding-bottom: 8px;
+          border-bottom: 1px solid #E5E7EB;
+        }
+
+        .detail-group {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+
+        .detail-group svg {
+          width: 16px;
+          height: 16px;
+          color: #6B7280;
+        }
+
+        .detail-text {
+          font-size: 12px;
+          font-weight: 500;
+          color: #000000;
+        }
+
+        @media (max-width: 640px) {
+          .detail-text {
+            font-size: 14px;
+          }
+        }
+
+        .pricing-section {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 24px;
+          margin-bottom: 4px;
+          min-height: 48px;
+          flex: 1;
+        }
+
+        .price-group {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+        }
+
+        .price-label {
+          font-size: 12px;
+          font-weight: 400;
+          color: #6B7280;
+          margin-bottom: 2px;
+        }
+
+        .price-value {
+          font-size: 16px;
+          font-weight: 700;
+        }
+
+        .price-value.sale {
+          color: #000000;
+        }
+
+        .price-value.payment {
+          color: #CF0D0D;
+        }
+
+        .price-divider {
+          width: 1px;
+          height: 48px;
+          background: #E5E7EB;
+        }
+
+        @media (max-width: 640px) {
+          .price-label {
+            font-size: 14px;
+          }
+          .price-value {
+            font-size: 18px;
+          }
+        }
+
+        .dealer-section {
+          background: #F9FAFB;
+          border-top: 1px solid #F3F4F6;
+          padding: 12px 8px;
+          display: flex;
+          justify-content: space-between;
+          align-items: start;
+          margin-top: auto;
+        }
+
+        .dealer-info {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+          min-width: 0;
+        }
+
+        .dealer-name {
+          font-size: 12px;
+          font-weight: 500;
+          color: #111827;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .dealer-location {
+          font-size: 12px;
+          font-weight: 400;
+          color: #000000;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+
+        .contact-info {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-end;
+          flex-shrink: 0;
+        }
+
+        .call-dealer {
+          font-size: 12px;
+          font-weight: 500;
+          color: #000000;
+          cursor: pointer;
+          transition: color 200ms ease-in-out;
+        }
+
+        .call-dealer:hover {
+          color: #6B7280;
+        }
+
+        .dealer-phone {
+          font-size: 12px;
+          font-weight: 400;
+          color: #000000;
+        }
+
+        @media (max-width: 640px) {
+          .featured-badge,
+          .image-counter,
+          .status-badge,
+          .viewed-badge,
+          .detail-text,
+          .price-label,
+          .dealer-name,
+          .dealer-location,
+          .call-dealer,
+          .dealer-phone {
+            font-size: 14px;
+          }
+          .price-value {
+            font-size: 18px;
+          }
         }
       `}</style>
       
-      <div className="bg-white border border-gray-200 rounded-lg lg:rounded-xl overflow-hidden hover:shadow-lg transition-shadow vehicle-card flex flex-col h-full">
-        <div className="relative">
+      <div className="vehicle-card">
+        <div className="image-container">
           <img 
             src={vehicle.images ? vehicle.images[currentIndex] : vehicle.image} 
             alt={vehicle.title}
-            className="w-full object-cover"
-            style={{ height: '200px' }}
+            className="vehicle-image"
           />
+          
           {vehicle.featured && (
-            <div className="absolute top-3 left-3 bg-red-600 text-white px-3 py-1.5 rounded-full carzino-featured-badge font-medium">
+            <div className="featured-badge">
               Featured!
             </div>
           )}
@@ -73,124 +396,116 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             <>
               <button
                 onClick={prevImage}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-all"
+                className="nav-arrow nav-arrow-left"
+                aria-label="Previous image"
               >
-                <ChevronLeft className="w-5 h-5 text-white" />
+                <ChevronLeft />
               </button>
               <button
                 onClick={nextImage}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-green-500 hover:bg-green-600 text-white p-2 rounded-full transition-all"
+                className="nav-arrow nav-arrow-right"
+                aria-label="Next image"
               >
-                <ChevronRight className="w-5 h-5 text-white" />
+                <ChevronRight />
               </button>
-              <div className="absolute bottom-3 right-3 bg-black bg-opacity-60 text-white px-2 py-1 rounded-full carzino-image-counter">
+              <div className="image-counter">
                 {currentIndex + 1}/{totalImages}
               </div>
             </>
           )}
         </div>
 
-        <div className="p-3 flex-1 flex flex-col">
-          <div className="flex gap-2 mb-2 items-center justify-between">
-            <div className="flex gap-2 items-center">
+        <div className="content-section">
+          <div className="badges-row">
+            <div className="badges-group">
               {vehicle.badges?.map((badge, index) => (
-                <span 
-                  key={index}
-                  className="carzino-badge-label px-2 py-1 rounded font-medium"
-                  style={{ borderRadius: '7px', backgroundColor: '#f9fafb', color: 'rgb(21, 41, 109)' }}
-                >
+                <span key={index} className="status-badge">
                   {badge}
                 </span>
               ))}
               {vehicle.viewed && (
-                <span 
-                  className="carzino-badge-label px-2 py-1 rounded font-medium inline-flex items-center"
-                  style={{ borderRadius: '7px', backgroundColor: 'white', border: '1px solid #e5e7eb', color: 'rgb(21, 41, 109)' }}
-                >
-                  Viewed <Check className="w-3 h-3 ml-0.5" style={{ color: 'rgb(21, 41, 109)' }} />
+                <span className="viewed-badge">
+                  Viewed <Check />
                 </span>
               )}
+            </div>
+            <div className="badges-group">
               <Heart 
-                className={`w-4 h-4 cursor-pointer transition-colors ml-1 ${
+                className={`favorite-heart ${
                   favorites[vehicle.id] 
-                    ? 'text-red-600 fill-red-600' 
-                    : 'text-red-600 stroke-red-600 fill-white'
+                    ? 'fill-current' 
+                    : 'fill-white stroke-current'
                 }`}
                 onClick={toggleFavorite}
+                aria-label={favorites[vehicle.id] ? 'Remove from favorites' : 'Add to favorites'}
               />
               {keeperMessage && (
-                <span className="text-xs text-gray-600 ml-1 animate-pulse">
+                <span className="keeper-message">
                   That's a Keeper!
                 </span>
               )}
             </div>
           </div>
 
-          <h3 className="carzino-vehicle-title text-gray-900 mb-2 leading-tight overflow-hidden whitespace-nowrap text-ellipsis">
-            ⚠️ TEST CHANGE ⚠️ {vehicle.title}
+          <h3 className="vehicle-title">
+            {vehicle.title}
           </h3>
 
-          <div className="flex items-center justify-start mb-3 pb-2 border-b border-gray-200 carzino-vehicle-details">
-            <div className="flex items-center gap-1 mr-4">
-              <Gauge className="w-4 h-4 text-gray-600" />
-              <span className="text-black font-medium">{vehicle.mileage} miles</span>
+          <div className="details-bar">
+            <div className="detail-group">
+              <Gauge />
+              <span className="detail-text">{vehicle.mileage} miles</span>
             </div>
-            <div className="flex items-center gap-1 mr-4">
-              <Settings className="w-4 h-4 text-gray-600" />
-              <span className="text-black font-medium">{vehicle.transmission}</span>
+            <div className="detail-group">
+              <Settings />
+              <span className="detail-text">{vehicle.transmission}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <div className="w-4 h-4 text-gray-600 flex items-center justify-center">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
-                  <rect x="3" y="4" width="18" height="16" rx="2"/>
-                  <path d="M7 4v16"/>
-                </svg>
-              </div>
-              <span className="text-black font-medium">{vehicle.doors}</span>
+            <div className="detail-group">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                <path d="M7 4v16"/>
+              </svg>
+              <span className="detail-text">{vehicle.doors}</span>
             </div>
           </div>
 
-          <div className="flex justify-center items-start gap-6 mb-1 flex-1">
+          <div className="pricing-section">
             {vehicle.salePrice ? (
               <>
-                <div className="text-center">
-                  <div className="carzino-price-label text-gray-500 mb-0">Sale Price</div>
-                  <div className="carzino-price-value text-gray-900">{vehicle.salePrice}</div>
+                <div className="price-group">
+                  <div className="price-label">Sale Price</div>
+                  <div className="price-value sale">{vehicle.salePrice}</div>
                 </div>
                 {vehicle.payment && (
                   <>
-                    <div className="w-px h-12 bg-gray-200"></div>
-                    <div className="text-center">
-                      <div className="carzino-price-label text-gray-500 mb-0">Payments</div>
-                      <div className="carzino-price-value text-red-600">
+                    <div className="price-divider"></div>
+                    <div className="price-group">
+                      <div className="price-label">Payments</div>
+                      <div className="price-value payment">
                         {vehicle.payment}
-                        <span className="text-xs text-black font-normal">/mo*</span>
+                        <span style={{fontSize: '12px', fontWeight: '400', color: '#000000'}}>/mo*</span>
                       </div>
                     </div>
                   </>
                 )}
               </>
             ) : (
-              <div className="text-center">
-                <div className="carzino-price-label text-gray-500 mb-0">No Sale Price Listed</div>
-                <div className="carzino-price-value text-gray-900">Call For Pricing</div>
+              <div className="price-group">
+                <div className="price-label">No Sale Price Listed</div>
+                <div className="price-value sale">Call For Pricing</div>
               </div>
             )}
           </div>
         </div>
 
-        <div className="border-t border-gray-100 px-3 py-2 mt-auto" style={{ backgroundColor: '#f9fafb' }}>
-          <div className="flex justify-between items-start">
-            <div className="flex-1 min-w-0">
-              <div className="text-gray-900 truncate" style={{ fontSize: '12px', fontWeight: 500 }}>{vehicle.dealer}</div>
-              <div className="text-black font-medium truncate" style={{ fontSize: '12px' }}>{vehicle.location}</div>
-            </div>
-            <div className="text-right flex-shrink-0">
-              <div className="text-black hover:text-gray-600 cursor-pointer" style={{ fontSize: '12px', fontWeight: 500 }}>
-                Call Dealer
-              </div>
-              <div className="text-black font-medium" style={{ fontSize: '12px' }}>{vehicle.phone}</div>
-            </div>
+        <div className="dealer-section">
+          <div className="dealer-info">
+            <div className="dealer-name">{vehicle.dealer}</div>
+            <div className="dealer-location">{vehicle.location}</div>
+          </div>
+          <div className="contact-info">
+            <div className="call-dealer">Call Dealer</div>
+            <div className="dealer-phone">{vehicle.phone}</div>
           </div>
         </div>
       </div>
