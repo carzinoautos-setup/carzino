@@ -84,9 +84,8 @@ export const fetchFilterOptions = async () => {
     const years = new Map();
     
     allProducts.results.forEach(product => {
-      // Extract data from product attributes or meta_data
+      // Extract data from product attributes
       const attributes = product.attributes || [];
-      const metaData = product.meta_data || [];
       
       // Look for make in attributes or extract from title
       const makeAttr = attributes.find(attr => 
