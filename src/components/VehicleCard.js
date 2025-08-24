@@ -35,6 +35,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           background: #FFFFFF;
           border: 1px solid #E5E7EB;
           border-radius: 12px;
+          overflow: hidden;
           transition: box-shadow 200ms ease-in-out;
         }
 
