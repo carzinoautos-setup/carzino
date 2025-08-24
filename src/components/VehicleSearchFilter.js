@@ -124,7 +124,8 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
         <select
           value={filters.termLength || '72'}
           onChange={(e) => onChange('termLength', e.target.value, true)}
-          className="carzino-select w-full px-2 py-4 border border-gray-300 rounded focus:outline-none"
+          className="carzino-select w-full px-2 py-8 border border-gray-300 rounded focus:outline-none"
+          style={{ height: '55px' }}
         >
           <option value="36">36 months</option>
           <option value="48">48 months</option>
