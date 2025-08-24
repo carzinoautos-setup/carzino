@@ -503,12 +503,12 @@ const VehicleSearchFilter = ({
 
         {/* Applied Filters */}
         {activeFilterCount > 0 && (
-          <div className="mb-4 pb-4 border-b border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="carzino-filter-title">Applied Filters</h3>
-              <button 
+          <div className="mb-6 pb-6 border-b border-gray-200 bg-red-50 rounded-lg p-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="carzino-filter-title text-gray-900 font-semibold">Applied Filters</h3>
+              <button
                 onClick={clearAllFilters}
-                className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-red-700"
+                className="bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-red-700 transition-colors shadow-sm"
                 style={{ backgroundColor: '#dc2626' }}
               >
                 Clear All
