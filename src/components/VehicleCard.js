@@ -53,6 +53,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           width: 100%;
           height: 200px;
           overflow: hidden;
+          border-radius: 12px 12px 0 0;
         }
 
         .vehicle-image {
