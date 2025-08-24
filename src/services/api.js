@@ -7,6 +7,15 @@ const WC_API_BASE = `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3`;
 const WC_CONSUMER_KEY = process.env.REACT_APP_WC_CONSUMER_KEY;
 const WC_CONSUMER_SECRET = process.env.REACT_APP_WC_CONSUMER_SECRET;
 
+// Validate environment variables
+console.log('🔧 Environment Check:', {
+  siteUrl: process.env.REACT_APP_WP_SITE_URL,
+  hasConsumerKey: !!WC_CONSUMER_KEY,
+  hasConsumerSecret: !!WC_CONSUMER_SECRET,
+  keyLength: WC_CONSUMER_KEY?.length || 0,
+  secretLength: WC_CONSUMER_SECRET?.length || 0
+});
+
 // Simple cache system for faster loading
 const cache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
