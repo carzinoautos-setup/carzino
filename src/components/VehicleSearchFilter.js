@@ -500,13 +500,13 @@ const VehicleSearchFilter = ({
           </div>
           <div className="flex flex-wrap gap-2">
             {/* Show active filter pills based on your images */}
-            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <span className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
               New
             </span>
-            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <span className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
               Audi
             </span>
-            <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
+            <span className="bg-red-600 text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1" style={{ backgroundColor: '#dc2626' }}>
               Featured
             </span>
           </div>
@@ -562,7 +562,7 @@ const VehicleSearchFilter = ({
           {allMakes.length > 8 && (
             <button
               onClick={() => setShowMoreMakes(!showMoreMakes)}
-              className="text-red-600 hover:text-red-700 text-sm mt-2 font-medium"
+              className="text-red-600 hover:text-red-700 text-sm mt-3 font-medium underline"
             >
               {showMoreMakes ? 'Show Less' : 'Show More'}
             </button>
