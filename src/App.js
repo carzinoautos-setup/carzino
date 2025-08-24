@@ -54,7 +54,7 @@ function App() {
   // Pagination state
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(1);
-  const resultsPerPage = 25;
+  const resultsPerPage = 12; // Reduced from 25 to 12 for faster loading
 
   // Check if mobile
   useEffect(() => {
