@@ -227,6 +227,75 @@ function App() {
     setIsMobileFiltersOpen(false);
   };
 
+  // Handle favorites toggle
+  const handleToggleFavorites = (show) => {
+    if (typeof show === 'boolean') {
+      setShowingFavorites(show);
+    } else {
+      setShowingFavorites(!showingFavorites);
+    }
+    setCurrentPage(1);
+  };
+
+  // Handle filter removal
+  const handleRemoveFilter = (category, value) => {
+    const newFilters = { ...filters };
+
+    if (category === 'price') {
+      newFilters.priceMin = '';
+      newFilters.priceMax = '';
+    } else if (category === 'payment') {
+      newFilters.paymentMin = '';
+      newFilters.paymentMax = '';
+    } else if (Array.isArray(newFilters[category])) {
+      newFilters[category] = newFilters[category].filter(item => item !== value);
+    } else {
+      newFilters[category] = '';
+    }
+
+    setFilters(newFilters);
+    setCurrentPage(1);
+  };
+
+  // Handle clear all filters
+  const handleClearAllFilters = () => {
+    setFilters({
+      condition: [],
+      make: [],
+      model: [],
+      trim: [],
+      vehicleType: [],
+      bodyType: [],
+      driveType: [],
+      mileage: '',
+      exteriorColor: [],
+      interiorColor: [],
+      transmissionSpeed: [],
+      sellerType: [],
+      dealer: [],
+      state: [],
+      city: [],
+      zipCodeFilter: [],
+      priceMin: '',
+      priceMax: '',
+      paymentMin: '',
+      paymentMax: '',
+      zipCode: filters.zipCode, // Keep location settings
+      radius: filters.radius,
+      termLength: filters.termLength,
+      interestRate: filters.interestRate,
+      downPayment: filters.downPayment
+    });
+    setCurrentPage(1);
+  };
+
+  // Handle search
+  const handleSearch = (query) => {
+    // In a real app, this would trigger a search API call
+    console.log('Searching for:', query);
+    setCurrentPage(1);
+  };
+
   // Get current page vehicles
   const startIndex = (currentPage - 1) * resultsPerPage;
   const endIndex = startIndex + resultsPerPage;
