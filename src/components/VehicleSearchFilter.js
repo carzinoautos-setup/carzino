@@ -4,21 +4,21 @@ import { Search, ChevronDown, Check, X } from 'lucide-react';
 // Filter Section Components
 const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) => {
   return (
-    <div className="border-b border-gray-200 pb-3 mb-3">
+    <div className="mb-4">
       <div
-        className="flex items-center justify-between cursor-pointer py-2"
+        className="flex items-center justify-between cursor-pointer py-1"
         onClick={onToggle}
       >
-        <h3 className="text-base font-normal text-gray-900 pointer-events-none flex-1">{title}</h3>
+        <h3 className="text-sm font-normal text-gray-900 pointer-events-none flex-1">{title}</h3>
         <ChevronDown
-          className={`w-4 h-4 text-red-600 transition-transform duration-200 ${
+          className={`w-3 h-3 text-red-600 transition-transform duration-200 ${
             !isCollapsed ? 'rotate-180' : 'rotate-0'
           }`}
           style={{ color: '#dc2626' }}
         />
       </div>
       {!isCollapsed && (
-        <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+        <div className="mt-1 ml-2" onClick={(e) => e.stopPropagation()}>
           {children}
         </div>
       )}
