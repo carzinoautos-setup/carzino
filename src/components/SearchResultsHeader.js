@@ -102,7 +102,7 @@ const SearchResultsHeader = ({
               }`}
               title="Grid view"
             >
-              <Grid3X3 className="w-4 h-4" />
+              <Grid className="w-4 h-4" />
             </button>
             <button
               onClick={() => onViewModeChange('list')}
