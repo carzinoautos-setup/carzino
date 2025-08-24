@@ -316,8 +316,11 @@ export const testAPIConnection = async () => {
   console.log('🔗 Testing API connection to:', WC_API_BASE);
   console.log('🔑 Using credentials:', {
     key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
-    secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
+    secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing',
+    fullKey: WC_CONSUMER_KEY,
+    fullSecret: WC_CONSUMER_SECRET
   });
+  console.log('🌐 Full API URL will be:', `${WC_API_BASE}/products?per_page=1`);
 
   try {
     const response = await fetch(`${WC_API_BASE}/products?per_page=1`, {
