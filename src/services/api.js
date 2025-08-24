@@ -7,6 +7,29 @@ const WC_API_BASE = `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3`;
 const WC_CONSUMER_KEY = process.env.REACT_APP_WC_CONSUMER_KEY;
 const WC_CONSUMER_SECRET = process.env.REACT_APP_WC_CONSUMER_SECRET;
 
+// Simple cache system for faster loading
+const cache = new Map();
+const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+const getCacheKey = (url, params) => {
+  return `${url}?${JSON.stringify(params)}`;
+};
+
+const getFromCache = (key) => {
+  const cached = cache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+    return cached.data;
+  }
+  return null;
+};
+
+const setCache = (key, data) => {
+  cache.set(key, {
+    data,
+    timestamp: Date.now()
+  });
+};
+
 // Create authorization header for WooCommerce API
 const getAuthHeaders = () => {
   const auth = btoa(`${WC_CONSUMER_KEY}:${WC_CONSUMER_SECRET}`);
