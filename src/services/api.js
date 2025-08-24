@@ -124,7 +124,7 @@ export const fetchVehicles = async (params = {}) => {
 
     const products = await response.json();
     
-    return {
+    const result = {
       results: products.map(product => ({
         id: product.id,
         title: product.name,
@@ -151,6 +151,11 @@ export const fetchVehicles = async (params = {}) => {
       total: parseInt(response.headers.get('X-WP-Total') || '0'),
       totalPages: parseInt(response.headers.get('X-WP-TotalPages') || '1'),
     };
+
+    // Cache the result for faster future loads
+    setCache(cacheKey, result);
+
+    return result;
   } catch (error) {
     console.error('Error fetching vehicles:', error);
 
