@@ -578,7 +578,7 @@ const VehicleSearchFilter = ({
             onToggle={() => toggleFilter('model')}
             count={getFilterCount('model')}
           >
-            <div className="space-y-1">
+            <div className="space-y-2">
               {displayedModels.map((model) => (
                 <CheckboxOption
                   key={model.name}
@@ -664,7 +664,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('vehicleType')}
           count={getFilterCount('vehicleType')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             <CheckboxOption
               label="Convertible"
               count={196}
@@ -739,7 +739,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('driveType')}
           count={getFilterCount('driveType')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             <CheckboxOption
               label="AWD (4WD)"
               count={18943}
@@ -774,7 +774,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('transmissionSpeed')}
           count={getFilterCount('transmissionSpeed')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             <CheckboxOption
               label="4-Speed Automatic"
               count={1245}
@@ -809,7 +809,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('exteriorColor')}
           count={getFilterCount('exteriorColor')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             <ColorSwatch
               color="#FFFFFF"
               name="White"
@@ -868,7 +868,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('interiorColor')}
           count={getFilterCount('interiorColor')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             <ColorSwatch
               color="#000000"
               name="Black"
@@ -911,7 +911,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('dealer')}
           count={getFilterCount('dealer')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             <CheckboxOption
               label="Bayside Auto Sales"
               count={234}
@@ -938,7 +938,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('state')}
           count={getFilterCount('state')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             <CheckboxOption
               label="Washington"
               count={12456}
@@ -965,7 +965,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('city')}
           count={getFilterCount('city')}
         >
-          <div className="space-y-1">
+          <div className="space-y-2">
             <CheckboxOption
               label="Seattle"
               count={4567}
