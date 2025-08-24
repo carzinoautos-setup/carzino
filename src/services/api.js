@@ -103,6 +103,15 @@ export const fetchVehicles = async (params = {}) => {
       ...params
     });
 
+    // Check cache first for faster loading
+    const cacheKey = getCacheKey(`${WC_API_BASE}/products`, params);
+    const cachedData = getFromCache(cacheKey);
+    if (cachedData) {
+      console.log('📦 Loading vehicles from cache (faster!)');
+      return cachedData;
+    }
+
+    console.log('🔄 Fetching fresh vehicle data from API...');
     const response = await fetch(`${WC_API_BASE}/products?${queryParams}`, {
       method: 'GET',
       headers: getAuthHeaders(),
