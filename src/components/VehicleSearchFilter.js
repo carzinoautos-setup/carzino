@@ -4,7 +4,7 @@ import { Search, ChevronDown, Check, X } from 'lucide-react';
 // Filter Section Components
 const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) => {
   return (
-    <div className="mb-3">
+    <div className="py-6 border-b border-gray-200">
       <div
         className="flex items-center justify-between cursor-pointer py-3 hover:bg-gray-50 -mx-1 px-1 rounded"
         onClick={onToggle}
