@@ -623,13 +623,13 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Condition */}
-        <FilterSection 
+        <FilterSection
           title="Condition"
           isCollapsed={collapsedFilters.condition}
           onToggle={() => toggleFilter('condition')}
           count={getFilterCount('condition')}
         >
-          <div className="space-y-1">
+          <div className="space-y-3">
             <CheckboxOption
               label="New"
               count={125989}
