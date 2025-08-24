@@ -163,7 +163,6 @@ function App() {
 
   const resultsPerPage = 25;
   const totalResults = SAMPLE_VEHICLES.length;
-  const totalPages = Math.ceil(totalResults / resultsPerPage);
 
   // Check if mobile
   useEffect(() => {
