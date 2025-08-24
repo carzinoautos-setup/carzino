@@ -1,5 +1,5 @@
 import React, { useState, memo, useCallback, useMemo } from 'react';
-import { Search, ChevronDown, Check, X } from 'lucide-react';
+import { Search, ChevronDown, X } from 'lucide-react';
 
 // Filter Section Components
 const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) => {
@@ -201,8 +201,8 @@ const VehicleSearchFilter = ({
 }) => {
   // Local state
   const [showMoreMakes, setShowMoreMakes] = useState(false);
-  const [showMoreModels, setShowMoreModels] = useState(false);
-  const [showMoreTrims, setShowMoreTrims] = useState(false);
+  const [showMoreModels] = useState(false);
+  const [showMoreTrims] = useState(false);
   
   // Collapsed sections state (default to collapsed to match your uploaded image)
   const [collapsedFilters, setCollapsedFilters] = useState({
@@ -353,36 +353,11 @@ const VehicleSearchFilter = ({
     { name: "Sport", count: 134 }
   ];
 
-  const bodyTypes = filterOptions.bodyTypes || [
-    { name: "Convertible", count: 196 },
-    { name: "Coupe", count: 419 },
-    { name: "Hatchback", count: 346 },
-    { name: "Sedan", count: 1698 },
-    { name: "SUV / Crossover", count: 3405 },
-    { name: "Truck", count: 2217 },
-    { name: "Van / Minivan", count: 203 },
-    { name: "Wagon", count: 43 }
-  ];
 
-  const exteriorColors = filterOptions.exteriorColors || [
-    { name: "White", count: 9427, hex: "#FFFFFF" },
-    { name: "Black", count: 8363, hex: "#000000" },
-    { name: "Gray", count: 7502, hex: "#808080" },
-    { name: "Silver", count: 5093, hex: "#C0C0C0" },
-    { name: "Blue", count: 4266, hex: "#0066CC" },
-    { name: "Red", count: 3436, hex: "#CC0000" }
-  ];
 
-  const interiorColors = filterOptions.interiorColors || [
-    { name: "Black", count: 12363, hex: "#000000" },
-    { name: "Gray", count: 8502, hex: "#808080" },
-    { name: "Beige", count: 3160, hex: "#F5F5DC" },
-    { name: "Brown", count: 2353, hex: "#8B4513" }
-  ];
 
   const displayedMakes = showMoreMakes ? allMakes : allMakes.slice(0, 8);
   const displayedModels = showMoreModels ? allModels : allModels.slice(0, 8);
-  const displayedTrims = showMoreTrims ? allTrims : allTrims.slice(0, 8);
 
   // Get filter counts
   const getFilterCount = useCallback((category) => {
@@ -432,8 +407,8 @@ const VehicleSearchFilter = ({
 
       // Handle price range
       if (key === 'priceMin' || key === 'priceMax') {
-        if (key === 'priceMin' && (filters.priceMin && filters.priceMin.toString().trim() !== '' ||
-            filters.priceMax && filters.priceMax.toString().trim() !== '')) {
+        if (key === 'priceMin' && ((filters.priceMin && filters.priceMin.toString().trim() !== '') ||
+            (filters.priceMax && filters.priceMax.toString().trim() !== ''))) {
           return count + 1;
         }
         if (key === 'priceMax') {
@@ -443,8 +418,8 @@ const VehicleSearchFilter = ({
 
       // Handle payment range
       if (key === 'paymentMin' || key === 'paymentMax') {
-        if (key === 'paymentMin' && (filters.paymentMin && filters.paymentMin.toString().trim() !== '' ||
-            filters.paymentMax && filters.paymentMax.toString().trim() !== '')) {
+        if (key === 'paymentMin' && ((filters.paymentMin && filters.paymentMin.toString().trim() !== '') ||
+            (filters.paymentMax && filters.paymentMax.toString().trim() !== ''))) {
           return count + 1;
         }
         if (key === 'paymentMax') {
