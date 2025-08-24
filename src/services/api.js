@@ -279,6 +279,42 @@ export const fetchFilterOptions = async () => {
           }
         });
       }
+
+      // Extract TRANSMISSION from ACF field 'transmission'
+      const transmission = getACFValue('transmission') || getAttributeValue('transmission');
+      if (transmission) {
+        transmissions.set(transmission, (transmissions.get(transmission) || 0) + 1);
+      }
+
+      // Extract DRIVETRAIN from ACF field 'drivetrain'
+      const drivetrain = getACFValue('drivetrain') || getAttributeValue('drivetrain');
+      if (drivetrain) {
+        drivetrains.set(drivetrain, (drivetrains.get(drivetrain) || 0) + 1);
+      }
+
+      // Extract FUEL TYPE from ACF field 'fuel_type'
+      const fuelType = getACFValue('fuel_type') || getAttributeValue('fuel');
+      if (fuelType) {
+        fuelTypes.set(fuelType, (fuelTypes.get(fuelType) || 0) + 1);
+      }
+
+      // Extract TRIM from ACF field 'trim'
+      const trim = getACFValue('trim');
+      if (trim) {
+        trims.set(trim, (trims.get(trim) || 0) + 1);
+      }
+
+      // Extract EXTERIOR COLOR from ACF field 'exterior_color'
+      const exteriorColor = getACFValue('exterior_color');
+      if (exteriorColor) {
+        exteriorColors.set(exteriorColor, (exteriorColors.get(exteriorColor) || 0) + 1);
+      }
+
+      // Extract INTERIOR COLOR from ACF field 'interior_color'
+      const interiorColor = getACFValue('interior_color');
+      if (interiorColor) {
+        interiorColors.set(interiorColor, (interiorColors.get(interiorColor) || 0) + 1);
+      }
     });
     
     return {
