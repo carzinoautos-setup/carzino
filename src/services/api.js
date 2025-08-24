@@ -280,6 +280,7 @@ export const testAPIConnection = async () => {
     const response = await fetch(`${WC_API_BASE}/products?per_page=1`, {
       method: 'GET',
       headers: getAuthHeaders(),
+      mode: 'cors', // Explicitly set CORS mode
     });
     
     if (response.ok) {
