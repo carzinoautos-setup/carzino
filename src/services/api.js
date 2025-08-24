@@ -274,8 +274,14 @@ export const fetchProductACF = async (productId) => {
   }
 };
 
-// Test API connection
+// Test API connection with detailed debugging
 export const testAPIConnection = async () => {
+  console.log('🔗 Testing API connection to:', WC_API_BASE);
+  console.log('🔑 Using credentials:', {
+    key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
+    secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
+  });
+
   try {
     const response = await fetch(`${WC_API_BASE}/products?per_page=1`, {
       method: 'GET',
