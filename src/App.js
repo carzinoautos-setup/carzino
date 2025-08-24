@@ -361,7 +361,7 @@ function App() {
           />
 
           {/* Vehicle Grid */}
-          <div className={`vehicle-grid ${viewMode === 'grid' ? 'grid-view' : 'list-view'} p-4`}>
+          <div className={`vehicle-grid ${viewMode === 'grid' ? 'grid-view' : 'list-view'} ${isMobile ? 'p-2' : 'p-4'}`}>
             {currentVehicles.map((vehicle) => (
               <VehicleCard
                 key={vehicle.id}
