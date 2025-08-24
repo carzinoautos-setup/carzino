@@ -578,9 +578,9 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Distance */}
-        <div className="mb-4 pb-4 border-b border-gray-200">
-          <label className="block mb-2 text-base font-normal text-gray-900">Distance</label>
-          <div className="space-y-2">
+        <div className="mb-4">
+          <label className="block mb-2 text-sm font-normal text-gray-900">Distance</label>
+          <div className="space-y-2 ml-2">
             <input
               type="text"
               placeholder="ZIP Code"
