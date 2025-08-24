@@ -532,7 +532,7 @@ const VehicleSearchFilter = ({
               Clear All
             </button>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 max-w-full overflow-hidden">
             {/* Show dynamic active filter pills */}
             {(() => {
               const filterPills = [];
