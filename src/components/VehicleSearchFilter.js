@@ -501,62 +501,33 @@ const VehicleSearchFilter = ({
           </div>
           <div className="flex flex-wrap gap-2">
             {/* Show dynamic active filter pills */}
-            {Object.entries(filters).map(([category, value]) => {
-              if (category === 'radius' || category === 'termLength' || category === 'interestRate' || category === 'downPayment' || category === 'zipCode') {
-                return null;
-              }
+            {(() => {
+              const filterPills = [];
 
-              if (Array.isArray(value) && value.length > 0) {
-                return value.map((item, index) => (
-                  <span key={`${category}-${index}`} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
-                    {item}
-                    <button
-                      onClick={() => removeAppliedFilter(category, item)}
-                      className="ml-1 text-white hover:text-gray-300"
-                    >
-                      ×
-                    </button>
-                  </span>
-                ));
-              } else if (value && value !== '') {
-                if (category === 'priceMin' || category === 'priceMax') {
-                  const existing = document.querySelector(`[data-filter="price"]`);
-                  if (!existing && (filters.priceMin || filters.priceMax)) {
-                    const priceRange = [];
-                    if (filters.priceMin) priceRange.push(`$${filters.priceMin}+`);
-                    if (filters.priceMax) priceRange.push(`$${filters.priceMax}-`);
-                    return (
-                      <span key="price" data-filter="price" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
-                        {priceRange.join(' to ')}
+              // Handle array-based filters
+              Object.entries(filters).forEach(([category, value]) => {
+                if (category === 'radius' || category === 'termLength' || category === 'interestRate' ||
+                    category === 'downPayment' || category === 'zipCode' || category === 'priceMin' ||
+                    category === 'priceMax' || category === 'paymentMin' || category === 'paymentMax') {
+                  return;
+                }
+
+                if (Array.isArray(value) && value.length > 0) {
+                  value.forEach((item, index) => {
+                    filterPills.push(
+                      <span key={`${category}-${index}`} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
+                        {item}
                         <button
-                          onClick={() => removeAppliedFilter('priceMin', '')}
+                          onClick={() => removeAppliedFilter(category, item)}
                           className="ml-1 text-white hover:text-gray-300"
                         >
                           ×
                         </button>
                       </span>
                     );
-                  }
-                } else if (category === 'paymentMin' || category === 'paymentMax') {
-                  const existing = document.querySelector(`[data-filter="payment"]`);
-                  if (!existing && (filters.paymentMin || filters.paymentMax)) {
-                    const paymentRange = [];
-                    if (filters.paymentMin) paymentRange.push(`$${filters.paymentMin}+`);
-                    if (filters.paymentMax) paymentRange.push(`$${filters.paymentMax}-`);
-                    return (
-                      <span key="payment" data-filter="payment" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
-                        {paymentRange.join(' to ')}
-                        <button
-                          onClick={() => removeAppliedFilter('paymentMin', '')}
-                          className="ml-1 text-white hover:text-gray-300"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    );
-                  }
-                } else {
-                  return (
+                  });
+                } else if (value && value !== '') {
+                  filterPills.push(
                     <span key={category} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
                       {value}
                       <button
@@ -568,9 +539,50 @@ const VehicleSearchFilter = ({
                     </span>
                   );
                 }
+              });
+
+              // Handle price range
+              if (filters.priceMin || filters.priceMax) {
+                const priceRange = [];
+                if (filters.priceMin) priceRange.push(`$${filters.priceMin}+`);
+                if (filters.priceMax) priceRange.push(`$${filters.priceMax}-`);
+                if (priceRange.length > 0) {
+                  filterPills.push(
+                    <span key="price" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
+                      {priceRange.join(' to ')}
+                      <button
+                        onClick={() => removeAppliedFilter('priceMin', '')}
+                        className="ml-1 text-white hover:text-gray-300"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                }
               }
-              return null;
-            }).filter(Boolean)}
+
+              // Handle payment range
+              if (filters.paymentMin || filters.paymentMax) {
+                const paymentRange = [];
+                if (filters.paymentMin) paymentRange.push(`$${filters.paymentMin}+`);
+                if (filters.paymentMax) paymentRange.push(`$${filters.paymentMax}-`);
+                if (paymentRange.length > 0) {
+                  filterPills.push(
+                    <span key="payment" className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
+                      {paymentRange.join(' to ')}
+                      <button
+                        onClick={() => removeAppliedFilter('paymentMin', '')}
+                        className="ml-1 text-white hover:text-gray-300"
+                      >
+                        ×
+                      </button>
+                    </span>
+                  );
+                }
+              }
+
+              return filterPills;
+            })()}
           </div>
         </div>
 
