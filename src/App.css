@@ -342,6 +342,13 @@ body {
   gap: var(--spacing-xl);
 }
 
+@media (max-width: 1024px) {
+  .main-container {
+    flex-direction: column;
+    gap: 0;
+  }
+}
+
 /* ============================================
    VEHICLE GRID
 ============================================ */
@@ -349,12 +356,14 @@ body {
 .vehicle-grid {
   display: grid;
   gap: var(--spacing-xl);
+  width: 100%;
 }
 
 /* Grid View */
 .vehicle-grid.grid-view {
   grid-template-columns: 1fr;
   gap: var(--spacing-xl);
+  justify-items: center;
 }
 
 @media (min-width: 640px) {
@@ -375,6 +384,7 @@ body {
 .vehicle-grid.list-view {
   grid-template-columns: 1fr;
   gap: var(--spacing-lg);
+  justify-items: center;
 }
 
 .vehicle-card {
@@ -385,12 +395,26 @@ body {
 @media (max-width: 640px) {
   .vehicle-card {
     max-width: 100%;
+    width: 100%;
+    margin: 0;
   }
-  
+
+  .vehicle-grid {
+    padding: 0 !important;
+  }
+
+  .vehicle-grid.grid-view {
+    justify-items: stretch;
+  }
+
+  .vehicle-grid.list-view {
+    justify-items: stretch;
+  }
+
   .app-header {
     padding: 1.5rem 1rem;
   }
-  
+
   .app-header h1 {
     font-size: 2rem;
   }
