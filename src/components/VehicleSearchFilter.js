@@ -492,19 +492,28 @@ const VehicleSearchFilter = ({
         </div>
 
         {/* Applied Filters */}
-        {activeFilterCount > 0 && (
-          <div className="mb-4">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="text-sm font-normal text-gray-900">Applied Filters</h3>
-              <button
-                onClick={clearAllFilters}
-                className="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-red-700"
-                style={{ backgroundColor: '#dc2626' }}
-              >
-                Clear All
-              </button>
-            </div>
-            <div className="flex flex-wrap gap-2">
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-2">
+            <h3 className="text-sm font-normal text-gray-900">Applied Filters</h3>
+            <button
+              onClick={clearAllFilters}
+              className="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-red-700"
+              style={{ backgroundColor: '#dc2626' }}
+            >
+              Clear All
+            </button>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {/* Show sample pills for demonstration matching your image */}
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium">
+              New
+            </span>
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium">
+              Audi
+            </span>
+            <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+              Featured
+            </span>
               {/* Applied filters display */}
               {Object.entries(filters).map(([key, value]) => {
                 if (!value || value.length === 0 || key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') {
