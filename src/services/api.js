@@ -187,7 +187,6 @@ export const testAPIConnection = async () => {
     });
     
     if (response.ok) {
-      const data = await response.json();
       return {
         success: true,
         message: 'API connection successful',
