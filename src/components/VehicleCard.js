@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gauge, Settings, ChevronDown, Heart, Check } from 'lucide-react';
+import { Gauge, Settings, ChevronLeft, ChevronRight, Heart, Check } from 'lucide-react';
 
 const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
