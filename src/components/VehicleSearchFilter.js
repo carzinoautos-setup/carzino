@@ -4,21 +4,20 @@ import { Search, ChevronDown, Check, X } from 'lucide-react';
 // Filter Section Components
 const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) => {
   return (
-    <div className="mb-4">
+    <div className="mb-5">
       <div
-        className="flex items-center justify-between cursor-pointer py-1"
+        className="flex items-center justify-between cursor-pointer py-2 hover:bg-gray-50 -mx-1 px-1 rounded"
         onClick={onToggle}
       >
-        <h3 className="text-sm font-normal text-gray-900 pointer-events-none flex-1">{title}</h3>
+        <h3 className="text-sm font-medium text-gray-900 pointer-events-none flex-1">{title}</h3>
         <ChevronDown
-          className={`w-3 h-3 text-red-600 transition-transform duration-200 ${
+          className={`w-4 h-4 text-gray-600 transition-transform duration-200 ${
             !isCollapsed ? 'rotate-180' : 'rotate-0'
           }`}
-          style={{ color: '#dc2626' }}
         />
       </div>
       {!isCollapsed && (
-        <div className="mt-1 ml-2" onClick={(e) => e.stopPropagation()}>
+        <div className="mt-3 space-y-2" onClick={(e) => e.stopPropagation()}>
           {children}
         </div>
       )}
@@ -35,14 +34,14 @@ const CheckboxOption = memo(({
   category
 }) => {
   return (
-    <label className="flex items-center py-0.5 cursor-pointer">
+    <label className="flex items-center py-1 cursor-pointer hover:bg-gray-50 -mx-1 px-1 rounded">
       <input
         type="checkbox"
-        className="carzino-checkbox mr-2"
+        className="carzino-checkbox mr-3"
         checked={checked}
         onChange={(e) => onChange(category, value, e.target.checked)}
       />
-      <span className="text-sm text-gray-900 flex-1">
+      <span className="text-sm text-gray-800 flex-1">
         {label} {count !== undefined && `(${count.toLocaleString()})`}
       </span>
     </label>
@@ -200,21 +199,21 @@ const VehicleSearchFilter = ({
   
   // Collapsed sections state (default to collapsed to match your uploaded image)
   const [collapsedFilters, setCollapsedFilters] = useState({
-    make: true,
-    model: true,
-    trim: true,
-    price: true,
-    payment: true,
-    condition: true,
-    mileage: true,
-    vehicleType: true,
-    driveType: true,
-    transmissionSpeed: true,
-    exteriorColor: true,
-    interiorColor: true,
-    dealer: true,
-    state: true,
-    city: true
+    make: false,
+    model: false,
+    trim: false,
+    price: false,
+    payment: false,
+    condition: false,
+    mileage: false,
+    vehicleType: false,
+    driveType: false,
+    transmissionSpeed: false,
+    exteriorColor: false,
+    interiorColor: false,
+    dealer: false,
+    state: false,
+    city: false
   });
 
   // Toggle filter section
@@ -489,9 +488,9 @@ const VehicleSearchFilter = ({
         </div>
 
         {/* Applied Filters */}
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-2">
-            <h3 className="text-sm font-normal text-gray-900">Applied Filters</h3>
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-sm font-medium text-gray-900">Applied Filters</h3>
             <button
               onClick={clearAllFilters}
               className="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-red-700"
@@ -501,14 +500,14 @@ const VehicleSearchFilter = ({
             </button>
           </div>
           <div className="flex flex-wrap gap-2">
-            {/* Show sample pills for demonstration matching your image */}
-            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium">
+            {/* Show active filter pills based on your images */}
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               New
             </span>
-            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               Audi
             </span>
-            <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+            <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1">
               Featured
             </span>
           </div>
