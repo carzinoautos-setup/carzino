@@ -528,6 +528,15 @@ const VehicleSearchFilter = ({
             {(() => {
               const filterPills = [];
 
+              // Define default values that shouldn't show as applied filters
+              const defaultValues = {
+                zipCode: '98498',
+                radius: '200',
+                termLength: '72',
+                interestRate: '8',
+                downPayment: '2000'
+              };
+
               // Handle array-based filters
               Object.entries(filters).forEach(([category, value]) => {
                 // Skip configuration/default fields that shouldn't show as applied filters
@@ -539,19 +548,21 @@ const VehicleSearchFilter = ({
 
                 if (Array.isArray(value) && value.length > 0) {
                   value.forEach((item, index) => {
-                    filterPills.push(
-                      <span key={`${category}-${index}`} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
-                        {item}
-                        <button
-                          onClick={() => removeAppliedFilter(category, item)}
-                          className="ml-1 text-white hover:text-gray-300"
-                        >
-                          ×
-                        </button>
-                      </span>
-                    );
+                    if (item && item.toString().trim() !== '') {
+                      filterPills.push(
+                        <span key={`${category}-${index}`} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
+                          {item}
+                          <button
+                            onClick={() => removeAppliedFilter(category, item)}
+                            className="ml-1 text-white hover:text-gray-300"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      );
+                    }
                   });
-                } else if (value && value !== '') {
+                } else if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[category] || '')) {
                   filterPills.push(
                     <span key={category} className="bg-black text-white px-3 py-1.5 rounded-full text-xs font-medium flex items-center gap-1">
                       {value}
