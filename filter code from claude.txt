@@ -1,0 +1,1654 @@
+/*
+ * Vehicle Search Filter Component v2B
+ */
+
+import React, { useState, memo, useCallback, useMemo } from 'react';
+import { Search, ChevronDown, Check, X } from 'lucide-react';
+
+// ============================================
+// STYLES
+// ============================================
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap');
+
+  .carzino-filter-container {
+    font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Typography Classes */
+  .carzino-filter-title { 
+    font-size: 16px !important; 
+    font-weight: 600 !important; 
+  }
+  
+  .carzino-filter-option { 
+    font-size: 14px !important; 
+    font-weight: 400 !important; 
+  }
+  
+  .carzino-filter-count { 
+    font-size: 14px !important; 
+    font-weight: 400 !important; 
+    color: #6B7280 !important; 
+  }
+  
+  .carzino-search-input { 
+    font-size: 14px !important; 
+    font-weight: 400 !important; 
+  }
+  
+  .carzino-location-label { 
+    font-size: 14px !important; 
+    font-weight: 500 !important; 
+  }
+  
+  .carzino-dropdown-option { 
+    font-size: 14px !important; 
+    font-weight: 400 !important; 
+  }
+  
+  .carzino-vehicle-type-name { 
+    font-size: 12px !important; 
+    font-weight: 500 !important; 
+  }
+  
+  .carzino-vehicle-type-count { 
+    font-size: 11px !important; 
+    font-weight: 400 !important; 
+    color: #6B7280 !important; 
+  }
+  
+  .carzino-show-more { 
+    font-size: 14px !important; 
+    font-weight: 500 !important; 
+  }
+
+  /* Mobile Typography */
+  @media (max-width: 640px) {
+    .carzino-filter-title { font-size: 18px !important; }
+    .carzino-filter-option { font-size: 16px !important; }
+    .carzino-filter-count { font-size: 16px !important; }
+    .carzino-search-input { font-size: 16px !important; }
+    .carzino-location-label { font-size: 16px !important; }
+    .carzino-dropdown-option { font-size: 16px !important; }
+    .carzino-vehicle-type-name { font-size: 14px !important; }
+    .carzino-vehicle-type-count { font-size: 13px !important; }
+    .carzino-show-more { font-size: 16px !important; }
+  }
+
+  /* Custom Checkbox */
+  .carzino-checkbox {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 3px;
+    background-color: white;
+    position: relative;
+    cursor: pointer;
+    transition: all 150ms ease;
+    flex-shrink: 0;
+  }
+  
+  .carzino-checkbox:hover {
+    border-color: #6b7280;
+    background-color: #f9fafb;
+  }
+  
+  .carzino-checkbox:checked {
+    background-color: #dc2626;
+    border-color: #dc2626;
+  }
+  
+  .carzino-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    top: -2px;
+    left: 2px;
+  }
+
+  .carzino-checkbox:focus {
+    outline: 2px solid #dc2626;
+    outline-offset: 2px;
+  }
+
+  /* Inputs and Selects */
+  .carzino-input,
+  .carzino-select {
+    transition: all 150ms ease;
+  }
+
+  .carzino-input:focus,
+  .carzino-select:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+
+  /* Applied Filter Pills */
+  .carzino-filter-pill {
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 9999px;
+    font-size: 12px;
+    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Mobile specific */
+  @media (max-width: 640px) {
+    .carzino-filter-pill {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+  }
+
+  /* Animations */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-down {
+    animation: slideDown 200ms ease-out;
+  }
+`;
+
+// ============================================
+// FILTER SECTION COMPONENTS
+// ============================================
+
+const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) => {
+  return (
+    <div className="border-b border-gray-200 pb-3 mb-3">
+      <div
+        className="flex items-center justify-between cursor-pointer py-2 hover:bg-gray-50 px-1 -mx-1 rounded"
+        onClick={onToggle}
+      >
+        <h3 className="carzino-filter-title pointer-events-none">{title}</h3>
+        <div className="flex items-center gap-2 pointer-events-none">
+          {count !== undefined && count > 0 && (
+            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
+              {count}
+            </span>
+          )}
+          <ChevronDown 
+            className={`w-5 h-5 text-red-600 transition-transform ${
+              !isCollapsed ? 'rotate-180' : ''
+            }`}
+            style={{ color: '#dc2626' }}
+          />
+        </div>
+      </div>
+      {!isCollapsed && (
+        <div className="mt-2 animate-slide-down" onClick={(e) => e.stopPropagation()}>
+          {children}
+        </div>
+      )}
+    </div>
+  );
+});
+
+const CheckboxOption = memo(({ 
+  label, 
+  count, 
+  checked, 
+  onChange, 
+  value,
+  category 
+}) => {
+  return (
+    <label className="flex items-center hover:bg-gray-50 p-1 rounded cursor-pointer">
+      <input 
+        type="checkbox" 
+        className="carzino-checkbox mr-2"
+        checked={checked}
+        onChange={(e) => onChange(category, value, e.target.checked)}
+      />
+      <span className="carzino-filter-option flex-1">{label}</span>
+      {count !== undefined && (
+        <span className="carzino-filter-count ml-1">({count.toLocaleString()})</span>
+      )}
+    </label>
+  );
+});
+
+const PriceRangeInput = memo(({ min, max, onMinChange, onMaxChange }) => {
+  const [localMin, setLocalMin] = useState(min || '');
+  const [localMax, setLocalMax] = useState(max || '');
+
+  const handleMinBlur = useCallback(() => {
+    onMinChange(localMin);
+  }, [localMin, onMinChange]);
+
+  const handleMaxBlur = useCallback(() => {
+    onMaxChange(localMax);
+  }, [localMax, onMaxChange]);
+
+  return (
+    <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="$10,000"
+          value={localMin}
+          onChange={(e) => setLocalMin(e.target.value.replace(/[^0-9]/g, ''))}
+          onBlur={handleMinBlur}
+          className="carzino-search-input carzino-input w-1/2 px-2 py-1 border border-gray-300 rounded focus:outline-none"
+        />
+        <input
+          type="text"
+          placeholder="$100,000"
+          value={localMax}
+          onChange={(e) => setLocalMax(e.target.value.replace(/[^0-9]/g, ''))}
+          onBlur={handleMaxBlur}
+          className="carzino-search-input carzino-input w-1/2 px-2 py-1 border border-gray-300 rounded focus:outline-none"
+        />
+      </div>
+    </div>
+  );
+});
+
+const PaymentCalculator = memo(({ filters, onChange }) => {
+  return (
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+          <input
+            type="text"
+            placeholder="100"
+            value={filters.paymentMin || ''}
+            onChange={(e) => onChange('paymentMin', e.target.value.replace(/[^0-9]/g, ''), true)}
+            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-1.5 border border-gray-300 rounded focus:outline-none"
+          />
+          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">/mo</span>
+        </div>
+        <div className="relative flex-1">
+          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+          <input
+            type="text"
+            placeholder="2,000"
+            value={filters.paymentMax || ''}
+            onChange={(e) => onChange('paymentMax', e.target.value.replace(/[^0-9]/g, ''), true)}
+            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-1.5 border border-gray-300 rounded focus:outline-none"
+          />
+          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">/mo</span>
+        </div>
+      </div>
+      
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Term Length
+        </label>
+        <select
+          value={filters.termLength || '72'}
+          onChange={(e) => onChange('termLength', e.target.value, true)}
+          className="carzino-select w-full px-2 py-1.5 border border-gray-300 rounded focus:outline-none"
+        >
+          <option value="36">36 months</option>
+          <option value="48">48 months</option>
+          <option value="60">60 months</option>
+          <option value="72">72 months</option>
+          <option value="84">84 months</option>
+        </select>
+      </div>
+      
+      <div className="grid grid-cols-2 gap-2">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Interest Rate
+          </label>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="8"
+              value={filters.interestRate || ''}
+              onChange={(e) => onChange('interestRate', e.target.value.replace(/[^0-9.]/g, ''), true)}
+              className="carzino-search-input carzino-input w-full pr-6 px-2 py-1.5 border border-gray-300 rounded focus:outline-none"
+            />
+            <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">%</span>
+          </div>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Down Payment
+          </label>
+          <div className="relative">
+            <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+            <input
+              type="text"
+              placeholder="2,000"
+              value={filters.downPayment || ''}
+              onChange={(e) => onChange('downPayment', e.target.value.replace(/[^0-9]/g, ''), true)}
+              className="carzino-search-input carzino-input w-full pl-6 px-2 py-1.5 border border-gray-300 rounded focus:outline-none"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+const ColorSwatch = memo(({ color, name, count, checked, onChange, category }) => (
+  <label className="flex items-center text-sm cursor-pointer hover:bg-gray-50 p-1 rounded">
+    <input 
+      type="checkbox" 
+      className="carzino-checkbox mr-2"
+      checked={checked}
+      onChange={(e) => onChange(category, name, e.target.checked)}
+    />
+    <div 
+      className="w-4 h-4 rounded border border-gray-300 mr-2" 
+      style={{ backgroundColor: color }}
+    />
+    <span className="carzino-filter-option flex-1">{name}</span>
+    <span className="carzino-filter-count ml-1">({count.toLocaleString()})</span>
+  </label>
+));
+
+// ============================================
+// MAIN FILTER COMPONENT
+// ============================================
+
+const VehicleSearchFilter = ({ 
+  filters = {},
+  onFiltersChange,
+  filterOptions = {},
+  isLoading = false,
+  isMobile = false,
+  onClose
+}) => {
+  // Local state
+  const [showMoreMakes, setShowMoreMakes] = useState(false);
+  const [showMoreModels, setShowMoreModels] = useState(false);
+  const [showMoreTrims, setShowMoreTrims] = useState(false);
+  const [mobileSearchExpanded, setMobileSearchExpanded] = useState(false);
+  
+  // Collapsed sections state
+  const [collapsedFilters, setCollapsedFilters] = useState({
+    vehicleType: true,
+    condition: false,
+    mileage: true,
+    make: false,
+    model: false,
+    trim: true,
+    price: true,
+    payment: true,
+    bodyType: true,
+    driveType: true,
+    transmissionSpeed: true,
+    exteriorColor: true,
+    interiorColor: true,
+    sellerType: true,
+    dealer: true,
+    state: true,
+    city: true,
+    zipCodeFilter: true
+  });
+
+  // Toggle filter section
+  const toggleFilter = useCallback((filterName) => {
+    setCollapsedFilters(prev => ({
+      ...prev,
+      [filterName]: !prev[filterName]
+    }));
+  }, []);
+
+  // Handle filter changes
+  const handleFilterChange = useCallback((category, value, checked) => {
+    const currentValues = filters[category] || [];
+    
+    if (category === 'condition' || category === 'make' || category === 'model' || category === 'trim' || 
+        category === 'vehicleType' || category === 'bodyType' || category === 'driveType' || category === 'exteriorColor' || 
+        category === 'interiorColor' || category === 'sellerType' || category === 'dealer' || category === 'state' || category === 'city' || 
+        category === 'zipCodeFilter') {
+      // Array-based filters
+      let newValues;
+      if (checked) {
+        newValues = [...currentValues, value];
+      } else {
+        newValues = currentValues.filter(v => v !== value);
+      }
+      onFiltersChange({
+        ...filters,
+        [category]: newValues
+      });
+    } else {
+      // Single value filters
+      onFiltersChange({
+        ...filters,
+        [category]: checked ? value : ''
+      });
+    }
+  }, [filters, onFiltersChange]);
+
+  // Clear all filters
+  const clearAllFilters = useCallback(() => {
+    onFiltersChange({
+      condition: [],
+      make: [],
+      model: [],
+      trim: [],
+      vehicleType: [],
+      bodyType: [],
+      driveType: [],
+      mileage: '',
+      exteriorColor: [],
+      interiorColor: [],
+      transmissionSpeed: [],
+      sellerType: [],
+      dealer: [],
+      state: [],
+      city: [],
+      zipCodeFilter: [],
+      priceMin: '',
+      priceMax: '',
+      paymentMin: '',
+      paymentMax: '',
+      zipCode: filters.zipCode || '', // Preserve location settings
+      radius: filters.radius || '10',
+      termLength: filters.termLength || '72', // Preserve calculator settings
+      interestRate: filters.interestRate || '8',
+      downPayment: filters.downPayment || '2000'
+    });
+  }, [onFiltersChange, filters]);
+
+  // Remove specific filter
+  const removeAppliedFilter = useCallback((category, value) => {
+    if (category === 'priceMin' || category === 'priceMax') {
+      onFiltersChange({
+        ...filters,
+        priceMin: '',
+        priceMax: ''
+      });
+    } else if (category === 'paymentMin' || category === 'paymentMax') {
+      onFiltersChange({
+        ...filters,
+        paymentMin: '',
+        paymentMax: ''
+      });
+    } else if (category === 'mileage') {
+      onFiltersChange({
+        ...filters,
+        mileage: ''
+      });
+    } else if (Array.isArray(filters[category])) {
+      onFiltersChange({
+        ...filters,
+        [category]: filters[category].filter(v => v !== value)
+      });
+    } else {
+      const newFilters = { ...filters };
+      newFilters[category] = '';
+      onFiltersChange(newFilters);
+    }
+  }, [filters, onFiltersChange]);
+
+  // Sample data
+  const allMakes = filterOptions.makes || [
+    { name: "Audi", count: 143 },
+    { name: "BMW", count: 189 },
+    { name: "Chevrolet", count: 287 },
+    { name: "Ford", count: 523 },
+    { name: "Honda", count: 234 },
+    { name: "Hyundai", count: 176 },
+    { name: "Mercedes-Benz", count: 156 },
+    { name: "Nissan", count: 198 },
+    { name: "Subaru", count: 122 },
+    { name: "Tesla", count: 45 },
+    { name: "Toyota", count: 412 },
+    { name: "Volkswagen", count: 134 }
+  ];
+
+  const allModels = filterOptions.models || [
+    { name: "3 Series", count: 67 },
+    { name: "A4", count: 38 },
+    { name: "Camry", count: 134 },
+    { name: "F-150", count: 156 },
+    { name: "Model 3", count: 23 }
+  ];
+
+  const allTrims = filterOptions.trims || [
+    { name: "Base", count: 234 },
+    { name: "EX", count: 89 },
+    { name: "Limited", count: 145 },
+    { name: "Premium", count: 178 },
+    { name: "Sport", count: 134 }
+  ];
+
+  const bodyTypes = filterOptions.bodyTypes || [
+    { name: "Convertible", count: 196 },
+    { name: "Coupe", count: 419 },
+    { name: "Hatchback", count: 346 },
+    { name: "Sedan", count: 1698 },
+    { name: "SUV / Crossover", count: 3405 },
+    { name: "Truck", count: 2217 },
+    { name: "Van / Minivan", count: 203 },
+    { name: "Wagon", count: 43 }
+  ];
+
+  const exteriorColors = filterOptions.exteriorColors || [
+    { name: "White", count: 9427, hex: "#FFFFFF" },
+    { name: "Black", count: 8363, hex: "#000000" },
+    { name: "Gray", count: 7502, hex: "#808080" },
+    { name: "Silver", count: 5093, hex: "#C0C0C0" },
+    { name: "Blue", count: 4266, hex: "#0066CC" },
+    { name: "Red", count: 3436, hex: "#CC0000" }
+  ];
+
+  const interiorColors = filterOptions.interiorColors || [
+    { name: "Black", count: 12363, hex: "#000000" },
+    { name: "Gray", count: 8502, hex: "#808080" },
+    { name: "Beige", count: 3160, hex: "#F5F5DC" },
+    { name: "Brown", count: 2353, hex: "#8B4513" }
+  ];
+
+  const displayedMakes = showMoreMakes ? allMakes : allMakes.slice(0, 8);
+  const displayedModels = showMoreModels ? allModels : allModels.slice(0, 8);
+  const displayedTrims = showMoreTrims ? allTrims : allTrims.slice(0, 8);
+
+  // Get filter counts
+  const getFilterCount = useCallback((category) => {
+    if (category === 'price') {
+      return (filters.priceMin || filters.priceMax) ? 1 : 0;
+    }
+    if (category === 'payment') {
+      return (filters.paymentMin || filters.paymentMax) ? 1 : 0;
+    }
+    const value = filters[category];
+    if (Array.isArray(value)) {
+      return value.length;
+    }
+    if (value && value !== '') {
+      return 1;
+    }
+    return 0;
+  }, [filters]);
+
+  // Calculate active filter count
+  const activeFilterCount = useMemo(() => {
+    return Object.entries(filters).reduce((count, [key, value]) => {
+      if (key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') {
+        return count;
+      }
+      if (key === 'priceMin' || key === 'priceMax') {
+        // Count price as one filter if either min or max is set
+        if (key === 'priceMin' && (filters.priceMin || filters.priceMax)) {
+          return count + 1;
+        }
+        if (key === 'priceMax') {
+          return count; // Don't double count price
+        }
+      }
+      if (key === 'paymentMin' || key === 'paymentMax') {
+        // Count payment as one filter if either min or max is set
+        if (key === 'paymentMin' && (filters.paymentMin || filters.paymentMax)) {
+          return count + 1;
+        }
+        if (key === 'paymentMax') {
+          return count; // Don't double count payment
+        }
+      }
+      if (Array.isArray(value)) {
+        return count + value.length;
+      }
+      if (value && value !== '') {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+  }, [filters]);
+
+  // Add styles on mount
+  React.useEffect(() => {
+    const styleTag = document.createElement('style');
+    styleTag.innerHTML = styles;
+    document.head.appendChild(styleTag);
+    return () => {
+      document.head.removeChild(styleTag);
+    };
+  }, []);
+
+  // Mobile overlay
+  if (isMobile) {
+    return (
+      <>
+        {/* Overlay */}
+        <div 
+          className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity ${
+            onClose ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={onClose}
+        />
+        
+        {/* Slide-out panel */}
+        <div className={`fixed left-0 top-0 h-full w-80 bg-white shadow-xl z-50 transition-transform duration-300 ${
+          onClose ? 'translate-x-0' : '-translate-x-full'
+        }`}>
+          <div className="carzino-filter-container h-full overflow-y-auto">
+            <FilterContent />
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  // Desktop sidebar
+  return (
+    <div className="carzino-filter-container">
+      <FilterContent />
+    </div>
+  );
+
+  // Filter content
+  function FilterContent() {
+    return (
+      <div className="p-4">
+        {/* Mobile Header */}
+        {isMobile && (
+          <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+            <h2 className="text-xl font-bold">Filters</h2>
+            <button 
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
+        {/* Search Section */}
+        <div className="mb-4 pb-4 border-b border-gray-200">
+          <div className="relative">
+            <input
+              type="text"
+              placeholder="Search Vehicles"
+              className="carzino-search-input carzino-input w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-red-600"
+            />
+            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-600 p-1">
+              <Search className="w-4 h-4" style={{ color: '#dc2626' }} />
+            </button>
+          </div>
+        </div>
+
+        {/* Applied Filters */}
+        {activeFilterCount > 0 && (
+          <div className="mb-4 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="carzino-filter-title">Applied Filters</h3>
+              <button 
+                onClick={clearAllFilters}
+                className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-red-700"
+                style={{ backgroundColor: '#dc2626' }}
+              >
+                Clear All
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {/* Condition Filters */}
+              {filters.condition?.map((item) => (
+                <span key={`condition-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('condition', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Make Filters */}
+              {filters.make?.map((item) => (
+                <span key={`make-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('make', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Model Filters */}
+              {filters.model?.map((item) => (
+                <span key={`model-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('model', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Trim Filters */}
+              {filters.trim?.map((item) => (
+                <span key={`trim-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('trim', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Vehicle Type Filters */}
+              {filters.vehicleType?.map((item) => (
+                <span key={`vehicleType-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('vehicleType', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Body Type Filters */}
+              {filters.bodyType?.map((item) => (
+                <span key={`bodyType-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('bodyType', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Drive Type Filters */}
+              {filters.driveType?.map((item) => (
+                <span key={`driveType-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('driveType', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Exterior Color Filters */}
+              {filters.exteriorColor?.map((item) => (
+                <span key={`exteriorColor-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('exteriorColor', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Interior Color Filters */}
+              {filters.interiorColor?.map((item) => (
+                <span key={`interiorColor-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  Interior: {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('interiorColor', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Seller Type Filters */}
+              {filters.sellerType?.map((item) => (
+                <span key={`sellerType-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('sellerType', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Dealer Filters */}
+              {filters.dealer?.map((item) => (
+                <span key={`dealer-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('dealer', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* State Filters */}
+              {filters.state?.map((item) => (
+                <span key={`state-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('state', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* City Filters */}
+              {filters.city?.map((item) => (
+                <span key={`city-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('city', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* ZIP Code Filters */}
+              {filters.zipCodeFilter?.map((item) => (
+                <span key={`zipCodeFilter-${item}`} className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {item}
+                  <button 
+                    onClick={() => removeAppliedFilter('zipCodeFilter', item)}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              ))}
+              
+              {/* Price Range Filter */}
+              {(filters.priceMin || filters.priceMax) && (
+                <span className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  ${filters.priceMin || '0'} - ${filters.priceMax || 'Any'}
+                  <button 
+                    onClick={() => removeAppliedFilter('priceMin', '')}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              
+              {/* Payment Range Filter */}
+              {(filters.paymentMin || filters.paymentMax) && (
+                <span className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  ${filters.paymentMin || '0'} - ${filters.paymentMax || 'Any'}/mo
+                  <button 
+                    onClick={() => removeAppliedFilter('paymentMin', '')}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+              
+              {/* Mileage Filter */}
+              {filters.mileage && (
+                <span className="carzino-filter-pill">
+                  <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                  {filters.mileage}
+                  <button 
+                    onClick={() => removeAppliedFilter('mileage', '')}
+                    className="ml-1 text-white hover:text-gray-300"
+                  >
+                    ×
+                  </button>
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Distance */}
+        <div className="mb-4 pb-4 border border-gray-200 rounded-lg p-3">
+          <label className="carzino-location-label block mb-2">Distance</label>
+          <div className="space-y-2">
+            <input
+              type="text"
+              placeholder="ZIP Code"
+              value={filters.zipCode || ''}
+              onChange={(e) => handleFilterChange('zipCode', e.target.value, true)}
+              className="carzino-search-input carzino-input w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none"
+            />
+            <select 
+              value={filters.radius || '10'}
+              onChange={(e) => handleFilterChange('radius', e.target.value, true)}
+              className="carzino-select w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none"
+            >
+              <option value="10">10 miles</option>
+              <option value="25">25 miles</option>
+              <option value="50">50 miles</option>
+              <option value="100">100 miles</option>
+              <option value="200">200 miles</option>
+              <option value="500">500 miles</option>
+              <option value="any">Any</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Vehicle Type */}
+        <FilterSection 
+          title="Vehicle Type"
+          isCollapsed={collapsedFilters.vehicleType}
+          onToggle={() => toggleFilter('vehicleType')}
+          count={getFilterCount('vehicleType')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="Sedan"
+              count={1698}
+              value="Sedan"
+              category="vehicleType"
+              checked={filters.vehicleType?.includes('Sedan')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="SUV"
+              count={3405}
+              value="SUV"
+              category="vehicleType"
+              checked={filters.vehicleType?.includes('SUV')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Truck"
+              count={2217}
+              value="Truck"
+              category="vehicleType"
+              checked={filters.vehicleType?.includes('Truck')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Van"
+              count={203}
+              value="Van"
+              category="vehicleType"
+              checked={filters.vehicleType?.includes('Van')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Coupe"
+              count={419}
+              value="Coupe"
+              category="vehicleType"
+              checked={filters.vehicleType?.includes('Coupe')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Wagon"
+              count={43}
+              value="Wagon"
+              category="vehicleType"
+              checked={filters.vehicleType?.includes('Wagon')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Convertible"
+              count={196}
+              value="Convertible"
+              category="vehicleType"
+              checked={filters.vehicleType?.includes('Convertible')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Hatchback"
+              count={346}
+              value="Hatchback"
+              category="vehicleType"
+              checked={filters.vehicleType?.includes('Hatchback')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* Make */}
+        <FilterSection 
+          title="Make"
+          isCollapsed={collapsedFilters.make}
+          onToggle={() => toggleFilter('make')}
+          count={getFilterCount('make')}
+        >
+          <div className="space-y-1">
+            {displayedMakes.map((make) => (
+              <CheckboxOption
+                key={make.name}
+                label={make.name}
+                count={make.count}
+                value={make.name}
+                category="make"
+                checked={filters.make?.includes(make.name)}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+          {allMakes.length > 8 && (
+            <button 
+              onClick={() => setShowMoreMakes(!showMoreMakes)}
+              className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
+            >
+              {showMoreMakes ? 'Show Less' : 'Show More'}
+            </button>
+          )}
+        </FilterSection>
+
+        {/* Model */}
+        {filters.make?.length > 0 && (
+          <FilterSection 
+            title="Model"
+            isCollapsed={collapsedFilters.model}
+            onToggle={() => toggleFilter('model')}
+            count={getFilterCount('model')}
+          >
+            <div className="space-y-1">
+              {displayedModels.map((model) => (
+                <CheckboxOption
+                  key={model.name}
+                  label={model.name}
+                  count={model.count}
+                  value={model.name}
+                  category="model"
+                  checked={filters.model?.includes(model.name)}
+                  onChange={handleFilterChange}
+                />
+              ))}
+            </div>
+            {allModels.length > 8 && (
+              <button 
+                onClick={() => setShowMoreModels(!showMoreModels)}
+                className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
+              >
+                {showMoreModels ? 'Show Less' : 'Show More'}
+              </button>
+            )}
+          </FilterSection>
+        )}
+
+        {/* Trim */}
+        {filters.model?.length > 0 && (
+          <FilterSection 
+            title="Trim"
+            isCollapsed={collapsedFilters.trim}
+            onToggle={() => toggleFilter('trim')}
+            count={getFilterCount('trim')}
+          >
+            <div className="space-y-1">
+              {displayedTrims.map((trim) => (
+                <CheckboxOption
+                  key={trim.name}
+                  label={trim.name}
+                  count={trim.count}
+                  value={trim.name}
+                  category="trim"
+                  checked={filters.trim?.includes(trim.name)}
+                  onChange={handleFilterChange}
+                />
+              ))}
+            </div>
+          </FilterSection>
+        )}
+
+        {/* Filter by Price */}
+        <FilterSection 
+          title="Filter by Price"
+          isCollapsed={collapsedFilters.price}
+          onToggle={() => toggleFilter('price')}
+          count={getFilterCount('price')}
+        >
+          <PriceRangeInput 
+            min={filters.priceMin}
+            max={filters.priceMax}
+            onMinChange={(value) => handleFilterChange('priceMin', value, true)}
+            onMaxChange={(value) => handleFilterChange('priceMax', value, true)}
+          />
+        </FilterSection>
+
+        {/* Search by Payment */}
+        <FilterSection 
+          title="Search by Payment"
+          isCollapsed={collapsedFilters.payment}
+          onToggle={() => toggleFilter('payment')}
+          count={getFilterCount('payment')}
+        >
+          <PaymentCalculator 
+            filters={filters}
+            onChange={handleFilterChange}
+          />
+        </FilterSection>
+
+        {/* Condition */}
+        <FilterSection 
+          title="Condition"
+          isCollapsed={collapsedFilters.condition}
+          onToggle={() => toggleFilter('condition')}
+          count={getFilterCount('condition')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="New"
+              count={125989}
+              value="New"
+              category="condition"
+              checked={filters.condition?.includes('New')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Used"
+              count={78800}
+              value="Used"
+              category="condition"
+              checked={filters.condition?.includes('Used')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Certified"
+              count={9889}
+              value="Certified"
+              category="condition"
+              checked={filters.condition?.includes('Certified')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* Mileage */}
+        <FilterSection 
+          title="Mileage"
+          isCollapsed={collapsedFilters.mileage}
+          onToggle={() => toggleFilter('mileage')}
+          count={filters.mileage ? 1 : 0}
+        >
+          <div className="space-y-2">
+            <select
+              value={filters.mileage || ''}
+              onChange={(e) => handleFilterChange('mileage', e.target.value, true)}
+              className="carzino-select w-full px-3 py-2 border border-gray-300 rounded focus:outline-none"
+            >
+              <option value="">Any Mileage</option>
+              <option value="Under 10,000">Under 10,000 miles</option>
+              <option value="Under 30,000">Under 30,000 miles</option>
+              <option value="Under 50,000">Under 50,000 miles</option>
+              <option value="Under 75,000">Under 75,000 miles</option>
+              <option value="Under 100,000">Under 100,000 miles</option>
+              <option value="Over 100,000">Over 100,000 miles</option>
+            </select>
+          </div>
+        </FilterSection>
+
+        {/* Body Type */}
+        <FilterSection 
+          title="Body Type"
+          isCollapsed={collapsedFilters.bodyType}
+          onToggle={() => toggleFilter('bodyType')}
+          count={getFilterCount('bodyType')}
+        >
+          <div className="space-y-1">
+            {bodyTypes.map((type) => (
+              <CheckboxOption
+                key={type.name}
+                label={type.name}
+                count={type.count}
+                value={type.name}
+                category="bodyType"
+                checked={filters.bodyType?.includes(type.name)}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* Drive Type */}
+        <FilterSection 
+          title="Drive Type"
+          isCollapsed={collapsedFilters.driveType}
+          onToggle={() => toggleFilter('driveType')}
+          count={getFilterCount('driveType')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="AWD/4WD"
+              count={18943}
+              value="AWD/4WD"
+              category="driveType"
+              checked={filters.driveType?.includes('AWD/4WD')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="FWD"
+              count={12057}
+              value="FWD"
+              category="driveType"
+              checked={filters.driveType?.includes('FWD')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="RWD"
+              count={5883}
+              value="RWD"
+              category="driveType"
+              checked={filters.driveType?.includes('RWD')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* Exterior Color */}
+        <FilterSection 
+          title="Exterior Color"
+          isCollapsed={collapsedFilters.exteriorColor}
+          onToggle={() => toggleFilter('exteriorColor')}
+          count={getFilterCount('exteriorColor')}
+        >
+          <div className="space-y-1">
+            {exteriorColors.map((color) => (
+              <ColorSwatch
+                key={color.name}
+                color={color.hex}
+                name={color.name}
+                count={color.count}
+                category="exteriorColor"
+                checked={filters.exteriorColor?.includes(color.name)}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* Interior Color */}
+        <FilterSection 
+          title="Interior Color"
+          isCollapsed={collapsedFilters.interiorColor}
+          onToggle={() => toggleFilter('interiorColor')}
+          count={getFilterCount('interiorColor')}
+        >
+          <div className="space-y-1">
+            {interiorColors.map((color) => (
+              <ColorSwatch
+                key={color.name}
+                color={color.hex}
+                name={color.name}
+                count={color.count}
+                category="interiorColor"
+                checked={filters.interiorColor?.includes(color.name)}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* Seller Type */}
+        <FilterSection 
+          title="Seller Type"
+          isCollapsed={collapsedFilters.sellerType}
+          onToggle={() => toggleFilter('sellerType')}
+          count={getFilterCount('sellerType')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="Dealer"
+              count={filterOptions.dealerCount || 8456}
+              value="Dealer"
+              category="sellerType"
+              checked={filters.sellerType?.includes('Dealer')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Private Seller"
+              count={filterOptions.privateSellerCount || 2341}
+              value="Private Seller"
+              category="sellerType"
+              checked={filters.sellerType?.includes('Private Seller')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* Dealer/Seller */}
+        <FilterSection 
+          title="Dealer"
+          isCollapsed={collapsedFilters.dealer}
+          onToggle={() => toggleFilter('dealer')}
+          count={getFilterCount('dealer')}
+        >
+          <div className="space-y-1">
+            {(filterOptions.dealers || [
+              { name: "Bayside Auto Sales", count: 234 },
+              { name: "ABC Car Sales", count: 156 },
+              { name: "Premium Auto Group", count: 189 },
+              { name: "Downtown Motors", count: 267 },
+              { name: "Northwest Chevrolet", count: 145 },
+              { name: "Luxury Motors", count: 178 },
+              { name: "City Toyota", count: 298 }
+            ]).map((dealer) => (
+              <CheckboxOption
+                key={dealer.name}
+                label={dealer.name}
+                count={dealer.count}
+                value={dealer.name}
+                category="dealer"
+                checked={filters.dealer?.includes(dealer.name)}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* State */}
+        <FilterSection 
+          title="State"
+          isCollapsed={collapsedFilters.state}
+          onToggle={() => toggleFilter('state')}
+          count={getFilterCount('state')}
+        >
+          <div className="space-y-1">
+            {(filterOptions.states || [
+              { name: "Washington", count: 12456 },
+              { name: "Oregon", count: 8234 },
+              { name: "California", count: 15678 },
+              { name: "Idaho", count: 3456 },
+              { name: "Montana", count: 2134 },
+              { name: "Nevada", count: 4567 },
+              { name: "Arizona", count: 6789 }
+            ]).map((state) => (
+              <CheckboxOption
+                key={state.name}
+                label={state.name}
+                count={state.count}
+                value={state.name}
+                category="state"
+                checked={filters.state?.includes(state.name)}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* City */}
+        <FilterSection 
+          title="City"
+          isCollapsed={collapsedFilters.city}
+          onToggle={() => toggleFilter('city')}
+          count={getFilterCount('city')}
+        >
+          <div className="space-y-1">
+            {(filterOptions.cities || [
+              { name: "Seattle", count: 4567 },
+              { name: "Portland", count: 3234 },
+              { name: "Tacoma", count: 2345 },
+              { name: "Spokane", count: 1234 },
+              { name: "Vancouver", count: 1567 },
+              { name: "Bellevue", count: 2456 },
+              { name: "Everett", count: 1789 },
+              { name: "Federal Way", count: 1345 },
+              { name: "Auburn", count: 987 },
+              { name: "Kent", count: 1123 }
+            ]).map((city) => (
+              <CheckboxOption
+                key={city.name}
+                label={city.name}
+                count={city.count}
+                value={city.name}
+                category="city"
+                checked={filters.city?.includes(city.name)}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* ZIP Code */}
+        <FilterSection 
+          title="ZIP Code"
+          isCollapsed={collapsedFilters.zipCodeFilter}
+          onToggle={() => toggleFilter('zipCodeFilter')}
+          count={getFilterCount('zipCodeFilter')}
+        >
+          <div className="space-y-1">
+            {(filterOptions.zipCodes || [
+              { name: "98498", count: 567 },
+              { name: "98101", count: 892 },
+              { name: "98102", count: 734 },
+              { name: "98103", count: 645 },
+              { name: "98104", count: 523 },
+              { name: "98105", count: 412 },
+              { name: "97201", count: 389 },
+              { name: "97202", count: 356 }
+            ]).map((zip) => (
+              <CheckboxOption
+                key={zip.name}
+                label={zip.name}
+                count={zip.count}
+                value={zip.name}
+                category="zipCodeFilter"
+                checked={filters.zipCodeFilter?.includes(zip.name)}
+                onChange={handleFilterChange}
+              />
+            ))}
+          </div>
+        </FilterSection>
+
+        {/* Mobile Footer */}
+        {isMobile && (
+          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex gap-3 z-50">
+            <button
+              onClick={clearAllFilters}
+              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors relative"
+              disabled={activeFilterCount === 0}
+            >
+              Clear {activeFilterCount > 0 && `(${activeFilterCount})`}
+            </button>
+            <button
+              onClick={onClose}
+              className="flex-1 px-4 py-3 text-white rounded-lg font-medium hover:bg-red-700 transition-colors relative"
+              style={{ backgroundColor: '#dc2626' }}
+            >
+              Apply Filters
+              {activeFilterCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+};
+
+// ============================================
+// DEMO COMPONENT WITH CONTEXT INTEGRATION
+// ============================================
+
+const FilterDemo = () => {
+  const [filters, setFilters] = useState({
+    condition: ['New'],
+    make: ['Audi'],
+    model: [],
+    trim: [],
+    vehicleType: [],
+    bodyType: [],
+    driveType: [],
+    mileage: '',
+    exteriorColor: [],
+    interiorColor: [],
+    sellerType: [],
+    dealer: [],
+    state: [],
+    city: [],
+    zipCodeFilter: [],
+    priceMin: '',
+    priceMax: '',
+    paymentMin: '',
+    paymentMax: '',
+    zipCode: '98498',
+    radius: '200',
+    termLength: '72',
+    interestRate: '8',
+    downPayment: '2000'
+  });
+
+  const filterOptions = {
+    makes: [
+      { name: "Audi", count: 143 },
+      { name: "BMW", count: 189 },
+      { name: "Chevrolet", count: 287 },
+      { name: "Ford", count: 523 },
+      { name: "Honda", count: 234 },
+      { name: "Hyundai", count: 176 },
+      { name: "Mercedes-Benz", count: 156 },
+      { name: "Nissan", count: 198 },
+      { name: "Subaru", count: 122 },
+      { name: "Tesla", count: 45 },
+      { name: "Toyota", count: 412 },
+      { name: "Volkswagen", count: 134 }
+    ],
+    models: [
+      { name: "A4", count: 38 },
+      { name: "A6", count: 27 },
+      { name: "Q5", count: 45 },
+      { name: "Q7", count: 33 }
+    ],
+    trims: [
+      { name: "Premium", count: 45 },
+      { name: "Premium Plus", count: 38 },
+      { name: "Prestige", count: 27 }
+    ],
+    bodyTypes: [
+      { name: "SUV / Crossover", count: 3405 },
+      { name: "Truck", count: 2217 },
+      { name: "Sedan", count: 1698 },
+      { name: "Coupe", count: 419 },
+      { name: "Hatchback", count: 346 },
+      { name: "Van / Minivan", count: 203 },
+      { name: "Convertible", count: 196 },
+      { name: "Wagon", count: 43 }
+    ],
+    exteriorColors: [
+      { name: "White", count: 9427, hex: "#FFFFFF" },
+      { name: "Black", count: 8363, hex: "#000000" },
+      { name: "Gray", count: 7502, hex: "#808080" },
+      { name: "Silver", count: 5093, hex: "#C0C0C0" },
+      { name: "Blue", count: 4266, hex: "#0066CC" },
+      { name: "Red", count: 3436, hex: "#CC0000" }
+    ],
+    interiorColors: [
+      { name: "Black", count: 12363, hex: "#000000" },
+      { name: "Gray", count: 8502, hex: "#808080" },
+      { name: "Beige", count: 3160, hex: "#F5F5DC" },
+      { name: "Brown", count: 2353, hex: "#8B4513" }
+    ],
+    dealerCount: 8456,
+    privateSellerCount: 2341,
+    dealers: [
+      { name: "Bayside Auto Sales", count: 234 },
+      { name: "ABC Car Sales", count: 156 },
+      { name: "Premium Auto Group", count: 189 },
+      { name: "Downtown Motors", count: 267 },
+      { name: "Northwest Chevrolet", count: 145 },
+      { name: "Luxury Motors", count: 178 },
+      { name: "City Toyota", count: 298 }
+    ],
+    states: [
+      { name: "Washington", count: 12456 },
+      { name: "Oregon", count: 8234 },
+      { name: "California", count: 15678 },
+      { name: "Idaho", count: 3456 },
+      { name: "Montana", count: 2134 },
+      { name: "Nevada", count: 4567 },
+      { name: "Arizona", count: 6789 }
+    ],
+    cities: [
+      { name: "Seattle", count: 4567 },
+      { name: "Portland", count: 3234 },
+      { name: "Tacoma", count: 2345 },
+      { name: "Spokane", count: 1234 },
+      { name: "Vancouver", count: 1567 },
+      { name: "Bellevue", count: 2456 },
+      { name: "Everett", count: 1789 },
+      { name: "Federal Way", count: 1345 },
+      { name: "Auburn", count: 987 },
+      { name: "Kent", count: 1123 }
+    ],
+    zipCodes: [
+      { name: "98498", count: 567 },
+      { name: "98101", count: 892 },
+      { name: "98102", count: 734 },
+      { name: "98103", count: 645 },
+      { name: "98104", count: 523 },
+      { name: "98105", count: 412 },
+      { name: "97201", count: 389 },
+      { name: "97202", count: 356 },
+      { name: "97203", count: 298 },
+      { name: "97204", count: 276 }
+    ]
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      <div className="flex">
+        {/* Sidebar Filter */}
+        <div className="w-80 bg-white border-r border-gray-200 min-h-screen overflow-y-auto">
+          <VehicleSearchFilter
+            filters={filters}
+            onFiltersChange={setFilters}
+            filterOptions={filterOptions}
+            isMobile={false}
+          />
+        </div>
+        
+        {/* Main Content */}
+        <div className="flex-1 p-6">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Vehicle Search Results</h1>
+          <div className="bg-white rounded-lg shadow p-6">
+            <h2 className="text-lg font-semibold mb-3">Active Filters:</h2>
+            <pre className="bg-gray-50 p-4 rounded text-sm overflow-auto">
+              {JSON.stringify(filters, null, 2)}
+            </pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Export component
+export default FilterDemo;
