@@ -9,7 +9,7 @@ const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) =
         className="flex items-center justify-between cursor-pointer py-1.5 hover:bg-gray-50 -mx-1 px-1 rounded"
         onClick={onToggle}
       >
-        <h3 className="text-sm font-medium text-gray-900 pointer-events-none flex-1" style={{ height: 'auto', alignSelf: 'stretch' }}>{title}</h3>
+        <h3 className="text-sm font-medium text-gray-900 pointer-events-none flex-1" style={{ height: 'auto', alignSelf: 'stretch', padding: '12px 0' }}>{title}</h3>
         <ChevronDown
           className={`w-4 h-4 text-red-600 transition-transform duration-200 ${
             !isCollapsed ? 'rotate-180' : 'rotate-0'
