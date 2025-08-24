@@ -301,6 +301,7 @@ function App() {
     ? SAMPLE_VEHICLES.filter(vehicle => favorites[vehicle.id])
     : SAMPLE_VEHICLES;
   const totalVehicles = vehiclesToShow.length;
+  const totalPages = Math.ceil(totalVehicles / resultsPerPage);
   const startIndex = (currentPage - 1) * resultsPerPage;
   const endIndex = startIndex + resultsPerPage;
   const currentVehicles = vehiclesToShow.slice(startIndex, endIndex);
