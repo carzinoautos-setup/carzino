@@ -598,11 +598,11 @@ const VehicleSearchFilter = ({
                 }
                 if (priceRange.length > 0) {
                   filterPills.push(
-                    <span key="price" className="bg-black text-white px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 max-w-full">
+                    <span key="price" className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
                       <span className="truncate flex-1">{priceRange.join(' to ')}</span>
                       <button
                         onClick={() => removeAppliedFilter('priceMin', '')}
-                        className="ml-1 bg-black text-white hover:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0"
+                        className="bg-black text-white hover:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0"
                       >
                         ×
                       </button>
