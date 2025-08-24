@@ -74,7 +74,7 @@ const getFallbackVehicles = () => ({
 export const fetchVehicles = async (params = {}) => {
   try {
     const queryParams = new URLSearchParams({
-      per_page: params.per_page || 20,
+      per_page: params.per_page || 12, // Reduced from 20 to 12 for faster loading
       page: params.page || 1,
       status: 'publish',
       ...params
