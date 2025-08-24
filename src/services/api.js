@@ -16,6 +16,60 @@ const getAuthHeaders = () => {
   };
 };
 
+// Fallback sample data for when API is not available
+const getFallbackVehicles = () => ({
+  results: [
+    {
+      id: 'fallback-1',
+      title: '2021 Chevrolet Trax LT (CORS Error - Sample Data)',
+      slug: 'sample-chevrolet-trax',
+      url: '#',
+      price: '25995',
+      sale_price: '',
+      stock_status: 'instock',
+      images: {
+        featured: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop',
+        gallery: ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop']
+      },
+      categories: [{ id: 1, name: 'SUV', slug: 'suv' }],
+      attributes: [
+        { name: 'Make', options: ['Chevrolet'] },
+        { name: 'Model', options: ['Trax'] },
+        { name: 'Mileage', options: ['86784'] }
+      ],
+      meta_data: [],
+      description: 'Sample vehicle due to API connection issue',
+      date_created: new Date().toISOString(),
+      featured: true
+    },
+    {
+      id: 'fallback-2',
+      title: '2020 Ford Mustang EcoBoost (CORS Error - Sample Data)',
+      slug: 'sample-ford-mustang',
+      url: '#',
+      price: '32999',
+      sale_price: '',
+      stock_status: 'instock',
+      images: {
+        featured: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop',
+        gallery: ['https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop']
+      },
+      categories: [{ id: 2, name: 'Coupe', slug: 'coupe' }],
+      attributes: [
+        { name: 'Make', options: ['Ford'] },
+        { name: 'Model', options: ['Mustang'] },
+        { name: 'Mileage', options: ['45123'] }
+      ],
+      meta_data: [],
+      description: 'Sample vehicle due to API connection issue',
+      date_created: new Date().toISOString(),
+      featured: false
+    }
+  ],
+  total: 2,
+  totalPages: 1
+});
+
 // Fetch all products (vehicles) from WooCommerce
 export const fetchVehicles = async (params = {}) => {
   try {
@@ -29,6 +83,7 @@ export const fetchVehicles = async (params = {}) => {
     const response = await fetch(`${WC_API_BASE}/products?${queryParams}`, {
       method: 'GET',
       headers: getAuthHeaders(),
+      mode: 'cors', // Explicitly set CORS mode
     });
 
     if (!response.ok) {
