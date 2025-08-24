@@ -35,10 +35,10 @@ const CheckboxOption = memo(({
   category
 }) => {
   return (
-    <label className="flex items-center py-1 cursor-pointer hover:bg-gray-50 -mx-1 px-1 rounded">
+    <label className="flex items-center py-1.5 cursor-pointer hover:bg-gray-50 -mx-1 px-1 rounded">
       <input
         type="checkbox"
-        className="carzino-checkbox mr-3"
+        className="carzino-checkbox mr-4"
         checked={checked}
         onChange={(e) => onChange(category, value, e.target.checked)}
       />
