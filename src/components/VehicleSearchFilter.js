@@ -660,8 +660,8 @@ const VehicleSearchFilter = ({
               placeholder="ZIP Code"
               value={filters.zipCode || '98498'}
               onChange={(e) => handleFilterChange('zipCode', e.target.value, true)}
-              className="carzino-search-input carzino-input w-full px-3 py-8 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
-              style={{ height: '55px' }}
+              className="carzino-search-input carzino-input w-full px-3 py-5 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
+              style={{ height: '39px' }}
             />
             <select
               value={filters.radius || '200'}
