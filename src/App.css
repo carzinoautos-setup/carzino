@@ -1,64 +1,383 @@
+/* ============================================
+   CSS RESET & BASE STYLES
+============================================ */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #111827;
+  background-color: #f9fafb;
+}
+
+/* ============================================
+   CSS VARIABLES / DESIGN TOKENS
+============================================ */
+:root {
+  /* Colors */
+  --color-primary: #dc2626;
+  --color-primary-hover: #b91c1c;
+  --color-primary-light: #fef2f2;
+  
+  --color-secondary: #152b6d;
+  --color-secondary-light: #f9fafb;
+  
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+  
+  --color-black: #000000;
+  --color-white: #ffffff;
+  
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-2xl: 32px;
+  --spacing-3xl: 48px;
+  
+  /* Border Radius */
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-slow: 300ms ease;
+  
+  /* Container widths */
+  --container-max: 1325px;
+}
+
+/* ============================================
+   TYPOGRAPHY SCALES
+============================================ */
+
+/* Desktop Typography */
+:root {
+  --carzino-featured-badge: 12px;
+  --carzino-badge-label: 12px;
+  --carzino-vehicle-title: 16px;
+  --carzino-vehicle-details: 12px;
+  --carzino-price-label: 12px;
+  --carzino-price-value: 16px;
+  --carzino-dealer-info: 10px;
+  --carzino-image-counter: 12px;
+  --carzino-filter-title: 16px;
+  --carzino-filter-option: 14px;
+  --carzino-filter-count: 14px;
+  --carzino-search-input: 14px;
+  --carzino-location-label: 14px;
+  --carzino-dropdown-option: 14px;
+  --carzino-vehicle-type-name: 12px;
+  --carzino-vehicle-type-count: 11px;
+  --carzino-show-more: 14px;
+}
+
+/* Mobile Typography */
+@media (max-width: 640px) {
+  :root {
+    --carzino-featured-badge: 14px;
+    --carzino-badge-label: 14px;
+    --carzino-vehicle-title: 18px;
+    --carzino-vehicle-details: 13px;
+    --carzino-price-label: 14px;
+    --carzino-price-value: 18px;
+    --carzino-dealer-info: 12px;
+    --carzino-image-counter: 14px;
+    --carzino-filter-title: 18px;
+    --carzino-filter-option: 16px;
+    --carzino-filter-count: 16px;
+    --carzino-search-input: 16px;
+    --carzino-location-label: 16px;
+    --carzino-dropdown-option: 16px;
+    --carzino-vehicle-type-name: 14px;
+    --carzino-vehicle-type-count: 13px;
+    --carzino-show-more: 16px;
+  }
+}
+
+/* ============================================
+   COMPONENT SPECIFIC CLASSES
+============================================ */
+
+/* Typography Classes */
+.carzino-featured-badge { 
+  font-size: var(--carzino-featured-badge) !important; 
+  font-weight: 500 !important; 
+}
+
+.carzino-badge-label { 
+  font-size: var(--carzino-badge-label) !important; 
+  font-weight: 500 !important; 
+}
+
+.carzino-vehicle-title { 
+  font-size: var(--carzino-vehicle-title) !important; 
+  font-weight: 600 !important; 
+}
+
+.carzino-vehicle-details { 
+  font-size: var(--carzino-vehicle-details) !important; 
+  font-weight: 400 !important; 
+}
+
+.carzino-price-label { 
+  font-size: var(--carzino-price-label) !important; 
+  font-weight: 400 !important; 
+}
+
+.carzino-price-value { 
+  font-size: var(--carzino-price-value) !important; 
+  font-weight: 700 !important; 
+}
+
+.carzino-dealer-info { 
+  font-size: 12px !important; 
+  font-weight: 500 !important; 
+}
+
+.carzino-image-counter { 
+  font-size: var(--carzino-image-counter) !important; 
+  font-weight: 400 !important; 
+}
+
+.carzino-filter-title { 
+  font-size: var(--carzino-filter-title) !important; 
+  font-weight: 600 !important; 
+}
+
+.carzino-filter-option { 
+  font-size: var(--carzino-filter-option) !important; 
+  font-weight: 400 !important; 
+}
+
+.carzino-filter-count { 
+  font-size: var(--carzino-filter-count) !important; 
+  font-weight: 400 !important; 
+  color: var(--color-gray-500) !important; 
+}
+
+.carzino-search-input { 
+  font-size: var(--carzino-search-input) !important; 
+  font-weight: 400 !important; 
+}
+
+.carzino-location-label { 
+  font-size: var(--carzino-location-label) !important; 
+  font-weight: 500 !important; 
+}
+
+.carzino-dropdown-option { 
+  font-size: var(--carzino-dropdown-option) !important; 
+  font-weight: 400 !important; 
+}
+
+.carzino-vehicle-type-name { 
+  font-size: var(--carzino-vehicle-type-name) !important; 
+  font-weight: 500 !important; 
+}
+
+.carzino-vehicle-type-count { 
+  font-size: var(--carzino-vehicle-type-count) !important; 
+  font-weight: 400 !important; 
+  color: var(--color-gray-500) !important; 
+}
+
+.carzino-show-more { 
+  font-size: var(--carzino-show-more) !important; 
+  font-weight: 500 !important; 
+}
+
+/* ============================================
+   FORM ELEMENTS
+============================================ */
+
+/* Custom Checkbox */
+.carzino-checkbox {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 3px;
+  background-color: var(--color-white);
+  position: relative;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+
+.carzino-checkbox:hover {
+  border-color: var(--color-gray-500);
+  background-color: var(--color-gray-50);
+}
+
+.carzino-checkbox:checked {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.carzino-checkbox:checked::after {
+  content: '✓';
+  position: absolute;
+  color: var(--color-white);
+  font-size: 12px;
+  top: -2px;
+  left: 2px;
+}
+
+.carzino-checkbox:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Input and Select Styles */
+.carzino-input,
+.carzino-select {
+  font-family: inherit;
+  transition: all var(--transition-fast);
+}
+
+.carzino-input:focus,
+.carzino-select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+}
+
+/* Applied Filter Pills */
+.carzino-filter-pill {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  padding: 4px 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Mobile specific */
+@media (max-width: 640px) {
+  .carzino-filter-pill {
+    font-size: 12px;
+    padding: 6px 12px;
+  }
+}
+
+/* ============================================
+   APP LAYOUT
+============================================ */
+
 .app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
 .app-header {
-  background: #fff;
+  background: var(--color-white);
   padding: 2rem;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-bottom: 3px solid #CF0D0D;
+  box-shadow: var(--shadow-sm);
+  border-bottom: 3px solid var(--color-primary);
 }
 
 .app-header h1 {
-  color: #CF0D0D;
+  color: var(--color-primary);
   margin: 0;
   font-size: 2.5rem;
   font-weight: 700;
 }
 
 .app-header p {
-  color: #6B7280;
+  color: var(--color-gray-500);
   margin: 0.5rem 0 0 0;
   font-size: 1.1rem;
 }
 
-.app-main {
-  flex: 1;
-  padding: 3rem 1rem;
-}
-
-.container {
-  max-width: 800px;
+.main-container {
+  max-width: var(--container-max);
   margin: 0 auto;
+  flex: 1;
+  width: 100%;
+  padding: 0 1rem;
 }
 
-.status-message {
-  background: #fff;
-  padding: 3rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  text-align: center;
+/* ============================================
+   VEHICLE GRID
+============================================ */
+
+.vehicle-grid {
+  display: grid;
+  gap: var(--spacing-xl);
 }
 
-.status-message h2 {
-  color: #10B981;
-  margin: 0 0 1rem 0;
-  font-size: 1.8rem;
-  font-weight: 600;
+/* Grid View */
+.vehicle-grid.grid-view {
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
 }
 
-.status-message p {
-  color: #4B5563;
-  margin: 0.5rem 0;
-  font-size: 1.1rem;
-  line-height: 1.6;
+@media (min-width: 640px) {
+  .vehicle-grid.grid-view {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-xl);
+  }
 }
 
-@media (max-width: 768px) {
+@media (min-width: 1024px) {
+  .vehicle-grid.grid-view {
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-xl);
+  }
+}
+
+/* List View */
+.vehicle-grid.list-view {
+  grid-template-columns: 1fr;
+  gap: var(--spacing-lg);
+}
+
+.vehicle-card {
+  max-width: 380px;
+  width: 100%;
+}
+
+@media (max-width: 640px) {
+  .vehicle-card {
+    max-width: 100%;
+  }
+  
   .app-header {
     padding: 1.5rem 1rem;
   }
@@ -66,9 +385,168 @@
   .app-header h1 {
     font-size: 2rem;
   }
-  
-  .status-message {
-    padding: 2rem;
-    margin: 0 1rem;
+}
+
+/* ============================================
+   FILTER CONTAINER
+============================================ */
+
+.carzino-filter-container {
+  font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-gray-200);
+}
+
+/* ============================================
+   ANIMATIONS
+============================================ */
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
   }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slideDown 200ms ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn var(--transition-base) ease-out;
+}
+
+/* ============================================
+   UTILITY CLASSES
+============================================ */
+
+/* Display */
+.hidden { display: none !important; }
+.block { display: block !important; }
+.inline-block { display: inline-block !important; }
+.flex { display: flex !important; }
+.inline-flex { display: inline-flex !important; }
+.grid { display: grid !important; }
+
+/* Flexbox */
+.flex-row { flex-direction: row !important; }
+.flex-col { flex-direction: column !important; }
+.flex-wrap { flex-wrap: wrap !important; }
+.items-center { align-items: center !important; }
+.items-start { align-items: flex-start !important; }
+.items-end { align-items: flex-end !important; }
+.justify-center { justify-content: center !important; }
+.justify-between { justify-content: space-between !important; }
+.justify-start { justify-content: flex-start !important; }
+.justify-end { justify-content: flex-end !important; }
+.flex-1 { flex: 1 1 0% !important; }
+.flex-shrink-0 { flex-shrink: 0 !important; }
+
+/* Spacing */
+.gap-1 { gap: var(--spacing-xs) !important; }
+.gap-2 { gap: var(--spacing-sm) !important; }
+.gap-3 { gap: var(--spacing-md) !important; }
+.gap-4 { gap: var(--spacing-lg) !important; }
+.gap-6 { gap: var(--spacing-xl) !important; }
+
+/* Text */
+.text-left { text-align: left !important; }
+.text-center { text-align: center !important; }
+.text-right { text-align: right !important; }
+.font-normal { font-weight: 400 !important; }
+.font-medium { font-weight: 500 !important; }
+.font-semibold { font-weight: 600 !important; }
+.font-bold { font-weight: 700 !important; }
+.truncate {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Colors */
+.text-primary { color: var(--color-primary) !important; }
+.text-gray-500 { color: var(--color-gray-500) !important; }
+.text-gray-600 { color: var(--color-gray-600) !important; }
+.text-gray-700 { color: var(--color-gray-700) !important; }
+.text-gray-900 { color: var(--color-gray-900) !important; }
+.text-white { color: var(--color-white) !important; }
+.text-black { color: var(--color-black) !important; }
+
+.bg-primary { background-color: var(--color-primary) !important; }
+.bg-white { background-color: var(--color-white) !important; }
+.bg-gray-50 { background-color: var(--color-gray-50) !important; }
+.bg-gray-100 { background-color: var(--color-gray-100) !important; }
+.bg-gray-200 { background-color: var(--color-gray-200) !important; }
+.bg-black { background-color: var(--color-black) !important; }
+
+/* Borders */
+.border { border-width: 1px !important; }
+.border-t { border-top-width: 1px !important; }
+.border-b { border-bottom-width: 1px !important; }
+.border-l { border-left-width: 1px !important; }
+.border-r { border-right-width: 1px !important; }
+.border-gray-200 { border-color: var(--color-gray-200) !important; }
+.border-gray-300 { border-color: var(--color-gray-300) !important; }
+.border-gray-400 { border-color: var(--color-gray-400) !important; }
+.rounded { border-radius: var(--radius-sm) !important; }
+.rounded-md { border-radius: var(--radius-md) !important; }
+.rounded-lg { border-radius: var(--radius-lg) !important; }
+.rounded-xl { border-radius: var(--radius-xl) !important; }
+.rounded-full { border-radius: var(--radius-full) !important; }
+
+/* Shadows */
+.shadow-sm { box-shadow: var(--shadow-sm) !important; }
+.shadow-md { box-shadow: var(--shadow-md) !important; }
+.shadow-lg { box-shadow: var(--shadow-lg) !important; }
+.shadow-xl { box-shadow: var(--shadow-xl) !important; }
+
+/* Transitions */
+.transition-all { transition: all var(--transition-base) !important; }
+.transition-colors { transition: color var(--transition-fast), background-color var(--transition-fast) !important; }
+.transition-transform { transition: transform var(--transition-base) !important; }
+.transition-shadow { transition: box-shadow var(--transition-base) !important; }
+
+/* Hover States */
+.hover\:bg-gray-50:hover { background-color: var(--color-gray-50) !important; }
+.hover\:bg-gray-100:hover { background-color: var(--color-gray-100) !important; }
+.hover\:bg-gray-200:hover { background-color: var(--color-gray-200) !important; }
+.hover\:bg-primary-hover:hover { background-color: var(--color-primary-hover) !important; }
+.hover\:text-gray-600:hover { color: var(--color-gray-600) !important; }
+.hover\:text-gray-700:hover { color: var(--color-gray-700) !important; }
+.hover\:text-primary:hover { color: var(--color-primary) !important; }
+.hover\:shadow-lg:hover { box-shadow: var(--shadow-lg) !important; }
+
+/* Responsive Display Utilities */
+@media (min-width: 640px) {
+  .sm\:hidden { display: none !important; }
+  .sm\:block { display: block !important; }
+  .sm\:flex { display: flex !important; }
+}
+
+@media (min-width: 768px) {
+  .md\:hidden { display: none !important; }
+  .md\:block { display: block !important; }
+  .md\:flex { display: flex !important; }
+}
+
+@media (min-width: 1024px) {
+  .lg\:hidden { display: none !important; }
+  .lg\:block { display: block !important; }
+  .lg\:flex { display: flex !important; }
+  .lg\:rounded-xl { border-radius: var(--radius-xl) !important; }
 }
