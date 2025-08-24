@@ -98,7 +98,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           </div>
         </div>
 
-        <h3 className="carzino-vehicle-title text-gray-900 mb-2 leading-tight overflow-hidden whitespace-nowrap text-ellipsis">
+        <h3 className="carzino-vehicle-title text-gray-900 mb-1.5 leading-tight overflow-hidden whitespace-nowrap text-ellipsis">
           {vehicle.title}
         </h3>
 
