@@ -473,7 +473,7 @@ const VehicleSearchFilter = ({
         <div className={`fixed left-0 top-0 h-full w-full bg-white shadow-xl z-50 transition-transform duration-300 ${
           onClose ? 'translate-x-0' : '-translate-x-full'
         }`}>
-          <div className="carzino-filter-container h-full overflow-y-auto">
+          <div className="h-full overflow-y-auto overflow-x-hidden w-full">
             <FilterContent />
           </div>
         </div>
