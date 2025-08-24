@@ -507,6 +507,7 @@ const VehicleSearchFilter = ({
 
               // Handle array-based filters
               Object.entries(filters).forEach(([category, value]) => {
+                // Skip configuration/default fields that shouldn't show as applied filters
                 if (category === 'radius' || category === 'termLength' || category === 'interestRate' ||
                     category === 'downPayment' || category === 'zipCode' || category === 'priceMin' ||
                     category === 'priceMax' || category === 'paymentMin' || category === 'paymentMax') {
