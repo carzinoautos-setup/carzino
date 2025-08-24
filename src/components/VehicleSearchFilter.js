@@ -733,25 +733,256 @@ const VehicleSearchFilter = ({
           </div>
         </FilterSection>
 
+        {/* Drive Type */}
+        <FilterSection
+          title="Drive Type"
+          isCollapsed={collapsedFilters.driveType}
+          onToggle={() => toggleFilter('driveType')}
+          count={getFilterCount('driveType')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="AWD (4WD)"
+              count={18943}
+              value="AWD"
+              category="driveType"
+              checked={filters.driveType?.includes('AWD')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="FWD (6,507)"
+              count={12057}
+              value="FWD"
+              category="driveType"
+              checked={filters.driveType?.includes('FWD')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="RWD (1,881)"
+              count={5883}
+              value="RWD"
+              category="driveType"
+              checked={filters.driveType?.includes('RWD')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* Transmission Speed */}
+        <FilterSection
+          title="Transmission Speed"
+          isCollapsed={collapsedFilters.transmissionSpeed}
+          onToggle={() => toggleFilter('transmissionSpeed')}
+          count={getFilterCount('transmissionSpeed')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="4-Speed Automatic"
+              count={1245}
+              value="4-Speed Automatic"
+              category="transmissionSpeed"
+              checked={filters.transmissionSpeed?.includes('4-Speed Automatic')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="5-Speed Automatic"
+              count={2341}
+              value="5-Speed Automatic"
+              category="transmissionSpeed"
+              checked={filters.transmissionSpeed?.includes('5-Speed Automatic')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="6-Speed Automatic"
+              count={3456}
+              value="6-Speed Automatic"
+              category="transmissionSpeed"
+              checked={filters.transmissionSpeed?.includes('6-Speed Automatic')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
         {/* Exterior Color */}
-        <FilterSection 
+        <FilterSection
           title="Exterior Color"
           isCollapsed={collapsedFilters.exteriorColor}
           onToggle={() => toggleFilter('exteriorColor')}
           count={getFilterCount('exteriorColor')}
         >
           <div className="space-y-1">
-            {exteriorColors.map((color) => (
-              <ColorSwatch
-                key={color.name}
-                color={color.hex}
-                name={color.name}
-                count={color.count}
-                category="exteriorColor"
-                checked={filters.exteriorColor?.includes(color.name)}
-                onChange={handleFilterChange}
-              />
-            ))}
+            <ColorSwatch
+              color="#FFFFFF"
+              name="White"
+              count={9127}
+              category="exteriorColor"
+              checked={filters.exteriorColor?.includes('White')}
+              onChange={handleFilterChange}
+            />
+            <ColorSwatch
+              color="#000000"
+              name="Black"
+              count={8563}
+              category="exteriorColor"
+              checked={filters.exteriorColor?.includes('Black')}
+              onChange={handleFilterChange}
+            />
+            <ColorSwatch
+              color="#808080"
+              name="Gray"
+              count={7502}
+              category="exteriorColor"
+              checked={filters.exteriorColor?.includes('Gray')}
+              onChange={handleFilterChange}
+            />
+            <ColorSwatch
+              color="#C0C0C0"
+              name="Silver"
+              count={5093}
+              category="exteriorColor"
+              checked={filters.exteriorColor?.includes('Silver')}
+              onChange={handleFilterChange}
+            />
+            <ColorSwatch
+              color="#0066CC"
+              name="Blue"
+              count={4266}
+              category="exteriorColor"
+              checked={filters.exteriorColor?.includes('Blue')}
+              onChange={handleFilterChange}
+            />
+            <ColorSwatch
+              color="#CC0000"
+              name="Red"
+              count={3436}
+              category="exteriorColor"
+              checked={filters.exteriorColor?.includes('Red')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* Interior Color */}
+        <FilterSection
+          title="Interior Color"
+          isCollapsed={collapsedFilters.interiorColor}
+          onToggle={() => toggleFilter('interiorColor')}
+          count={getFilterCount('interiorColor')}
+        >
+          <div className="space-y-1">
+            <ColorSwatch
+              color="#000000"
+              name="Black"
+              count={12363}
+              category="interiorColor"
+              checked={filters.interiorColor?.includes('Black')}
+              onChange={handleFilterChange}
+            />
+            <ColorSwatch
+              color="#808080"
+              name="Gray"
+              count={8502}
+              category="interiorColor"
+              checked={filters.interiorColor?.includes('Gray')}
+              onChange={handleFilterChange}
+            />
+            <ColorSwatch
+              color="#F5F5DC"
+              name="Beige"
+              count={3160}
+              category="interiorColor"
+              checked={filters.interiorColor?.includes('Beige')}
+              onChange={handleFilterChange}
+            />
+            <ColorSwatch
+              color="#8B4513"
+              name="Brown"
+              count={2353}
+              category="interiorColor"
+              checked={filters.interiorColor?.includes('Brown')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* Dealer */}
+        <FilterSection
+          title="Dealer"
+          isCollapsed={collapsedFilters.dealer}
+          onToggle={() => toggleFilter('dealer')}
+          count={getFilterCount('dealer')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="Bayside Auto Sales"
+              count={234}
+              value="Bayside Auto Sales"
+              category="dealer"
+              checked={filters.dealer?.includes('Bayside Auto Sales')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="ABC Car Sales"
+              count={156}
+              value="ABC Car Sales"
+              category="dealer"
+              checked={filters.dealer?.includes('ABC Car Sales')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* State */}
+        <FilterSection
+          title="State"
+          isCollapsed={collapsedFilters.state}
+          onToggle={() => toggleFilter('state')}
+          count={getFilterCount('state')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="Washington"
+              count={12456}
+              value="Washington"
+              category="state"
+              checked={filters.state?.includes('Washington')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Oregon"
+              count={8234}
+              value="Oregon"
+              category="state"
+              checked={filters.state?.includes('Oregon')}
+              onChange={handleFilterChange}
+            />
+          </div>
+        </FilterSection>
+
+        {/* City */}
+        <FilterSection
+          title="City"
+          isCollapsed={collapsedFilters.city}
+          onToggle={() => toggleFilter('city')}
+          count={getFilterCount('city')}
+        >
+          <div className="space-y-1">
+            <CheckboxOption
+              label="Seattle"
+              count={4567}
+              value="Seattle"
+              category="city"
+              checked={filters.city?.includes('Seattle')}
+              onChange={handleFilterChange}
+            />
+            <CheckboxOption
+              label="Portland"
+              count={3234}
+              value="Portland"
+              category="city"
+              checked={filters.city?.includes('Portland')}
+              onChange={handleFilterChange}
+            />
           </div>
         </FilterSection>
 
