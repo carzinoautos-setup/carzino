@@ -167,19 +167,18 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
 });
 
 const ColorSwatch = memo(({ color, name, count, checked, onChange, category }) => (
-  <label className="flex items-center text-sm cursor-pointer hover:bg-gray-50 p-1 rounded">
-    <input 
-      type="checkbox" 
-      className="carzino-checkbox mr-2"
+  <label className="flex items-center py-1 cursor-pointer hover:bg-gray-50 -mx-1 px-1 rounded">
+    <input
+      type="checkbox"
+      className="carzino-checkbox mr-3"
       checked={checked}
       onChange={(e) => onChange(category, name, e.target.checked)}
     />
-    <div 
-      className="w-4 h-4 rounded border border-gray-300 mr-2" 
+    <div
+      className="w-4 h-4 rounded border border-gray-300 mr-2 flex-shrink-0"
       style={{ backgroundColor: color }}
     />
-    <span className="carzino-filter-option flex-1">{name}</span>
-    <span className="carzino-filter-count ml-1">({count.toLocaleString()})</span>
+    <span className="text-sm text-gray-800 flex-1">{name} ({count.toLocaleString()})</span>
   </label>
 ));
 
@@ -474,14 +473,14 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Search Section */}
-        <div className="mb-4">
+        <div className="mb-6">
           <div className="relative">
             <input
               type="text"
               placeholder="Search Vehicles"
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600"
+              className="w-full px-3 py-2.5 pr-10 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
             />
-            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-600">
+            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600">
               <Search className="w-4 h-4" style={{ color: '#dc2626' }} />
             </button>
           </div>
@@ -515,19 +514,19 @@ const VehicleSearchFilter = ({
 
         {/* Distance */}
         <div className="mb-6">
-          <label className="block mb-2 text-sm font-normal text-gray-900">Distance</label>
-          <div className="space-y-2">
+          <label className="block mb-3 text-sm font-medium text-gray-900">Distance</label>
+          <div className="space-y-3">
             <input
               type="text"
               placeholder="ZIP Code"
               value={filters.zipCode || '98498'}
               onChange={(e) => handleFilterChange('zipCode', e.target.value, true)}
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600"
+              className="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
             />
             <select
               value={filters.radius || '200'}
               onChange={(e) => handleFilterChange('radius', e.target.value, true)}
-              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600"
+              className="w-full px-3 py-2.5 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
             >
               <option value="10">10 Miles</option>
               <option value="25">25 Miles</option>
