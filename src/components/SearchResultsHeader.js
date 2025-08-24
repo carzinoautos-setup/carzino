@@ -161,6 +161,7 @@ const SearchResultsHeader = ({
           border-bottom: 1px solid var(--border-gray);
         }
 
+        /* Applied Filters - Mobile Only */
         .applied-filters {
           padding: 12px 16px;
           border-bottom: 1px solid var(--border-gray);
