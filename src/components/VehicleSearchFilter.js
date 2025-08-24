@@ -35,16 +35,16 @@ const CheckboxOption = memo(({
   category
 }) => {
   return (
-    <label className="flex items-center hover:bg-gray-50 p-2 rounded-lg cursor-pointer transition-all duration-150 group">
+    <label className="flex items-center py-1 cursor-pointer">
       <input
         type="checkbox"
-        className="carzino-checkbox mr-3 flex-shrink-0"
+        className="carzino-checkbox mr-2"
         checked={checked}
         onChange={(e) => onChange(category, value, e.target.checked)}
       />
-      <span className="carzino-filter-option flex-1 text-gray-800 group-hover:text-gray-900">{label}</span>
+      <span className="text-sm text-gray-900 flex-1">{label}</span>
       {count !== undefined && (
-        <span className="carzino-filter-count ml-2 text-gray-500 text-sm">({count.toLocaleString()})</span>
+        <span className="text-sm text-gray-500 ml-1">({count.toLocaleString()})</span>
       )}
     </label>
   );
