@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/carzino/static/css/main.c985db4a.css",
+    "main.js": "/carzino/static/js/main.cbd34a08.js",
+    "index.html": "/carzino/index.html",
+    "main.c985db4a.css.map": "/carzino/static/css/main.c985db4a.css.map",
+    "main.cbd34a08.js.map": "/carzino/static/js/main.cbd34a08.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c985db4a.css",
+    "static/js/main.cbd34a08.js"
+  ]
+}
