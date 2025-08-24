@@ -642,11 +642,11 @@ const VehicleSearchFilter = ({
             ))}
           </div>
           {allMakes.length > 8 && (
-            <button 
+            <button
               onClick={() => setShowMoreMakes(!showMoreMakes)}
-              className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
+              className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-3 px-3 py-2 border border-red-200 rounded-lg hover:bg-red-50 transition-all duration-200 font-medium w-full"
             >
-              {showMoreMakes ? 'Show Less' : 'Show More'}
+              {showMoreMakes ? '↑ Show Less' : '↓ Show More'} ({allMakes.length - 8} more)
             </button>
           )}
         </FilterSection>
