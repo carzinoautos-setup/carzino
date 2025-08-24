@@ -488,7 +488,8 @@ const VehicleSearchFilter = ({
         </div>
 
         {/* Applied Filters */}
-        <div className="mb-6">
+        {activeFilterCount > 0 && (
+          <div className="mb-6">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-medium text-gray-900">Applied Filters</h3>
             <button
@@ -584,7 +585,8 @@ const VehicleSearchFilter = ({
               return filterPills;
             })()}
           </div>
-        </div>
+          </div>
+        )}
 
         {/* Distance */}
         <div className="mb-6">
