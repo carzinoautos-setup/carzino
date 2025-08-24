@@ -380,10 +380,11 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       
       <div className="vehicle-card">
         <div className="image-container">
-          <img 
-            src={vehicle.images ? vehicle.images[currentIndex] : vehicle.image} 
+          <img
+            src={vehicle.images ? vehicle.images[currentIndex] : vehicle.image}
             alt={vehicle.title}
             className="vehicle-image"
+            loading="lazy"
           />
           
           {vehicle.featured && (
