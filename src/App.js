@@ -345,13 +345,19 @@ function App() {
         <main className="flex-1 min-w-0 bg-white">
           {/* Search Results Header */}
           <SearchResultsHeader
-            totalResults={totalResults}
+            totalResults={showingFavorites ? favoritesCount : totalResults}
             currentFilters={filters}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
             sortBy={sortBy}
             onSortChange={handleSortChange}
             onMobileFiltersOpen={handleMobileFiltersOpen}
+            favoritesCount={favoritesCount}
+            showingFavorites={showingFavorites}
+            onToggleFavorites={handleToggleFavorites}
+            onRemoveFilter={handleRemoveFilter}
+            onClearAllFilters={handleClearAllFilters}
+            onSearch={handleSearch}
           />
 
           {/* Vehicle Grid */}
