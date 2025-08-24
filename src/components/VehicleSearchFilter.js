@@ -573,11 +573,11 @@ const VehicleSearchFilter = ({
                   });
                 } else if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[category] || '')) {
                   filterPills.push(
-                    <span key={category} className="bg-black text-white px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-2 max-w-full">
+                    <span key={category} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
                       <span className="truncate flex-1">{value}</span>
                       <button
                         onClick={() => removeAppliedFilter(category, value)}
-                        className="ml-1 bg-black text-white hover:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0"
+                        className="bg-black text-white hover:bg-gray-800 rounded-full w-5 h-5 flex items-center justify-center text-xs flex-shrink-0"
                       >
                         ×
                       </button>
