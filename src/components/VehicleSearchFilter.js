@@ -379,6 +379,15 @@ const VehicleSearchFilter = ({
 
   // Get filter counts
   const getFilterCount = useCallback((category) => {
+    // Define default values that shouldn't count as applied filters
+    const defaultValues = {
+      zipCode: '98498',
+      radius: '200',
+      termLength: '72',
+      interestRate: '8',
+      downPayment: '2000'
+    };
+
     if (category === 'price') {
       return ((filters.priceMin && filters.priceMin.toString().trim() !== '') ||
               (filters.priceMax && filters.priceMax.toString().trim() !== '')) ? 1 : 0;
@@ -391,7 +400,7 @@ const VehicleSearchFilter = ({
     if (Array.isArray(value)) {
       return value.length;
     }
-    if (value && value.toString().trim() !== '') {
+    if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[category] || '')) {
       return 1;
     }
     return 0;
