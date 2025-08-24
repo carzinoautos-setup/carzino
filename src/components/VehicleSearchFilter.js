@@ -467,20 +467,13 @@ const VehicleSearchFilter = ({
       <div className="p-4">
         {/* Mobile Header */}
         {isMobile && (
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 bg-white sticky top-0 z-10 px-4 py-4 -mx-4 -mt-4">
-            <div className="flex items-center gap-3">
-              <h2 className="text-xl font-bold text-gray-900">🔍 Filters</h2>
-              {activeFilterCount > 0 && (
-                <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full font-medium">
-                  {activeFilterCount}
-                </span>
-              )}
-            </div>
+          <div className="flex items-center justify-between mb-4 pb-4 border-b border-gray-200">
+            <h2 className="text-xl font-bold text-gray-900">Filters</h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
+              className="p-2 hover:bg-gray-100 rounded"
             >
-              <X className="w-6 h-6 text-gray-600" />
+              <X className="w-5 h-5 text-gray-600" />
             </button>
           </div>
         )}
