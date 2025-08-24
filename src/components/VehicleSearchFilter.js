@@ -514,77 +514,8 @@ const VehicleSearchFilter = ({
             <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
               Featured
             </span>
-              {/* Applied filters display */}
-              {Object.entries(filters).map(([key, value]) => {
-                if (!value || value.length === 0 || key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') {
-                  return null;
-                }
-                
-                if (Array.isArray(value)) {
-                  return value.map((item) => (
-                    <span key={`${key}-${item}`} className="carzino-filter-pill">
-                      <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
-                      {item}
-                      <button 
-                        onClick={() => removeAppliedFilter(key, item)}
-                        className="ml-1 text-white hover:text-gray-300"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ));
-                }
-                
-                if (key === 'priceMin' && (filters.priceMin || filters.priceMax)) {
-                  return (
-                    <span key="price-range" className="carzino-filter-pill">
-                      <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
-                      ${filters.priceMin || '0'} - ${filters.priceMax || 'Any'}
-                      <button 
-                        onClick={() => removeAppliedFilter('priceMin', '')}
-                        className="ml-1 text-white hover:text-gray-300"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                }
-                
-                if (key === 'paymentMin' && (filters.paymentMin || filters.paymentMax)) {
-                  return (
-                    <span key="payment-range" className="carzino-filter-pill">
-                      <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
-                      ${filters.paymentMin || '0'} - ${filters.paymentMax || 'Any'}/mo
-                      <button 
-                        onClick={() => removeAppliedFilter('paymentMin', '')}
-                        className="ml-1 text-white hover:text-gray-300"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                }
-                
-                if (key !== 'priceMax' && key !== 'paymentMax' && value && value !== '') {
-                  return (
-                    <span key={key} className="carzino-filter-pill">
-                      <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
-                      {value}
-                      <button 
-                        onClick={() => removeAppliedFilter(key, value)}
-                        className="ml-1 text-white hover:text-gray-300"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                }
-                
-                return null;
-              })}
-            </div>
           </div>
-        )}
+        </div>
 
         {/* Distance */}
         <div className="mb-4">
