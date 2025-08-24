@@ -234,8 +234,14 @@ export const fetchFilterOptions = async () => {
     };
   } catch (error) {
     console.error('Error fetching filter options:', error);
-    
-    // Return fallback empty data if API fails
+
+    // Check if it's a CORS error
+    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+      console.warn('🚨 CORS Error in filter options. Using fallback data.');
+      return getFallbackFilterOptions();
+    }
+
+    // Return fallback empty data if other API error
     return {
       makes: [],
       models: [],
