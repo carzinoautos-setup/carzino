@@ -586,28 +586,28 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Distance */}
-        <div className="mb-6 pb-6 border border-gray-200 rounded-xl p-4 bg-blue-50">
-          <label className="carzino-location-label block mb-3 text-gray-900 font-semibold">📍 Distance</label>
-          <div className="space-y-3">
+        <div className="mb-4 pb-4 border-b border-gray-200">
+          <label className="block mb-2 text-base font-normal text-gray-900">Distance</label>
+          <div className="space-y-2">
             <input
               type="text"
-              placeholder="Enter ZIP Code"
+              placeholder="ZIP Code"
               value={filters.zipCode || ''}
               onChange={(e) => handleFilterChange('zipCode', e.target.value, true)}
-              className="carzino-search-input carzino-input w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600"
             />
             <select
               value={filters.radius || '10'}
               onChange={(e) => handleFilterChange('radius', e.target.value, true)}
-              className="carzino-select w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
+              className="w-full px-3 py-2 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600"
             >
-              <option value="10">Within 10 miles</option>
-              <option value="25">Within 25 miles</option>
-              <option value="50">Within 50 miles</option>
-              <option value="100">Within 100 miles</option>
-              <option value="200">Within 200 miles</option>
-              <option value="500">Within 500 miles</option>
-              <option value="any">Any distance</option>
+              <option value="10">10 Miles</option>
+              <option value="25">25 Miles</option>
+              <option value="50">50 Miles</option>
+              <option value="100">100 Miles</option>
+              <option value="200">200 Miles</option>
+              <option value="500">500 Miles</option>
+              <option value="any">Any</option>
             </select>
           </div>
         </div>
