@@ -505,9 +505,9 @@ const SearchResultsHeader = ({
                   {activeFilters.map((filter, index) => (
                     <span key={`${filter.category}-${index}`} className="filter-pill">
                       <Check className="check-icon" />
-                      <span>{filter.value}</span>
+                      <span className="truncate flex-1">{filter.value}</span>
                       <button
-                        className="remove-filter"
+                        className="remove-filter-black"
                         onClick={() => onRemoveFilter && onRemoveFilter(filter.category, filter.value)}
                       >
                         ×
