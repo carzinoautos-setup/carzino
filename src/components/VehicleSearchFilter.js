@@ -107,7 +107,7 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
             placeholder="2,000"
             value={filters.paymentMax || ''}
             onChange={(e) => onChange('paymentMax', e.target.value.replace(/[^0-9]/g, ''), true)}
-            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-2.5 border border-gray-300 rounded focus:outline-none"
+            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-3 border border-gray-300 rounded focus:outline-none"
           />
           <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">/mo</span>
         </div>
