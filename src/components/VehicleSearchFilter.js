@@ -493,9 +493,9 @@ const VehicleSearchFilter = ({
 
         {/* Applied Filters */}
         {activeFilterCount > 0 && (
-          <div className="mb-4 pb-4 border-b border-gray-200">
+          <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
-              <h3 className="text-base font-normal text-gray-900">Applied Filters</h3>
+              <h3 className="text-sm font-normal text-gray-900">Applied Filters</h3>
               <button
                 onClick={clearAllFilters}
                 className="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-red-700"
