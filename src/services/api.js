@@ -121,6 +121,17 @@ export const fetchVehicles = async (params = {}) => {
     };
   } catch (error) {
     console.error('Error fetching vehicles:', error);
+
+    // Check if it's a CORS error or network error
+    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+      console.warn('🚨 CORS Error detected. Using fallback sample data. To fix this:');
+      console.warn('1. Enable CORS on your WordPress site');
+      console.warn('2. Or create a proxy endpoint');
+
+      // Return fallback data instead of throwing
+      return getFallbackVehicles();
+    }
+
     throw error;
   }
 };
