@@ -415,16 +415,45 @@ export const fetchProductACF = async (productId) => {
   }
 };
 
-// Test API connection with detailed debugging
+// Test API connection with comprehensive debugging
 export const testAPIConnection = async () => {
   console.log('🔗 Testing API connection to:', WC_API_BASE);
   console.log('🔑 Using credentials:', {
     key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
-    secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing',
-    fullKey: WC_CONSUMER_KEY,
-    fullSecret: WC_CONSUMER_SECRET
+    secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
   });
-  console.log('🌐 Full API URL will be:', `${WC_API_BASE}/products?per_page=1`);
+
+  // Test multiple endpoints to see which one works
+  const testUrls = [
+    `${WC_API_BASE}/products?per_page=1`,
+    `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wp/v2/posts?per_page=1`,
+    `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/products?consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}&per_page=1`
+  ];
+
+  for (const [index, testUrl] of testUrls.entries()) {
+    console.log(`🧪 Test ${index + 1}: ${testUrl}`);
+
+    try {
+      const response = await fetch(testUrl, {
+        method: 'GET',
+        headers: index === 0 ? getAuthHeaders() : {}, // Only use auth headers for WooCommerce API
+        mode: 'cors',
+      });
+
+      console.log(`📡 Response ${index + 1}:`, {
+        status: response.status,
+        statusText: response.statusText,
+        contentType: response.headers.get('content-type'),
+        headers: Object.fromEntries(response.headers.entries())
+      });
+
+      const responseText = await response.text();
+      console.log(`📄 Response ${index + 1} preview:`, responseText.substring(0, 200) + '...');
+
+    } catch (error) {
+      console.error(`❌ Test ${index + 1} failed:`, error.message);
+    }
+  }
 
   try {
     const response = await fetch(`${WC_API_BASE}/products?per_page=1`, {
