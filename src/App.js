@@ -463,8 +463,10 @@ function App() {
       <header className="app-header">
         <h1>Carzino Vehicle Search</h1>
         <p>
-          {apiConnected 
+          {apiConnected
             ? `Connected to your WooCommerce inventory (${totalResults} vehicles)`
+            : error && error.includes('CORS Error')
+            ? `Showing sample data (${totalResults} vehicles) - CORS issue detected`
             : 'Find your perfect vehicle with advanced filtering'
           }
         </p>
