@@ -179,7 +179,7 @@ const ColorSwatch = memo(({ color, name, count, checked, onChange, category }) =
       className="w-4 h-4 rounded border border-gray-300 mr-3 flex-shrink-0"
       style={{ backgroundColor: color }}
     />
-    <span className="text-sm text-gray-800 flex-1" style={{ padding: '5px 0' }}>{name} ({count.toLocaleString()})</span>
+    <span className="text-sm text-gray-800 flex-1" style={{ padding: '5px 0 5px 5px' }}>{name} ({count.toLocaleString()})</span>
   </label>
 ));
 
