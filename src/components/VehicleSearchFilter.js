@@ -398,31 +398,43 @@ const VehicleSearchFilter = ({
   // Calculate active filter count
   const activeFilterCount = useMemo(() => {
     return Object.entries(filters).reduce((count, [key, value]) => {
+      // Skip configuration/default fields that shouldn't count as active filters
       if (key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') {
         return count;
       }
+
+      // Handle price range
       if (key === 'priceMin' || key === 'priceMax') {
-        if (key === 'priceMin' && (filters.priceMin || filters.priceMax)) {
+        if (key === 'priceMin' && (filters.priceMin && filters.priceMin.toString().trim() !== '' ||
+            filters.priceMax && filters.priceMax.toString().trim() !== '')) {
           return count + 1;
         }
         if (key === 'priceMax') {
           return count;
         }
       }
+
+      // Handle payment range
       if (key === 'paymentMin' || key === 'paymentMax') {
-        if (key === 'paymentMin' && (filters.paymentMin || filters.paymentMax)) {
+        if (key === 'paymentMin' && (filters.paymentMin && filters.paymentMin.toString().trim() !== '' ||
+            filters.paymentMax && filters.paymentMax.toString().trim() !== '')) {
           return count + 1;
         }
         if (key === 'paymentMax') {
           return count;
         }
       }
+
+      // Handle array-based filters
       if (Array.isArray(value)) {
         return count + value.length;
       }
-      if (value && value !== '') {
+
+      // Handle single value filters (exclude empty values)
+      if (value && value.toString().trim() !== '') {
         return count + 1;
       }
+
       return count;
     }, 0);
   }, [filters]);
