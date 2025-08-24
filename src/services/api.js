@@ -210,12 +210,18 @@ export const fetchFilterOptions = async () => {
     // Fetch all products to analyze for filter options
     const allProducts = await fetchVehicles({ per_page: 100 });
     
-    // Extract unique makes, models, etc. from product data
+    // Extract unique data from ACF fields
     const makes = new Map();
     const models = new Map();
     const conditions = new Map();
     const bodyTypes = new Map();
     const years = new Map();
+    const transmissions = new Map();
+    const drivetrains = new Map();
+    const fuelTypes = new Map();
+    const trims = new Map();
+    const exteriorColors = new Map();
+    const interiorColors = new Map();
     
     allProducts.results.forEach(product => {
       // Extract ACF data from product meta_data
