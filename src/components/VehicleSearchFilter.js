@@ -42,7 +42,7 @@ const CheckboxOption = memo(({
         checked={checked}
         onChange={(e) => onChange(category, value, e.target.checked)}
       />
-      <span className="text-sm text-gray-800 flex-1">
+      <span className="text-sm text-gray-800 flex-1" style={{ padding: '5px 0' }}>
         {label} {count !== undefined && `(${count.toLocaleString()})`}
       </span>
     </label>
