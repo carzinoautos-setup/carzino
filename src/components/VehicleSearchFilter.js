@@ -491,7 +491,7 @@ const VehicleSearchFilter = ({
   // Filter content
   function FilterContent() {
     return (
-      <div className="p-4">
+      <div className={isMobile ? "p-0" : "p-4"}>
         {/* Mobile Header */}
         {isMobile && (
           <div className="flex items-center justify-between mb-4">
