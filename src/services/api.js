@@ -222,6 +222,27 @@ const getFallbackFilterOptions = () => ({
     { name: 'SUV', count: 1 },
     { name: 'Coupe', count: 1 }
   ],
+  transmissions: [
+    { name: 'Auto', count: 2 }
+  ],
+  drivetrains: [
+    { name: 'FWD', count: 1 },
+    { name: 'RWD', count: 1 }
+  ],
+  fuelTypes: [
+    { name: 'Gas', count: 2 }
+  ],
+  trims: [
+    { name: 'Base', count: 1 },
+    { name: 'Sport', count: 1 }
+  ],
+  exteriorColors: [
+    { name: 'Black', count: 1 },
+    { name: 'White', count: 1 }
+  ],
+  interiorColors: [
+    { name: 'Black', count: 2 }
+  ],
   total: 2
 });
 
