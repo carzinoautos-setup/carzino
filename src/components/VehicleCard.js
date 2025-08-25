@@ -220,29 +220,56 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return correctSellerName;
     }
 
+    // Try alternative field names that might be used
+    const alternativeNames = [
+      'business_name',
+      'dealer_name',
+      'seller_name',
+      'company_name',
+      'account_name'
+    ];
+
+    for (const fieldName of alternativeNames) {
+      const value = getSellerField(fieldName);
+      if (value && value.trim() !== '') {
+        console.log(`✅ Found seller name in ${fieldName}:`, value);
+        return value;
+      }
+    }
+
     // Check if this is fallback/sample data
     if (vehicle.id && vehicle.id.toString().startsWith('fallback-')) {
       console.log('📝 Using fallback data for vehicle:', vehicle.title);
       return vehicle.dealer || 'Sample Dealer';
     }
 
-    // If no seller data available, return a helpful default
-    if (!hasSellerData()) {
-      console.log('❌ No seller data available for vehicle:', vehicle.title);
-      return 'Carzino Dealer';
-    }
-
     // If seller_data exists but name is missing, try to construct a name
     if (vehicle.seller_data) {
-      const business_name = vehicle.seller_data.business_name || vehicle.seller_data.account_name;
+      const business_name = vehicle.seller_data.business_name ||
+                           vehicle.seller_data.account_name ||
+                           vehicle.seller_data.dealer_name ||
+                           vehicle.seller_data.company_name;
       if (business_name) {
         console.log('✅ Using business name from seller_data:', business_name);
         return business_name;
       }
     }
 
-    console.log('⚠️ Seller data available but name field missing - using default');
-    return 'Carzino Dealer';
+    // Check if we have any seller fields at all
+    const metaData = vehicle.meta_data || [];
+    const hasAnySellerData = metaData.some(m => m.key && m.key.includes('seller'));
+
+    if (hasAnySellerData) {
+      console.log('⚠️ Seller data available but name field missing - using account based name');
+      const accountNumber = getSellerField('account_number_seller');
+      if (accountNumber) {
+        return `Dealer Account #${accountNumber}`;
+      }
+      return 'Dealer Information Missing';
+    }
+
+    console.log('❌ No seller data available for vehicle:', vehicle.title);
+    return 'Seller Info Unavailable';
   };
 
   const getSellerLocation = () => {
