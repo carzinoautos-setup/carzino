@@ -300,7 +300,7 @@ function App() {
           } else if ((result.message && result.message.includes('401')) || (result.message && result.message.includes('403'))) {
             setError('⚠️ API authentication failed - showing demo data. Please check your WooCommerce API credentials.');
           } else if (result.message && (result.message.includes('CORS Error') || result.message.includes('Network connection'))) {
-            setError('⚠️ WordPress API confirmed working but connection blocked from Fly.dev - showing demo data.');
+            setError('⚠️ Network/CORS issue - connection blocked by browser security - showing demo data.');
           } else if (result.timeout) {
             setError('⚠️ WordPress site is slow to respond - showing demo data. This is normal for some hosting providers.');
           } else {
@@ -326,7 +326,7 @@ function App() {
 
         // Provide specific error message based on error type
         if (err.message.includes('Failed to fetch') || err.message.includes('Network connection')) {
-          setError('⚠️ Network/CORS issue - WordPress API working but blocked from Fly.dev - showing demo data.');
+          setError('⚠️ Network/CORS issue - connection blocked by browser security - showing demo data.');
         } else if (err.message.includes('timed out')) {
           setError('⚠️ Connection timeout - WordPress site slow to respond - showing demo data.');
         } else {
@@ -478,7 +478,7 @@ function App() {
       } else if (err.message.includes('timed out')) {
         setError('⚠️ WordPress site is slow to respond - showing demo data.');
       } else if (err.message.includes('Failed to fetch') || err.message.includes('Network connection')) {
-        setError('⚠️ Network/CORS issue detected - WordPress working but blocked from Fly.dev - showing demo data.');
+        setError('⚠️ Network/CORS issue detected - connection blocked by browser security - showing demo data.');
       } else if (err.message.includes('AbortError')) {
         setError('⚠️ Request timeout - connection too slow - showing demo data.');
       } else {
