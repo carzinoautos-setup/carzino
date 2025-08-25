@@ -242,7 +242,7 @@ const getFallbackVehicles = () => {
         featured: false
       },
       {
-        id: 'fallback-4',
+        id: 'fallback-tesla-1',
         title: `2022 Tesla Model 3 (${dataNote})`,
         slug: 'sample-tesla-model3',
         url: '#',
@@ -272,7 +272,7 @@ const getFallbackVehicles = () => {
         featured: true
       },
       {
-        id: 'fallback-5',
+        id: 'fallback-jeep-1',
         title: `2020 Jeep Wrangler Unlimited (${dataNote})`,
         slug: 'sample-jeep-wrangler',
         url: '#',
@@ -900,7 +900,7 @@ export const getFilteredOptions = (allVehicles, currentFilters = {}) => {
 // Fetch filter options based on real data with improved error handling
 export const fetchFilterOptions = async (currentFilters = {}) => {
   try {
-    console.log('🔍 Fetching filter options from vehicle data...');
+    console.log('�� Fetching filter options from vehicle data...');
 
     // Check if we should use fallback immediately
     if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
