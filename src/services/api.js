@@ -448,13 +448,31 @@ export const testAPIConnection = async () => {
     `${process.env.REACT_APP_WP_SITE_URL}/?wc-api=v3&request=products&oauth_consumer_key=${WC_CONSUMER_KEY}&oauth_consumer_secret=${WC_CONSUMER_SECRET}`
   ];
 
+  // First, test if WordPress site is accessible at all
+  console.log('🌐 Testing WordPress site accessibility...');
+  try {
+    const wpSiteResponse = await fetch(process.env.REACT_APP_WP_SITE_URL, {
+      method: 'GET',
+      mode: 'cors'
+    });
+    console.log('🏠 WordPress site response:', {
+      status: wpSiteResponse.status,
+      contentType: wpSiteResponse.headers.get('content-type')
+    });
+  } catch (error) {
+    console.error('❌ WordPress site not accessible:', error.message);
+  }
+
   for (const [index, testUrl] of testUrls.entries()) {
-    console.log(`🧪 Test ${index + 1}: ${testUrl}`);
+    console.log(`🧪 Test ${index + 1}: ${testUrl.substring(0, 100)}...`);
 
     try {
       const response = await fetch(testUrl, {
         method: 'GET',
-        headers: index === 0 ? getAuthHeaders() : {}, // Only use auth headers for WooCommerce API
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
         mode: 'cors',
       });
 
@@ -462,11 +480,16 @@ export const testAPIConnection = async () => {
         status: response.status,
         statusText: response.statusText,
         contentType: response.headers.get('content-type'),
-        headers: Object.fromEntries(response.headers.entries())
+        url: response.url
       });
 
       const responseText = await response.text();
-      console.log(`📄 Response ${index + 1} preview:`, responseText.substring(0, 200) + '...');
+      console.log(`📄 Response ${index + 1} preview:`, responseText.substring(0, 300) + '...');
+
+      // If we get JSON, this endpoint works!
+      if (response.headers.get('content-type')?.includes('application/json')) {
+        console.log(`✅ Test ${index + 1} SUCCESS! This endpoint returns JSON.`);
+      }
 
     } catch (error) {
       console.error(`❌ Test ${index + 1} failed:`, error.message);
