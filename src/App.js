@@ -356,7 +356,6 @@ function App() {
       setVehicles(transformedVehicles);
       setFilterOptions(filterData);
       setTotalResults(vehicleData.total);
-      setTotalPages(Math.ceil(vehicleData.total / resultsPerPage));
 
       console.log(`📊 Loaded ${transformedVehicles.length} vehicles from WooCommerce API`);
       console.log('🏷️ Filter options:', filterData);
@@ -396,7 +395,6 @@ function App() {
       // Fallback to sample data if API fails
       setVehicles(getSampleVehicles());
       setTotalResults(6);
-      setTotalPages(1);
       
     } finally {
       setLoading(false);
