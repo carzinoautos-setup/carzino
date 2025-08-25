@@ -73,27 +73,36 @@ function App() {
   useEffect(() => {
     const testConnection = async () => {
       try {
+        console.log('🔗 Starting API connection test...');
         const result = await testAPIConnection();
-        console.log('API Connection Test:', result);
-        
-        if (result.success) {
-          setApiConnected(true);
-          console.log(`✅ Connected to WooCommerce API. Found ${result.productCount} products.`);
-        } else {
-          setApiConnected(false);
-          console.error('❌ API Connection Failed:', result.message);
+        console.log('📡 API Connection Test Result:', result);
 
-          // Show specific CORS error message
-          if (result.message.includes('CORS Error')) {
-            setError('CORS Error: Your live site cannot access the WooCommerce API. Using sample data instead. See console for fix instructions.');
+        // Check if result exists and has expected properties
+        if (result && typeof result === 'object') {
+          if (result.success) {
+            setApiConnected(true);
+            console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
           } else {
-            setError(`API Connection Failed: ${result.message}`);
+            setApiConnected(false);
+            console.error('❌ API Connection Failed:', result.message || 'Unknown error');
+
+            // Show specific CORS error message
+            if (result.message && result.message.includes('CORS Error')) {
+              setError('CORS Error: Your live site cannot access the WooCommerce API. Using sample data instead. See console for fix instructions.');
+            } else {
+              setError(`API Connection Failed: ${result.message || 'Unknown API error'}`);
+            }
           }
+        } else {
+          // Result is undefined or not an object
+          console.error('❌ API test returned invalid result:', result);
+          setApiConnected(false);
+          setError('API test failed - invalid response format');
         }
       } catch (err) {
         console.error('❌ API Connection Error:', err);
         setApiConnected(false);
-        setError(`Connection Error: ${err.message}`);
+        setError(`Connection Error: ${err.message || 'Unknown connection error'}`);
       }
     };
 
