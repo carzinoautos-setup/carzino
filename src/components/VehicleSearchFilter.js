@@ -772,7 +772,7 @@ const VehicleSearchFilter = ({
 
         {/* Condition */}
         <FilterSection
-          title="Condition"
+          title={hasActiveFilters ? "Condition (filtered)" : "Condition"}
           isCollapsed={collapsedFilters.condition}
           onToggle={() => toggleFilter('condition')}
           count={getFilterCount('condition')}
@@ -792,7 +792,7 @@ const VehicleSearchFilter = ({
               ))
             ) : (
               <div className="text-sm text-gray-500 py-2">
-                Loading conditions...
+                {isLoading ? 'Loading conditions...' : hasActiveFilters ? 'No conditions available for current selection' : 'Loading conditions...'}
               </div>
             )}
           </div>
