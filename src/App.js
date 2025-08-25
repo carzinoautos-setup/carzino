@@ -338,37 +338,6 @@ function App() {
       setVehicles(transformedVehicles);
       setFilterOptions(filterData);
       setTotalResults(vehicleData.total);
-
-      console.log(`📊 Loaded ${transformedVehicles.length} vehicles from WooCommerce API`);
-      console.log('🏷️ Filter options:', filterData);
-
-      // Debug: Show makes in transformed vehicles
-      const makes = transformedVehicles.map(v => {
-        const make = v.meta_data?.find(m => m.key === 'make')?.value ||
-                    v.rawData?.meta_data?.find(m => m.key === 'make')?.value ||
-                    'Unknown';
-        return make;
-      });
-      const makeCount = makes.reduce((acc, make) => {
-        acc[make] = (acc[make] || 0) + 1;
-        return acc;
-      }, {});
-      console.log('📊 Make distribution in transformed vehicles:', makeCount);
-
-      // Debug first few vehicles
-      console.log('🚗 First 3 vehicles for debugging:');
-      transformedVehicles.slice(0, 3).forEach((vehicle, index) => {
-        console.log(`Vehicle ${index + 1}:`, {
-          title: vehicle.title,
-          id: vehicle.id,
-          rawData: vehicle.rawData ? {
-            id: vehicle.rawData.id,
-            name: vehicle.rawData.title,
-            meta_data: vehicle.rawData.meta_data?.map(m => ({ key: m.key, value: m.value })) || [],
-            attributes: vehicle.rawData.attributes?.map(a => ({ name: a.name, options: a.options })) || []
-          } : 'No rawData'
-        });
-      });
       
     } catch (err) {
       console.error('Error loading data:', err);
