@@ -183,7 +183,7 @@ function App() {
 
   // Pagination state
   const [totalResults, setTotalResults] = useState(0);
-  const resultsPerPage = 200; // Show all vehicles on one page
+  const resultsPerPage = 100; // Show up to 100 vehicles per page
 
   // Update URL when filters or page change
   const updateURL = (newFilters, page = currentPage) => {
