@@ -657,7 +657,12 @@ export const fetchVehicles = async (params = {}) => {
       }
 
       console.log('✅ Using fallback sample data instead');
-      return getFallbackVehicles();
+      const fallbackData = getFallbackVehicles();
+      console.log('📊 Fallback data loaded:', {
+        totalVehicles: fallbackData.results.length,
+        sampleTitles: fallbackData.results.slice(0, 3).map(v => v.title)
+      });
+      return fallbackData;
     }
 
     if (error.message.includes('AbortError') || error.name === 'AbortError') {
