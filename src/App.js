@@ -352,7 +352,9 @@ function App() {
       setTotalResults(vehicleData.total);
       
     } catch (err) {
-      console.error('Error loading data:', err);
+      console.error('Error loading data:');
+      console.error('  Message:', err.message);
+      console.error('  Name:', err.name);
       setError(`Failed to load vehicles: ${err.message}`);
       
       // Fallback to sample data if API fails
