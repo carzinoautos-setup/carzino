@@ -298,7 +298,6 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     }
 
     // STEP 7: Check if we have any seller fields at all
-    const metaData = vehicle.meta_data || [];
     const hasAnySellerData = metaData.some(m => m.key && m.key.includes('seller'));
 
     if (hasAnySellerData) {
