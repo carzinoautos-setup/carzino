@@ -228,8 +228,14 @@ function App() {
           setError(null); // Don't block app - use fallback
         }
       } catch (err) {
+        console.warn('API connection test failed:', err.message);
         setApiConnected(false);
-        setError(null); // Don't block app - use fallback
+        setError('⚠️ API connection failed - showing demo data. Check WordPress site configuration.');
+        // Immediately load fallback data
+        const fallbackData = getSampleVehicles();
+        setVehicles(fallbackData);
+        setTotalResults(fallbackData.length);
+        setLoading(false);
       }
     };
 
@@ -1053,7 +1059,7 @@ function App() {
                   <ol style={{ margin: '0.5rem 0', paddingLeft: '1rem' }}>
                     <li>Visit your WordPress site: <a href={process.env.REACT_APP_WP_SITE_URL} target="_blank" rel="noopener noreferrer" style={{color: '#007cba'}}>{process.env.REACT_APP_WP_SITE_URL}</a></li>
                     <li>Check if WooCommerce is active in WordPress admin</li>
-                    <li>Verify API keys in WooCommerce �� Settings → Advanced → REST API</li>
+                    <li>Verify API keys in WooCommerce → Settings → Advanced → REST API</li>
                     <li>Check WordPress error logs or contact your hosting provider</li>
                   </ol>
                 </div>
