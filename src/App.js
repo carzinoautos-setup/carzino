@@ -559,12 +559,183 @@ function App() {
     setCurrentPage(1);
   };
 
-  // Get current page vehicles
+  // Filter vehicles based on selected filters
+  const getFilteredVehicles = () => {
+    let filtered = vehicles;
+
+    // Apply make filter
+    if (filters.make && filters.make.length > 0) {
+      filtered = filtered.filter(vehicle => {
+        const vehicleMake = extractMakeFromVehicle(vehicle);
+        return vehicleMake && filters.make.includes(vehicleMake);
+      });
+    }
+
+    // Apply model filter
+    if (filters.model && filters.model.length > 0) {
+      filtered = filtered.filter(vehicle => {
+        const vehicleModel = extractModelFromVehicle(vehicle);
+        return vehicleModel && filters.model.includes(vehicleModel);
+      });
+    }
+
+    // Apply condition filter
+    if (filters.condition && filters.condition.length > 0) {
+      filtered = filtered.filter(vehicle => {
+        const vehicleCondition = extractConditionFromVehicle(vehicle);
+        return vehicleCondition && filters.condition.includes(vehicleCondition);
+      });
+    }
+
+    // Apply vehicle type filter
+    if (filters.vehicleType && filters.vehicleType.length > 0) {
+      filtered = filtered.filter(vehicle => {
+        const vehicleType = extractVehicleTypeFromVehicle(vehicle);
+        return vehicleType && filters.vehicleType.includes(vehicleType);
+      });
+    }
+
+    // Apply drive type filter
+    if (filters.driveType && filters.driveType.length > 0) {
+      filtered = filtered.filter(vehicle => {
+        const driveType = extractDriveTypeFromVehicle(vehicle);
+        return driveType && filters.driveType.includes(driveType);
+      });
+    }
+
+    // Apply transmission filter
+    if (filters.transmissionSpeed && filters.transmissionSpeed.length > 0) {
+      filtered = filtered.filter(vehicle => {
+        const transmission = extractTransmissionFromVehicle(vehicle);
+        return transmission && filters.transmissionSpeed.includes(transmission);
+      });
+    }
+
+    // Apply year filter
+    if (filters.year && filters.year.length > 0) {
+      filtered = filtered.filter(vehicle => {
+        const year = extractYearFromVehicle(vehicle);
+        return year && filters.year.includes(year.toString());
+      });
+    }
+
+    // Apply price filters
+    if (filters.priceMin || filters.priceMax) {
+      filtered = filtered.filter(vehicle => {
+        const price = extractPriceFromVehicle(vehicle);
+        if (!price) return true;
+
+        const numPrice = parseFloat(price);
+        if (filters.priceMin && numPrice < parseFloat(filters.priceMin)) return false;
+        if (filters.priceMax && numPrice > parseFloat(filters.priceMax)) return false;
+
+        return true;
+      });
+    }
+
+    return filtered;
+  };
+
+  // Helper functions to extract data from vehicles
+  const extractMakeFromVehicle = (vehicle) => {
+    if (vehicle.rawData?.meta_data) {
+      const makeMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'make');
+      if (makeMeta?.value) return makeMeta.value;
+    }
+    if (vehicle.rawData?.attributes) {
+      const makeAttr = vehicle.rawData.attributes.find(attr =>
+        attr.name.toLowerCase().includes('make')
+      );
+      if (makeAttr?.options?.[0]) return makeAttr.options[0];
+    }
+    return null;
+  };
+
+  const extractModelFromVehicle = (vehicle) => {
+    if (vehicle.rawData?.meta_data) {
+      const modelMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'model');
+      if (modelMeta?.value) return modelMeta.value;
+    }
+    if (vehicle.rawData?.attributes) {
+      const modelAttr = vehicle.rawData.attributes.find(attr =>
+        attr.name.toLowerCase().includes('model')
+      );
+      if (modelAttr?.options?.[0]) return modelAttr.options[0];
+    }
+    return null;
+  };
+
+  const extractConditionFromVehicle = (vehicle) => {
+    if (vehicle.rawData?.meta_data) {
+      const conditionMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'condition');
+      if (conditionMeta?.value) return conditionMeta.value;
+    }
+    return vehicle.rawData?.stock_status === 'instock' ? 'Available' : 'Sold';
+  };
+
+  const extractVehicleTypeFromVehicle = (vehicle) => {
+    if (vehicle.rawData?.meta_data) {
+      const typeMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'body_type');
+      if (typeMeta?.value) return typeMeta.value;
+    }
+    return vehicle.rawData?.categories?.find(cat => cat.name !== 'Uncategorized')?.name || null;
+  };
+
+  const extractDriveTypeFromVehicle = (vehicle) => {
+    if (vehicle.rawData?.meta_data) {
+      const driveMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'drivetrain');
+      if (driveMeta?.value) return driveMeta.value;
+    }
+    if (vehicle.rawData?.attributes) {
+      const driveAttr = vehicle.rawData.attributes.find(attr =>
+        attr.name.toLowerCase().includes('drive')
+      );
+      if (driveAttr?.options?.[0]) return driveAttr.options[0];
+    }
+    return null;
+  };
+
+  const extractTransmissionFromVehicle = (vehicle) => {
+    if (vehicle.rawData?.meta_data) {
+      const transMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'transmission');
+      if (transMeta?.value) return transMeta.value;
+    }
+    if (vehicle.rawData?.attributes) {
+      const transAttr = vehicle.rawData.attributes.find(attr =>
+        attr.name.toLowerCase().includes('transmission')
+      );
+      if (transAttr?.options?.[0]) return transAttr.options[0];
+    }
+    return null;
+  };
+
+  const extractYearFromVehicle = (vehicle) => {
+    if (vehicle.rawData?.meta_data) {
+      const yearMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'year');
+      if (yearMeta?.value) return yearMeta.value;
+    }
+    if (vehicle.rawData?.attributes) {
+      const yearAttr = vehicle.rawData.attributes.find(attr =>
+        attr.name.toLowerCase().includes('year')
+      );
+      if (yearAttr?.options?.[0]) return yearAttr.options[0];
+    }
+    return null;
+  };
+
+  const extractPriceFromVehicle = (vehicle) => {
+    return vehicle.rawData?.price || vehicle.rawData?.regular_price;
+  };
+
+  // Get current page vehicles with filtering
   const favoritesCount = Object.keys(favorites).length;
-  const vehiclesToShow = showingFavorites
+  const allFilteredVehicles = showingFavorites
     ? vehicles.filter(vehicle => favorites[vehicle.id])
-    : vehicles;
-  const currentVehicles = vehiclesToShow;
+    : getFilteredVehicles();
+
+  // Update total results to reflect filtered count
+  const actualTotalResults = showingFavorites ? favoritesCount : allFilteredVehicles.length;
+  const currentVehicles = allFilteredVehicles;
 
   // Loading state
   if (loading && vehicles.length === 0) {
