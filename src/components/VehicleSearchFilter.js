@@ -884,7 +884,7 @@ const VehicleSearchFilter = ({
 
         {/* Exterior Color */}
         <FilterSection
-          title="Exterior Color"
+          title={hasActiveFilters ? "Exterior Color (filtered)" : "Exterior Color"}
           isCollapsed={collapsedFilters.exteriorColor}
           onToggle={() => toggleFilter('exteriorColor')}
           count={getFilterCount('exteriorColor')}
@@ -904,7 +904,7 @@ const VehicleSearchFilter = ({
               ))
             ) : (
               <div className="text-sm text-gray-500 py-2">
-                Loading exterior colors...
+                {isLoading ? 'Loading exterior colors...' : hasActiveFilters ? 'No colors for current selection' : 'Loading exterior colors...'}
               </div>
             )}
           </div>
