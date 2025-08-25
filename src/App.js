@@ -350,9 +350,9 @@ function App() {
 
     testConnection();
 
-    // Emergency fallback: if still loading after 20 seconds and API connection is still being attempted
+    // Emergency fallback: if still loading after 20 seconds and no vehicles loaded yet
     const emergencyFallbackTimer = setTimeout(() => {
-      if (loading && vehicles.length === 0 && apiConnected === null) {
+      if (loading && vehicles.length === 0 && !error) {
         console.warn('⚠️ Emergency fallback activated - connection test took too long');
         setApiConnected(false);
         setError('⚠️ Connection timeout - using demo data. WordPress site may be slow.');
