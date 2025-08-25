@@ -245,7 +245,22 @@ function App() {
     };
 
     testConnection();
-  }, []);
+
+    // Emergency fallback: if still loading after 10 seconds, force demo data
+    const emergencyFallbackTimer = setTimeout(() => {
+      if (loading && vehicles.length === 0) {
+        console.warn('⚠️ Emergency fallback activated - loading took too long');
+        setApiConnected(false);
+        setError('⚠️ Connection timeout - showing demo data. WordPress site may be slow.');
+        const fallbackData = getSampleVehicles();
+        setVehicles(fallbackData);
+        setTotalResults(fallbackData.length);
+        setLoading(false);
+      }
+    }, 10000);
+
+    return () => clearTimeout(emergencyFallbackTimer);
+  }, [loading, vehicles.length]);
 
   // Load initial data when API is connected
   useEffect(() => {
