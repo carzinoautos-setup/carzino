@@ -360,7 +360,7 @@ function App() {
 
   // Load initial data when API is connected
   useEffect(() => {
-    if (apiConnected && !window.location.hostname.includes('fly.dev')) {
+    if (apiConnected) {
       loadVehiclesAndFilters();
     }
   }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
