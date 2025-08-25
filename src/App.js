@@ -269,6 +269,25 @@ function App() {
     }
   }, []);
 
+  // Suppress CORS-related console errors
+  useEffect(() => {
+    const originalError = console.error;
+    console.error = (...args) => {
+      const message = args.join(' ');
+      // Suppress known CORS/fetch errors to avoid confusing users
+      if (message.includes('Failed to fetch') ||
+          message.includes('CORS') ||
+          message.includes('TypeError: NetworkError')) {
+        return; // Don't log these errors
+      }
+      originalError.apply(console, args);
+    };
+
+    return () => {
+      console.error = originalError; // Restore original error handler
+    };
+  }, []);
+
   // Test API connection on mount
   useEffect(() => {
     const testConnection = async () => {
