@@ -525,11 +525,28 @@ export const testAPIConnection = async () => {
     });
     
     if (response.ok) {
-      return {
-        success: true,
-        message: 'API connection successful',
-        productCount: response.headers.get('X-WP-Total') || '0'
-      };
+      // Try to read response to verify it's actually JSON
+      try {
+        const responseText = await response.text();
+        if (responseText.includes('<!DOCTYPE') || responseText.includes('<html')) {
+          return {
+            success: false,
+            message: 'API returned HTML instead of JSON - WooCommerce API may not be enabled'
+          };
+        }
+
+        return {
+          success: true,
+          message: 'API connection successful',
+          productCount: response.headers.get('X-WP-Total') || '0',
+          sampleData: responseText.substring(0, 100) + '...'
+        };
+      } catch (readError) {
+        return {
+          success: false,
+          message: `API responded but couldn't read data: ${readError.message}`
+        };
+      }
     } else {
       return {
         success: false,
