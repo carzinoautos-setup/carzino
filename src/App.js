@@ -261,24 +261,10 @@ function App() {
   // Test API connection on mount
   useEffect(() => {
     const testConnection = async () => {
-      // Check if we're on Fly.dev domain - if so, skip API and use demo data
-      const isOnFlyDev = window.location.hostname.includes('fly.dev');
-
-      if (isOnFlyDev) {
-        console.log('🚀 Fly.dev deployment detected - using demo data due to CORS restrictions');
-        setApiConnected(false);
-        setError('⚠️ Demo mode - WordPress API confirmed working but CORS restricted from Fly.dev domain.');
-        const fallbackData = getSampleVehicles();
-        setVehicles(fallbackData);
-        setTotalResults(fallbackData.length);
-        setLoading(false);
-        return;
-      }
-
       try {
-        // Only test API connection if not on Fly.dev
+        // Test API connection with reasonable timeout
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API test timeout')), 5000)
+          setTimeout(() => reject(new Error('API test timeout')), 10000)
         );
 
         const result = await Promise.race([
