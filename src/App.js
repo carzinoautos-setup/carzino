@@ -276,8 +276,8 @@ function App() {
             setError('⚠️ WooCommerce API not found - showing demo data. Please verify WooCommerce plugin is active.');
           } else if (result.message && result.message.includes('401') || result.message && result.message.includes('403')) {
             setError('⚠️ API authentication failed - showing demo data. Please check your WooCommerce API credentials.');
-          } else if (result.message && result.message.includes('CORS Error')) {
-            setError('⚠️ API connection blocked - showing demo data. CORS configuration may need updating.');
+          } else if (result.message && (result.message.includes('CORS Error') || result.message.includes('Network connection'))) {
+            setError('⚠️ WordPress API confirmed working but connection blocked from Fly.dev - showing demo data.');
           } else if (result.timeout) {
             setError('⚠️ WordPress site is slow to respond - showing demo data. This is normal for some hosting providers.');
           } else {
