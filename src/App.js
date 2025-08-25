@@ -846,7 +846,7 @@ function App() {
       if (vehicle.id && (vehicle.id.toString().endsWith('1') || vehicle.id.toString().endsWith('2'))) {
         console.log(`🔍 Available meta_data keys for ${vehicle.title}:`, metaData.map(m => m.key));
         console.log(`🔍 Full meta_data for ${vehicle.title}:`, metaData);
-        console.log(`���� Vehicle structure for ${vehicle.title}:`, {
+        console.log(`🔍 Vehicle structure for ${vehicle.title}:`, {
           hasDirectMeta: !!vehicle.meta_data,
           hasRawDataMeta: !!vehicle.rawData?.meta_data,
           directMetaLength: vehicle.meta_data?.length || 0,
@@ -861,6 +861,9 @@ function App() {
         make = makeMeta.value;
         console.log(`📊 Found make in meta_data: "${make}" (key: ${makeMeta.key}) for ${vehicle.title}`);
         return make;
+      } else {
+        // Debug: Show why we didn't find the make
+        console.log(`❌ No make found in meta_data for ${vehicle.title}. Available keys:`, metaData.map(m => `${m.key}=${m.value}`));
       }
     }
 
