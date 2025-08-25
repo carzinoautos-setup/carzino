@@ -1204,9 +1204,17 @@ export const testAPIConnection = async () => {
       responseTime: `${responseTime}ms`
     });
 
+    // Clone response for multiple reads if needed
+    const responseClone = response.clone();
+
     if (!response.ok) {
-      // Log response text for debugging
-      const errorText = await response.text();
+      // Read error response text
+      let errorText = '';
+      try {
+        errorText = await responseClone.text();
+      } catch (e) {
+        errorText = 'Could not read error response';
+      }
       console.error('❌ API Error Response:', errorText.substring(0, 500));
 
       return {
@@ -1219,7 +1227,13 @@ export const testAPIConnection = async () => {
     // Check content type before reading
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
-      const responseText = await response.text();
+      // Read non-JSON response text for debugging
+      let responseText = '';
+      try {
+        responseText = await responseClone.text();
+      } catch (e) {
+        responseText = 'Could not read response';
+      }
       console.error('❌ Expected JSON but got:', contentType);
       console.error('❌ Response preview:', responseText.substring(0, 300));
 
@@ -1230,8 +1244,18 @@ export const testAPIConnection = async () => {
       };
     }
 
-    // Try to parse response
-    const data = await response.json();
+    // Try to parse JSON response
+    let data;
+    try {
+      data = await response.json();
+    } catch (e) {
+      console.error('❌ Failed to parse JSON response:', e);
+      return {
+        success: false,
+        message: 'API returned invalid JSON',
+        details: e.message
+      };
+    }
     console.log('✅ API test successful! Sample data:', data.slice(0, 1));
 
     return {
