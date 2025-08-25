@@ -273,9 +273,15 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return 'Dealer Information Missing';
     }
 
-    // STEP 8: Final fallback
+    // STEP 8: Final fallback - use the dealer prop from transformed data
+    if (vehicle.dealer && vehicle.dealer !== 'Carzino Dealer') {
+      console.log('💡 FALLBACK: Using transformed dealer prop:', vehicle.dealer);
+      return vehicle.dealer;
+    }
+
+    // STEP 9: Last resort
     console.log('❌ NONE: No seller data available for vehicle:', vehicle.title);
-    return 'Seller Info Unavailable';
+    return 'Contact Dealer';
   };
 
   const getSellerLocation = () => {
