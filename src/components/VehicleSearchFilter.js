@@ -201,7 +201,6 @@ const VehicleSearchFilter = ({
 }) => {
   // Local state
   const [showMoreMakes, setShowMoreMakes] = useState(false);
-  const [showMoreModels] = useState(false);
   
   // Collapsed sections state (default to collapsed to match your uploaded image)
   const [collapsedFilters, setCollapsedFilters] = useState({
