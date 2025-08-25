@@ -819,35 +819,57 @@ function App() {
   const extractMakeFromVehicle = (vehicle) => {
     let make = null;
 
+    // Debug what data we have
+    if (!vehicle?.rawData) {
+      console.log(`❌ No rawData for vehicle:`, vehicle?.title);
+      return null;
+    }
+
     // Try meta_data first
-    if (vehicle.rawData?.meta_data) {
-      const makeMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'make');
+    if (vehicle.rawData?.meta_data && Array.isArray(vehicle.rawData.meta_data)) {
+      const makeMeta = vehicle.rawData.meta_data.find(meta =>
+        meta.key === 'make' || meta.key === '_make' || meta.key === 'vehicle_make'
+      );
       if (makeMeta?.value) {
         make = makeMeta.value;
+        console.log(`📊 Found make in meta_data: "${make}" for ${vehicle.title}`);
         return make;
       }
     }
 
     // Try attributes
-    if (vehicle.rawData?.attributes) {
+    if (vehicle.rawData?.attributes && Array.isArray(vehicle.rawData.attributes)) {
       const makeAttr = vehicle.rawData.attributes.find(attr =>
-        attr.name.toLowerCase().includes('make')
+        attr.name && attr.name.toLowerCase().includes('make')
       );
       if (makeAttr?.options?.[0]) {
         make = makeAttr.options[0];
+        console.log(`📊 Found make in attributes: "${make}" for ${vehicle.title}`);
         return make;
       }
     }
 
     // Try extracting from title as fallback
-    const title = vehicle.title || '';
-    if (title.toLowerCase().includes('toyota')) make = 'Toyota';
-    else if (title.toLowerCase().includes('ford')) make = 'Ford';
-    else if (title.toLowerCase().includes('chevrolet')) make = 'Chevrolet';
-    else if (title.toLowerCase().includes('honda')) make = 'Honda';
-    else if (title.toLowerCase().includes('jeep')) make = 'Jeep';
+    const title = (vehicle.title || '').toLowerCase();
+    if (title.includes('toyota')) make = 'Toyota';
+    else if (title.includes('ford')) make = 'Ford';
+    else if (title.includes('chevrolet') || title.includes('chevy')) make = 'Chevrolet';
+    else if (title.includes('honda')) make = 'Honda';
+    else if (title.includes('jeep')) make = 'Jeep';
+    else if (title.includes('nissan')) make = 'Nissan';
+    else if (title.includes('hyundai')) make = 'Hyundai';
+    else if (title.includes('kia')) make = 'Kia';
+    else if (title.includes('bmw')) make = 'BMW';
+    else if (title.includes('mercedes')) make = 'Mercedes-Benz';
+    else if (title.includes('audi')) make = 'Audi';
+    else if (title.includes('volkswagen') || title.includes('vw')) make = 'Volkswagen';
 
-    console.log(`📊 Extracted make: "${make}" from title: "${title}"`);
+    if (make) {
+      console.log(`📊 Extracted make from title: "${make}" for ${vehicle.title}`);
+    } else {
+      console.log(`❌ No make found for ${vehicle.title}`);
+    }
+
     return make;
   };
 
