@@ -648,12 +648,21 @@ export const fetchVehicles = async (params = {}) => {
       const currentDomain = window.location.hostname;
       const isFlyDev = currentDomain.includes('fly.dev');
 
-      // Log CORS error details but don't throw - just use fallback
-      console.warn('🚨 CORS Error Details:', error);
+      console.warn('🚨 Network Connection Failed:', {
+        error: error.message,
+        domain: currentDomain,
+        targetAPI: WC_API_BASE,
+        possibleCauses: [
+          'WordPress site is down or slow',
+          'CORS headers not properly configured',
+          'Network connectivity issues',
+          'API credentials incorrect'
+        ]
+      });
 
       if (isFlyDev) {
-        console.warn('🔧 CORS Fix Needed: Add this domain to WordPress CORS settings:', currentDomain);
-        console.warn('📝 Add this to WordPress functions.php CORS allowed origins:', `'https://${currentDomain}'`);
+        console.warn('🔧 CORS Fix: Ensure this domain is in WordPress CORS settings:', currentDomain);
+        console.warn('📝 WordPress functions.php should include:', `'https://${currentDomain}'`);
       }
 
       console.log('✅ Using fallback sample data instead');
