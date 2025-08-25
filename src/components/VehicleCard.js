@@ -60,7 +60,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     console.log(`    getSellerLocation():`, getSellerLocation());
 
     console.log(`  ---`);
-  }, [vehicle.seller_data, vehicle.meta_data, vehicle.title, vehicle.id]);
+  }, [vehicle.seller_data, vehicle.meta_data, vehicle.title, vehicle.id, vehicle]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
