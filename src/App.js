@@ -228,7 +228,7 @@ function App() {
     let urlChanged = false;
 
     // List of problematic parameters to remove
-    const problematicParams = ['reload'];
+    const problematicParams = ['reload', 'cache', 'timestamp', 'debug', 'test'];
 
     // Remove known problematic parameters
     problematicParams.forEach(param => {
@@ -241,10 +241,21 @@ function App() {
     // Remove any timestamp-like parameters or very long values
     const paramsToDelete = [];
     for (const [key, value] of currentUrl.searchParams.entries()) {
-      if (/^\d{10,}$/.test(value) || value.length > 20) {
+      // Remove timestamps, very long values, or parameters with numbers > 10 digits
+      if (/^\d{10,}$/.test(value) || value.length > 30 || /reload|timestamp/i.test(key)) {
         paramsToDelete.push(key);
         urlChanged = true;
       }
+    }
+
+    // Also clean up multiple page parameters
+    const allParams = Array.from(currentUrl.searchParams.entries());
+    const pageParams = allParams.filter(([key]) => key === 'page');
+    if (pageParams.length > 1) {
+      // Keep only the last page parameter
+      currentUrl.searchParams.delete('page');
+      currentUrl.searchParams.set('page', pageParams[pageParams.length - 1][1]);
+      urlChanged = true;
     }
 
     paramsToDelete.forEach(param => {
