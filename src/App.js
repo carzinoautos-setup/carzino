@@ -218,13 +218,16 @@ function App() {
           setApiConnected(false);
           console.warn('⚠️ API Connection Failed:', result.message || 'Unknown error');
 
-          // Handle CORS errors more gracefully - don't block the app
+          // Handle different types of API failures
           if (result.message && result.message.includes('CORS Error')) {
             console.log('📝 CORS issue detected - app will use fallback data');
-            setError(null); // Don't show error - fallback will work
+            setError('⚠️ Limited demo data shown - API connection issue');
+          } else if (result.timeout) {
+            console.log('📝 API timeout detected - app will use fallback data');
+            setError('⚠️ Limited demo data shown - WordPress site is slow');
           } else {
             console.log('📝 Using fallback data instead');
-            setError(null); // Don't show error for API connection issues
+            setError('⚠️ Limited demo data shown - API connection issue');
           }
         }
         } else {
