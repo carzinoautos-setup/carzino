@@ -23,6 +23,13 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       console.log('Enhanced seller_data:', vehicle.seller_data);
       console.log('Meta data seller fields:', metaData.filter(m => m.key.includes('seller')));
       console.log(`📝 Field '${fieldName}' value:`, value);
+
+      // Show what's in the account_number_seller field
+      const accountField = metaData.find(m => m.key === 'account_number_seller');
+      if (accountField) {
+        console.log('🔗 Account number value:', accountField.value);
+        console.log('🔗 Account number type:', typeof accountField.value);
+      }
     }
 
     return value;
@@ -34,16 +41,24 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     const hasMetaData = vehicle.meta_data && vehicle.meta_data.some(m => m.key.includes('seller'));
 
     // Debug: Log the vehicle data structure for first vehicle
-    if (vehicle.id === 'fallback-1' || vehicle.title.includes('Toyota RAV4')) {
+    if (vehicle.id === 'fallback-1' || vehicle.title.includes('Toyota RAV4') || vehicle.title.includes('Chevrolet Trax')) {
       console.log('🔍 DEBUGGING VEHICLE DATA STRUCTURE:');
       console.log('Vehicle ID:', vehicle.id);
       console.log('Vehicle Title:', vehicle.title);
       console.log('Has enhanced seller_data:', hasEnhancedData);
       console.log('Enhanced seller_data:', vehicle.seller_data);
       console.log('Has meta_data with seller fields:', hasMetaData);
-      console.log('All meta_data:', vehicle.meta_data);
-      console.log('Raw vehicle object:', vehicle);
-      console.log('Vehicle keys:', Object.keys(vehicle));
+      console.log('All meta_data (', vehicle.meta_data?.length, '):', vehicle.meta_data);
+
+      // Show the specific seller field that exists
+      const sellerFields = vehicle.meta_data?.filter(m => m.key.includes('seller')) || [];
+      console.log('🎯 Seller fields found:', sellerFields);
+
+      // Show the account number field specifically
+      const accountField = vehicle.meta_data?.find(m => m.key === 'account_number_seller');
+      console.log('🔗 Account number field:', accountField);
+
+      console.log('Raw vehicle object keys:', Object.keys(vehicle));
     }
 
     return hasEnhancedData || hasMetaData;
