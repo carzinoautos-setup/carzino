@@ -1083,24 +1083,42 @@ export const fetchProductACF = async (productId) => {
   }
 };
 
-// Helper function to create fetch with timeout
-const fetchWithTimeout = async (url, options = {}, timeoutMs = 10000) => {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+// Helper function to create fetch with timeout and retry logic
+const fetchWithTimeout = async (url, options = {}, timeoutMs = 15000, retries = 2) => {
+  for (let attempt = 1; attempt <= retries + 1; attempt++) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  try {
-    const response = await fetch(url, {
-      ...options,
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
-    return response;
-  } catch (error) {
-    clearTimeout(timeoutId);
-    if (error.name === 'AbortError') {
-      throw new Error(`Request timed out after ${timeoutMs}ms`);
+    try {
+      console.log(`🔗 Attempt ${attempt}/${retries + 1}: Fetching ${url.substring(0, 100)}...`);
+
+      const response = await fetch(url, {
+        ...options,
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+      console.log(`✅ Attempt ${attempt} successful: ${response.status} ${response.statusText}`);
+      return response;
+
+    } catch (error) {
+      clearTimeout(timeoutId);
+
+      console.warn(`❌ Attempt ${attempt} failed:`, error.message);
+
+      if (attempt === retries + 1) {
+        // Last attempt failed
+        if (error.name === 'AbortError') {
+          throw new Error(`Request timed out after ${timeoutMs}ms (${retries + 1} attempts)`);
+        }
+        throw error;
+      }
+
+      // Wait before retry (exponential backoff)
+      const waitTime = Math.min(1000 * attempt, 3000);
+      console.log(`⏳ Waiting ${waitTime}ms before retry...`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
     }
-    throw error;
   }
 };
 
