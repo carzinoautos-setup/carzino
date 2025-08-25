@@ -6,13 +6,30 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [keeperMessage, setKeeperMessage] = useState(false);
   const [enhancedSellerData, setEnhancedSellerData] = useState(null);
 
-  // Seller data debugging (minimal)
+  // Enhanced seller data debugging to verify WordPress relationship resolution
   useEffect(() => {
-    // If we have seller_data, enhance with it
+    console.log(`🔍 SELLER RESOLVER DEBUG for: ${vehicle.title}`);
+    console.log(`   Vehicle ID: ${vehicle.id}`);
+    console.log(`   Has seller_data: ${!!vehicle.seller_data}`);
+    console.log(`   seller_data content:`, vehicle.seller_data);
+
     if (vehicle.seller_data) {
+      console.log(`✅ WordPress relationship resolved successfully!`);
+      console.log(`   Account Name: ${vehicle.seller_data.account_name}`);
+      console.log(`   Account Number: ${vehicle.seller_data.account_number}`);
+      console.log(`   Location: ${vehicle.seller_data.city}, ${vehicle.seller_data.state}`);
       setEnhancedSellerData(vehicle.seller_data);
+    } else {
+      console.log(`❌ No seller_data - WordPress relationship not resolved`);
+      console.log(`   Available meta_data keys:`, vehicle.meta_data?.map(m => m.key) || []);
+
+      // Check for direct meta_data seller fields as fallback
+      const sellerMeta = vehicle.meta_data?.filter(m => m.key.includes('seller')) || [];
+      if (sellerMeta.length > 0) {
+        console.log(`   Found ${sellerMeta.length} seller meta fields:`, sellerMeta);
+      }
     }
-  }, [vehicle.seller_data, vehicle.meta_data, vehicle.title, vehicle.id, vehicle]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [vehicle.seller_data, vehicle.meta_data, vehicle.title, vehicle.id]);
 
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
