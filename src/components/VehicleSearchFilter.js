@@ -538,16 +538,8 @@ const VehicleSearchFilter = ({
             </button>
           </div>
           <div className="flex flex-wrap gap-2 max-w-full overflow-hidden">
-            {/* Show dynamic active filter pills */}
             {(() => {
               const filterPills = [];
-
-              console.log('🔍 Applied Filters Debug - Full filters object:', filters);
-              console.log('🔍 Filters type check:', typeof filters, Array.isArray(filters));
-              console.log('🔍 Filter keys:', Object.keys(filters));
-              Object.entries(filters).forEach(([key, value]) => {
-                console.log(`🔍 Filter ${key}:`, value, 'Type:', typeof value, 'IsArray:', Array.isArray(value));
-              });
 
               // Define default values that shouldn't show as applied filters
               const defaultValues = {
@@ -560,20 +552,6 @@ const VehicleSearchFilter = ({
 
               // Handle array-based filters
               Object.entries(filters).forEach(([category, value]) => {
-                console.log(`🔍 Processing filter: ${category}`, value, 'IsArray?', Array.isArray(value), 'Length:', Array.isArray(value) ? value.length : 'N/A');
-
-                if (category === 'make') {
-                  console.log(`🎯 MAKE FILTER SPECIAL DEBUG:`, {
-                    category,
-                    value,
-                    isArray: Array.isArray(value),
-                    length: Array.isArray(value) ? value.length : 'N/A',
-                    valueType: typeof value,
-                    valueString: value.toString(),
-                    firstItem: Array.isArray(value) && value.length > 0 ? value[0] : 'N/A'
-                  });
-                }
-
                 // Skip configuration/default fields that shouldn't show as applied filters
                 if (category === 'radius' || category === 'termLength' || category === 'interestRate' ||
                     category === 'downPayment' || category === 'zipCode' || category === 'priceMin' ||
@@ -581,15 +559,9 @@ const VehicleSearchFilter = ({
                   return;
                 }
 
-                // Force check if value is actually an array (sometimes React state can be tricky)
-                const isReallyArray = Array.isArray(value) || (value && typeof value === 'object' && value.length !== undefined);
-
-                if (isReallyArray && value.length > 0) {
-                  console.log(`✅ Processing array filter ${category} with items:`, value);
+                if (Array.isArray(value) && value.length > 0) {
                   value.forEach((item, index) => {
-                    console.log(`  - Item ${index}: "${item}" (type: ${typeof item})`);
                     if (item && item.toString().trim() !== '') {
-                      console.log(`🎯 ADDING FILTER PILL: ${category} = "${item}"`);
                       filterPills.push(
                         <span key={`${category}-${index}`} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
                           <span className="truncate flex-1">{item}</span>
@@ -604,8 +576,6 @@ const VehicleSearchFilter = ({
                     }
                   });
                 } else if (value && typeof value === 'string' && value.trim() !== '' && value !== (defaultValues[category] || '')) {
-                  console.log(`❌ Processing string filter ${category}:`, value);
-                  console.log(`🎯 ADDING FILTER PILL: ${category} = "${value}"`);
                   filterPills.push(
                     <span key={category} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
                       <span className="truncate flex-1">{value}</span>
@@ -617,8 +587,6 @@ const VehicleSearchFilter = ({
                       </button>
                     </span>
                   );
-                } else {
-                  console.log(`⚠️ SKIPPED filter ${category}:`, value, 'Type:', typeof value, 'IsArray:', Array.isArray(value));
                 }
               });
 
