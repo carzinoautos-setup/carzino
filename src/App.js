@@ -307,18 +307,18 @@ function App() {
 
     testConnection();
 
-    // Emergency fallback: if still loading after 10 seconds, force demo data
+    // Emergency fallback: if still loading after 6 seconds, force demo data
     const emergencyFallbackTimer = setTimeout(() => {
       if (loading && vehicles.length === 0) {
         console.warn('⚠️ Emergency fallback activated - loading took too long');
         setApiConnected(false);
-        setError('⚠️ Connection timeout - showing demo data. WordPress site may be slow.');
+        setError('⚠️ Network issue detected - showing demo data. WordPress API is working but connection blocked.');
         const fallbackData = getSampleVehicles();
         setVehicles(fallbackData);
         setTotalResults(fallbackData.length);
         setLoading(false);
       }
-    }, 10000);
+    }, 6000);
 
     return () => clearTimeout(emergencyFallbackTimer);
   }, [loading, vehicles.length]);
