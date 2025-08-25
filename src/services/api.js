@@ -400,7 +400,7 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     // For any other error, still return fallback data to keep app working
-    console.warn('��� Unexpected error, using fallback data:', error.message);
+    console.warn('🚨 Unexpected error, using fallback data:', error.message);
     return getFallbackVehicles();
   }
 };
@@ -731,6 +731,19 @@ export const fetchFilterOptions = async (currentFilters = {}) => {
       years: filterOptions.years.length,
       bodyTypes: filterOptions.bodyTypes.length
     });
+
+    // If we have current filters, apply cascading logic
+    if (currentFilters && Object.keys(currentFilters).length > 0) {
+      console.log('🔗 Applying cascading filter logic based on current selections');
+      const cascadingOptions = getFilteredOptions(allProducts.results, currentFilters);
+      console.log('✅ Cascading filter options generated:', {
+        makes: cascadingOptions.makes.length,
+        models: cascadingOptions.models.length,
+        years: cascadingOptions.years.length,
+        bodyTypes: cascadingOptions.bodyTypes.length
+      });
+      return cascadingOptions;
+    }
 
     return filterOptions;
 
