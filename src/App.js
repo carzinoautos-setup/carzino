@@ -257,7 +257,15 @@ function App() {
         return;
       }
 
-      // Add timeout to prevent hanging
+      // If we have vehicles loaded, use client-side filtering for better performance
+      if (vehicles.length > 0) {
+        const { getFilteredOptions } = await import('./services/api');
+        const cascadingOptions = getFilteredOptions(vehicles, filters);
+        setFilterOptions(cascadingOptions);
+        return;
+      }
+
+      // Fallback to API call if no vehicles loaded yet
       const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('Filter update timeout')), 15000)
       );
