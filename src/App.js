@@ -566,11 +566,14 @@ function App() {
   const handleFiltersChange = (newFilters) => {
     // Clear dependent filters when parent filter changes
     if (JSON.stringify(filters.make) !== JSON.stringify(newFilters.make)) {
-      // If make changed, clear model and trim selections
-      if (newFilters.model?.length > 0) {
-        newFilters.model = [];
-        newFilters.trim = [];
-      }
+      // If make changed, always clear model and trim selections for clean cascading
+      newFilters.model = [];
+      newFilters.trim = [];
+    }
+
+    // Clear trim when model changes
+    if (JSON.stringify(filters.model) !== JSON.stringify(newFilters.model)) {
+      newFilters.trim = [];
     }
 
     setFilters(newFilters);
