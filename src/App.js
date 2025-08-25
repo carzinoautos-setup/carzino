@@ -371,9 +371,24 @@ function App() {
       setFilterOptions(filterData);
       setTotalResults(vehicleData.total);
       setTotalPages(Math.ceil(vehicleData.total / resultsPerPage));
-      
+
       console.log(`📊 Loaded ${transformedVehicles.length} vehicles from WooCommerce API`);
       console.log('🏷️ Filter options:', filterData);
+
+      // Debug first few vehicles
+      console.log('🚗 First 3 vehicles for debugging:');
+      transformedVehicles.slice(0, 3).forEach((vehicle, index) => {
+        console.log(`Vehicle ${index + 1}:`, {
+          title: vehicle.title,
+          id: vehicle.id,
+          rawData: vehicle.rawData ? {
+            id: vehicle.rawData.id,
+            name: vehicle.rawData.title,
+            meta_data: vehicle.rawData.meta_data?.map(m => ({ key: m.key, value: m.value })) || [],
+            attributes: vehicle.rawData.attributes?.map(a => ({ name: a.name, options: a.options })) || []
+          } : 'No rawData'
+        });
+      });
       
     } catch (err) {
       console.error('Error loading data:', err);
