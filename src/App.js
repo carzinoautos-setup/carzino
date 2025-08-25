@@ -454,10 +454,10 @@ function App() {
       setLoading(true);
       setError(null); // Clear any previous errors
 
-      // Load ALL vehicles from your inventory
+      // Load more vehicles from your inventory
       const vehicleParams = {
         page: 1,
-        per_page: 100, // Load up to 100 vehicles (can increase if needed)
+        per_page: 25, // Load 25 vehicles at a time (can increase gradually)
         // Add filter parameters here when implementing search
       };
 
@@ -1473,7 +1473,7 @@ function App() {
                   <ol style={{ margin: '0.5rem 0', paddingLeft: '1rem' }}>
                     <li>Visit your WordPress site: <a href={process.env.REACT_APP_WP_SITE_URL} target="_blank" rel="noopener noreferrer" style={{color: '#007cba'}}>{process.env.REACT_APP_WP_SITE_URL}</a></li>
                     <li>Check if WooCommerce is active in WordPress admin</li>
-                    <li>Verify API keys in WooCommerce → Settings → Advanced ��� REST API</li>
+                    <li>Verify API keys in WooCommerce → Settings → Advanced → REST API</li>
                     <li>Check WordPress error logs or contact your hosting provider</li>
                   </ol>
                 </div>
