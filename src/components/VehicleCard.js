@@ -121,6 +121,14 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     const hasEnhancedData = !!vehicle.seller_data;
     const hasMetaData = vehicle.meta_data && vehicle.meta_data.some(m => m.key.includes('seller'));
 
+    // Log seller data availability
+    console.log(`📊 Seller data check for ${vehicle.title}:`);
+    console.log(`  Enhanced seller_data: ${hasEnhancedData}`);
+    console.log(`  Meta data with seller fields: ${hasMetaData}`);
+    if (hasEnhancedData) {
+      console.log(`  Seller data content:`, vehicle.seller_data);
+    }
+
     // Debug: Log the vehicle data structure for first vehicle
     if (vehicle.id === 'fallback-1' || vehicle.id.toString().startsWith('fallback-') || vehicle.title.includes('Toyota RAV4') || vehicle.title.includes('Chevrolet Trax')) {
       console.log('🔍 DEBUGGING VEHICLE DATA STRUCTURE:');
