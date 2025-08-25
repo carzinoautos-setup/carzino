@@ -192,7 +192,7 @@ function App() {
       try {
         // Add timeout to prevent hanging on startup
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API test timeout')), 20000)
+          setTimeout(() => reject(new Error('API test timeout')), 8000)
         );
 
         const result = await Promise.race([
@@ -1053,7 +1053,7 @@ function App() {
                   <ol style={{ margin: '0.5rem 0', paddingLeft: '1rem' }}>
                     <li>Visit your WordPress site: <a href={process.env.REACT_APP_WP_SITE_URL} target="_blank" rel="noopener noreferrer" style={{color: '#007cba'}}>{process.env.REACT_APP_WP_SITE_URL}</a></li>
                     <li>Check if WooCommerce is active in WordPress admin</li>
-                    <li>Verify API keys in WooCommerce → Settings → Advanced → REST API</li>
+                    <li>Verify API keys in WooCommerce �� Settings → Advanced → REST API</li>
                     <li>Check WordPress error logs or contact your hosting provider</li>
                   </ol>
                 </div>
