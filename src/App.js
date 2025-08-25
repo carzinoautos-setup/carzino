@@ -1041,7 +1041,15 @@ function App() {
 
   // Update total results to reflect filtered count
   const actualTotalResults = showingFavorites ? favoritesCount : allFilteredVehicles.length;
-  const currentVehicles = allFilteredVehicles;
+
+  // Apply pagination to filtered vehicles
+  const startIndex = (currentPage - 1) * resultsPerPage;
+  const endIndex = startIndex + resultsPerPage;
+  const currentVehicles = showingFavorites
+    ? allFilteredVehicles
+    : allFilteredVehicles.slice(startIndex, endIndex);
+
+  console.log(`📄 Pagination: Page ${currentPage}, showing vehicles ${startIndex + 1}-${Math.min(endIndex, actualTotalResults)} of ${actualTotalResults} total`);
 
   // Loading state
   if (loading && vehicles.length === 0) {
