@@ -973,11 +973,12 @@ function App() {
   };
 
   const extractVehicleTypeFromVehicle = (vehicle) => {
-    if (vehicle.rawData?.meta_data) {
-      const typeMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'body_type');
-      if (typeMeta?.value) return typeMeta.value;
-    }
-    return vehicle.rawData?.categories?.find(cat => cat.name !== 'Uncategorized')?.name || null;
+    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const typeMeta = metaData.find(meta => meta.key === 'body_type');
+    if (typeMeta?.value) return typeMeta.value;
+
+    const categories = vehicle.rawData?.categories || vehicle.categories || [];
+    return categories.find(cat => cat.name !== 'Uncategorized')?.name || null;
   };
 
   const extractDriveTypeFromVehicle = (vehicle) => {
