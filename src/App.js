@@ -268,22 +268,7 @@ function App() {
       ]);
 
       setFilterOptions(filterData);
-
-      console.log('✅ ALL filter options updated for conditional behavior:', {
-        makes: filterData.makes?.length || 0,
-        models: filterData.models?.length || 0,
-        conditions: filterData.conditions?.length || 0,
-        vehicleTypes: filterData.bodyTypes?.length || 0,
-        driveTypes: filterData.drivetrains?.length || 0,
-        years: filterData.years?.length || 0,
-        transmissions: filterData.transmissions?.length || 0,
-        exteriorColors: filterData.exteriorColors?.length || 0,
-        interiorColors: filterData.interiorColors?.length || 0,
-        fuelTypes: filterData.fuelTypes?.length || 0,
-        trims: filterData.trims?.length || 0
-      });
     } catch (err) {
-      console.warn('⚠️ Filter options update failed, keeping existing options:', err.message);
       // Silently fail to prevent blocking the UI
     }
   };
@@ -748,7 +733,7 @@ function App() {
 
         return matches;
       });
-      console.log(`�� Make filter applied: ${beforeMakeFilter} → ${filtered.length} vehicles (filtered by: ${filters.make.join(', ')})`);
+      console.log(`🔍 Make filter applied: ${beforeMakeFilter} → ${filtered.length} vehicles (filtered by: ${filters.make.join(', ')})`);
     }
 
     // Apply model filter
