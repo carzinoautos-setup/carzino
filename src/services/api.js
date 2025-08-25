@@ -1153,15 +1153,19 @@ const fetchWithTimeout = async (url, options = {}, timeoutMs = 15000, retries = 
     } catch (error) {
       clearTimeout(timeoutId);
 
-      console.warn(`❌ Attempt ${attempt} failed:`, error.message);
+      // Suppress console warnings for CORS errors to avoid confusion
+      if (!error.message.includes('Failed to fetch')) {
+        console.warn(`❌ Attempt ${attempt} failed:`, error.message);
+      }
 
       if (attempt === retries + 1) {
-        // Last attempt failed
+        // Last attempt failed - return structured error instead of throwing
         if (error.name === 'AbortError') {
           throw new Error(`Request timed out after ${timeoutMs}ms (${retries + 1} attempts)`);
         }
-        if (error.message === 'Failed to fetch') {
-          throw new Error(`Network connection failed after ${retries + 1} attempts - likely CORS or connectivity issue`);
+        if (error.message === 'Failed to fetch' || error.name === 'TypeError') {
+          // Don't throw for CORS errors, return a structured error instead
+          throw new Error(`CORS_BLOCKED`);
         }
         throw error;
       }
