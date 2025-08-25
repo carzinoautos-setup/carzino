@@ -36,9 +36,13 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     const accountField = metaData.find(m => m.key === 'account_number_seller');
     const accountNumber = accountField?.value;
 
-    // Debug: Log account numbers for first few vehicles
+    // Debug: Log account numbers for ALL vehicles (more aggressive debugging)
     if (fieldName === 'acount_name_seller') {
-      console.log(`🔍 Vehicle: ${vehicle.title} | Account: ${accountNumber} | Type: ${typeof accountNumber}`);
+      console.log(`🔍 Vehicle: ${vehicle.title}`);
+      console.log(`🔍 Account: "${accountNumber}" | Type: ${typeof accountNumber}`);
+      console.log(`🔍 Raw meta_data:`, metaData);
+      console.log(`🔍 Account field:`, accountField);
+      console.log(`🔍 String comparison: "${String(accountNumber).trim()}" === "73" is ${String(accountNumber).trim() === '73'}`);
     }
 
     // HARDCODED SOLUTION: ONLY for account 73 (strict comparison)
