@@ -1170,7 +1170,7 @@ const testBasicConnectivity = async () => {
 // Test API connection with improved CORS handling and timeout
 export const testAPIConnection = async () => {
   console.log('🔗 Testing API connection to:', WC_API_BASE);
-  console.log('��� Using credentials:', {
+  console.log('🔑 Using credentials:', {
     key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
   });
@@ -1249,12 +1249,13 @@ export const testAPIConnection = async () => {
     // Check content type before reading body
     if (!contentType || !contentType.includes('application/json')) {
       // Clone for debug text reading
-      const debugClone = response.clone();
       let responseText = '';
       try {
+        const debugClone = response.clone();
         responseText = await debugClone.text();
       } catch (e) {
-        responseText = 'Could not read response';
+        console.warn('Could not clone/read debug response:', e.message);
+        responseText = `Content-Type: ${contentType} - Could not read response body`;
       }
       console.error('❌ Expected JSON but got:', contentType);
       console.error('❌ Response preview:', responseText.substring(0, 300));
