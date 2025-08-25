@@ -67,59 +67,201 @@ const getAuthHeaders = () => {
   };
 };
 
-// Fallback sample data for when API is not available
-const getFallbackVehicles = () => ({
-  results: [
-    {
-      id: 'fallback-1',
-      title: '2021 Chevrolet Trax LT (CORS Error - Sample Data)',
-      slug: 'sample-chevrolet-trax',
-      url: '#',
-      price: '25995',
-      sale_price: '',
-      stock_status: 'instock',
-      images: {
-        featured: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop',
-        gallery: ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop']
+// Fallback sample data for when API is not available - realistic vehicle inventory
+const getFallbackVehicles = () => {
+  const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
+  const dataNote = isProduction ? 'API Connection Issue' : 'Dev Environment Sample';
+
+  return {
+    results: [
+      {
+        id: 'fallback-1',
+        title: `2021 Toyota RAV4 XLE (${dataNote})`,
+        slug: 'sample-toyota-rav4',
+        url: '#',
+        price: '28995',
+        sale_price: '26995',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop',
+          gallery: [
+            'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop',
+            'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop'
+          ]
+        },
+        categories: [{ id: 1, name: 'SUV', slug: 'suv' }],
+        attributes: [
+          { name: 'Make', options: ['Toyota'] },
+          { name: 'Model', options: ['RAV4'] },
+          { name: 'Year', options: ['2021'] },
+          { name: 'Mileage', options: ['32456'] },
+          { name: 'Transmission', options: ['Automatic'] },
+          { name: 'Drive Type', options: ['AWD'] }
+        ],
+        meta_data: [
+          { key: 'dealer', value: 'Carzino Auto Sales' },
+          { key: 'location', value: 'Tacoma, WA' },
+          { key: 'phone', value: '(253) 555-0100' }
+        ],
+        description: 'Reliable SUV with excellent safety ratings and fuel economy.',
+        date_created: new Date().toISOString(),
+        featured: true
       },
-      categories: [{ id: 1, name: 'SUV', slug: 'suv' }],
-      attributes: [
-        { name: 'Make', options: ['Chevrolet'] },
-        { name: 'Model', options: ['Trax'] },
-        { name: 'Mileage', options: ['86784'] }
-      ],
-      meta_data: [],
-      description: 'Sample vehicle due to API connection issue',
-      date_created: new Date().toISOString(),
-      featured: true
-    },
-    {
-      id: 'fallback-2',
-      title: '2020 Ford Mustang EcoBoost (CORS Error - Sample Data)',
-      slug: 'sample-ford-mustang',
-      url: '#',
-      price: '32999',
-      sale_price: '',
-      stock_status: 'instock',
-      images: {
-        featured: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop',
-        gallery: ['https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop']
+      {
+        id: 'fallback-2',
+        title: `2020 Honda Civic Sport (${dataNote})`,
+        slug: 'sample-honda-civic',
+        url: '#',
+        price: '22995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 2, name: 'Sedan', slug: 'sedan' }],
+        attributes: [
+          { name: 'Make', options: ['Honda'] },
+          { name: 'Model', options: ['Civic'] },
+          { name: 'Year', options: ['2020'] },
+          { name: 'Mileage', options: ['45123'] },
+          { name: 'Transmission', options: ['Manual'] },
+          { name: 'Drive Type', options: ['FWD'] }
+        ],
+        meta_data: [
+          { key: 'dealer', value: 'Carzino Auto Sales' },
+          { key: 'location', value: 'Seattle, WA' },
+          { key: 'phone', value: '(206) 555-0200' }
+        ],
+        description: 'Sporty and fuel-efficient sedan with manual transmission.',
+        date_created: new Date().toISOString(),
+        featured: false
       },
-      categories: [{ id: 2, name: 'Coupe', slug: 'coupe' }],
-      attributes: [
-        { name: 'Make', options: ['Ford'] },
-        { name: 'Model', options: ['Mustang'] },
-        { name: 'Mileage', options: ['45123'] }
-      ],
-      meta_data: [],
-      description: 'Sample vehicle due to API connection issue',
-      date_created: new Date().toISOString(),
-      featured: false
-    }
-  ],
-  total: 2,
-  totalPages: 1
-});
+      {
+        id: 'fallback-3',
+        title: `2019 Ford F-150 XLT (${dataNote})`,
+        slug: 'sample-ford-f150',
+        url: '#',
+        price: '35995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 3, name: 'Truck', slug: 'truck' }],
+        attributes: [
+          { name: 'Make', options: ['Ford'] },
+          { name: 'Model', options: ['F-150'] },
+          { name: 'Year', options: ['2019'] },
+          { name: 'Mileage', options: ['68,340'] },
+          { name: 'Transmission', options: ['Automatic'] },
+          { name: 'Drive Type', options: ['4WD'] }
+        ],
+        meta_data: [
+          { key: 'dealer', value: 'Carzino Auto Sales' },
+          { key: 'location', value: 'Spokane, WA' },
+          { key: 'phone', value: '(509) 555-0300' }
+        ],
+        description: 'Reliable work truck with 4WD capability and towing package.',
+        date_created: new Date().toISOString(),
+        featured: false
+      },
+      {
+        id: 'fallback-4',
+        title: `2022 Tesla Model 3 (${dataNote})`,
+        slug: 'sample-tesla-model3',
+        url: '#',
+        price: '42995',
+        sale_price: '39995',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 4, name: 'Electric', slug: 'electric' }],
+        attributes: [
+          { name: 'Make', options: ['Tesla'] },
+          { name: 'Model', options: ['Model 3'] },
+          { name: 'Year', options: ['2022'] },
+          { name: 'Mileage', options: ['18,500'] },
+          { name: 'Transmission', options: ['Single Speed'] },
+          { name: 'Drive Type', options: ['RWD'] }
+        ],
+        meta_data: [
+          { key: 'dealer', value: 'Carzino Auto Sales' },
+          { key: 'location', value: 'Bellevue, WA' },
+          { key: 'phone', value: '(425) 555-0400' }
+        ],
+        description: 'Electric sedan with autopilot features and supercharging capability.',
+        date_created: new Date().toISOString(),
+        featured: true
+      },
+      {
+        id: 'fallback-5',
+        title: `2020 Jeep Wrangler Unlimited (${dataNote})`,
+        slug: 'sample-jeep-wrangler',
+        url: '#',
+        price: '31995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 5, name: 'SUV', slug: 'suv' }],
+        attributes: [
+          { name: 'Make', options: ['Jeep'] },
+          { name: 'Model', options: ['Wrangler'] },
+          { name: 'Year', options: ['2020'] },
+          { name: 'Mileage', options: ['42,890'] },
+          { name: 'Transmission', options: ['Manual'] },
+          { name: 'Drive Type', options: ['4WD'] }
+        ],
+        meta_data: [
+          { key: 'dealer', value: 'Carzino Auto Sales' },
+          { key: 'location', value: 'Olympia, WA' },
+          { key: 'phone', value: '(360) 555-0500' }
+        ],
+        description: 'Off-road capable SUV with removable doors and roof.',
+        date_created: new Date().toISOString(),
+        featured: false
+      },
+      {
+        id: 'fallback-6',
+        title: `2021 BMW 3 Series 330i (${dataNote})`,
+        slug: 'sample-bmw-330i',
+        url: '#',
+        price: '38995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1555215695-3004980ad54e?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 6, name: 'Luxury', slug: 'luxury' }],
+        attributes: [
+          { name: 'Make', options: ['BMW'] },
+          { name: 'Model', options: ['3 Series'] },
+          { name: 'Year', options: ['2021'] },
+          { name: 'Mileage', options: ['24,500'] },
+          { name: 'Transmission', options: ['Automatic'] },
+          { name: 'Drive Type', options: ['RWD'] }
+        ],
+        meta_data: [
+          { key: 'dealer', value: 'Carzino Auto Sales' },
+          { key: 'location', value: 'Redmond, WA' },
+          { key: 'phone', value: '(425) 555-0600' }
+        ],
+        description: 'Luxury sports sedan with premium interior and advanced technology.',
+        date_created: new Date().toISOString(),
+        featured: false
+      }
+    ],
+    total: 6,
+    totalPages: 1
+  };
+};
 
 // Fetch all products (vehicles) from WooCommerce with improved error handling
 export const fetchVehicles = async (params = {}) => {
@@ -263,49 +405,75 @@ export const fetchVehicles = async (params = {}) => {
   }
 };
 
-// Fallback filter options for when API is not available
+// Fallback filter options for when API is not available - matches fallback vehicles
 const getFallbackFilterOptions = () => ({
   makes: [
-    { name: 'Chevrolet', count: 1 },
-    { name: 'Ford', count: 1 }
+    { name: 'Toyota', count: 1 },
+    { name: 'Honda', count: 1 },
+    { name: 'Ford', count: 1 },
+    { name: 'Tesla', count: 1 },
+    { name: 'Jeep', count: 1 },
+    { name: 'BMW', count: 1 }
   ],
   models: [
-    { name: 'Trax', count: 1 },
-    { name: 'Mustang', count: 1 }
+    { name: 'RAV4', count: 1 },
+    { name: 'Civic', count: 1 },
+    { name: 'F-150', count: 1 },
+    { name: 'Model 3', count: 1 },
+    { name: 'Wrangler', count: 1 },
+    { name: '3 Series', count: 1 }
   ],
   years: [
-    { name: '2021', count: 1 },
-    { name: '2020', count: 1 }
+    { name: '2022', count: 1 },
+    { name: '2021', count: 2 },
+    { name: '2020', count: 2 },
+    { name: '2019', count: 1 }
   ],
   conditions: [
-    { name: 'Available', count: 2 }
+    { name: 'Available', count: 6 }
   ],
   bodyTypes: [
-    { name: 'SUV', count: 1 },
-    { name: 'Coupe', count: 1 }
+    { name: 'SUV', count: 2 },
+    { name: 'Sedan', count: 1 },
+    { name: 'Truck', count: 1 },
+    { name: 'Electric', count: 1 },
+    { name: 'Luxury', count: 1 }
   ],
   transmissions: [
-    { name: 'Auto', count: 2 }
+    { name: 'Automatic', count: 4 },
+    { name: 'Manual', count: 2 },
+    { name: 'Single Speed', count: 1 }
   ],
   drivetrains: [
+    { name: 'AWD', count: 1 },
     { name: 'FWD', count: 1 },
-    { name: 'RWD', count: 1 }
+    { name: '4WD', count: 2 },
+    { name: 'RWD', count: 2 }
   ],
   fuelTypes: [
-    { name: 'Gas', count: 2 }
+    { name: 'Gasoline', count: 5 },
+    { name: 'Electric', count: 1 }
   ],
   trims: [
-    { name: 'Base', count: 1 },
-    { name: 'Sport', count: 1 }
+    { name: 'XLE', count: 1 },
+    { name: 'Sport', count: 1 },
+    { name: 'XLT', count: 1 },
+    { name: 'Standard', count: 1 },
+    { name: 'Unlimited', count: 1 },
+    { name: '330i', count: 1 }
   ],
   exteriorColors: [
-    { name: 'Black', count: 1 },
-    { name: 'White', count: 1 }
+    { name: 'Silver', count: 2 },
+    { name: 'Blue', count: 1 },
+    { name: 'Red', count: 1 },
+    { name: 'White', count: 1 },
+    { name: 'Black', count: 1 }
   ],
   interiorColors: [
-    { name: 'Black', count: 2 }
+    { name: 'Black', count: 4 },
+    { name: 'Gray', count: 2 }
   ],
-  total: 2
+  total: 6
 });
 
 // Fetch filter options based on real data
