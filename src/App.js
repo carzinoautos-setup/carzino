@@ -142,15 +142,39 @@ function App() {
   const [totalPages, setTotalPages] = useState(1);
   const resultsPerPage = 12; // Reduced from 25 to 12 for faster loading
 
+  // Update URL when filters change
+  const updateURL = (newFilters) => {
+    const params = filtersToURLParams(newFilters);
+    const newURL = params ? `${window.location.pathname}?${params}` : window.location.pathname;
+
+    if (newURL !== window.location.pathname + window.location.search) {
+      window.history.pushState(null, '', newURL);
+      console.log('🔗 Updated URL:', newURL);
+    }
+  };
+
+  // Handle browser back/forward navigation
+  useEffect(() => {
+    const handlePopState = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const newFilters = URLParamsToFilters(urlParams);
+      console.log('🔙 Browser navigation detected, updating filters from URL');
+      setFilters(newFilters);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
   // Check if mobile
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 1024);
     };
-    
+
     checkMobile();
     window.addEventListener('resize', checkMobile);
-    
+
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
