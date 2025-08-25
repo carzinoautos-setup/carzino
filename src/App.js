@@ -343,9 +343,9 @@ function App() {
 
     testConnection();
 
-    // Emergency fallback: if still loading after 20 seconds, force demo data (only for local dev)
+    // Emergency fallback: if still loading after 20 seconds, force demo data
     const emergencyFallbackTimer = setTimeout(() => {
-      if (loading && vehicles.length === 0 && !window.location.hostname.includes('fly.dev')) {
+      if (loading && vehicles.length === 0) {
         console.warn('⚠️ Emergency fallback activated - loading took too long');
         setApiConnected(false);
         setError('⚠️ Connection timeout - showing demo data. Check WordPress site configuration.');
