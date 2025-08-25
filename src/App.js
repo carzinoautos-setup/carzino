@@ -225,7 +225,12 @@ function App() {
         }
         } else {
           setApiConnected(false);
-          setError(null); // Don't block app - use fallback
+          setError('⚠️ API connection failed - showing demo data. Check WordPress site configuration.');
+          // Immediately load fallback data
+          const fallbackData = getSampleVehicles();
+          setVehicles(fallbackData);
+          setTotalResults(fallbackData.length);
+          setLoading(false);
         }
       } catch (err) {
         console.warn('API connection test failed:', err.message);
