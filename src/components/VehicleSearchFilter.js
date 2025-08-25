@@ -777,70 +777,23 @@ const VehicleSearchFilter = ({
           count={getFilterCount('vehicleType')}
         >
           <div className="space-y-2">
-            <CheckboxOption
-              label="Convertible"
-              count={196}
-              value="Convertible"
-              category="vehicleType"
-              checked={filters.vehicleType?.includes('Convertible')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Coupe"
-              count={419}
-              value="Coupe"
-              category="vehicleType"
-              checked={filters.vehicleType?.includes('Coupe')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Hatchback"
-              count={346}
-              value="Hatchback"
-              category="vehicleType"
-              checked={filters.vehicleType?.includes('Hatchback')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Sedan"
-              count={1698}
-              value="Sedan"
-              category="vehicleType"
-              checked={filters.vehicleType?.includes('Sedan')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="SUV / Crossover"
-              count={3405}
-              value="SUV / Crossover"
-              category="vehicleType"
-              checked={filters.vehicleType?.includes('SUV / Crossover')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Truck"
-              count={2217}
-              value="Truck"
-              category="vehicleType"
-              checked={filters.vehicleType?.includes('Truck')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Van / Minivan"
-              count={203}
-              value="Van / Minivan"
-              category="vehicleType"
-              checked={filters.vehicleType?.includes('Van / Minivan')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Wagon"
-              count={43}
-              value="Wagon"
-              category="vehicleType"
-              checked={filters.vehicleType?.includes('Wagon')}
-              onChange={handleFilterChange}
-            />
+            {allVehicleTypes.length > 0 ? (
+              allVehicleTypes.map((vehicleType) => (
+                <CheckboxOption
+                  key={vehicleType.name}
+                  label={vehicleType.name}
+                  count={vehicleType.count}
+                  value={vehicleType.name}
+                  category="vehicleType"
+                  checked={filters.vehicleType?.includes(vehicleType.name)}
+                  onChange={handleFilterChange}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-gray-500 py-2">
+                Loading vehicle types...
+              </div>
+            )}
           </div>
         </FilterSection>
 
