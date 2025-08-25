@@ -795,17 +795,38 @@ function App() {
 
   // Helper functions to extract data from vehicles
   const extractMakeFromVehicle = (vehicle) => {
+    let make = null;
+
+    // Try meta_data first
     if (vehicle.rawData?.meta_data) {
       const makeMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'make');
-      if (makeMeta?.value) return makeMeta.value;
+      if (makeMeta?.value) {
+        make = makeMeta.value;
+        return make;
+      }
     }
+
+    // Try attributes
     if (vehicle.rawData?.attributes) {
       const makeAttr = vehicle.rawData.attributes.find(attr =>
         attr.name.toLowerCase().includes('make')
       );
-      if (makeAttr?.options?.[0]) return makeAttr.options[0];
+      if (makeAttr?.options?.[0]) {
+        make = makeAttr.options[0];
+        return make;
+      }
     }
-    return null;
+
+    // Try extracting from title as fallback
+    const title = vehicle.title || '';
+    if (title.toLowerCase().includes('toyota')) make = 'Toyota';
+    else if (title.toLowerCase().includes('ford')) make = 'Ford';
+    else if (title.toLowerCase().includes('chevrolet')) make = 'Chevrolet';
+    else if (title.toLowerCase().includes('honda')) make = 'Honda';
+    else if (title.toLowerCase().includes('jeep')) make = 'Jeep';
+
+    console.log(`📊 Extracted make: "${make}" from title: "${title}"`);
+    return make;
   };
 
   const extractModelFromVehicle = (vehicle) => {
