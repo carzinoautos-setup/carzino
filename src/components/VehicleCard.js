@@ -13,7 +13,17 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getCondition = () => {
-    return getSellerField('condition') || (vehicle.stock_status === 'instock' ? 'Available' : 'Sold');
+    const condition = getSellerField('condition');
+    if (condition && condition.trim() !== '') {
+      return condition;
+    }
+    // Check other possible condition field names
+    const vehicleCondition = getSellerField('vehicle_condition') || getSellerField('condition_seller');
+    if (vehicleCondition && vehicleCondition.trim() !== '') {
+      return vehicleCondition;
+    }
+    // Only use stock status as last resort, with different text
+    return vehicle.stock_status === 'instock' ? 'In Stock' : 'Sold';
   };
 
   const getDrivetrain = () => {
@@ -21,7 +31,25 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
-    return getSellerField('acount_name_seller') || getSellerField('account_name_seller') || vehicle.dealer || 'Dealer';
+    // Try multiple variations of the seller name field
+    const sellerName = getSellerField('acount_name_seller') ||
+                      getSellerField('account_name_seller') ||
+                      getSellerField('seller_name') ||
+                      getSellerField('dealer_name');
+
+    if (sellerName && sellerName.trim() !== '') {
+      return sellerName;
+    }
+
+    // Fallback to vehicle.dealer, but make sure it's not the features text
+    const dealerFallback = vehicle.dealer || 'Dealer';
+
+    // Check if dealer field contains features (long text with commas)
+    if (dealerFallback.includes(',') && dealerFallback.length > 50) {
+      return 'Dealer'; // Return generic name if it's features text
+    }
+
+    return dealerFallback;
   };
 
   const getSellerLocation = () => {
