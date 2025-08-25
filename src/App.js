@@ -902,7 +902,6 @@ function App() {
     else if (lowerTitle.includes('pilot')) model = 'Pilot';
 
     if (model) {
-      console.log(`📊 Extracted model from title: "${model}" for ${vehicle.title}`);
       return model;
     }
 
