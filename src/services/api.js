@@ -32,7 +32,7 @@ if (WC_CONSUMER_KEY && !WC_CONSUMER_KEY.startsWith('ck_')) {
   console.warn('⚠️ Consumer key doesn\'t start with "ck_" - may be invalid');
 }
 if (WC_CONSUMER_SECRET && !WC_CONSUMER_SECRET.startsWith('cs_')) {
-  console.warn('⚠️ Consumer secret doesn\'t start with "cs_" - may be invalid');
+  console.warn('⚠��� Consumer secret doesn\'t start with "cs_" - may be invalid');
 }
 
 // Simple cache system for faster loading
@@ -732,7 +732,7 @@ const getFallbackFilterOptions = () => ({
     { name: 'Black', count: 4 },
     { name: 'Gray', count: 1 }
   ],
-  total: 5
+  total: 12
 });
 
 // Generate cascading filter options based on current filter selections
@@ -1208,7 +1208,7 @@ export const testAPIConnection = async () => {
         ? `CORS Error: Connection failed from production. Check WordPress CORS settings.`
         : `CORS Error: Dev server not allowed. This is expected - production site will work.`;
 
-      console.log('���� CORS Fix Instructions for WordPress:');
+      console.log('💡 CORS Fix Instructions for WordPress:');
       console.log('The CORS code should already be updated to allow both domains.');
       console.log('If still failing, check that the code was saved correctly.');
 
