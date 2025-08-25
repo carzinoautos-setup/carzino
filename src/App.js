@@ -1226,8 +1226,27 @@ function App() {
               ))
             ) : (
               <div style={{ textAlign: 'center', padding: '2rem', gridColumn: '1 / -1' }}>
-                {apiConnected 
-                  ? 'No vehicles found. Try adjusting your filters.' 
+                {apiConnected
+                  ? (
+                    <div>
+                      <p>No vehicles found. Try adjusting your filters.</p>
+                      <button
+                        onClick={handleClearAllFilters}
+                        style={{
+                          background: '#007cba',
+                          color: 'white',
+                          border: 'none',
+                          padding: '8px 16px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          marginTop: '10px'
+                        }}
+                      >
+                        Clear All Filters & Show All Vehicles
+                      </button>
+                    </div>
+                  )
                   : 'Unable to load vehicles. Please check your connection.'
                 }
               </div>
