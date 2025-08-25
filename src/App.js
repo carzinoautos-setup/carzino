@@ -359,10 +359,9 @@ function App() {
     return () => clearTimeout(emergencyFallbackTimer);
   }, [loading, vehicles.length]);
 
-  // Load initial data when API is connected (skip on Fly.dev)
+  // Load initial data when API is connected
   useEffect(() => {
-    const isOnFlyDev = window.location.hostname.includes('fly.dev');
-    if (apiConnected && !isOnFlyDev) {
+    if (apiConnected) {
       loadVehiclesAndFilters();
     }
   }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
