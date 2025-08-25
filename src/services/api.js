@@ -460,12 +460,21 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
-      const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
+      const currentDomain = window.location.hostname;
+      const isGitHubPages = currentDomain === 'carzinoautos-setup.github.io';
+      const isFlyDev = currentDomain.includes('fly.dev');
 
-      if (isProduction) {
-        console.error('🚨 CORS Error on production site - this needs to be fixed!');
-      } else {
-        console.warn('🚨 CORS Error on dev server - this is expected');
+      console.error('🚨 CORS Error Details:', {
+        currentDomain,
+        isGitHubPages,
+        isFlyDev,
+        targetAPI: WC_API_BASE,
+        errorMessage: error.message
+      });
+
+      if (isFlyDev) {
+        console.error('🔧 CORS Fix Needed: Add this domain to WordPress CORS settings:', currentDomain);
+        console.error('📝 Add this to WordPress functions.php CORS allowed origins:', `'https://${currentDomain}'`);
       }
 
       console.warn('Using fallback sample data instead');
