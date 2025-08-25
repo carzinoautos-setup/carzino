@@ -6,6 +6,77 @@ import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
 import { fetchVehicles, fetchFilterOptions, testAPIConnection } from './services/api';
 
+// URL parameter helpers
+const filtersToURLParams = (filters) => {
+  const params = new URLSearchParams();
+
+  Object.entries(filters).forEach(([key, value]) => {
+    // Skip empty values and default configuration
+    if (!value ||
+        (Array.isArray(value) && value.length === 0) ||
+        ['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment'].includes(key)) {
+      return;
+    }
+
+    if (Array.isArray(value)) {
+      // For arrays, add each value separately
+      value.forEach(item => params.append(key, item));
+    } else if (value.toString().trim() !== '') {
+      params.set(key, value.toString());
+    }
+  });
+
+  return params.toString();
+};
+
+const URLParamsToFilters = (searchParams) => {
+  const filters = {
+    condition: [],
+    make: [],
+    model: [],
+    trim: [],
+    year: [],
+    vehicleType: [],
+    bodyType: [],
+    driveType: [],
+    transmission: [],
+    transmissionSpeed: [],
+    fuelType: [],
+    exteriorColor: [],
+    interiorColor: [],
+    mileage: '',
+    sellerType: [],
+    dealer: [],
+    state: [],
+    city: [],
+    zipCodeFilter: [],
+    priceMin: '',
+    priceMax: '',
+    paymentMin: '',
+    paymentMax: '',
+    zipCode: '98498',
+    radius: '200',
+    termLength: '72',
+    interestRate: '8',
+    downPayment: '2000'
+  };
+
+  // Parse URL parameters
+  for (const [key, value] of searchParams.entries()) {
+    if (Array.isArray(filters[key])) {
+      // For array filters, collect all values
+      if (!filters[key].includes(value)) {
+        filters[key].push(value);
+      }
+    } else {
+      // For single value filters
+      filters[key] = value;
+    }
+  }
+
+  return filters;
+};
+
 function App() {
   // State management
   const [filters, setFilters] = useState({
