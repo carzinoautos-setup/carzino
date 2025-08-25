@@ -121,9 +121,15 @@ const getFallbackVehicles = () => ({
   totalPages: 1
 });
 
-// Fetch all products (vehicles) from WooCommerce
+// Fetch all products (vehicles) from WooCommerce with improved error handling
 export const fetchVehicles = async (params = {}) => {
   try {
+    // Check if environment variables are available
+    if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL) {
+      console.warn('⚠️ Missing API credentials, using fallback data');
+      return getFallbackVehicles();
+    }
+
     const queryParams = new URLSearchParams({
       per_page: params.per_page || 12, // Reduced from 20 to 12 for faster loading
       page: params.page || 1,
@@ -141,21 +147,23 @@ export const fetchVehicles = async (params = {}) => {
 
     console.log('🔄 Fetching fresh vehicle data from API...');
 
-    // Try URL-based authentication first (more reliable)
+    // Try URL-based authentication with timeout
     const urlWithAuth = `${WC_API_BASE}/products?${queryParams}&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
-    console.log('📍 Full API URL with auth:', urlWithAuth);
+    console.log('📍 Fetching vehicles from:', urlWithAuth.substring(0, 100) + '...');
 
-    const response = await fetch(urlWithAuth, {
+    const startTime = Date.now();
+    const response = await fetchWithTimeout(urlWithAuth, {
       method: 'GET',
       mode: 'cors',
       headers: {
         'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'User-Agent': 'Carzino-React-App/1.0'
       }
-    });
+    }, 15000); // 15 second timeout for larger data
 
+    const responseTime = Date.now() - startTime;
+    console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
     console.log('📡 Response status:', response.status);
-    console.log('📄 Response headers:', Object.fromEntries(response.headers.entries()));
 
     if (!response.ok) {
       const errorText = await response.text();
@@ -164,7 +172,10 @@ export const fetchVehicles = async (params = {}) => {
         statusText: response.statusText,
         responseText: errorText.substring(0, 200) + '...'
       });
-      throw new Error(`API Error: ${response.status} ${response.statusText}`);
+
+      // For API errors, return fallback data instead of throwing
+      console.warn('🚨 API error detected, using fallback data');
+      return getFallbackVehicles();
     }
 
     // Check if response is actually JSON
@@ -174,16 +185,19 @@ export const fetchVehicles = async (params = {}) => {
       console.error('❌ Expected JSON but got:', contentType);
       console.error('❌ Response text:', responseText.substring(0, 300));
 
-      // If we get HTML, it means the API endpoint doesn't exist or has issues
+      // If we get HTML, return fallback data
       if (responseText.includes('<!DOCTYPE') || responseText.includes('<html')) {
-        throw new Error('WooCommerce API returned HTML instead of JSON. Check if WooCommerce REST API is enabled and endpoint exists.');
+        console.warn('🚨 WordPress returned HTML instead of JSON, using fallback data');
+        return getFallbackVehicles();
       }
 
-      throw new Error('Invalid response format - expected JSON');
+      console.warn('🚨 Invalid response format, using fallback data');
+      return getFallbackVehicles();
     }
 
     const products = await response.json();
-    
+    console.log(`✅ Successfully fetched ${products.length} vehicles from WooCommerce API`);
+
     const result = {
       results: products.map(product => ({
         id: product.id,
@@ -208,7 +222,7 @@ export const fetchVehicles = async (params = {}) => {
         date_created: product.date_created,
         featured: product.featured || false
       })),
-      total: parseInt(response.headers.get('X-WP-Total') || '0'),
+      total: parseInt(response.headers.get('X-WP-Total') || products.length.toString()),
       totalPages: parseInt(response.headers.get('X-WP-TotalPages') || '1'),
     };
 
@@ -219,17 +233,33 @@ export const fetchVehicles = async (params = {}) => {
   } catch (error) {
     console.error('Error fetching vehicles:', error);
 
-    // Check if it's a CORS error or network error
-    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
-      console.warn('🚨 CORS Error detected. Using fallback sample data. To fix this:');
-      console.warn('1. Enable CORS on your WordPress site');
-      console.warn('2. Or create a proxy endpoint');
-
-      // Return fallback data instead of throwing
+    // Enhanced error handling with specific fallback logic
+    if (error.message.includes('timed out')) {
+      console.warn('🚨 API request timed out, using fallback data');
       return getFallbackVehicles();
     }
 
-    throw error;
+    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+      const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
+
+      if (isProduction) {
+        console.error('🚨 CORS Error on production site - this needs to be fixed!');
+      } else {
+        console.warn('🚨 CORS Error on dev server - this is expected');
+      }
+
+      console.warn('Using fallback sample data instead');
+      return getFallbackVehicles();
+    }
+
+    if (error.message.includes('AbortError') || error.name === 'AbortError') {
+      console.warn('🚨 Request was aborted, using fallback data');
+      return getFallbackVehicles();
+    }
+
+    // For any other error, still return fallback data to keep app working
+    console.warn('🚨 Unexpected error, using fallback data:', error.message);
+    return getFallbackVehicles();
   }
 };
 
