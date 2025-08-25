@@ -6,30 +6,32 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [keeperMessage, setKeeperMessage] = useState(false);
   const [enhancedSellerData, setEnhancedSellerData] = useState(null);
 
-  // Enhanced seller data debugging to verify WordPress relationship resolution
+  // Optimized seller data processing for account 73 and others
   useEffect(() => {
-    console.log(`🔍 SELLER RESOLVER DEBUG for: ${vehicle.title}`);
-    console.log(`   Vehicle ID: ${vehicle.id}`);
-    console.log(`   Has seller_data: ${!!vehicle.seller_data}`);
-    console.log(`   seller_data content:`, vehicle.seller_data);
+    console.log(`🎯 SELLER DATA for: ${vehicle.title}`);
 
     if (vehicle.seller_data) {
-      console.log(`✅ WordPress relationship resolved successfully!`);
-      console.log(`   Account Name: ${vehicle.seller_data.account_name}`);
-      console.log(`   Account Number: ${vehicle.seller_data.account_number}`);
-      console.log(`   Location: ${vehicle.seller_data.city}, ${vehicle.seller_data.state}`);
+      console.log(`✅ Seller data found:`, vehicle.seller_data);
+
+      // Special handling for account 73 (Del Sol Auto Sales)
+      if (vehicle.seller_data.account_number === '73') {
+        console.log(`🌟 ACCOUNT 73: Del Sol Auto Sales data loaded!`);
+      }
+
       setEnhancedSellerData(vehicle.seller_data);
     } else {
-      console.log(`❌ No seller_data - WordPress relationship not resolved`);
-      console.log(`   Available meta_data keys:`, vehicle.meta_data?.map(m => m.key) || []);
+      console.log(`⚠️ No seller_data field - checking meta_data...`);
 
-      // Check for direct meta_data seller fields as fallback
-      const sellerMeta = vehicle.meta_data?.filter(m => m.key.includes('seller')) || [];
-      if (sellerMeta.length > 0) {
-        console.log(`   Found ${sellerMeta.length} seller meta fields:`, sellerMeta);
+      // Check for account number in meta_data
+      const accountMeta = vehicle.meta_data?.find(m => m.key === 'account_number_seller');
+      if (accountMeta) {
+        console.log(`📋 Found account number in meta: ${accountMeta.value}`);
+        if (accountMeta.value === '73') {
+          console.log(`🎯 This should be Del Sol Auto Sales!`);
+        }
       }
     }
-  }, [vehicle.seller_data, vehicle.meta_data, vehicle.title, vehicle.id]);
+  }, [vehicle.seller_data, vehicle.meta_data, vehicle.title]);
 
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
