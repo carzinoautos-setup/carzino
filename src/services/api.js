@@ -869,12 +869,13 @@ export const testAPIConnection = async () => {
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
   });
 
-  // Check if environment variables are missing
-  if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL) {
-    console.error('❌ Missing environment variables!');
+  // Check if environment variables are missing or invalid
+  if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
+      WC_CONSUMER_KEY === 'missing' || WC_CONSUMER_SECRET === 'missing') {
+    console.error('❌ Missing or invalid environment variables!');
     return {
       success: false,
-      message: 'Missing API credentials - check environment variables'
+      message: 'Missing or invalid API credentials - using fallback data'
     };
   }
 
