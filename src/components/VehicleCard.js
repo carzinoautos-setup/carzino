@@ -7,40 +7,27 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [enhancedSellerData, setEnhancedSellerData] = useState(null);
   const [sellerDataLoaded, setSellerDataLoaded] = useState(false);
 
-  // Fetch seller data from WordPress debug endpoint if main API doesn't have it
+  // Log seller data availability for debugging
   useEffect(() => {
-    const fetchSellerData = async () => {
-      // Only fetch if we don't have seller_data and haven't loaded yet
-      if (!vehicle.seller_data && !sellerDataLoaded) {
-        const metaData = vehicle.meta_data || [];
-        const accountField = metaData.find(m => m.key === 'account_number_seller');
+    const metaData = vehicle.meta_data || [];
+    const accountField = metaData.find(m => m.key === 'account_number_seller');
 
-        if (accountField && accountField.value) {
-          const accountNumber = accountField.value;
-          console.log('🔄 Fetching seller data for account:', accountNumber);
+    if (accountField && accountField.value === '73') {
+      console.log('🔍 Account 73 vehicle seller_data check:', {
+        hasSellerData: !!vehicle.seller_data,
+        sellerData: vehicle.seller_data,
+        accountNumber: accountField.value
+      });
 
-          try {
-            // Get WordPress URL from environment or use current domain
-            const wpUrl = process.env.REACT_APP_WP_URL || window.location.origin.replace('fbce45b0c67141608c60e319b0dcfc3a-44a36f7f-89a9-4b6d-ba50-d884fa.fly.dev', 'carzinoautos.kinsta.cloud');
-            const response = await fetch(`${wpUrl}/wp-json/carzino/v1/debug-seller/${accountNumber}`);
-
-            if (response.ok) {
-              const data = await response.json();
-              if (data.hardcoded_data) {
-                console.log('✅ Fetched seller data from debug endpoint:', data.hardcoded_data);
-                setEnhancedSellerData(data.hardcoded_data);
-              }
-            }
-          } catch (error) {
-            console.log('❌ Failed to fetch seller data:', error);
-          }
-        }
-        setSellerDataLoaded(true);
+      if (vehicle.seller_data) {
+        console.log('✅ SUCCESS: seller_data found in API response!');
+        setEnhancedSellerData(vehicle.seller_data);
+      } else {
+        console.log('❌ seller_data still missing from WordPress API');
       }
-    };
-
-    fetchSellerData();
-  }, [vehicle.seller_data, vehicle.meta_data, sellerDataLoaded]);
+    }
+    setSellerDataLoaded(true);
+  }, [vehicle.seller_data, vehicle.meta_data]);
 
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
@@ -49,9 +36,9 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return vehicle.seller_data[fieldName];
     }
 
-    // Second, try the fetched seller data from debug endpoint
+    // Second, try the enhanced seller data (from WordPress API)
     if (enhancedSellerData) {
-      // Map field names to match our fetched data structure
+      // Map field names to match WordPress seller_data structure
       const fieldMap = {
         'acount_name_seller': 'account_name',
         'account_name_seller': 'account_name',
