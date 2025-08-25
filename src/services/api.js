@@ -330,9 +330,196 @@ const getFallbackVehicles = () => {
         description: 'Luxury sports sedan with premium interior and advanced technology.',
         date_created: new Date().toISOString(),
         featured: false
+      },
+      // Additional Ford vehicles for realistic filtering
+      {
+        id: 'fallback-ford-1',
+        title: `2020 Ford F-150 Lariat (${dataNote})`,
+        slug: 'sample-ford-f150-lariat',
+        url: '#',
+        price: '34995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 3, name: 'Truck', slug: 'truck' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Ford' },
+          { key: 'model', value: 'F-150' },
+          { key: 'year', value: '2020' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Truck' },
+          { key: 'drivetrain', value: '4WD' },
+          { key: 'transmission', value: 'Automatic' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'Lariat' },
+          { key: 'exterior_color', value: 'Blue' },
+          { key: 'interior_color', value: 'Tan' }
+        ],
+        description: 'Premium F-150 with luxury features.',
+        date_created: new Date().toISOString(),
+        featured: false
+      },
+      {
+        id: 'fallback-ford-2',
+        title: `2021 Ford F-150 King Ranch (${dataNote})`,
+        slug: 'sample-ford-f150-king',
+        url: '#',
+        price: '42995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 3, name: 'Truck', slug: 'truck' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Ford' },
+          { key: 'model', value: 'F-150' },
+          { key: 'year', value: '2021' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Truck' },
+          { key: 'drivetrain', value: '4WD' },
+          { key: 'transmission', value: 'Automatic' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'King Ranch' },
+          { key: 'exterior_color', value: 'Brown' },
+          { key: 'interior_color', value: 'Leather' }
+        ],
+        description: 'Top-tier F-150 with King Ranch luxury package.',
+        date_created: new Date().toISOString(),
+        featured: true
+      },
+      {
+        id: 'fallback-ford-3',
+        title: `2022 Ford F-150 Lightning (${dataNote})`,
+        slug: 'sample-ford-f150-lightning',
+        url: '#',
+        price: '52995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 3, name: 'Truck', slug: 'truck' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Ford' },
+          { key: 'model', value: 'F-150' },
+          { key: 'year', value: '2022' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Truck' },
+          { key: 'drivetrain', value: 'AWD' },
+          { key: 'transmission', value: 'Single Speed' },
+          { key: 'fuel_type', value: 'Electric' },
+          { key: 'trim', value: 'Lightning' },
+          { key: 'exterior_color', value: 'White' },
+          { key: 'interior_color', value: 'Black' }
+        ],
+        description: 'Electric F-150 with impressive range and capability.',
+        date_created: new Date().toISOString(),
+        featured: true
+      },
+      {
+        id: 'fallback-ford-4',
+        title: `2021 Ford F-150 Raptor (${dataNote})`,
+        slug: 'sample-ford-f150-raptor',
+        url: '#',
+        price: '65995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 3, name: 'Truck', slug: 'truck' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Ford' },
+          { key: 'model', value: 'F-150' },
+          { key: 'year', value: '2021' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Truck' },
+          { key: 'drivetrain', value: '4WD' },
+          { key: 'transmission', value: 'Automatic' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'Raptor' },
+          { key: 'exterior_color', value: 'Orange' },
+          { key: 'interior_color', value: 'Black' }
+        ],
+        description: 'High-performance off-road F-150 Raptor.',
+        date_created: new Date().toISOString(),
+        featured: true
+      },
+      {
+        id: 'fallback-ford-5',
+        title: `2020 Ford F-150 STX (${dataNote})`,
+        slug: 'sample-ford-f150-stx',
+        url: '#',
+        price: '27995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1593450315200-bb4e0b77ec38?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 3, name: 'Truck', slug: 'truck' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Ford' },
+          { key: 'model', value: 'F-150' },
+          { key: 'year', value: '2020' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Truck' },
+          { key: 'drivetrain', value: '4WD' },
+          { key: 'transmission', value: 'Automatic' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'STX' },
+          { key: 'exterior_color', value: 'Gray' },
+          { key: 'interior_color', value: 'Black' }
+        ],
+        description: 'Affordable F-150 with essential features.',
+        date_created: new Date().toISOString(),
+        featured: false
+      },
+      {
+        id: 'fallback-ford-6',
+        title: `2019 Ford Explorer XLT (${dataNote})`,
+        slug: 'sample-ford-explorer',
+        url: '#',
+        price: '26995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1566473179817-73e78ca2b29c?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1566473179817-73e78ca2b29c?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 1, name: 'SUV', slug: 'suv' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Ford' },
+          { key: 'model', value: 'Explorer' },
+          { key: 'year', value: '2019' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'SUV' },
+          { key: 'drivetrain', value: 'AWD' },
+          { key: 'transmission', value: 'Automatic' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'XLT' },
+          { key: 'exterior_color', value: 'Silver' },
+          { key: 'interior_color', value: 'Black' }
+        ],
+        description: 'Family-friendly SUV with three rows of seating.',
+        date_created: new Date().toISOString(),
+        featured: false
       }
     ],
-    total: 5,
+    total: 12,
     totalPages: 1
   };
 };
@@ -1021,7 +1208,7 @@ export const testAPIConnection = async () => {
         ? `CORS Error: Connection failed from production. Check WordPress CORS settings.`
         : `CORS Error: Dev server not allowed. This is expected - production site will work.`;
 
-      console.log('💡 CORS Fix Instructions for WordPress:');
+      console.log('���� CORS Fix Instructions for WordPress:');
       console.log('The CORS code should already be updated to allow both domains.');
       console.log('If still failing, check that the code was saved correctly.');
 
