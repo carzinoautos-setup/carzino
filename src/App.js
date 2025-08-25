@@ -964,11 +964,12 @@ function App() {
   };
 
   const extractConditionFromVehicle = (vehicle) => {
-    if (vehicle.rawData?.meta_data) {
-      const conditionMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'condition');
-      if (conditionMeta?.value) return conditionMeta.value;
-    }
-    return vehicle.rawData?.stock_status === 'instock' ? 'Available' : 'Sold';
+    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const conditionMeta = metaData.find(meta => meta.key === 'condition');
+    if (conditionMeta?.value) return conditionMeta.value;
+
+    const stockStatus = vehicle.rawData?.stock_status || vehicle.stock_status;
+    return stockStatus === 'instock' ? 'Available' : 'Sold';
   };
 
   const extractVehicleTypeFromVehicle = (vehicle) => {
