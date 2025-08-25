@@ -669,6 +669,13 @@ export const fetchFilterOptions = async (currentFilters = {}) => {
   try {
     console.log('🔍 Fetching filter options from vehicle data...');
 
+    // Check if we should use fallback immediately
+    if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
+        WC_CONSUMER_KEY === 'missing' || WC_CONSUMER_SECRET === 'missing') {
+      console.warn('📊 Using fallback filter options (API credentials missing)');
+      return getFallbackFilterOptions();
+    }
+
     // Fetch all products to analyze for filter options
     // This will use the improved fetchVehicles function with all its error handling
     const allProducts = await fetchVehicles({ per_page: 100 });
