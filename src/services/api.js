@@ -565,7 +565,7 @@ export const fetchVehicles = async (params = {}) => {
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
-    console.log('📡 Response status:', response.status);
+    console.log('�� Response status:', response.status);
 
     // Clone response for multiple reads if needed
     const responseClone = response.clone();
@@ -738,32 +738,39 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
-      const currentDomain = window.location.hostname;
+      const currentDomain = window.location.origin;
       const isFlyDev = currentDomain.includes('fly.dev');
 
-      console.warn('🚨 Network Connection Failed:', {
-        error: error.message,
-        domain: currentDomain,
-        targetAPI: WC_API_BASE,
-        possibleCauses: [
-          'WordPress site is down or slow',
-          'CORS headers not properly configured',
-          'Network connectivity issues',
-          'API credentials incorrect'
-        ]
-      });
+      console.error('🚨 API CONNECTION FAILED: CORS/Network Issue!');
+      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.error('🌐 Current Domain:', currentDomain);
+      console.error('🎯 Target WordPress:', process.env.REACT_APP_WP_SITE_URL);
+      console.error('❌ Error:', error.message);
+      console.error('');
+      console.error('🔧 IMMEDIATE FIXES TO TRY:');
+      console.error('1. 📋 Go to WordPress Admin → WPCode → Snippets');
+      console.error('2. ✅ Ensure "Carzino CORS Headers" snippet is ACTIVE');
+      console.error('3. 🔍 Verify this domain is in allowed origins:', currentDomain);
+      console.error('4. 🔄 Try refreshing this page after checking');
+      console.error('');
 
       if (isFlyDev) {
-        console.warn('🔧 CORS Fix: Ensure this domain is in WordPress CORS settings:', currentDomain);
-        console.warn('📝 WordPress functions.php should include:', `'https://${currentDomain}'`);
+        console.error('🛠️ FLY.DEV DOMAIN DETECTED:');
+        console.error('   Make sure WordPress CORS snippet includes:');
+        console.error(`   '${currentDomain}'`);
+        console.error('');
       }
 
-      console.log('✅ Using fallback sample data instead');
+      console.error('📞 If issue persists:');
+      console.error('   • Check WordPress site is accessible');
+      console.error('   • Verify WooCommerce plugin is active');
+      console.error('   • Check API credentials are correct');
+      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+
+      console.log('');
+      console.log('✅ Loading fallback data to keep app functional...');
       const fallbackData = getFallbackVehicles();
-      console.log('📊 Fallback data loaded:', {
-        totalVehicles: fallbackData.results.length,
-        sampleTitles: fallbackData.results.slice(0, 3).map(v => v.title)
-      });
+      console.log('📊 Fallback vehicles loaded:', fallbackData.results.length);
       return fallbackData;
     }
 
