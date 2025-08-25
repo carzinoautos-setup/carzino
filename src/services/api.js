@@ -1196,9 +1196,10 @@ export const testAPIConnection = async () => {
 
     // Enhanced error handling with specific messages
     if (error.message.includes('timed out')) {
+      console.warn('⏰ API connection timed out after 15 seconds - will use fallback data');
       return {
         success: false,
-        message: 'API request timed out - WordPress site may be slow or unreachable',
+        message: 'API request timed out - WordPress site may be slow. Using fallback data.',
         timeout: true
       };
     }
