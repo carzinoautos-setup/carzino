@@ -169,7 +169,7 @@ function App() {
       const newFilters = URLParamsToFilters(urlParams);
       const newPage = parseInt(urlParams.get('page') || '1', 10);
 
-      console.log('🔙 Browser navigation detected, updating filters and page from URL');
+      console.log('�� Browser navigation detected, updating filters and page from URL');
       setFilters(newFilters);
       setCurrentPage(newPage);
     };
@@ -876,9 +876,17 @@ function App() {
   const extractModelFromVehicle = (vehicle) => {
     let model = null;
 
+    // Debug what data we have
+    if (!vehicle?.rawData) {
+      console.log(`❌ No rawData for vehicle:`, vehicle?.title);
+      return null;
+    }
+
     // Try meta_data first
-    if (vehicle.rawData?.meta_data) {
-      const modelMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'model');
+    if (vehicle.rawData?.meta_data && Array.isArray(vehicle.rawData.meta_data)) {
+      const modelMeta = vehicle.rawData.meta_data.find(meta =>
+        meta.key === 'model' || meta.key === '_model' || meta.key === 'vehicle_model'
+      );
       if (modelMeta?.value) {
         model = modelMeta.value;
         console.log(`📊 Found model in meta_data: "${model}" for ${vehicle.title}`);
@@ -887,9 +895,9 @@ function App() {
     }
 
     // Try attributes
-    if (vehicle.rawData?.attributes) {
+    if (vehicle.rawData?.attributes && Array.isArray(vehicle.rawData.attributes)) {
       const modelAttr = vehicle.rawData.attributes.find(attr =>
-        attr.name.toLowerCase().includes('model')
+        attr.name && attr.name.toLowerCase().includes('model')
       );
       if (modelAttr?.options?.[0]) {
         model = modelAttr.options[0];
