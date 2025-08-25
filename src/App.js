@@ -190,7 +190,8 @@ function App() {
   const loadVehiclesAndFilters = async () => {
     try {
       setLoading(true);
-      
+      setError(null); // Clear any previous errors
+
       // Fetch vehicles with current filters and pagination
       const vehicleParams = {
         page: currentPage,
@@ -198,10 +199,31 @@ function App() {
         // Add filter parameters here when implementing search
       };
 
-      const [vehicleData, filterData] = await Promise.all([
+      // Use Promise.allSettled to handle partial failures gracefully
+      const [vehicleResult, filterResult] = await Promise.allSettled([
         fetchVehicles(vehicleParams),
         fetchFilterOptions(filters) // Pass current filters for cascading logic
       ]);
+
+      // Handle vehicle data result
+      const vehicleData = vehicleResult.status === 'fulfilled'
+        ? vehicleResult.value
+        : { results: [], total: 0, totalPages: 1 };
+
+      // Handle filter data result
+      const filterData = filterResult.status === 'fulfilled'
+        ? filterResult.value
+        : { makes: [], models: [], conditions: [], bodyTypes: [], total: 0 };
+
+      if (vehicleResult.status === 'rejected') {
+        console.error('Vehicle data failed:', vehicleResult.reason);
+        setError('Failed to load vehicle data - using fallback');
+      }
+
+      if (filterResult.status === 'rejected') {
+        console.error('Filter data failed:', filterResult.reason);
+        // Don't show error for filter failure, just log it
+      }
 
       // Transform vehicle data to match existing component structure
       const transformedVehicles = vehicleData.results.map(vehicle => ({
