@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/vehicle-search/static/css/main.c985db4a.css",
+    "main.js": "/vehicle-search/static/js/main.df0fafdf.js",
+    "index.html": "/vehicle-search/index.html",
+    "main.c985db4a.css.map": "/vehicle-search/static/css/main.c985db4a.css.map",
+    "main.df0fafdf.js.map": "/vehicle-search/static/js/main.df0fafdf.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.c985db4a.css",
+    "static/js/main.df0fafdf.js"
+  ]
+}
