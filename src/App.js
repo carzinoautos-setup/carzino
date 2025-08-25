@@ -212,7 +212,7 @@ function App() {
         if (result && typeof result === 'object') {
           if (result.success) {
             setApiConnected(true);
-            console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
+            console.log(`�� Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
             setError(null); // Clear any previous errors
           } else {
           setApiConnected(false);
@@ -1061,10 +1061,12 @@ function App() {
   };
 
   // Get current page vehicles with filtering
+  console.log(`🚨 DEBUG: About to call getFilteredVehicles. Filters:`, filters);
   const favoritesCount = Object.keys(favorites).length;
   const allFilteredVehicles = showingFavorites
     ? vehicles.filter(vehicle => favorites[vehicle.id])
     : getFilteredVehicles();
+  console.log(`🚨 DEBUG: getFilteredVehicles returned ${allFilteredVehicles.length} vehicles`);
 
   // Update total results to reflect filtered count
   const actualTotalResults = showingFavorites ? favoritesCount : allFilteredVehicles.length;
