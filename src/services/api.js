@@ -451,8 +451,6 @@ export const fetchVehicles = async (params = {}) => {
 
     return result;
   } catch (error) {
-    console.error('Error fetching vehicles:', error);
-
     // Enhanced error handling with specific fallback logic
     if (error.message.includes('timed out')) {
       console.warn('🚨 API request timed out, using fallback data');
@@ -461,23 +459,17 @@ export const fetchVehicles = async (params = {}) => {
 
     if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
       const currentDomain = window.location.hostname;
-      const isGitHubPages = currentDomain === 'carzinoautos-setup.github.io';
       const isFlyDev = currentDomain.includes('fly.dev');
 
-      console.error('🚨 CORS Error Details:', {
-        currentDomain,
-        isGitHubPages,
-        isFlyDev,
-        targetAPI: WC_API_BASE,
-        errorMessage: error.message
-      });
+      // Log CORS error details but don't throw - just use fallback
+      console.warn('🚨 CORS Error Details:', error);
 
       if (isFlyDev) {
-        console.error('🔧 CORS Fix Needed: Add this domain to WordPress CORS settings:', currentDomain);
-        console.error('📝 Add this to WordPress functions.php CORS allowed origins:', `'https://${currentDomain}'`);
+        console.warn('🔧 CORS Fix Needed: Add this domain to WordPress CORS settings:', currentDomain);
+        console.warn('📝 Add this to WordPress functions.php CORS allowed origins:', `'https://${currentDomain}'`);
       }
 
-      console.warn('Using fallback sample data instead');
+      console.log('✅ Using fallback sample data instead');
       return getFallbackVehicles();
     }
 
