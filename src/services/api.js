@@ -24,7 +24,7 @@ if (missingVars.length > 0) {
   console.error('❌ Missing Environment Variables:', missingVars);
   console.error('   The API calls will fail because credentials are not loaded');
 } else {
-  console.log('�� All environment variables are loaded');
+  console.log('✅ All environment variables are loaded');
 }
 
 // Validate credential format
@@ -535,7 +535,7 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     const queryParams = new URLSearchParams({
-      per_page: params.per_page || 100, // Load up to 100 vehicles by default
+      per_page: params.per_page || 25, // Load 25 vehicles by default
       page: params.page || 1,
       status: 'publish',
       ...params
