@@ -212,7 +212,7 @@ function App() {
         if (result && typeof result === 'object') {
           if (result.success) {
             setApiConnected(true);
-            console.log(`�� Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
+            console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
             setError(null); // Clear any previous errors
           } else {
           setApiConnected(false);
@@ -341,6 +341,11 @@ function App() {
 
       if (vehicleResult.status === 'rejected') {
         console.warn('Vehicle data failed, using fallback:', vehicleResult.reason.message);
+        console.log('📊 Vehicle data after failure:', {
+          hasResults: !!vehicleData.results,
+          resultsLength: vehicleData.results?.length || 0,
+          total: vehicleData.total
+        });
         // Don't show error if we have fallback data working
         if (!vehicleData.results || vehicleData.results.length === 0) {
           setError('Failed to load vehicle data');
