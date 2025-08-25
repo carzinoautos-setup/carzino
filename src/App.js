@@ -362,12 +362,12 @@ function App() {
     connectToAPI();
   }, []);
 
-  // Skip API data loading since we're using demo data
-  // useEffect(() => {
-  //   if (apiConnected) {
-  //     loadVehiclesAndFilters();
-  //   }
-  // }, [apiConnected, currentPage, sortBy]);
+  // Load additional data when API is connected
+  useEffect(() => {
+    if (apiConnected && vehicles.length > 0) {
+      updateFilterOptions();
+    }
+  }, [apiConnected, vehicles.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Update filter options when filters change
   useEffect(() => {
