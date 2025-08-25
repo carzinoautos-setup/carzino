@@ -1160,6 +1160,9 @@ const fetchWithTimeout = async (url, options = {}, timeoutMs = 15000, retries = 
         if (error.name === 'AbortError') {
           throw new Error(`Request timed out after ${timeoutMs}ms (${retries + 1} attempts)`);
         }
+        if (error.message === 'Failed to fetch') {
+          throw new Error(`Network connection failed after ${retries + 1} attempts - likely CORS or connectivity issue`);
+        }
         throw error;
       }
 
