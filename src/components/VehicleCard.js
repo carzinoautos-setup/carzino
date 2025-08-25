@@ -8,8 +8,22 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
     const metaData = vehicle.meta_data || [];
+
+    // Debug: Log what fields are available
+    if (fieldName === 'acount_name_seller') {
+      console.log('🔍 Available meta fields for vehicle:', vehicle.title);
+      console.log('Meta data keys:', metaData.map(m => m.key));
+    }
+
     const sellerField = metaData.find(meta => meta.key === fieldName);
-    return sellerField?.value || '';
+    const value = sellerField?.value || '';
+
+    // Debug: Log the specific field we're looking for
+    if (fieldName === 'acount_name_seller') {
+      console.log(`📝 Field '${fieldName}' value:`, value);
+    }
+
+    return value;
   };
 
   const getCondition = () => {
@@ -31,14 +45,22 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
-    // Try multiple variations of the seller name field
-    const sellerName = getSellerField('acount_name_seller') ||
-                      getSellerField('account_name_seller') ||
-                      getSellerField('seller_name') ||
-                      getSellerField('dealer_name');
+    // Primary field: exactly as used in WordPress shortcode [seller_field field="acount_name_seller"]
+    const primarySellerName = getSellerField('acount_name_seller');
 
-    if (sellerName && sellerName.trim() !== '') {
-      return sellerName;
+    if (primarySellerName && primarySellerName.trim() !== '') {
+      console.log('✅ Found acount_name_seller:', primarySellerName);
+      return primarySellerName;
+    }
+
+    // Try alternative field names as fallbacks
+    const altSellerName = getSellerField('account_name_seller') ||
+                         getSellerField('seller_name') ||
+                         getSellerField('dealer_name');
+
+    if (altSellerName && altSellerName.trim() !== '') {
+      console.log('⚠️ Using alternative seller field:', altSellerName);
+      return altSellerName;
     }
 
     // Fallback to vehicle.dealer, but make sure it's not the features text
@@ -46,9 +68,11 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
     // Check if dealer field contains features (long text with commas)
     if (dealerFallback.includes(',') && dealerFallback.length > 50) {
+      console.log('❌ Dealer field contains features, using generic name');
       return 'Dealer'; // Return generic name if it's features text
     }
 
+    console.log('🔄 Using fallback dealer name:', dealerFallback);
     return dealerFallback;
   };
 
