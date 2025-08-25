@@ -286,10 +286,10 @@ function App() {
       setLoading(true);
       setError(null); // Clear any previous errors
 
-      // Fetch vehicles with current filters and pagination
+      // Fetch all vehicles for accurate filter counts and inventory display
       const vehicleParams = {
-        page: currentPage,
-        per_page: resultsPerPage,
+        page: 1,
+        per_page: 100, // Load more vehicles to get accurate counts
         // Add filter parameters here when implementing search
       };
 
