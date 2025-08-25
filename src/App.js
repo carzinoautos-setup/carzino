@@ -982,16 +982,15 @@ function App() {
   };
 
   const extractDriveTypeFromVehicle = (vehicle) => {
-    if (vehicle.rawData?.meta_data) {
-      const driveMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'drivetrain');
-      if (driveMeta?.value) return driveMeta.value;
-    }
-    if (vehicle.rawData?.attributes) {
-      const driveAttr = vehicle.rawData.attributes.find(attr =>
-        attr.name.toLowerCase().includes('drive')
-      );
-      if (driveAttr?.options?.[0]) return driveAttr.options[0];
-    }
+    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const driveMeta = metaData.find(meta => meta.key === 'drivetrain');
+    if (driveMeta?.value) return driveMeta.value;
+
+    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    const driveAttr = attributes.find(attr =>
+      attr.name.toLowerCase().includes('drive')
+    );
+    if (driveAttr?.options?.[0]) return driveAttr.options[0];
     return null;
   };
 
