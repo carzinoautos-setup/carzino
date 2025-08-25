@@ -269,7 +269,7 @@ function App() {
     }
   }, []);
 
-  // Suppress CORS-related console errors
+  // Suppress CORS-related console errors and handle uncaught promises
   useEffect(() => {
     const originalError = console.error;
     console.error = (...args) => {
@@ -277,14 +277,26 @@ function App() {
       // Suppress known CORS/fetch errors to avoid confusing users
       if (message.includes('Failed to fetch') ||
           message.includes('CORS') ||
-          message.includes('TypeError: NetworkError')) {
+          message.includes('TypeError: NetworkError') ||
+          message.includes('TypeError: Failed to fetch')) {
         return; // Don't log these errors
       }
       originalError.apply(console, args);
     };
 
+    // Handle unhandled promise rejections
+    const handleUnhandledRejection = (event) => {
+      if (event.reason && event.reason.message &&
+          event.reason.message.includes('Failed to fetch')) {
+        event.preventDefault(); // Prevent the error from being logged
+      }
+    };
+
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
     return () => {
       console.error = originalError; // Restore original error handler
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
     };
   }, []);
 
