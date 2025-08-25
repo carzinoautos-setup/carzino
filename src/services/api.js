@@ -121,14 +121,18 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     console.log('🔄 Fetching fresh vehicle data from API...');
-    const fullUrl = `${WC_API_BASE}/products?${queryParams}`;
-    console.log('📍 Full API URL:', fullUrl);
-    console.log('🔐 Auth headers:', getAuthHeaders());
 
-    const response = await fetch(fullUrl, {
+    // Try URL-based authentication first (more reliable)
+    const urlWithAuth = `${WC_API_BASE}/products?${queryParams}&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
+    console.log('📍 Full API URL with auth:', urlWithAuth);
+
+    const response = await fetch(urlWithAuth, {
       method: 'GET',
-      headers: getAuthHeaders(),
-      mode: 'cors', // Explicitly set CORS mode
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
     });
 
     console.log('📡 Response status:', response.status);
@@ -440,7 +444,7 @@ export const testAPIConnection = async () => {
   ];
 
   for (const [index, testUrl] of testUrls.entries()) {
-    console.log(`🧪 Test ${index + 1}: ${testUrl}`);
+    console.log(`��� Test ${index + 1}: ${testUrl}`);
 
     try {
       const response = await fetch(testUrl, {
