@@ -566,7 +566,7 @@ export const fetchVehicles = async (params = {}) => {
         'User-Agent': 'Carzino-React-App/1.0',
         'Origin': window.location.origin
       }
-    }, 8000); // 8 second timeout to prevent hanging
+    }, 4000); // 4 second timeout to prevent hanging
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
