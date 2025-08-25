@@ -727,8 +727,10 @@ function App() {
         const vehicleMake = extractMakeFromVehicle(vehicle);
         const matches = vehicleMake && filters.make.includes(vehicleMake);
 
-        // Log ALL vehicles when filtering by make to debug the issue
-        console.log(`🚗 Vehicle ${index + 1}: "${vehicle.title}" - Make: "${vehicleMake}" - Matches: ${matches}`);
+        // Log first 10 vehicles when filtering by make to debug the issue
+        if (index < 10) {
+          console.log(`🚗 Vehicle ${index + 1}: "${vehicle.title}" - Make: "${vehicleMake}" - Matches: ${matches}`);
+        }
 
         return matches;
       });
