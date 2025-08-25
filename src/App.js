@@ -549,8 +549,6 @@ function App() {
   // Handle filter changes
   const handleFiltersChange = (newFilters) => {
     console.log('🔄 Filters changed:', { old: filters, new: newFilters });
-    setFilters(newFilters);
-    setCurrentPage(1); // Reset to first page when filters change
 
     // Clear dependent filters when parent filter changes
     if (JSON.stringify(filters.make) !== JSON.stringify(newFilters.make)) {
@@ -561,6 +559,12 @@ function App() {
         newFilters.trim = [];
       }
     }
+
+    setFilters(newFilters);
+    setCurrentPage(1); // Reset to first page when filters change
+
+    // Update URL to reflect new filters
+    updateURL(newFilters);
   };
 
   // Handle page change
