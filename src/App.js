@@ -303,117 +303,77 @@ function App() {
   // Test API connection on mount
   useEffect(() => {
     const testConnection = async () => {
-      // Seller data display confirmed working - now loading real API data
+      console.log('🚀 SELLER DATA FIX: Testing API connection for WordPress seller data...');
 
       try {
-        // Test API connection with shorter timeout for faster response
+        // Longer timeout for more reliable API testing (WordPress sites can be slow)
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API test timeout')), 5000)
+          setTimeout(() => reject(new Error('API test timeout')), 30000) // 30 seconds
         );
 
-        // Wrap API test in additional error handling to catch CORS/fetch errors
-        const safeAPITest = async () => {
-          try {
-            return await testAPIConnection();
-          } catch (apiError) {
-            // Catch any errors from the API test function itself
-            console.warn('🔒 API test caught error:', apiError.message);
-            return {
-              success: false,
-              message: 'Connection blocked by browser security',
-              isCorsError: true,
-              shouldUseFallback: true
-            };
-          }
-        };
+        console.log('⏰ Using 30-second timeout for reliable WordPress connection...');
 
         const result = await Promise.race([
-          safeAPITest(),
+          testAPIConnection(),
           timeoutPromise
         ]);
 
-        // Check if result exists and has expected properties
-        if (result && typeof result === 'object') {
-          if (result.success) {
-            setApiConnected(true);
-            setError(null); // Clear any previous errors
-            console.log('✅ API connection successful');
-          } else {
-            // API failed but returned a structured result
-            setApiConnected(false);
+        console.log('📡 API test result:', result);
 
-            // Load demo data with seller information for any API failure
-            const demoData = getRealisticDemoVehicles();
-            console.log('🎯 Loading demo data with seller info:', demoData[0]);
-            setVehicles(demoData);
-            setTotalResults(demoData.length);
-            setLoading(false);
-
-            // Show appropriate message based on error type
-            if (result.message && result.message.includes('500')) {
-              setError('⚠️ WordPress server error - using demo data. Check WordPress configuration.');
-            } else if (result.message && result.message.includes('404')) {
-              setError('⚠️ WooCommerce API not found - using demo data. Verify WooCommerce plugin is active.');
-            } else if (result.message && (result.message.includes('401') || result.message.includes('403'))) {
-              setError('⚠️ API authentication failed - using demo data. Check API credentials.');
-            } else if (result.isCorsError || result.message.includes('Network connection')) {
-              // Don't show scary error for CORS - this is expected on deployments
-              setError('⚠️ Using demo data - WordPress API may have CORS restrictions.');
-            } else if (result.timeout) {
-              setError('⚠️ WordPress site slow to respond - using demo data.');
-            } else {
-              setError('⚠️ Using demo data - WordPress API connection issue.');
-            }
-          }
+        if (result && result.success) {
+          console.log('✅ SELLER DATA: API connection successful, loading real WordPress data...');
+          setApiConnected(true);
+          setError(null);
+          // Don't load demo data - let the data loading useEffect handle real data
         } else {
-          // No result returned
+          console.log('❌ SELLER DATA: API connection failed, using demo data');
+          console.log('   Failure reason:', result?.message || 'Unknown error');
+
           setApiConnected(false);
-          const fallbackData = getSampleVehicles();
-          setVehicles(fallbackData);
-          setTotalResults(fallbackData.length);
+
+          // Load realistic demo data that shows seller functionality works
+          const demoData = getRealisticDemoVehicles();
+          console.log('🎯 Loading demo data with full seller info:', demoData[0]?.seller_data);
+          setVehicles(demoData);
+          setTotalResults(demoData.length);
           setLoading(false);
-          setError('⚠️ Using demo data - API connection failed.');
+
+          // Show specific error messages to help troubleshooting
+          if (result?.message?.includes('500')) {
+            setError('⚠️ WordPress server error - using demo data. Check if your WordPress snippets are active and WooCommerce is working.');
+          } else if (result?.message?.includes('404')) {
+            setError('⚠️ WooCommerce API not found - using demo data. Verify WooCommerce plugin is active.');
+          } else if (result?.message?.includes('401') || result?.message?.includes('403')) {
+            setError('⚠️ API authentication failed - using demo data. Check your WooCommerce API credentials.');
+          } else if (result?.timeout || result?.message?.includes('timeout')) {
+            setError('⚠️ WordPress site taking too long to respond - using demo data. Your site may be slow or overloaded.');
+          } else if (result?.isCorsError || result?.message?.includes('CORS') || result?.message?.includes('blocked')) {
+            setError('⚠️ Connection blocked by browser security - using demo data. This is normal for cross-origin requests.');
+          } else {
+            setError(`⚠️ WordPress API issue: ${result?.message || 'Unknown error'} - using demo data.`);
+          }
         }
       } catch (err) {
-        // Catch any errors thrown by the API test itself
-        console.warn('🚨 API connection error:', err.message);
+        console.warn('🚨 SELLER DATA: API connection error:', err.message);
         setApiConnected(false);
 
-        // Immediately load demo data instead of showing error
         const demoData = getRealisticDemoVehicles();
         setVehicles(demoData);
         setTotalResults(demoData.length);
         setLoading(false);
 
-        // Show user-friendly message based on error type
-        if (err.message.includes('Failed to fetch') || err.message.includes('TypeError')) {
-          // CORS/network issue - common on deployments
-          setError('⚠️ Using demo data - connection blocked by browser security policies.');
-        } else if (err.message.includes('timed out') || err.message.includes('timeout')) {
-          setError('⚠️ Using demo data - WordPress site taking too long to respond.');
+        if (err.message.includes('timeout')) {
+          setError('⚠️ WordPress connection timeout - using demo data. Your WordPress site may be slow or unavailable.');
+        } else if (err.message.includes('Failed to fetch') || err.message.includes('TypeError')) {
+          setError('⚠️ Network connection issue - using demo data. Check if your WordPress site is accessible.');
         } else {
-          setError('⚠️ Using demo data - WordPress API unavailable.');
+          setError(`���️ Connection error: ${err.message} - using demo data.`);
         }
       }
     };
 
     testConnection();
-
-    // Emergency fallback: if still loading after 20 seconds and no vehicles loaded yet
-    const emergencyFallbackTimer = setTimeout(() => {
-      if (loading && vehicles.length === 0 && !error) {
-        console.warn('⚠️ Emergency fallback activated - connection test took too long');
-        setApiConnected(false);
-        setError('⚠️ Connection timeout - using demo data. WordPress site may be slow.');
-        const fallbackData = getSampleVehicles();
-        setVehicles(fallbackData);
-        setTotalResults(fallbackData.length);
-        setLoading(false);
-      }
-    }, 20000);
-
-    return () => clearTimeout(emergencyFallbackTimer);
-  }, [loading, vehicles.length, error]);
+  }, []); // Remove dependencies to prevent re-running
 
   // Load initial data when API is connected
   useEffect(() => {
