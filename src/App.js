@@ -651,7 +651,7 @@ function App() {
       newFilters.model = [];
       newFilters.trim = [];
     } else if (category === 'model') {
-      console.log('🔗 Model filter removed, clearing dependent trim filters');
+      console.log('��� Model filter removed, clearing dependent trim filters');
       newFilters.trim = [];
     }
 
@@ -1069,8 +1069,11 @@ function App() {
               <div style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>
                 🔄 Connecting to WooCommerce API...
               </div>
-              <div style={{ color: '#666' }}>
+              <div style={{ color: '#666', marginBottom: '1rem' }}>
                 Loading vehicles from: {process.env.REACT_APP_WP_SITE_URL}
+              </div>
+              <div style={{ color: '#888', fontSize: '0.9rem' }}>
+                ⏰ This may take 10-15 seconds for large inventories
               </div>
             </div>
           </div>
