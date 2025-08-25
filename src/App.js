@@ -377,7 +377,7 @@ function App() {
       setTotalPages(Math.ceil(vehicleData.total / resultsPerPage));
 
       console.log(`📊 Loaded ${transformedVehicles.length} vehicles from WooCommerce API`);
-      console.log('🏷️ Filter options:', filterData);
+      console.log('����️ Filter options:', filterData);
 
       // Debug first few vehicles
       console.log('🚗 First 3 vehicles for debugging:');
@@ -837,12 +837,17 @@ function App() {
     // Try meta_data first (using same structure as api.js)
     const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
     if (Array.isArray(metaData)) {
+      // Debug: Show all available meta_data keys for first few vehicles
+      if (vehicle.id && (vehicle.id.toString().endsWith('1') || vehicle.id.toString().endsWith('2'))) {
+        console.log(`🔍 Available meta_data keys for ${vehicle.title}:`, metaData.map(m => m.key));
+      }
+
       const makeMeta = metaData.find(meta =>
-        meta.key === 'make' || meta.key === '_make' || meta.key === 'vehicle_make'
+        meta.key === 'make' || meta.key === '_make' || meta.key === 'vehicle_make' || meta.key.includes('make')
       );
       if (makeMeta?.value) {
         make = makeMeta.value;
-        console.log(`📊 Found make in meta_data: "${make}" for ${vehicle.title}`);
+        console.log(`📊 Found make in meta_data: "${make}" (key: ${makeMeta.key}) for ${vehicle.title}`);
         return make;
       }
     }
