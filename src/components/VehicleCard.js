@@ -191,6 +191,42 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
+    // QUICK FIX: Check for Carson Cars in meta_data first
+    const metaData = vehicle.meta_data || [];
+    const carsonMeta = metaData.find(m =>
+      m.key === 'acount_name_seller' ||
+      m.key === 'account_name_seller' ||
+      m.key === 'business_name_seller'
+    );
+
+    if (carsonMeta && carsonMeta.value && carsonMeta.value.trim() !== '') {
+      console.log('✅ QUICK FIX: Found seller name in meta_data:', carsonMeta.value);
+      return carsonMeta.value;
+    }
+
+    // Check for account number to construct name
+    const accountMeta = metaData.find(m => m.key === 'account_number_seller');
+    if (accountMeta && accountMeta.value) {
+      // Map known account numbers to dealer names
+      const dealerMap = {
+        '100082': 'Carson Cars',
+        '73': 'Del Sol Auto Sales',
+        '101': 'Carson Cars',
+        '205': 'Northwest Auto Group',
+        '312': 'Electric Auto Northwest',
+        '445': 'Premium Motors Seattle'
+      };
+
+      const dealerName = dealerMap[accountMeta.value];
+      if (dealerName) {
+        console.log('✅ MAPPED: Found dealer for account', accountMeta.value, ':', dealerName);
+        return dealerName;
+      }
+
+      console.log('⚠️ FALLBACK: Using account number:', accountMeta.value);
+      return `Dealer Account #${accountMeta.value}`;
+    }
+
     // DEBUG: Log what vehicle data we have
     console.log('🔍 VEHICLE DATA DEBUG:', {
       vehicleId: vehicle.id,
@@ -199,7 +235,8 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       hasMetaData: !!vehicle.meta_data,
       metaDataLength: vehicle.meta_data?.length || 0,
       dealerProp: vehicle.dealer,
-      rawData: vehicle.rawData?.seller_data
+      rawData: vehicle.rawData?.seller_data,
+      allMetaKeys: metaData.map(m => m.key)
     });
 
     // STEP 1: Try the resolved seller_data from WordPress relationship resolver
