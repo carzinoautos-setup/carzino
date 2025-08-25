@@ -29,7 +29,7 @@ if (missingVars.length > 0) {
 
 // Validate credential format
 if (WC_CONSUMER_KEY && !WC_CONSUMER_KEY.startsWith('ck_')) {
-  console.warn('⚠️ Consumer key doesn\'t start with "ck_" - may be invalid');
+  console.warn('���️ Consumer key doesn\'t start with "ck_" - may be invalid');
 }
 if (WC_CONSUMER_SECRET && !WC_CONSUMER_SECRET.startsWith('cs_')) {
   console.warn('⚠️ Consumer secret doesn\'t start with "cs_" - may be invalid');
@@ -1295,12 +1295,10 @@ export const testAPIConnection = async () => {
     const startTime = Date.now();
     const response = await fetchWithTimeout(urlWithAuth, {
       method: 'GET',
-      mode: 'cors',
       headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'Carzino-React-App/1.0'
+        'Accept': 'application/json'
       }
-    }, 15000); // 15 second timeout for better reliability
+    }, 10000); // 10 second timeout
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ API response received in ${responseTime}ms`);
