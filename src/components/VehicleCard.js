@@ -214,7 +214,10 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         '101': 'Carson Cars',
         '205': 'Northwest Auto Group',
         '312': 'Electric Auto Northwest',
-        '445': 'Premium Motors Seattle'
+        '445': 'Premium Motors Seattle',
+        // Add more mappings as needed
+        '100081': 'Carson Cars',
+        '100083': 'Carson Cars'
       };
 
       const dealerName = dealerMap[accountMeta.value];
