@@ -378,7 +378,7 @@ export const fetchVehicles = async (params = {}) => {
     }, 5000); // 5 second timeout - fail faster in production
 
     const responseTime = Date.now() - startTime;
-    console.log(`⏱��� Vehicles loaded in ${responseTime}ms`);
+    console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
     console.log('📡 Response status:', response.status);
 
     if (!response.ok) {
@@ -482,72 +482,63 @@ export const fetchVehicles = async (params = {}) => {
 // Fallback filter options for when API is not available - matches fallback vehicles
 const getFallbackFilterOptions = () => ({
   makes: [
-    { name: 'Toyota', count: 1 },
-    { name: 'Honda', count: 1 },
-    { name: 'Ford', count: 1 },
-    { name: 'Tesla', count: 1 },
-    { name: 'Jeep', count: 1 },
-    { name: 'BMW', count: 1 }
+    { name: 'Toyota', count: 2 },
+    { name: 'Ford', count: 2 },
+    { name: 'Honda', count: 1 }
   ],
   models: [
     { name: 'RAV4', count: 1 },
-    { name: 'Civic', count: 1 },
+    { name: 'Camry', count: 1 },
     { name: 'F-150', count: 1 },
-    { name: 'Model 3', count: 1 },
-    { name: 'Wrangler', count: 1 },
-    { name: '3 Series', count: 1 }
+    { name: 'Mustang', count: 1 },
+    { name: 'Civic', count: 1 }
   ],
   years: [
-    { name: '2022', count: 1 },
     { name: '2021', count: 2 },
     { name: '2020', count: 2 },
     { name: '2019', count: 1 }
   ],
   conditions: [
-    { name: 'Available', count: 6 }
+    { name: 'Available', count: 5 }
   ],
   bodyTypes: [
-    { name: 'SUV', count: 2 },
-    { name: 'Sedan', count: 1 },
+    { name: 'SUV', count: 1 },
+    { name: 'Sedan', count: 2 },
     { name: 'Truck', count: 1 },
-    { name: 'Electric', count: 1 },
-    { name: 'Luxury', count: 1 }
+    { name: 'Coupe', count: 1 }
   ],
   transmissions: [
-    { name: 'Automatic', count: 4 },
-    { name: 'Manual', count: 2 },
-    { name: 'Single Speed', count: 1 }
+    { name: 'Automatic', count: 3 },
+    { name: 'Manual', count: 2 }
   ],
   drivetrains: [
     { name: 'AWD', count: 1 },
-    { name: 'FWD', count: 1 },
-    { name: '4WD', count: 2 },
-    { name: 'RWD', count: 2 }
+    { name: 'FWD', count: 2 },
+    { name: '4WD', count: 1 },
+    { name: 'RWD', count: 1 }
   ],
   fuelTypes: [
-    { name: 'Gasoline', count: 5 },
-    { name: 'Electric', count: 1 }
+    { name: 'Gasoline', count: 5 }
   ],
   trims: [
     { name: 'XLE', count: 1 },
-    { name: 'Sport', count: 1 },
+    { name: 'LE', count: 1 },
     { name: 'XLT', count: 1 },
-    { name: 'Standard', count: 1 },
-    { name: 'Unlimited', count: 1 },
-    { name: '330i', count: 1 }
+    { name: 'GT', count: 1 },
+    { name: 'Si', count: 1 }
   ],
   exteriorColors: [
-    { name: 'Silver', count: 2 },
+    { name: 'White', count: 1 },
     { name: 'Blue', count: 1 },
     { name: 'Red', count: 1 },
-    { name: 'White', count: 1 },
-    { name: 'Black', count: 1 }
+    { name: 'Black', count: 1 },
+    { name: 'Silver', count: 1 }
   ],
   interiorColors: [
     { name: 'Black', count: 4 },
-    { name: 'Gray', count: 2 }
+    { name: 'Gray', count: 1 }
   ],
-  total: 6
+  total: 5
 });
 
 // Generate cascading filter options based on current filter selections
