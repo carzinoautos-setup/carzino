@@ -1378,8 +1378,8 @@ function App() {
         <h1>Carzino Vehicle Search</h1>
         <p>
           {apiConnected
-            ? `Connected to your WooCommerce inventory (${actualTotalResults} of ${totalResults} vehicles shown)`
-            : `⚠️ Showing demo data (${actualTotalResults} vehicles) - WordPress API connection failed`
+            ? `✅ Connected to your WooCommerce inventory (${actualTotalResults} of ${totalResults} vehicles shown)`
+            : `🎯 Demo Mode: Showing ${actualTotalResults} sample vehicles`
           }
           {!apiConnected && (
             <span style={{ marginLeft: '10px' }}>
