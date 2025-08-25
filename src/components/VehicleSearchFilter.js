@@ -319,29 +319,18 @@ const VehicleSearchFilter = ({
     }
   }, [filters, onFiltersChange]);
 
-  // Sample data
-  const allMakes = filterOptions.makes || [
-    { name: "Audi", count: 143 },
-    { name: "BMW", count: 189 },
-    { name: "Chevrolet", count: 287 },
-    { name: "Ford", count: 523 },
-    { name: "Honda", count: 234 },
-    { name: "Hyundai", count: 176 },
-    { name: "Mercedes-Benz", count: 156 },
-    { name: "Nissan", count: 198 },
-    { name: "Subaru", count: 122 },
-    { name: "Tesla", count: 45 },
-    { name: "Toyota", count: 412 },
-    { name: "Volkswagen", count: 134 }
-  ];
-
-  const allModels = filterOptions.models || [
-    { name: "3 Series", count: 67 },
-    { name: "A4", count: 38 },
-    { name: "Camry", count: 134 },
-    { name: "F-150", count: 156 },
-    { name: "Model 3", count: 23 }
-  ];
+  // Real data from WooCommerce API
+  const allMakes = filterOptions.makes || [];
+  const allModels = filterOptions.models || [];
+  const allConditions = filterOptions.conditions || [];
+  const allVehicleTypes = filterOptions.bodyTypes || [];
+  const allDriveTypes = filterOptions.drivetrains || [];
+  const allTransmissions = filterOptions.transmissions || [];
+  const allExteriorColors = filterOptions.exteriorColors || [];
+  const allInteriorColors = filterOptions.interiorColors || [];
+  const allYears = filterOptions.years || [];
+  const allTrims = filterOptions.trims || [];
+  const allFuelTypes = filterOptions.fuelTypes || [];
 
 
 
