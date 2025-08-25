@@ -777,17 +777,6 @@ function App() {
     // Try meta_data first - ACF fields are directly in vehicle.meta_data from API
     const metaData = vehicle.meta_data || vehicle.rawData?.meta_data || [];
     if (Array.isArray(metaData)) {
-      // Debug: Show all available meta_data keys for first few vehicles
-      if (vehicle.id && (vehicle.id.toString().endsWith('1') || vehicle.id.toString().endsWith('2'))) {
-        console.log(`🔍 Available meta_data keys for ${vehicle.title}:`, metaData.map(m => m.key));
-        console.log(`🔍 Full meta_data for ${vehicle.title}:`, metaData);
-        console.log(`🔍 Vehicle structure for ${vehicle.title}:`, {
-          hasDirectMeta: !!vehicle.meta_data,
-          hasRawDataMeta: !!vehicle.rawData?.meta_data,
-          directMetaLength: vehicle.meta_data?.length || 0,
-          rawDataMetaLength: vehicle.rawData?.meta_data?.length || 0
-        });
-      }
 
       const makeMeta = metaData.find(meta =>
         meta.key === 'make' || meta.key === '_make' || meta.key === 'vehicle_make' || meta.key.includes('make')
