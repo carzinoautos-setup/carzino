@@ -326,9 +326,23 @@ function App() {
         const vehicles = await response.json();
         console.log('✅ API CONNECTED! Received vehicles:', vehicles.length);
 
+        // DEBUG: Show ALL vehicles with their account numbers
+        console.log('🔍 ALL VEHICLES WITH ACCOUNT NUMBERS:');
+        vehicles.forEach((vehicle, index) => {
+          const accountMeta = vehicle.meta_data?.find(m => m.key === 'account_number_seller');
+          const accountNumber = accountMeta?.value || 'NO ACCOUNT';
+          console.log(`   ${index + 1}. ${vehicle.name} - Account: ${accountNumber} - Has seller_data: ${!!vehicle.seller_data}`);
+
+          if (vehicle.seller_data) {
+            console.log(`      ✅ Seller: ${vehicle.seller_data.account_name}`);
+          } else {
+            console.log(`      ❌ No seller_data for account ${accountNumber}`);
+          }
+        });
+
         // Look for vehicles with seller_data (from your WordPress snippet)
         const vehiclesWithSeller = vehicles.filter(v => v.seller_data);
-        console.log(`🎯 Found ${vehiclesWithSeller.length} vehicles with seller_data`);
+        console.log(`🎯 Found ${vehiclesWithSeller.length} vehicles with seller_data out of ${vehicles.length} total`);
 
         if (vehiclesWithSeller.length > 0) {
           console.log('✅ SELLER DATA WORKING:', vehiclesWithSeller[0].seller_data);
