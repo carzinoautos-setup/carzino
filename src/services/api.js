@@ -645,25 +645,60 @@ export const fetchVehicles = async (params = {}) => {
     }
     console.log(`✅ Successfully fetched ${products.length} vehicles from WooCommerce API`);
 
-    // Debug seller data availability
+    // DETAILED seller data debugging
     const vehiclesWithSellerData = products.filter(p => p.seller_data);
     const vehiclesWithSellerMeta = products.filter(p => p.meta_data && p.meta_data.some(m => m.key.includes('seller')));
 
-    console.log(`🔍 SELLER DATA DEBUG:`);
-    console.log(`  Vehicles with seller_data field: ${vehiclesWithSellerData.length}/${products.length}`);
-    console.log(`  Vehicles with seller meta_data: ${vehiclesWithSellerMeta.length}/${products.length}`);
+    console.log(`🔍 COMPREHENSIVE SELLER DATA DEBUG:`);
+    console.log(`  Total vehicles: ${products.length}`);
+    console.log(`  Vehicles with seller_data field: ${vehiclesWithSellerData.length}`);
+    console.log(`  Vehicles with seller meta_data: ${vehiclesWithSellerMeta.length}`);
+
+    // Show first 3 vehicles' raw data for debugging
+    console.log(`📋 FIRST 3 VEHICLES RAW DATA:`);
+    products.slice(0, 3).forEach((product, index) => {
+      console.log(`  Vehicle ${index + 1}: ${product.name}`);
+      console.log(`    ID: ${product.id}`);
+      console.log(`    Has seller_data: ${!!product.seller_data}`);
+      console.log(`    seller_data content:`, product.seller_data);
+      console.log(`    Has meta_data: ${!!product.meta_data}`);
+      console.log(`    Total meta_data fields: ${product.meta_data?.length || 0}`);
+
+      if (product.meta_data) {
+        const sellerFields = product.meta_data.filter(m => m.key && m.key.includes('seller'));
+        const accountFields = product.meta_data.filter(m => m.key && m.key.includes('account'));
+        console.log(`    Seller meta fields (${sellerFields.length}):`, sellerFields);
+        console.log(`    Account meta fields (${accountFields.length}):`, accountFields);
+
+        // Show all meta field keys to understand what's available
+        const allMetaKeys = product.meta_data.map(m => m.key).filter(k => k);
+        console.log(`    All meta field keys:`, allMetaKeys);
+      }
+      console.log(`  ---`);
+    });
 
     if (vehiclesWithSellerData.length > 0) {
-      console.log(`  ✅ First vehicle with seller_data:`, {
-        id: vehiclesWithSellerData[0].id,
-        name: vehiclesWithSellerData[0].name,
-        seller_data: vehiclesWithSellerData[0].seller_data
+      console.log(`✅ VEHICLES WITH seller_data FIELD:`);
+      vehiclesWithSellerData.slice(0, 2).forEach((vehicle, index) => {
+        console.log(`  Vehicle ${index + 1}: ${vehicle.name}`);
+        console.log(`    seller_data:`, vehicle.seller_data);
       });
+    } else {
+      console.log(`❌ NO VEHICLES HAVE seller_data FIELD`);
+      console.log(`   This suggests the WordPress API is not including seller_data`);
+      console.log(`   Check if the seller data snippets are active in WordPress`);
     }
 
     if (vehiclesWithSellerMeta.length > 0) {
-      const sellerMetaFields = vehiclesWithSellerMeta[0].meta_data.filter(m => m.key.includes('seller'));
-      console.log(`  📋 First vehicle seller meta fields:`, sellerMetaFields);
+      console.log(`✅ VEHICLES WITH SELLER META DATA:`);
+      vehiclesWithSellerMeta.slice(0, 2).forEach((vehicle, index) => {
+        const sellerMeta = vehicle.meta_data.filter(m => m.key.includes('seller'));
+        console.log(`  Vehicle ${index + 1}: ${vehicle.name}`);
+        console.log(`    Seller meta fields:`, sellerMeta);
+      });
+    } else {
+      console.log(`❌ NO VEHICLES HAVE SELLER META DATA`);
+      console.log(`   This means ACF fields are not being included in API response`);
     }
 
     const result = {
@@ -1106,7 +1141,7 @@ export const fetchFilterOptions = async (currentFilters = {}) => {
       total: allProducts.total
     };
 
-    console.log('��� Filter options extracted successfully:', {
+    console.log('✅ Filter options extracted successfully:', {
       makes: filterOptions.makes.length,
       models: filterOptions.models.length,
       years: filterOptions.years.length,
