@@ -126,7 +126,26 @@ function App() {
     if (apiConnected) {
       loadVehiclesAndFilters();
     }
-  }, [apiConnected, currentPage, sortBy, filters]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Update filter options when filters change (for cascading behavior)
+  useEffect(() => {
+    if (apiConnected && vehicles.length > 0) {
+      updateFilterOptions();
+    }
+  }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Function to update only filter options (for cascading filters)
+  const updateFilterOptions = async () => {
+    try {
+      console.log('🔗 Updating filter options based on current selections:', filters);
+      const filterData = await fetchFilterOptions(filters);
+      setFilterOptions(filterData);
+      console.log('✅ Filter options updated for cascading behavior');
+    } catch (err) {
+      console.error('Error updating filter options:', err);
+    }
+  };
 
   // Load vehicles and filter options
   const loadVehiclesAndFilters = async () => {
