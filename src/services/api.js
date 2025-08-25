@@ -636,16 +636,39 @@ export const getFilteredOptions = (allVehicles, currentFilters = {}) => {
     const filteredVehicles = getFilteredVehicles(category);
     const counts = new Map();
 
+    // Debug logging for model filtering
+    if (category === 'model' && currentFilters.make?.length > 0) {
+      console.log(`🔍 Generating ${category} options:`, {
+        totalVehicles: allVehicles.length,
+        filteredVehicles: filteredVehicles.length,
+        currentFilters: currentFilters,
+        excludingCategory: category
+      });
+    }
+
     filteredVehicles.forEach(vehicle => {
       const value = getVehicleFieldValue(vehicle, category);
       if (value) {
         counts.set(value, (counts.get(value) || 0) + 1);
+
+        // Debug log for model filtering
+        if (category === 'model' && currentFilters.make?.length > 0) {
+          const vehicleMake = getVehicleFieldValue(vehicle, 'make');
+          console.log(`📊 Found ${category}: ${value} (make: ${vehicleMake})`);
+        }
       }
     });
 
-    return Array.from(counts.entries())
+    const options = Array.from(counts.entries())
       .map(([name, count]) => ({ name, count }))
       .sort((a, b) => b.count - a.count);
+
+    // Debug final options for models
+    if (category === 'model' && currentFilters.make?.length > 0) {
+      console.log(`✅ Final ${category} options:`, options);
+    }
+
+    return options;
   };
 
   // Debug logging for cascading
@@ -927,7 +950,7 @@ export const testAPIConnection = async () => {
   // Test with timeout and better error handling
   try {
     const urlWithAuth = `${WC_API_BASE}/products?per_page=1&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
-    console.log('🧪 Testing API URL:', urlWithAuth);
+    console.log('�� Testing API URL:', urlWithAuth);
     console.log('⏱️ Starting API test with 10 second timeout...');
 
     const startTime = Date.now();
