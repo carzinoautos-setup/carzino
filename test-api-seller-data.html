@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Carzino API - Seller Data</title>
+</head>
+<body>
+    <h1>Testing Carzino API - Seller Data</h1>
+    <button onclick="testAPI()">Test API Endpoint</button>
+    <div id="results"></div>
+
+    <script>
+        async function testAPI() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Loading...</p>';
+            
+            try {
+                // Test your API endpoint
+                const response = await fetch('https://env-uploadbackup62225-czdev.kinsta.cloud/wp-json/wc/v3/products?per_page=3&consumer_key=ck_xxxxxx&consumer_secret=cs_xxxxxx');
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const products = await response.json();
+                
+                let html = '<h2>API Response:</h2>';
+                html += `<p><strong>Total Products:</strong> ${products.length}</p>`;
+                
+                products.forEach((product, index) => {
+                    html += `<h3>Product ${index + 1}: ${product.name}</h3>`;
+                    html += `<p><strong>ID:</strong> ${product.id}</p>`;
+                    html += `<p><strong>Has seller_data:</strong> ${!!product.seller_data}</p>`;
+                    
+                    if (product.seller_data) {
+                        html += `<p><strong>Seller Data:</strong></p>`;
+                        html += `<pre>${JSON.stringify(product.seller_data, null, 2)}</pre>`;
+                    } else {
+                        html += `<p style="color: red;"><strong>❌ NO seller_data field found!</strong></p>`;
+                        
+                        // Check meta_data for seller fields
+                        const sellerMeta = product.meta_data?.filter(m => m.key.includes('seller')) || [];
+                        if (sellerMeta.length > 0) {
+                            html += `<p><strong>Seller meta_data fields:</strong></p>`;
+                            html += `<pre>${JSON.stringify(sellerMeta, null, 2)}</pre>`;
+                        }
+                    }
+                    
+                    html += '<hr>';
+                });
+                
+                resultsDiv.innerHTML = html;
+                
+            } catch (error) {
+                resultsDiv.innerHTML = `<p style="color: red;">Error: ${error.message}</p>`;
+                console.error('API Test Error:', error);
+            }
+        }
+    </script>
+</body>
+</html>
