@@ -509,6 +509,8 @@ function App() {
         location: extractLocation(vehicle),
         phone: extractPhone(vehicle),
         rawData: vehicle, // Keep original data for debugging
+        // IMPORTANT: Include seller_data for displaying seller names
+        seller_data: vehicle.seller_data || null,
         // Make ACF fields easily accessible for filtering
         meta_data: vehicle.meta_data || [],
         attributes: vehicle.attributes || [],
