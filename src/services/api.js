@@ -447,12 +447,22 @@ export const fetchProductACF = async (productId) => {
   }
 };
 
-// Test API connection with comprehensive debugging
+// Test API connection with improved CORS handling
 export const testAPIConnection = async () => {
   console.log('🔗 Testing API connection to:', WC_API_BASE);
   console.log('🔑 Using credentials:', {
     key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
+  });
+
+  // Check if we're in dev vs production
+  const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
+  const currentDomain = window.location.origin;
+
+  console.log('🌐 Environment:', {
+    isProduction,
+    currentDomain,
+    expectedToWork: isProduction ? 'Yes (CORS configured)' : 'Maybe (depends on CORS setup)'
   });
 
   // Simple test - just try the main API endpoint
@@ -503,11 +513,42 @@ export const testAPIConnection = async () => {
   } catch (error) {
     console.error('❌ API Connection Error:', error);
 
-    // Check if it's a CORS error
+    // Enhanced CORS error handling
     if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
+      const corsMessage = isProduction
+        ? `CORS Error: Connection failed from ${currentDomain}. This shouldn't happen on production.`
+        : `CORS Error: Dev server (${currentDomain}) not allowed by WordPress. This is normal - GitHub Pages will work fine.`;
+
+      console.log('💡 CORS Fix Instructions:');
+      console.log('Add this to your WordPress functions.php:');
+      console.log(`
+// Allow CORS for both GitHub Pages and dev server
+function carzino_enable_cors() {
+    $allowed_origins = [
+        'https://carzinoautos-setup.github.io',
+        '${currentDomain}'
+    ];
+
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if (in_array($origin, $allowed_origins)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+        header('Access-Control-Allow-Credentials: true');
+        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+        header('Access-Control-Allow-Headers: Accept, Authorization, Content-Type, X-Requested-With');
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        exit(0);
+    }
+}
+add_action('init', 'carzino_enable_cors');
+add_action('rest_api_init', 'carzino_enable_cors');
+`);
+
       return {
         success: false,
-        message: `CORS Error: Cannot connect to ${process.env.REACT_APP_WP_SITE_URL}. Enable CORS on your WordPress site.`
+        message: corsMessage,
+        showInstructions: !isProduction
       };
     }
 
