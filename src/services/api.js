@@ -483,12 +483,27 @@ export const testAPIConnection = async () => {
         url: response.url
       });
 
-      const responseText = await response.text();
-      console.log(`📄 Response ${index + 1} preview:`, responseText.substring(0, 300) + '...');
+      // Clone the response so we can read it multiple times
+      const responseClone = response.clone();
 
-      // If we get JSON, this endpoint works!
-      if (response.headers.get('content-type')?.includes('application/json')) {
-        console.log(`✅ Test ${index + 1} SUCCESS! This endpoint returns JSON.`);
+      try {
+        const responseText = await responseClone.text();
+        console.log(`📄 Response ${index + 1} preview:`, responseText.substring(0, 300) + '...');
+
+        // If we get JSON, this endpoint works!
+        if (response.headers.get('content-type')?.includes('application/json')) {
+          console.log(`✅ Test ${index + 1} SUCCESS! This endpoint returns JSON.`);
+
+          // Try to parse the JSON to see the actual data
+          try {
+            const jsonData = JSON.parse(responseText);
+            console.log(`📊 Test ${index + 1} JSON data sample:`, JSON.stringify(jsonData).substring(0, 200) + '...');
+          } catch (jsonError) {
+            console.log(`⚠️ Test ${index + 1} - Response claimed to be JSON but isn't valid JSON`);
+          }
+        }
+      } catch (textError) {
+        console.error(`❌ Test ${index + 1} - Could not read response body:`, textError.message);
       }
 
     } catch (error) {
