@@ -712,10 +712,16 @@ function App() {
 
     // Apply model filter
     if (filters.model && filters.model.length > 0) {
+      const beforeModelFilter = filtered.length;
       filtered = filtered.filter(vehicle => {
         const vehicleModel = extractModelFromVehicle(vehicle);
-        return vehicleModel && filters.model.includes(vehicleModel);
+        const matches = vehicleModel && filters.model.includes(vehicleModel);
+        if (!matches && vehicleModel) {
+          console.log(`🚫 Filtering out ${vehicle.title} - Model: ${vehicleModel} not in [${filters.model.join(', ')}]`);
+        }
+        return matches;
       });
+      console.log(`🔍 Model filter applied: ${beforeModelFilter} → ${filtered.length} vehicles (filtered by: ${filters.model.join(', ')})`);
     }
 
     // Apply condition filter
