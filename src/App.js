@@ -382,16 +382,27 @@ function App() {
         setApiConnected(false);
         setLoading(false);
 
+        // Detailed error handling for different failure types
         if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
-          setError(`🔧 STEP 1: Add "wordpress-cors-headers.php" to WordPress via WPCode plugin, then refresh this page.`);
+          setError(`🔧 CORS Issue Detected!
+            STEP 1: Ensure Snippet #5 (CORS Headers) is ACTIVE in WordPress WPCode plugin
+            STEP 2: Verify your domain is in the allowed origins list
+            STEP 3: Try refreshing this page
+            Current domain: ${window.location.origin}`);
+        } else if (error.message.includes('timed out')) {
+          setError(`⏰ Connection Timeout - WordPress is slow to respond. Using demo data.`);
+        } else if (error.message.includes('500')) {
+          setError(`🔧 WordPress Server Error (500) - Check if WooCommerce is active and WordPress snippets are working.`);
         } else {
           setError(`❌ WordPress API Error: ${error.message}`);
         }
 
-        // Load demo data so app works while fixing CORS
+        // Load demo data so app works while fixing issues
         const demoData = getRealisticDemoVehicles();
         setVehicles(demoData);
         setTotalResults(demoData.length);
+
+        console.log('🚀 FALLBACK: Loaded demo data to keep app functional');
       }
     };
 
