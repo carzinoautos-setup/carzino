@@ -223,7 +223,7 @@ function App() {
       try {
         // Add timeout to prevent hanging on startup
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API test timeout')), 5000)
+          setTimeout(() => reject(new Error('API test timeout')), 10000)
         );
 
         const result = await Promise.race([
