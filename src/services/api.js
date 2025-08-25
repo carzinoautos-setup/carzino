@@ -149,36 +149,6 @@ const getFallbackVehicles = () => {
         featured: false
       },
       {
-        id: 'fallback-2',
-        title: `2020 Honda Civic Sport (${dataNote})`,
-        slug: 'sample-honda-civic',
-        url: '#',
-        price: '22995',
-        sale_price: '',
-        stock_status: 'instock',
-        images: {
-          featured: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop',
-          gallery: ['https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop']
-        },
-        categories: [{ id: 2, name: 'Sedan', slug: 'sedan' }],
-        attributes: [
-          { name: 'Make', options: ['Honda'] },
-          { name: 'Model', options: ['Civic'] },
-          { name: 'Year', options: ['2020'] },
-          { name: 'Mileage', options: ['45123'] },
-          { name: 'Transmission', options: ['Manual'] },
-          { name: 'Drive Type', options: ['FWD'] }
-        ],
-        meta_data: [
-          { key: 'dealer', value: 'Carzino Auto Sales' },
-          { key: 'location', value: 'Seattle, WA' },
-          { key: 'phone', value: '(206) 555-0200' }
-        ],
-        description: 'Sporty and fuel-efficient sedan with manual transmission.',
-        date_created: new Date().toISOString(),
-        featured: false
-      },
-      {
         id: 'fallback-3',
         title: `2019 Ford F-150 XLT (${dataNote})`,
         slug: 'sample-ford-f150',
@@ -191,20 +161,83 @@ const getFallbackVehicles = () => {
           gallery: ['https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop']
         },
         categories: [{ id: 3, name: 'Truck', slug: 'truck' }],
-        attributes: [
-          { name: 'Make', options: ['Ford'] },
-          { name: 'Model', options: ['F-150'] },
-          { name: 'Year', options: ['2019'] },
-          { name: 'Mileage', options: ['68,340'] },
-          { name: 'Transmission', options: ['Automatic'] },
-          { name: 'Drive Type', options: ['4WD'] }
-        ],
+        attributes: [],
         meta_data: [
-          { key: 'dealer', value: 'Carzino Auto Sales' },
-          { key: 'location', value: 'Spokane, WA' },
-          { key: 'phone', value: '(509) 555-0300' }
+          { key: 'make', value: 'Ford' },
+          { key: 'model', value: 'F-150' },
+          { key: 'year', value: '2019' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Truck' },
+          { key: 'drivetrain', value: '4WD' },
+          { key: 'transmission', value: 'Automatic' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'XLT' },
+          { key: 'exterior_color', value: 'Red' },
+          { key: 'interior_color', value: 'Black' }
         ],
         description: 'Reliable work truck with 4WD capability and towing package.',
+        date_created: new Date().toISOString(),
+        featured: false
+      },
+      {
+        id: 'fallback-4',
+        title: `2020 Ford Mustang GT (${dataNote})`,
+        slug: 'sample-ford-mustang',
+        url: '#',
+        price: '32995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 4, name: 'Coupe', slug: 'coupe' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Ford' },
+          { key: 'model', value: 'Mustang' },
+          { key: 'year', value: '2020' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Coupe' },
+          { key: 'drivetrain', value: 'RWD' },
+          { key: 'transmission', value: 'Manual' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'GT' },
+          { key: 'exterior_color', value: 'Black' },
+          { key: 'interior_color', value: 'Black' }
+        ],
+        description: 'High-performance sports car with manual transmission.',
+        date_created: new Date().toISOString(),
+        featured: true
+      },
+      {
+        id: 'fallback-5',
+        title: `2021 Honda Civic Si (${dataNote})`,
+        slug: 'sample-honda-civic',
+        url: '#',
+        price: '25995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 2, name: 'Sedan', slug: 'sedan' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Honda' },
+          { key: 'model', value: 'Civic' },
+          { key: 'year', value: '2021' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Sedan' },
+          { key: 'drivetrain', value: 'FWD' },
+          { key: 'transmission', value: 'Manual' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'Si' },
+          { key: 'exterior_color', value: 'Silver' },
+          { key: 'interior_color', value: 'Black' }
+        ],
+        description: 'Sporty and fuel-efficient sedan with manual transmission.',
         date_created: new Date().toISOString(),
         featured: false
       },
@@ -858,7 +891,7 @@ export const testAPIConnection = async () => {
   const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
   const currentDomain = window.location.origin;
 
-  console.log('��� Environment:', {
+  console.log('🌐 Environment:', {
     isProduction,
     currentDomain,
     expectedToWork: isProduction ? 'Yes (CORS configured)' : 'Maybe (depends on CORS setup)'
