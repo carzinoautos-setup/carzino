@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WooCommerce API 400 Error Debugger</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .error { color: #d32f2f; background: #ffebee; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .success { color: #2e7d32; background: #e8f5e9; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        .info { color: #1976d2; background: #e3f2fd; padding: 10px; border-radius: 4px; margin: 10px 0; }
+        button { background: #1976d2; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #1565c0; }
+        textarea { width: 100%; height: 200px; font-family: monospace; font-size: 12px; }
+        input { padding: 8px; margin: 5px 0; width: 100%; max-width: 400px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 WooCommerce API 400 Error Debugger</h1>
+        
+        <div class="info">
+            <strong>Purpose:</strong> This tool helps debug HTTP 400 errors with WooCommerce API calls.
+        </div>
+
+        <h2>Step 1: Enter Your API Details</h2>
+        <input type="text" id="wpSiteUrl" placeholder="WordPress Site URL (e.g., https://yoursite.com)" />
+        <input type="text" id="consumerKey" placeholder="WooCommerce Consumer Key (ck_...)" />
+        <input type="password" id="consumerSecret" placeholder="WooCommerce Consumer Secret (cs_...)" />
+
+        <h2>Step 2: Test Different API Requests</h2>
+        <button onclick="testBasicAPI()">Test Basic API (1 product)</button>
+        <button onclick="testWithParameters()">Test With Parameters</button>
+        <button onclick="testAuthentication()">Test Authentication Only</button>
+        <button onclick="clearResults()">Clear Results</button>
+
+        <h2>Results:</h2>
+        <div id="results"></div>
+        
+        <h2>Raw Response Data:</h2>
+        <textarea id="rawData" readonly placeholder="Raw API responses will appear here..."></textarea>
+
+        <h2>Troubleshooting Tips:</h2>
+        <div class="info">
+            <ul>
+                <li><strong>400 Bad Request:</strong> Usually invalid parameters or authentication format</li>
+                <li><strong>401 Unauthorized:</strong> Invalid consumer key/secret</li>
+                <li><strong>403 Forbidden:</strong> API user doesn't have permissions</li>
+                <li><strong>404 Not Found:</strong> WooCommerce API not enabled or wrong URL</li>
+                <li><strong>500 Server Error:</strong> WordPress/WooCommerce configuration issue</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        let testResults = [];
+
+        function addResult(message, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const div = document.createElement('div');
+            div.className = type;
+            div.innerHTML = message;
+            resultsDiv.appendChild(div);
+            
+            // Also log to console
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        function updateRawData(data) {
+            const textarea = document.getElementById('rawData');
+            textarea.value += JSON.stringify(data, null, 2) + '\n\n---\n\n';
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('rawData').value = '';
+            testResults = [];
+        }
+
+        async function testBasicAPI() {
+            const wpSiteUrl = document.getElementById('wpSiteUrl').value;
+            const consumerKey = document.getElementById('consumerKey').value;
+            const consumerSecret = document.getElementById('consumerSecret').value;
+
+            if (!wpSiteUrl || !consumerKey || !consumerSecret) {
+                addResult('❌ Please fill in all API credentials first', 'error');
+                return;
+            }
+
+            addResult('🔄 Testing basic API connection...', 'info');
+
+            try {
+                const url = `${wpSiteUrl}/wp-json/wc/v3/products?per_page=1&consumer_key=${consumerKey}&consumer_secret=${consumerSecret}`;
+                
+                addResult(`📡 Request URL: ${url.replace(/consumer_(key|secret)=[^&]+/g, 'consumer_$1=***')}`, 'info');
+
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                });
+
+                addResult(`📊 Response Status: ${response.status} ${response.statusText}`, response.ok ? 'success' : 'error');
+                addResult(`📋 Content-Type: ${response.headers.get('content-type')}`, 'info');
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    addResult(`❌ Error Response: ${errorText.substring(0, 300)}`, 'error');
+                    updateRawData({ status: response.status, error: errorText });
+                    
+                    if (response.status === 400) {
+                        addResult('🔧 HTTP 400 Specific Guidance:', 'info');
+                        addResult('• Check if consumer key starts with "ck_" and secret with "cs_"', 'info');
+                        addResult('• Verify WooCommerce REST API is enabled', 'info');
+                        addResult('• Check if API user has proper permissions', 'info');
+                        addResult('• Try reducing per_page parameter', 'info');
+                    }
+                } else {
+                    const data = await response.json();
+                    addResult(`✅ Success! Received ${data.length} products`, 'success');
+                    updateRawData({ status: response.status, data: data });
+                }
+
+            } catch (error) {
+                addResult(`❌ Network Error: ${error.message}`, 'error');
+                updateRawData({ error: error.message });
+            }
+        }
+
+        async function testWithParameters() {
+            const wpSiteUrl = document.getElementById('wpSiteUrl').value;
+            const consumerKey = document.getElementById('consumerKey').value;
+            const consumerSecret = document.getElementById('consumerSecret').value;
+
+            if (!wpSiteUrl || !consumerKey || !consumerSecret) {
+                addResult('❌ Please fill in all API credentials first', 'error');
+                return;
+            }
+
+            addResult('🔄 Testing API with various parameters...', 'info');
+
+            const testCases = [
+                { params: 'per_page=25&status=publish', description: 'Standard parameters' },
+                { params: 'per_page=100&status=publish', description: 'Higher per_page limit' },
+                { params: 'per_page=200&status=publish', description: 'Very high per_page limit' },
+                { params: 'per_page=25&status=publish&orderby=date', description: 'With orderby parameter' },
+                { params: 'per_page=25&status=publish&orderby=date&order=desc', description: 'With order parameter' }
+            ];
+
+            for (const testCase of testCases) {
+                try {
+                    const url = `${wpSiteUrl}/wp-json/wc/v3/products?${testCase.params}&consumer_key=${consumerKey}&consumer_secret=${consumerSecret}`;
+                    
+                    addResult(`🧪 Testing: ${testCase.description}`, 'info');
+
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        addResult(`✅ ${testCase.description}: Success (${data.length} products)`, 'success');
+                    } else {
+                        const errorText = await response.text();
+                        addResult(`❌ ${testCase.description}: ${response.status} ${response.statusText}`, 'error');
+                        if (response.status === 400) {
+                            addResult(`   Error details: ${errorText.substring(0, 100)}...`, 'error');
+                        }
+                    }
+
+                } catch (error) {
+                    addResult(`❌ ${testCase.description}: Network error - ${error.message}`, 'error');
+                }
+
+                // Small delay between requests
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        async function testAuthentication() {
+            const wpSiteUrl = document.getElementById('wpSiteUrl').value;
+            const consumerKey = document.getElementById('consumerKey').value;
+            const consumerSecret = document.getElementById('consumerSecret').value;
+
+            if (!wpSiteUrl || !consumerKey || !consumerSecret) {
+                addResult('❌ Please fill in all API credentials first', 'error');
+                return;
+            }
+
+            addResult('🔐 Testing authentication formats...', 'info');
+
+            // Test different authentication methods
+            const authTests = [
+                {
+                    method: 'URL Parameters',
+                    test: async () => {
+                        const url = `${wpSiteUrl}/wp-json/wc/v3/products?per_page=1&consumer_key=${consumerKey}&consumer_secret=${consumerSecret}`;
+                        return await fetch(url, { headers: { 'Accept': 'application/json' } });
+                    }
+                },
+                {
+                    method: 'Basic Auth Header',
+                    test: async () => {
+                        const auth = btoa(`${consumerKey}:${consumerSecret}`);
+                        const url = `${wpSiteUrl}/wp-json/wc/v3/products?per_page=1`;
+                        return await fetch(url, {
+                            headers: {
+                                'Authorization': `Basic ${auth}`,
+                                'Accept': 'application/json'
+                            }
+                        });
+                    }
+                }
+            ];
+
+            for (const authTest of authTests) {
+                try {
+                    addResult(`🔑 Testing ${authTest.method}...`, 'info');
+                    const response = await authTest.test();
+                    
+                    if (response.ok) {
+                        addResult(`✅ ${authTest.method}: Success`, 'success');
+                    } else {
+                        const errorText = await response.text();
+                        addResult(`❌ ${authTest.method}: ${response.status} ${response.statusText}`, 'error');
+                        if (errorText) {
+                            addResult(`   Details: ${errorText.substring(0, 100)}...`, 'error');
+                        }
+                    }
+                } catch (error) {
+                    addResult(`❌ ${authTest.method}: ${error.message}`, 'error');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
