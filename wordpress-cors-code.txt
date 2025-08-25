@@ -1,0 +1,70 @@
+<?php
+// Enhanced CORS for WooCommerce API and GitHub Pages + Dev Server
+// This handles all CORS issues for your React app
+
+// Define allowed origins
+$allowed_origins = [
+    'https://carzinoautos-setup.github.io',
+    'https://fbce45b0c67141608c60e319b0dcfc3a-44a36f7f-89a9-4b6d-ba50-d884fa.fly.dev'
+];
+
+// Function to check if origin is allowed
+function carzino_is_origin_allowed($origin) {
+    global $allowed_origins;
+    return in_array($origin, $allowed_origins);
+}
+
+// Handle preflight OPTIONS requests
+add_action('init', function() use ($allowed_origins) {
+    if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+        if (carzino_is_origin_allowed($origin)) {
+            header('Access-Control-Allow-Origin: ' . $origin);
+            header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
+            header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
+            header('Access-Control-Allow-Credentials: true');
+            header('Access-Control-Max-Age: 86400');
+        }
+        exit();
+    }
+});
+
+// Add CORS headers to all WordPress responses
+add_action('wp_headers', function($headers) {
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if (carzino_is_origin_allowed($origin)) {
+        $headers['Access-Control-Allow-Origin'] = $origin;
+        $headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, PUT, DELETE';
+        $headers['Access-Control-Allow-Headers'] = 'Authorization, Content-Type, X-Requested-With';
+        $headers['Access-Control-Allow-Credentials'] = 'true';
+    }
+    return $headers;
+});
+
+// Specifically handle WooCommerce REST API endpoints
+add_action('rest_api_init', function() {
+    remove_filter('rest_pre_serve_request', 'rest_send_cors_headers');
+    add_filter('rest_pre_serve_request', function($value) {
+        $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+        if (carzino_is_origin_allowed($origin)) {
+            header('Access-Control-Allow-Origin: ' . $origin);
+            header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');  
+            header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
+            header('Access-Control-Allow-Credentials: true');
+        }
+        return $value;
+    });
+});
+
+// Additional header for WooCommerce API specifically
+add_filter('woocommerce_rest_pre_echo_response', function($result, $server, $request) {
+    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if (carzino_is_origin_allowed($origin)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE');
+        header('Access-Control-Allow-Headers: Authorization, Content-Type, X-Requested-With');
+        header('Access-Control-Allow-Credentials: true');
+    }
+    return $result;
+}, 10, 3);
+?>
