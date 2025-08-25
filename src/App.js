@@ -254,13 +254,8 @@ function App() {
     try {
       // Skip if already loading or not connected
       if (loading || !apiConnected) {
-        console.log('📋 Skipping filter update - app is loading or not connected');
         return;
       }
-
-      // Always update filter options for cascading, even if no filters are active
-      // This ensures base options are shown when no filters are selected
-      console.log('🔗 Updating ALL filter options for conditional filtering based on:', filters);
 
       // Add timeout to prevent hanging
       const timeoutPromise = new Promise((_, reject) =>
@@ -753,7 +748,7 @@ function App() {
 
         return matches;
       });
-      console.log(`🔍 Make filter applied: ${beforeMakeFilter} → ${filtered.length} vehicles (filtered by: ${filters.make.join(', ')})`);
+      console.log(`�� Make filter applied: ${beforeMakeFilter} → ${filtered.length} vehicles (filtered by: ${filters.make.join(', ')})`);
     }
 
     // Apply model filter
