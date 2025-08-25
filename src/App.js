@@ -905,8 +905,8 @@ function App() {
       }
     }
 
-    // Try attributes (using same structure as api.js)
-    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    // Try attributes - they are directly in vehicle.attributes from API
+    const attributes = vehicle.attributes || vehicle.rawData?.attributes || [];
     if (Array.isArray(attributes)) {
       const modelAttr = attributes.find(attr =>
         attr.name && attr.name.toLowerCase().includes('model')
