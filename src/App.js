@@ -750,7 +750,7 @@ function App() {
     // Apply model filter
     if (filters.model && filters.model.length > 0) {
       const beforeModelFilter = filtered.length;
-      console.log(`🔍 Applying model filter for: [${filters.model.join(', ')}]`);
+      console.log(`��� Applying model filter for: [${filters.model.join(', ')}]`);
 
       filtered = filtered.filter(vehicle => {
         const vehicleModel = extractModelFromVehicle(vehicle);
@@ -988,7 +988,7 @@ function App() {
     const conditionMeta = metaData.find(meta => meta.key === 'condition');
     if (conditionMeta?.value) return conditionMeta.value;
 
-    const stockStatus = vehicle.rawData?.stock_status || vehicle.stock_status;
+    const stockStatus = vehicle.stock_status || vehicle.rawData?.stock_status;
     return stockStatus === 'instock' ? 'Available' : 'Sold';
   };
 
@@ -997,7 +997,7 @@ function App() {
     const typeMeta = metaData.find(meta => meta.key === 'body_type');
     if (typeMeta?.value) return typeMeta.value;
 
-    const categories = vehicle.rawData?.categories || vehicle.categories || [];
+    const categories = vehicle.categories || vehicle.rawData?.categories || [];
     return categories.find(cat => cat.name !== 'Uncategorized')?.name || null;
   };
 
@@ -1006,7 +1006,7 @@ function App() {
     const driveMeta = metaData.find(meta => meta.key === 'drivetrain');
     if (driveMeta?.value) return driveMeta.value;
 
-    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    const attributes = vehicle.attributes || vehicle.rawData?.attributes || [];
     const driveAttr = attributes.find(attr =>
       attr.name.toLowerCase().includes('drive')
     );
@@ -1019,7 +1019,7 @@ function App() {
     const transMeta = metaData.find(meta => meta.key === 'transmission');
     if (transMeta?.value) return transMeta.value;
 
-    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    const attributes = vehicle.attributes || vehicle.rawData?.attributes || [];
     const transAttr = attributes.find(attr =>
       attr.name.toLowerCase().includes('transmission')
     );
@@ -1032,7 +1032,7 @@ function App() {
     const yearMeta = metaData.find(meta => meta.key === 'year');
     if (yearMeta?.value) return yearMeta.value;
 
-    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    const attributes = vehicle.attributes || vehicle.rawData?.attributes || [];
     const yearAttr = attributes.find(attr =>
       attr.name.toLowerCase().includes('year')
     );
