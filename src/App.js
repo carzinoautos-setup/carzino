@@ -83,7 +83,7 @@ function App() {
         if (result && typeof result === 'object') {
           if (result.success) {
             setApiConnected(true);
-            console.log(`�� Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
+            console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
             setError(null); // Clear any previous errors
           } else {
             setApiConnected(false);
@@ -142,7 +142,7 @@ function App() {
 
       const [vehicleData, filterData] = await Promise.all([
         fetchVehicles(vehicleParams),
-        fetchFilterOptions()
+        fetchFilterOptions(filters) // Pass current filters for cascading logic
       ]);
 
       // Transform vehicle data to match existing component structure
