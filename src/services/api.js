@@ -13,8 +13,22 @@ console.log('🔧 Environment Check:', {
   hasConsumerKey: !!WC_CONSUMER_KEY,
   hasConsumerSecret: !!WC_CONSUMER_SECRET,
   keyLength: WC_CONSUMER_KEY?.length || 0,
-  secretLength: WC_CONSUMER_SECRET?.length || 0
+  secretLength: WC_CONSUMER_SECRET?.length || 0,
+  apiBase: WC_API_BASE,
+  fullKey: WC_CONSUMER_KEY,
+  fullSecret: WC_CONSUMER_SECRET
 });
+
+// Check if environment variables are actually loaded
+if (!process.env.REACT_APP_WP_SITE_URL) {
+  console.error('❌ REACT_APP_WP_SITE_URL is not set!');
+}
+if (!WC_CONSUMER_KEY) {
+  console.error('❌ REACT_APP_WC_CONSUMER_KEY is not set!');
+}
+if (!WC_CONSUMER_SECRET) {
+  console.error('❌ REACT_APP_WC_CONSUMER_SECRET is not set!');
+}
 
 // Simple cache system for faster loading
 const cache = new Map();
