@@ -805,30 +805,23 @@ const VehicleSearchFilter = ({
           count={getFilterCount('driveType')}
         >
           <div className="space-y-2">
-            <CheckboxOption
-              label="AWD (4WD)"
-              count={18943}
-              value="AWD"
-              category="driveType"
-              checked={filters.driveType?.includes('AWD')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="FWD (6,507)"
-              count={12057}
-              value="FWD"
-              category="driveType"
-              checked={filters.driveType?.includes('FWD')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="RWD (1,881)"
-              count={5883}
-              value="RWD"
-              category="driveType"
-              checked={filters.driveType?.includes('RWD')}
-              onChange={handleFilterChange}
-            />
+            {allDriveTypes.length > 0 ? (
+              allDriveTypes.map((driveType) => (
+                <CheckboxOption
+                  key={driveType.name}
+                  label={driveType.name}
+                  count={driveType.count}
+                  value={driveType.name}
+                  category="driveType"
+                  checked={filters.driveType?.includes(driveType.name)}
+                  onChange={handleFilterChange}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-gray-500 py-2">
+                Loading drive types...
+              </div>
+            )}
           </div>
         </FilterSection>
 
