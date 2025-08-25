@@ -819,7 +819,7 @@ function App() {
         <main className="flex-1 min-w-0 bg-white">
           {/* Search Results Header */}
           <SearchResultsHeader
-            totalResults={showingFavorites ? favoritesCount : totalResults}
+            totalResults={actualTotalResults}
             currentFilters={filters}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
