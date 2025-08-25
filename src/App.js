@@ -308,7 +308,7 @@ function App() {
           } else if (result.timeout) {
             setError('⚠️ WordPress site is slow to respond - showing demo data. This is normal for some hosting providers.');
           } else {
-            setError('��️ API connection issue - showing demo data. Using fallback inventory.');
+            setError('⚠️ API connection issue - showing demo data. Using fallback inventory.');
           }
         }
         } else {
@@ -363,16 +363,18 @@ function App() {
     return () => clearTimeout(emergencyFallbackTimer);
   }, [loading, vehicles.length]);
 
-  // Load initial data when API is connected
+  // Load initial data when API is connected (skip on Fly.dev)
   useEffect(() => {
-    if (apiConnected) {
+    const isOnFlyDev = window.location.hostname.includes('fly.dev');
+    if (apiConnected && !isOnFlyDev) {
       loadVehiclesAndFilters();
     }
   }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Update filter options when filters change (for cascading behavior)
+  // Update filter options when filters change (skip on Fly.dev)
   useEffect(() => {
-    if (apiConnected && vehicles.length > 0 && !loading) {
+    const isOnFlyDev = window.location.hostname.includes('fly.dev');
+    if (apiConnected && vehicles.length > 0 && !loading && !isOnFlyDev) {
       const timeoutId = setTimeout(() => {
         updateFilterOptions();
       }, 150); // Faster response for better UX
