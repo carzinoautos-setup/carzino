@@ -683,7 +683,6 @@ function App() {
 
     // Clear URL parameters (go to base URL)
     window.history.pushState(null, '', window.location.pathname);
-    console.log('🔗 Cleared all filters, reset URL to base path');
   };
 
   // Handle search
