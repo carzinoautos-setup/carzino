@@ -379,7 +379,9 @@ function App() {
         meta_data: vehicle.meta_data || [],
         attributes: vehicle.attributes || [],
         categories: vehicle.categories || [],
-        stock_status: vehicle.stock_status
+        stock_status: vehicle.stock_status,
+        // For debugging - show what make we extracted
+        extractedMake: vehicle.meta_data?.find(m => m.key === 'make')?.value || 'Unknown'
       }));
 
       setVehicles(transformedVehicles);
