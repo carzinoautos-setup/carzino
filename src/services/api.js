@@ -464,19 +464,31 @@ export const testAPIConnection = async () => {
     `${process.env.REACT_APP_WP_SITE_URL}/?wc-api=v3&request=products&oauth_consumer_key=${WC_CONSUMER_KEY}&oauth_consumer_secret=${WC_CONSUMER_SECRET}`
   ];
 
-  // First, test if WordPress site is accessible at all
-  console.log('🌐 Testing WordPress site accessibility...');
+  // First, test basic connectivity to WordPress site
+  console.log('🌐 Testing basic WordPress site connectivity...');
+  console.log('🔗 WordPress URL:', process.env.REACT_APP_WP_SITE_URL);
+
   try {
     const wpSiteResponse = await fetch(process.env.REACT_APP_WP_SITE_URL, {
       method: 'GET',
       mode: 'cors'
     });
-    console.log('🏠 WordPress site response:', {
+    console.log('🏠 WordPress site accessible:', {
       status: wpSiteResponse.status,
       contentType: wpSiteResponse.headers.get('content-type')
     });
+
+    const siteText = await wpSiteResponse.text();
+    if (siteText.includes('WordPress') || siteText.includes('wp-')) {
+      console.log('✅ Confirmed this is a WordPress site');
+    } else {
+      console.log('⚠️ Site responded but may not be WordPress');
+    }
+
   } catch (error) {
     console.error('❌ WordPress site not accessible:', error.message);
+    console.error('   This could mean CORS is broken or the site is down');
+    return; // Don't continue testing if basic site isn't accessible
   }
 
   for (const [index, testUrl] of testUrls.entries()) {
