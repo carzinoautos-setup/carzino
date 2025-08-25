@@ -455,157 +455,59 @@ export const testAPIConnection = async () => {
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
   });
 
-  // Provide manual test URL for user to verify
-  const manualTestUrl = `https://env-uploadbackup62225-czdev.kinsta.cloud/wp-json/wc/v3/products?consumer_key=ck_ba9a8da8b8ad2ef3b1093ba34e4b2a25cd299b25&consumer_secret=cs_029fd6b60c280bc10981d62871d1c0526990f607&per_page=1`;
-  console.log('');
-  console.log('🧪 MANUAL TEST: Copy this URL and test it in a new browser tab:');
-  console.log(manualTestUrl);
-  console.log('   ✅ If you see JSON data: API works, CORS issue in React app');
-  console.log('   ❌ If you see HTML/error: API endpoint has issues');
-  console.log('');
-
-  // Test multiple endpoints to see which one works
-  const testUrls = [
-    // Test 1: Basic WordPress API (should work if WP is running)
-    `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wp/v2/posts?per_page=1`,
-    // Test 2: WooCommerce API with URL auth
-    `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/products?consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}&per_page=1`,
-    // Test 3: EXACT URL that worked before (hardcoded to verify)
-    `https://env-uploadbackup62225-czdev.kinsta.cloud/wp-json/wc/v3/products?consumer_key=ck_ba9a8da8b8ad2ef3b1093ba34e4b2a25cd299b25&consumer_secret=cs_029fd6b60c280bc10981d62871d1c0526990f607&per_page=1`,
-    // Test 4: Check if WooCommerce is installed
-    `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/system_status?consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`,
-    // Test 5: Alternative WooCommerce endpoint
-    `${process.env.REACT_APP_WP_SITE_URL}/?wc-api=v3&request=products&oauth_consumer_key=${WC_CONSUMER_KEY}&oauth_consumer_secret=${WC_CONSUMER_SECRET}`
-  ];
-
-  // First, test basic connectivity to WordPress site
-  console.log('🌐 Testing basic WordPress site connectivity...');
-  console.log('🔗 WordPress URL:', process.env.REACT_APP_WP_SITE_URL);
-
-  try {
-    const wpSiteResponse = await fetch(process.env.REACT_APP_WP_SITE_URL, {
-      method: 'GET',
-      mode: 'cors'
-    });
-    console.log('🏠 WordPress site accessible:', {
-      status: wpSiteResponse.status,
-      contentType: wpSiteResponse.headers.get('content-type')
-    });
-
-    const siteText = await wpSiteResponse.text();
-    if (siteText.includes('WordPress') || siteText.includes('wp-')) {
-      console.log('✅ Confirmed this is a WordPress site');
-    } else {
-      console.log('⚠️ Site responded but may not be WordPress');
-    }
-
-  } catch (error) {
-    console.error('❌ WordPress site not accessible:', error.message);
-    console.error('   This could mean CORS is broken or the site is down');
-    return {
-      success: false,
-      message: `WordPress site not accessible: ${error.message}. This could mean CORS is broken or the site is down.`
-    };
-  }
-
-  for (const [index, testUrl] of testUrls.entries()) {
-    console.log(`🧪 Test ${index + 1}: ${testUrl.substring(0, 100)}...`);
-
-    try {
-      const response = await fetch(testUrl, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        mode: 'cors',
-      });
-
-      console.log(`📡 Response ${index + 1}:`, {
-        status: response.status,
-        statusText: response.statusText,
-        contentType: response.headers.get('content-type'),
-        url: response.url
-      });
-
-      // Read response body once
-      const responseText = await response.text();
-      console.log(`📄 Response ${index + 1} preview:`, responseText.substring(0, 300) + '...');
-
-      // Check if it's JSON
-      if (response.headers.get('content-type')?.includes('application/json')) {
-        console.log(`✅ Test ${index + 1} SUCCESS! This endpoint returns JSON.`);
-
-        try {
-          const jsonData = JSON.parse(responseText);
-          console.log(`📊 Test ${index + 1} JSON data:`, jsonData);
-        } catch (jsonError) {
-          console.log(`⚠️ Test ${index + 1} - Response claimed to be JSON but parsing failed:`, jsonError.message);
-        }
-      } else if (responseText.includes('<!DOCTYPE') || responseText.includes('<html')) {
-        console.log(`❌ Test ${index + 1} - Got HTML instead of JSON (API endpoint may not exist)`);
-      } else {
-        console.log(`❓ Test ${index + 1} - Got unexpected content type:`, response.headers.get('content-type'));
-      }
-
-    } catch (error) {
-      console.error(`❌ Test ${index + 1} failed:`, error.message);
-
-      // Provide specific guidance based on error type
-      if (error.message.includes('Failed to fetch')) {
-        console.error(`   This usually means CORS issues or the server is unreachable`);
-      }
-    }
-  }
-
+  // Simple test - just try the main API endpoint
   try {
     const urlWithAuth = `${WC_API_BASE}/products?per_page=1&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
-    console.log('🧪 Testing URL-based auth:', urlWithAuth);
+    console.log('🧪 Testing API URL:', urlWithAuth);
 
     const response = await fetch(urlWithAuth, {
       method: 'GET',
       mode: 'cors',
       headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+        'Accept': 'application/json'
       }
     });
-    
-    if (response.ok) {
-      // Try to read response to verify it's actually JSON
-      try {
-        const responseText = await response.text();
-        if (responseText.includes('<!DOCTYPE') || responseText.includes('<html')) {
-          return {
-            success: false,
-            message: 'API returned HTML instead of JSON - WooCommerce API may not be enabled'
-          };
-        }
 
-        return {
-          success: true,
-          message: 'API connection successful',
-          productCount: response.headers.get('X-WP-Total') || '0',
-          sampleData: responseText.substring(0, 100) + '...'
-        };
-      } catch (readError) {
-        return {
-          success: false,
-          message: `API responded but couldn't read data: ${readError.message}`
-        };
-      }
-    } else {
+    console.log('📡 API Response:', {
+      status: response.status,
+      statusText: response.statusText,
+      contentType: response.headers.get('content-type')
+    });
+
+    if (!response.ok) {
       return {
         success: false,
         message: `API Error: ${response.status} ${response.statusText}`
       };
     }
+
+    // Check content type before reading
+    const contentType = response.headers.get('content-type');
+    if (!contentType || !contentType.includes('application/json')) {
+      return {
+        success: false,
+        message: 'API returned non-JSON response - WooCommerce API may not be enabled'
+      };
+    }
+
+    // Try to parse response
+    const data = await response.json();
+
+    return {
+      success: true,
+      message: 'API connection successful',
+      productCount: response.headers.get('X-WP-Total') || data.length.toString(),
+      data: data
+    };
+
   } catch (error) {
+    console.error('❌ API Connection Error:', error);
+
     // Check if it's a CORS error
     if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
       return {
         success: false,
-        message: `CORS Error: Cannot connect to ${process.env.REACT_APP_WP_SITE_URL} from GitHub Pages. Enable CORS on your WordPress site.`
+        message: `CORS Error: Cannot connect to ${process.env.REACT_APP_WP_SITE_URL}. Enable CORS on your WordPress site.`
       };
     }
 
