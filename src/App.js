@@ -373,7 +373,7 @@ function App() {
       setTotalPages(Math.ceil(vehicleData.total / resultsPerPage));
       
       console.log(`📊 Loaded ${transformedVehicles.length} vehicles from WooCommerce API`);
-      console.log('🏷️ Filter options:', filterData);
+      console.log('🏷�� Filter options:', filterData);
       
     } catch (err) {
       console.error('Error loading data:', err);
@@ -696,15 +696,22 @@ function App() {
     let filtered = vehicles;
     const originalCount = filtered.length;
 
+    console.log(`🔍 Starting vehicle filtering with ${originalCount} total vehicles`);
+    console.log(`🔍 Current filters:`, filters);
+
     // Apply make filter
     if (filters.make && filters.make.length > 0) {
       const beforeMakeFilter = filtered.length;
-      filtered = filtered.filter(vehicle => {
+      console.log(`🔍 Applying make filter for: [${filters.make.join(', ')}]`);
+
+      filtered = filtered.filter((vehicle, index) => {
         const vehicleMake = extractMakeFromVehicle(vehicle);
         const matches = vehicleMake && filters.make.includes(vehicleMake);
-        if (!matches && vehicleMake) {
-          console.log(`🚫 Filtering out ${vehicle.title} - Make: ${vehicleMake} not in [${filters.make.join(', ')}]`);
+
+        if (index < 5) { // Log first 5 vehicles for debugging
+          console.log(`🚗 Vehicle ${index + 1}: "${vehicle.title}" - Make: "${vehicleMake}" - Matches: ${matches}`);
         }
+
         return matches;
       });
       console.log(`🔍 Make filter applied: ${beforeMakeFilter} → ${filtered.length} vehicles (filtered by: ${filters.make.join(', ')})`);
