@@ -632,11 +632,9 @@ function App() {
 
     // Clear dependent filters when parent filter is removed
     if (category === 'make') {
-      console.log('🔗 Make filter removed, clearing dependent filters');
       newFilters.model = [];
       newFilters.trim = [];
     } else if (category === 'model') {
-      console.log('🔗 Model filter removed, clearing dependent trim filters');
       newFilters.trim = [];
     }
 
