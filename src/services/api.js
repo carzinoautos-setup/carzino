@@ -499,31 +499,33 @@ export const testAPIConnection = async () => {
         url: response.url
       });
 
-      // Clone the response so we can read it multiple times
-      const responseClone = response.clone();
+      // Read response body once
+      const responseText = await response.text();
+      console.log(`📄 Response ${index + 1} preview:`, responseText.substring(0, 300) + '...');
 
-      try {
-        const responseText = await responseClone.text();
-        console.log(`📄 Response ${index + 1} preview:`, responseText.substring(0, 300) + '...');
+      // Check if it's JSON
+      if (response.headers.get('content-type')?.includes('application/json')) {
+        console.log(`✅ Test ${index + 1} SUCCESS! This endpoint returns JSON.`);
 
-        // If we get JSON, this endpoint works!
-        if (response.headers.get('content-type')?.includes('application/json')) {
-          console.log(`✅ Test ${index + 1} SUCCESS! This endpoint returns JSON.`);
-
-          // Try to parse the JSON to see the actual data
-          try {
-            const jsonData = JSON.parse(responseText);
-            console.log(`📊 Test ${index + 1} JSON data sample:`, JSON.stringify(jsonData).substring(0, 200) + '...');
-          } catch (jsonError) {
-            console.log(`⚠️ Test ${index + 1} - Response claimed to be JSON but isn't valid JSON`);
-          }
+        try {
+          const jsonData = JSON.parse(responseText);
+          console.log(`📊 Test ${index + 1} JSON data:`, jsonData);
+        } catch (jsonError) {
+          console.log(`⚠️ Test ${index + 1} - Response claimed to be JSON but parsing failed:`, jsonError.message);
         }
-      } catch (textError) {
-        console.error(`❌ Test ${index + 1} - Could not read response body:`, textError.message);
+      } else if (responseText.includes('<!DOCTYPE') || responseText.includes('<html')) {
+        console.log(`❌ Test ${index + 1} - Got HTML instead of JSON (API endpoint may not exist)`);
+      } else {
+        console.log(`❓ Test ${index + 1} - Got unexpected content type:`, response.headers.get('content-type'));
       }
 
     } catch (error) {
       console.error(`❌ Test ${index + 1} failed:`, error.message);
+
+      // Provide specific guidance based on error type
+      if (error.message.includes('Failed to fetch')) {
+        console.error(`   This usually means CORS issues or the server is unreachable`);
+      }
     }
   }
 
