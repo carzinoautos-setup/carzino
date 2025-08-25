@@ -300,19 +300,66 @@ function App() {
     };
   }, []);
 
-  // Load demo data immediately to avoid loading issues
+  // Connect to real WordPress API
   useEffect(() => {
-    console.log('🎯 SIMPLE FIX: Loading demo data immediately with working seller names');
+    const connectToAPI = async () => {
+      console.log('🚀 CONNECTING TO YOUR REAL WORDPRESS DATA...');
+      setLoading(true);
 
-    // Load realistic demo data with proper seller information
-    const demoData = getRealisticDemoVehicles();
-    setVehicles(demoData);
-    setTotalResults(demoData.length);
-    setLoading(false);
-    setApiConnected(false); // Show as demo mode
-    setError('🎯 Demo Mode: Showing sample vehicles with seller data functionality');
+      try {
+        console.log('🔗 Testing API connection...');
+        const result = await testAPIConnection();
 
-    console.log('✅ Demo data loaded with seller info:', demoData[0]?.seller_data);
+        if (result && result.success) {
+          console.log('✅ API CONNECTED! Loading your vehicles...');
+          setApiConnected(true);
+          setError(null);
+
+          // Load actual vehicle data
+          const vehicleData = await fetchVehicles({ per_page: 12 });
+
+          if (vehicleData && vehicleData.results) {
+            console.log(`✅ LOADED ${vehicleData.results.length} REAL VEHICLES`);
+
+            // Transform data for React
+            const transformedVehicles = vehicleData.results.map((vehicle, index) => ({
+              id: vehicle.id || `vehicle-${index}`,
+              featured: vehicle.featured || false,
+              viewed: false,
+              images: vehicle.images.gallery.length > 0 ? vehicle.images.gallery : [vehicle.images.featured],
+              badges: [],
+              title: vehicle.title,
+              mileage: "Contact Dealer",
+              transmission: "Auto",
+              doors: "4 doors",
+              salePrice: vehicle.price ? `$${parseFloat(vehicle.price).toLocaleString()}` : 'Call for Price',
+              payment: vehicle.price ? `$${Math.round(parseFloat(vehicle.price) * 0.02)}` : 'Call',
+              dealer: vehicle.seller_data?.account_name || 'Carzino Auto Sales',
+              location: vehicle.seller_data ? `${vehicle.seller_data.city || 'Seattle'}, ${vehicle.seller_data.state || 'WA'}` : 'Seattle, WA',
+              phone: vehicle.seller_data?.phone || '(253) 555-0100',
+              seller_data: vehicle.seller_data,
+              meta_data: vehicle.meta_data || [],
+              rawData: vehicle
+            }));
+
+            setVehicles(transformedVehicles);
+            setTotalResults(vehicleData.total);
+            setLoading(false);
+
+            console.log('✅ VEHICLES LOADED WITH SELLER DATA:', transformedVehicles[0]);
+          }
+        } else {
+          throw new Error(result?.message || 'API connection failed');
+        }
+      } catch (error) {
+        console.error('❌ API CONNECTION FAILED:', error.message);
+        setApiConnected(false);
+        setLoading(false);
+        setError(`❌ Cannot connect to WordPress: ${error.message}`);
+      }
+    };
+
+    connectToAPI();
   }, []);
 
   // Skip API data loading since we're using demo data
