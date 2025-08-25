@@ -305,7 +305,11 @@ function App() {
           setLoading(false);
         }
       } catch (err) {
-        console.warn('API connection test failed:', err.message);
+        console.error('🚨 DETAILED API ERROR:');
+        console.error('  Error message:', err.message);
+        console.error('  Error name:', err.name);
+        console.error('  Error stack:', err.stack);
+
         setApiConnected(false);
 
         // Provide specific error message based on error type
@@ -314,7 +318,7 @@ function App() {
         } else if (err.message.includes('timed out')) {
           setError('⚠️ Connection timeout - WordPress site slow to respond - showing demo data.');
         } else {
-          setError('⚠️ API connection failed - showing demo data. Check WordPress site configuration.');
+          setError(`⚠️ API connection failed: ${err.message} - showing demo data.`);
         }
 
         // Immediately load fallback data
