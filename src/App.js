@@ -82,13 +82,23 @@ function App() {
           if (result.success) {
             setApiConnected(true);
             console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
+            setError(null); // Clear any previous errors
           } else {
             setApiConnected(false);
             console.error('❌ API Connection Failed:', result.message || 'Unknown error');
 
-            // Show specific CORS error message
+            // Handle CORS errors more gracefully
             if (result.message && result.message.includes('CORS Error')) {
-              setError('CORS Error: Your live site cannot access the WooCommerce API. Using sample data instead. See console for fix instructions.');
+              const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
+
+              if (isProduction) {
+                // This is unexpected in production
+                setError('CORS Error: Production site cannot access WooCommerce API. Please check CORS configuration.');
+              } else {
+                // This is expected in dev environment
+                setError(null); // Don't show error in dev - it's expected
+                console.log('📝 Dev Environment: CORS error is expected. GitHub Pages will work fine.');
+              }
             } else {
               setError(`API Connection Failed: ${result.message || 'Unknown API error'}`);
             }
