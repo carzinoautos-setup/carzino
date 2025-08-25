@@ -889,38 +889,23 @@ const VehicleSearchFilter = ({
           count={getFilterCount('interiorColor')}
         >
           <div className="space-y-2">
-            <ColorSwatch
-              color="#000000"
-              name="Black"
-              count={12363}
-              category="interiorColor"
-              checked={filters.interiorColor?.includes('Black')}
-              onChange={handleFilterChange}
-            />
-            <ColorSwatch
-              color="#808080"
-              name="Gray"
-              count={8502}
-              category="interiorColor"
-              checked={filters.interiorColor?.includes('Gray')}
-              onChange={handleFilterChange}
-            />
-            <ColorSwatch
-              color="#F5F5DC"
-              name="Beige"
-              count={3160}
-              category="interiorColor"
-              checked={filters.interiorColor?.includes('Beige')}
-              onChange={handleFilterChange}
-            />
-            <ColorSwatch
-              color="#8B4513"
-              name="Brown"
-              count={2353}
-              category="interiorColor"
-              checked={filters.interiorColor?.includes('Brown')}
-              onChange={handleFilterChange}
-            />
+            {allInteriorColors.length > 0 ? (
+              allInteriorColors.map((color) => (
+                <ColorSwatch
+                  key={color.name}
+                  color={getColorHex(color.name)}
+                  name={color.name}
+                  count={color.count}
+                  category="interiorColor"
+                  checked={filters.interiorColor?.includes(color.name)}
+                  onChange={handleFilterChange}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-gray-500 py-2">
+                Loading interior colors...
+              </div>
+            )}
           </div>
         </FilterSection>
 
