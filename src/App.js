@@ -296,7 +296,16 @@ function App() {
       } catch (err) {
         console.warn('API connection test failed:', err.message);
         setApiConnected(false);
-        setError('⚠️ API connection failed - showing demo data. Check WordPress site configuration.');
+
+        // Provide specific error message based on error type
+        if (err.message.includes('Failed to fetch') || err.message.includes('Network connection')) {
+          setError('⚠️ Network/CORS issue - WordPress API working but blocked from Fly.dev - showing demo data.');
+        } else if (err.message.includes('timed out')) {
+          setError('⚠️ Connection timeout - WordPress site slow to respond - showing demo data.');
+        } else {
+          setError('⚠️ API connection failed - showing demo data. Check WordPress site configuration.');
+        }
+
         // Immediately load fallback data
         const fallbackData = getSampleVehicles();
         setVehicles(fallbackData);
