@@ -69,7 +69,12 @@ const URLParamsToFilters = (searchParams) => {
   // Parse URL parameters with validation
   for (const [key, value] of searchParams.entries()) {
     // Skip invalid or problematic keys
-    if (key === 'page' || !value || value.length > 50) {
+    if (key === 'page' || key === 'reload' || !value || value.length > 50) {
+      continue;
+    }
+
+    // Skip timestamp-like values
+    if (/^\d{10,}$/.test(value)) {
       continue;
     }
 
