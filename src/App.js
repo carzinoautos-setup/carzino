@@ -829,7 +829,6 @@ function App() {
       );
       if (modelMeta?.value) {
         model = modelMeta.value;
-        console.log(`📊 Found model in meta_data: "${model}" for ${vehicle.title}`);
         return model;
       }
     }
@@ -842,7 +841,6 @@ function App() {
       );
       if (modelAttr?.options?.[0]) {
         model = modelAttr.options[0];
-        console.log(`📊 Found model in attributes: "${model}" for ${vehicle.title}`);
         return model;
       }
     }
