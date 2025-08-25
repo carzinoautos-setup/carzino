@@ -32,7 +32,7 @@ if (WC_CONSUMER_KEY && !WC_CONSUMER_KEY.startsWith('ck_')) {
   console.warn('⚠️ Consumer key doesn\'t start with "ck_" - may be invalid');
 }
 if (WC_CONSUMER_SECRET && !WC_CONSUMER_SECRET.startsWith('cs_')) {
-  console.warn('⚠��� Consumer secret doesn\'t start with "cs_" - may be invalid');
+  console.warn('⚠️ Consumer secret doesn\'t start with "cs_" - may be invalid');
 }
 
 // Simple cache system for faster loading
@@ -674,10 +674,10 @@ export const fetchVehicles = async (params = {}) => {
 // Fallback filter options for when API is not available - matches fallback vehicles
 const getFallbackFilterOptions = () => ({
   makes: [
-    { name: 'Ford', count: 18 },
-    { name: 'Toyota', count: 8 },
-    { name: 'Honda', count: 5 },
-    { name: 'Chevrolet', count: 4 }
+    { name: 'Ford', count: 8 },
+    { name: 'Toyota', count: 2 },
+    { name: 'Honda', count: 1 },
+    { name: 'BMW', count: 1 }
   ],
   models: [
     { name: 'F-150', count: 6 },
