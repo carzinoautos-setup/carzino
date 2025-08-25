@@ -768,10 +768,10 @@ function App() {
         <h1>Carzino Vehicle Search</h1>
         <p>
           {apiConnected
-            ? `Connected to your WooCommerce inventory (${totalResults} vehicles)`
+            ? `Connected to your WooCommerce inventory (${actualTotalResults} of ${totalResults} vehicles shown)`
             : window.location.hostname === 'carzinoautos-setup.github.io'
-            ? `Showing sample data (${totalResults} vehicles) - API connection issue`
-            : `Dev Environment: Showing sample data (${totalResults} vehicles) - Use GitHub Pages for live data`
+            ? `Showing sample data (${actualTotalResults} vehicles) - API connection issue`
+            : `Dev Environment: Showing sample data (${actualTotalResults} vehicles) - Use GitHub Pages for live data`
           }
         </p>
         {error && (
