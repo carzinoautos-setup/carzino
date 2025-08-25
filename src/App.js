@@ -503,7 +503,31 @@ function App() {
       payment: "Call",
       dealer: "Sample Dealer",
       location: "Sample Location",
-      phone: "(253) 555-0100"
+      phone: "(253) 555-0100",
+      meta_data: [],
+      attributes: [],
+      categories: [],
+      stock_status: 'instock'
+    },
+    {
+      id: `sample-${Date.now()}-2`,
+      featured: false,
+      viewed: false,
+      images: ["https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop"],
+      badges: ["Demo", "Available"],
+      title: "Demo Vehicle 2 (Fallback Data)",
+      mileage: "12,000",
+      transmission: "Manual",
+      doors: "2 doors",
+      salePrice: "$25,000",
+      payment: "$350",
+      dealer: "Demo Dealer",
+      location: "Demo Location",
+      phone: "(253) 555-0200",
+      meta_data: [],
+      attributes: [],
+      categories: [],
+      stock_status: 'instock'
     }
   ];
 
