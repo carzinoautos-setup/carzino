@@ -626,6 +626,9 @@ function App() {
 
     setFilters(newFilters);
     setCurrentPage(1);
+
+    // Update URL to reflect filter removal
+    updateURL(newFilters);
   };
 
   // Handle clear all filters
