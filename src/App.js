@@ -892,8 +892,8 @@ function App() {
   const extractModelFromVehicle = (vehicle) => {
     let model = null;
 
-    // Try meta_data first (using same structure as api.js)
-    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    // Try meta_data first - ACF fields are directly in vehicle.meta_data from API
+    const metaData = vehicle.meta_data || vehicle.rawData?.meta_data || [];
     if (Array.isArray(metaData)) {
       const modelMeta = metaData.find(meta =>
         meta.key === 'model' || meta.key === '_model' || meta.key === 'vehicle_model'
