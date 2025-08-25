@@ -1131,7 +1131,7 @@ export const testAPIConnection = async () => {
   try {
     const urlWithAuth = `${WC_API_BASE}/products?per_page=1&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
     console.log('�� Testing API URL:', urlWithAuth);
-    console.log('⏱️ Starting API test with 10 second timeout...');
+    console.log('⏱️ Starting API test with 15 second timeout...');
 
     const startTime = Date.now();
     const response = await fetchWithTimeout(urlWithAuth, {
