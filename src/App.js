@@ -215,17 +215,18 @@ function App() {
             console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
             setError(null); // Clear any previous errors
           } else {
-            setApiConnected(false);
-            console.error('❌ API Connection Failed:', result.message || 'Unknown error');
+          setApiConnected(false);
+          console.warn('⚠️ API Connection Failed:', result.message || 'Unknown error');
 
-            // Handle CORS errors more gracefully - don't block the app
-            if (result.message && result.message.includes('CORS Error')) {
-              console.log('📝 CORS issue detected - app will use fallback data');
-              setError(null); // Don't show error - fallback will work
-            } else {
-              setError(`API Connection Issue: ${result.message || 'Using fallback data'}`);
-            }
+          // Handle CORS errors more gracefully - don't block the app
+          if (result.message && result.message.includes('CORS Error')) {
+            console.log('📝 CORS issue detected - app will use fallback data');
+            setError(null); // Don't show error - fallback will work
+          } else {
+            console.log('📝 Using fallback data instead');
+            setError(null); // Don't show error for API connection issues
           }
+        }
         } else {
           console.error('❌ API test returned invalid result:', result);
           setApiConnected(false);
