@@ -592,7 +592,64 @@ export const fetchVehicles = async (params = {}) => {
       console.error('  Response Text:', errorText.substring(0, 300));
 
       // Specific handling for common errors
-      if (response.status === 500) {
+      if (response.status === 400) {
+        console.error('🔧 400 Bad Request - Invalid API parameters:');
+        console.error('  • Query parameters may be invalid for WooCommerce API');
+        console.error('  • Check if per_page limit is too high');
+        console.error('  • Verify consumer key and secret format');
+        console.error('  • Response:', errorText.substring(0, 200));
+
+        // Try a simpler request with minimal parameters
+        console.log('🔄 Attempting simpler API request...');
+        try {
+          const simpleParams = new URLSearchParams({
+            per_page: 25,
+            page: 1,
+            status: 'publish'
+          });
+          const simpleUrl = `${WC_API_BASE}/products?${simpleParams}&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
+          const simpleResponse = await fetchWithTimeout(simpleUrl, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+          }, 10000);
+
+          if (simpleResponse.ok) {
+            console.log('✅ Simple API request succeeded, using reduced parameters');
+            const simpleData = await simpleResponse.json();
+            const result = {
+              results: simpleData.map(product => ({
+                id: product.id,
+                title: product.name,
+                slug: product.slug,
+                url: product.permalink,
+                price: product.price || product.regular_price,
+                sale_price: product.sale_price,
+                stock_status: product.stock_status,
+                images: {
+                  featured: product.images[0]?.src || '',
+                  gallery: product.images.map(img => img.src) || []
+                },
+                categories: product.categories.map(cat => ({
+                  id: cat.id,
+                  name: cat.name,
+                  slug: cat.slug
+                })),
+                attributes: product.attributes || [],
+                meta_data: product.meta_data || [],
+                seller_data: product.seller_data || null,
+                description: product.description || product.short_description || '',
+                date_created: product.date_created,
+                featured: product.featured || false
+              })),
+              total: parseInt(simpleResponse.headers.get('X-WP-Total') || simpleData.length.toString()),
+              totalPages: parseInt(simpleResponse.headers.get('X-WP-TotalPages') || '1'),
+            };
+            return result;
+          }
+        } catch (retryError) {
+          console.warn('🚨 Simple API request also failed:', retryError.message);
+        }
+      } else if (response.status === 500) {
         console.error('🔧 500 Internal Server Error - Likely WordPress/WooCommerce configuration issue:');
         console.error('  • Check WordPress site health');
         console.error('  • Verify WooCommerce plugin is active');
