@@ -411,7 +411,7 @@ function App() {
     }, 20000);
 
     return () => clearTimeout(emergencyFallbackTimer);
-  }, [loading, vehicles.length]);
+  }, [loading, vehicles.length, error]);
 
   // Load initial data when API is connected
   useEffect(() => {
