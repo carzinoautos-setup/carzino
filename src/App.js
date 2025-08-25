@@ -1179,11 +1179,11 @@ function App() {
           </div>
 
           {/* Pagination */}
-          {totalPages > 1 && !showingFavorites && (
+          {filteredTotalPages > 1 && !showingFavorites && (
             <Pagination
               currentPage={currentPage}
-              totalPages={totalPages}
-              totalResults={totalResults}
+              totalPages={filteredTotalPages}
+              totalResults={actualTotalResults}
               resultsPerPage={resultsPerPage}
               onPageChange={handlePageChange}
             />
