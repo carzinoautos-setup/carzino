@@ -691,24 +691,30 @@ const VehicleSearchFilter = ({
 
         {/* Model */}
         {filters.make?.length > 0 && (
-          <FilterSection 
+          <FilterSection
             title="Model"
             isCollapsed={collapsedFilters.model}
             onToggle={() => toggleFilter('model')}
             count={getFilterCount('model')}
           >
             <div className="space-y-2">
-              {displayedModels.map((model) => (
-                <CheckboxOption
-                  key={model.name}
-                  label={model.name}
-                  count={model.count}
-                  value={model.name}
-                  category="model"
-                  checked={filters.model?.includes(model.name)}
-                  onChange={handleFilterChange}
-                />
-              ))}
+              {allModels.length > 0 ? (
+                allModels.map((model) => (
+                  <CheckboxOption
+                    key={model.name}
+                    label={model.name}
+                    count={model.count}
+                    value={model.name}
+                    category="model"
+                    checked={filters.model?.includes(model.name)}
+                    onChange={handleFilterChange}
+                  />
+                ))
+              ) : (
+                <div className="text-sm text-gray-500 py-2">
+                  {isLoading ? 'Loading models...' : 'No models available for selected make(s)'}
+                </div>
+              )}
             </div>
           </FilterSection>
         )}
