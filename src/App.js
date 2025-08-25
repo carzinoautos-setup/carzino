@@ -13,10 +13,12 @@ function App() {
     make: [],
     model: [],
     trim: [],
+    year: [], // Add year filter
     vehicleType: [],
     bodyType: [],
     driveType: [],
     transmission: [], // Updated from transmissionSpeed to match ACF
+    transmissionSpeed: [], // Keep for component compatibility
     fuelType: [], // New ACF field
     exteriorColor: [],
     interiorColor: [],
@@ -85,7 +87,7 @@ function App() {
             setError(null); // Clear any previous errors
           } else {
             setApiConnected(false);
-            console.error('❌ API Connection Failed:', result.message || 'Unknown error');
+            console.error('�� API Connection Failed:', result.message || 'Unknown error');
 
             // Handle CORS errors more gracefully
             if (result.message && result.message.includes('CORS Error')) {
