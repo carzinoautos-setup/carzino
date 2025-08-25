@@ -535,11 +535,10 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     const queryParams = new URLSearchParams({
-      per_page: params.per_page || 200, // Load all 200 vehicles by default
+      per_page: params.per_page || 100, // Reduce to 100 to avoid server limits
       page: params.page || 1,
       status: 'publish',
-      orderby: 'date',
-      order: 'desc',
+      // Remove potentially invalid orderby parameters for WooCommerce products
       ...params
     });
 
