@@ -475,10 +475,10 @@ function App() {
     return '(253) 555-0100'; // Default
   };
 
-  // Fallback sample data (same as before)
+  // Fallback sample data with unique IDs
   const getSampleVehicles = () => [
     {
-      id: 'sample-1',
+      id: `sample-${Date.now()}-1`,
       featured: true,
       viewed: true,
       images: ["https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop"],
