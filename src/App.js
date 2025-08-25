@@ -450,8 +450,10 @@ function App() {
         setError('⚠️ WordPress server error - showing demo data. Please check your WordPress snippets and configuration.');
       } else if (err.message.includes('timed out')) {
         setError('⚠️ WordPress site is slow to respond - showing demo data.');
-      } else if (err.message.includes('Failed to fetch')) {
-        setError('⚠️ Cannot connect to WordPress API - showing demo data. Check CORS settings.');
+      } else if (err.message.includes('Failed to fetch') || err.message.includes('Network connection')) {
+        setError('⚠️ Network/CORS issue detected - WordPress working but blocked from Fly.dev - showing demo data.');
+      } else if (err.message.includes('AbortError')) {
+        setError('⚠️ Request timeout - connection too slow - showing demo data.');
       } else {
         setError(`⚠️ API Error: ${err.message} - showing demo data.`);
       }
