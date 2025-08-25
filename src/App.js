@@ -142,6 +142,12 @@ function App() {
   // Function to update only filter options (for cascading filters)
   const updateFilterOptions = async () => {
     try {
+      // Skip if already loading or not connected
+      if (loading || !apiConnected) {
+        console.log('📋 Skipping filter update - app is loading or not connected');
+        return;
+      }
+
       // Check if we have meaningful filter selections to cascade
       const hasActiveFilters = Object.entries(filters).some(([key, value]) => {
         if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
@@ -151,12 +157,22 @@ function App() {
       });
 
       if (!hasActiveFilters) {
-        console.log('📋 No active filters, using base filter options');
+        console.log('📋 No active filters, skipping filter options update');
         return;
       }
 
       console.log('🔗 Updating filter options based on current selections');
-      const filterData = await fetchFilterOptions(filters);
+
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) =>
+        setTimeout(() => reject(new Error('Filter update timeout')), 5000)
+      );
+
+      const filterData = await Promise.race([
+        fetchFilterOptions(filters),
+        timeoutPromise
+      ]);
+
       setFilterOptions(filterData);
 
       console.log('✅ Filter options updated for cascading behavior:', {
@@ -165,8 +181,8 @@ function App() {
         availableOptions: Object.keys(filterData).filter(key => filterData[key]?.length > 0).join(', ')
       });
     } catch (err) {
-      console.error('Error updating filter options:', err);
-      // Don't block the UI if filter update fails
+      console.warn('⚠️ Filter options update failed, keeping existing options:', err.message);
+      // Silently fail to prevent blocking the UI
     }
   };
 
