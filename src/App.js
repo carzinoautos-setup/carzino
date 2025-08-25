@@ -601,8 +601,14 @@ function App() {
 
   const formatPrice = (price) => {
     if (!price || price === '0') return 'Call for Price';
-    
+
     const numPrice = parseFloat(price);
+
+    // Handle unrealistic prices (over $500,000 or under $100)
+    if (numPrice > 500000 || numPrice < 100) {
+      return 'Call for Price';
+    }
+
     return `$${numPrice.toLocaleString()}`;
   };
 
@@ -1367,7 +1373,7 @@ function App() {
   console.log(`📄 Pagination: Page ${currentPage}, showing vehicles ${startIndex + 1}-${Math.min(endIndex, actualTotalResults)} of ${actualTotalResults} total (${filteredTotalPages} pages)`);
   console.log(`🚗 Total vehicles loaded: ${vehicles.length}`);
   console.log(`���� All filtered vehicles count: ${allFilteredVehicles.length}`);
-  console.log(`��� Current vehicles to display: ${currentVehicles.length}`);
+  console.log(`���� Current vehicles to display: ${currentVehicles.length}`);
   console.log(`🎯 Current filters:`, filters);
 
   // Debug: Show first few filtered vehicles
