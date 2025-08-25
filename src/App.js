@@ -222,6 +222,31 @@ function App() {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  // Clean up URL parameters on mount
+  useEffect(() => {
+    const currentUrl = new URL(window.location);
+    let urlChanged = false;
+
+    // Remove problematic parameters
+    if (currentUrl.searchParams.has('reload')) {
+      currentUrl.searchParams.delete('reload');
+      urlChanged = true;
+    }
+
+    // Remove any timestamp-like parameters
+    for (const [key, value] of currentUrl.searchParams.entries()) {
+      if (/^\d{10,}$/.test(value)) {
+        currentUrl.searchParams.delete(key);
+        urlChanged = true;
+      }
+    }
+
+    // Update URL if we removed anything
+    if (urlChanged) {
+      window.history.replaceState(null, '', currentUrl.pathname + currentUrl.search);
+    }
+  }, []);
+
   // Test API connection on mount
   useEffect(() => {
     const testConnection = async () => {
