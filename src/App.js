@@ -66,16 +66,24 @@ const URLParamsToFilters = (searchParams) => {
     downPayment: '2000'
   };
 
-  // Parse URL parameters
+  // Parse URL parameters with validation
   for (const [key, value] of searchParams.entries()) {
-    if (Array.isArray(filters[key])) {
-      // For array filters, collect all values
-      if (!filters[key].includes(value)) {
-        filters[key].push(value);
+    // Skip invalid or problematic keys
+    if (key === 'page' || !value || value.length > 50) {
+      continue;
+    }
+
+    // Only process known filter keys
+    if (filters.hasOwnProperty(key)) {
+      if (Array.isArray(filters[key])) {
+        // For array filters, collect all values
+        if (!filters[key].includes(value)) {
+          filters[key].push(value);
+        }
+      } else {
+        // For single value filters
+        filters[key] = value;
       }
-    } else {
-      // For single value filters
-      filters[key] = value;
     }
   }
 
