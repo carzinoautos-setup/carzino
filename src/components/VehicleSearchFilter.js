@@ -749,30 +749,23 @@ const VehicleSearchFilter = ({
           count={getFilterCount('condition')}
         >
           <div className="space-y-3">
-            <CheckboxOption
-              label="New"
-              count={125989}
-              value="New"
-              category="condition"
-              checked={filters.condition?.includes('New')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Used"
-              count={78800}
-              value="Used"
-              category="condition"
-              checked={filters.condition?.includes('Used')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Certified"
-              count={9889}
-              value="Certified"
-              category="condition"
-              checked={filters.condition?.includes('Certified')}
-              onChange={handleFilterChange}
-            />
+            {allConditions.length > 0 ? (
+              allConditions.map((condition) => (
+                <CheckboxOption
+                  key={condition.name}
+                  label={condition.name}
+                  count={condition.count}
+                  value={condition.name}
+                  category="condition"
+                  checked={filters.condition?.includes(condition.name)}
+                  onChange={handleFilterChange}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-gray-500 py-2">
+                Loading conditions...
+              </div>
+            )}
           </div>
         </FilterSection>
 
