@@ -208,13 +208,19 @@ function App() {
           } else {
           setApiConnected(false);
 
-          // Handle different types of API failures
-          if (result.message && result.message.includes('CORS Error')) {
-            setError('⚠️ Limited demo data shown - API connection issue');
+          // Handle different types of API failures with specific messaging
+          if (result.message && result.message.includes('500')) {
+            setError('⚠️ WordPress server error detected - showing demo data. Please check your WordPress site configuration.');
+          } else if (result.message && result.message.includes('404')) {
+            setError('⚠️ WooCommerce API not found - showing demo data. Please verify WooCommerce plugin is active.');
+          } else if (result.message && result.message.includes('401') || result.message && result.message.includes('403')) {
+            setError('⚠️ API authentication failed - showing demo data. Please check your WooCommerce API credentials.');
+          } else if (result.message && result.message.includes('CORS Error')) {
+            setError('⚠️ API connection blocked - showing demo data. CORS configuration may need updating.');
           } else if (result.timeout) {
-            setError('⚠️ Limited demo data shown - WordPress site is slow');
+            setError('⚠️ WordPress site is slow to respond - showing demo data. This is normal for some hosting providers.');
           } else {
-            setError('⚠️ Limited demo data shown - API connection issue');
+            setError('⚠️ API connection issue - showing demo data. Using fallback inventory.');
           }
         }
         } else {
