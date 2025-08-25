@@ -327,33 +327,18 @@ function App() {
 
     testConnection();
 
-    // Emergency fallback: if still loading after 3 seconds, force demo data
+    // Emergency fallback: if still loading after 15 seconds, force demo data
     const emergencyFallbackTimer = setTimeout(() => {
       if (loading && vehicles.length === 0) {
         console.warn('⚠️ Emergency fallback activated - loading took too long');
         setApiConnected(false);
-        setError('⚠️ Network issue detected - showing demo data. WordPress API confirmed working but connection blocked.');
+        setError('⚠️ Connection timeout - showing demo data. Check WordPress site configuration.');
         const fallbackData = getSampleVehicles();
         setVehicles(fallbackData);
         setTotalResults(fallbackData.length);
         setLoading(false);
       }
-    }, 3000);
-
-    // Additional safety check for immediate fallback on Fly.dev
-    if (window.location.hostname.includes('fly.dev') && loading && vehicles.length === 0) {
-      setTimeout(() => {
-        if (loading && vehicles.length === 0) {
-          console.log('🚀 Fly.dev immediate fallback activated');
-          setApiConnected(false);
-          setError('⚠️ Fly.dev deployment - using demo data (WordPress API working but CORS restricted).');
-          const fallbackData = getSampleVehicles();
-          setVehicles(fallbackData);
-          setTotalResults(fallbackData.length);
-          setLoading(false);
-        }
-      }, 1000);
-    }
+    }, 15000);
 
     return () => clearTimeout(emergencyFallbackTimer);
   }, [loading, vehicles.length]);
