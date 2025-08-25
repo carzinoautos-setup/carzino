@@ -25,7 +25,6 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         console.log('❌ seller_data still missing from WordPress API');
       }
     }
-    setSellerDataLoaded(true);
   }, [vehicle.seller_data, vehicle.meta_data]);
 
   // Helper functions to extract seller data
