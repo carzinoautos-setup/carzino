@@ -306,7 +306,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
     // If we have seller data but no location fields
     console.log('���️ Seller data available but location fields missing for:', vehicle.title);
-    return 'Location Missing';
+    return 'Location Not Provided';
   };
 
   const getSellerType = () => {
