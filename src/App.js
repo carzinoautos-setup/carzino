@@ -158,7 +158,7 @@ function App() {
 
     if (newURL !== window.location.pathname + window.location.search) {
       window.history.pushState(null, '', newURL);
-      console.log('��� Updated URL:', newURL);
+      console.log('🔗 Updated URL:', newURL);
     }
   };
 
@@ -1008,16 +1008,15 @@ function App() {
   };
 
   const extractYearFromVehicle = (vehicle) => {
-    if (vehicle.rawData?.meta_data) {
-      const yearMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'year');
-      if (yearMeta?.value) return yearMeta.value;
-    }
-    if (vehicle.rawData?.attributes) {
-      const yearAttr = vehicle.rawData.attributes.find(attr =>
-        attr.name.toLowerCase().includes('year')
-      );
-      if (yearAttr?.options?.[0]) return yearAttr.options[0];
-    }
+    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const yearMeta = metaData.find(meta => meta.key === 'year');
+    if (yearMeta?.value) return yearMeta.value;
+
+    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    const yearAttr = attributes.find(attr =>
+      attr.name.toLowerCase().includes('year')
+    );
+    if (yearAttr?.options?.[0]) return yearAttr.options[0];
     return null;
   };
 
