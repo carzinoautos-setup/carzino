@@ -447,13 +447,43 @@ export const fetchProductACF = async (productId) => {
   }
 };
 
-// Test API connection with improved CORS handling
+// Helper function to create fetch with timeout
+const fetchWithTimeout = async (url, options = {}, timeoutMs = 10000) => {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error(`Request timed out after ${timeoutMs}ms`);
+    }
+    throw error;
+  }
+};
+
+// Test API connection with improved CORS handling and timeout
 export const testAPIConnection = async () => {
   console.log('🔗 Testing API connection to:', WC_API_BASE);
   console.log('🔑 Using credentials:', {
     key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
   });
+
+  // Check if environment variables are missing
+  if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL) {
+    console.error('❌ Missing environment variables!');
+    return {
+      success: false,
+      message: 'Missing API credentials - check environment variables'
+    };
+  }
 
   // Check if we're in dev vs production
   const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
@@ -465,96 +495,111 @@ export const testAPIConnection = async () => {
     expectedToWork: isProduction ? 'Yes (CORS configured)' : 'Maybe (depends on CORS setup)'
   });
 
-  // Simple test - just try the main API endpoint
+  // Test with timeout and better error handling
   try {
     const urlWithAuth = `${WC_API_BASE}/products?per_page=1&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
     console.log('🧪 Testing API URL:', urlWithAuth);
+    console.log('⏱️ Starting API test with 10 second timeout...');
 
-    const response = await fetch(urlWithAuth, {
+    const startTime = Date.now();
+    const response = await fetchWithTimeout(urlWithAuth, {
       method: 'GET',
       mode: 'cors',
       headers: {
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'User-Agent': 'Carzino-React-App/1.0'
       }
-    });
+    }, 10000); // 10 second timeout
+
+    const responseTime = Date.now() - startTime;
+    console.log(`⏱️ API response received in ${responseTime}ms`);
 
     console.log('📡 API Response:', {
       status: response.status,
       statusText: response.statusText,
-      contentType: response.headers.get('content-type')
+      contentType: response.headers.get('content-type'),
+      responseTime: `${responseTime}ms`
     });
 
     if (!response.ok) {
+      // Log response text for debugging
+      const errorText = await response.text();
+      console.error('❌ API Error Response:', errorText.substring(0, 500));
+
       return {
         success: false,
-        message: `API Error: ${response.status} ${response.statusText}`
+        message: `API Error: ${response.status} ${response.statusText}`,
+        details: errorText.substring(0, 200)
       };
     }
 
     // Check content type before reading
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
+      const responseText = await response.text();
+      console.error('❌ Expected JSON but got:', contentType);
+      console.error('❌ Response preview:', responseText.substring(0, 300));
+
       return {
         success: false,
-        message: 'API returned non-JSON response - WooCommerce API may not be enabled'
+        message: 'API returned non-JSON response - WooCommerce API may not be enabled',
+        details: `Content-Type: ${contentType}`
       };
     }
 
     // Try to parse response
     const data = await response.json();
+    console.log('✅ API test successful! Sample data:', data.slice(0, 1));
 
     return {
       success: true,
       message: 'API connection successful',
       productCount: response.headers.get('X-WP-Total') || data.length.toString(),
+      responseTime: `${responseTime}ms`,
       data: data
     };
 
   } catch (error) {
     console.error('❌ API Connection Error:', error);
 
-    // Enhanced CORS error handling
+    // Enhanced error handling with specific messages
+    if (error.message.includes('timed out')) {
+      return {
+        success: false,
+        message: 'API request timed out - WordPress site may be slow or unreachable',
+        timeout: true
+      };
+    }
+
     if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
       const corsMessage = isProduction
-        ? `CORS Error: Connection failed from ${currentDomain}. This shouldn't happen on production.`
-        : `CORS Error: Dev server (${currentDomain}) not allowed by WordPress. This is normal - GitHub Pages will work fine.`;
+        ? `CORS Error: Connection failed from production. Check WordPress CORS settings.`
+        : `CORS Error: Dev server not allowed. This is expected - production site will work.`;
 
-      console.log('💡 CORS Fix Instructions:');
-      console.log('Add this to your WordPress functions.php:');
-      console.log(`
-// Allow CORS for both GitHub Pages and dev server
-function carzino_enable_cors() {
-    $allowed_origins = [
-        'https://carzinoautos-setup.github.io',
-        '${currentDomain}'
-    ];
-
-    $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
-    if (in_array($origin, $allowed_origins)) {
-        header('Access-Control-Allow-Origin: ' . $origin);
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Accept, Authorization, Content-Type, X-Requested-With');
-    }
-
-    if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-        exit(0);
-    }
-}
-add_action('init', 'carzino_enable_cors');
-add_action('rest_api_init', 'carzino_enable_cors');
-`);
+      console.log('💡 CORS Fix Instructions for WordPress:');
+      console.log('The CORS code should already be updated to allow both domains.');
+      console.log('If still failing, check that the code was saved correctly.');
 
       return {
         success: false,
         message: corsMessage,
+        isCorsError: true,
         showInstructions: !isProduction
+      };
+    }
+
+    if (error.message.includes('AbortError')) {
+      return {
+        success: false,
+        message: 'API request was aborted - connection interrupted',
+        aborted: true
       };
     }
 
     return {
       success: false,
-      message: `Connection Error: ${error.message}`
+      message: `Connection Error: ${error.message}`,
+      errorType: error.name
     };
   }
 };
