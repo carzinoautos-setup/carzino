@@ -93,6 +93,99 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return getSellerField('phone_number_seller') || vehicle.phone || '(253) 555-0100';
   };
 
+  // Distance calculation functionality (matching WordPress shortcode [vehicle_distance])
+  const getUserZip = () => {
+    // Match the WordPress system: check URL params, then cookies, then localStorage
+    const urlParams = new URLSearchParams(window.location.search);
+    const zipFromUrl = urlParams.get('customer_zip') || urlParams.get('user_zip');
+    if (zipFromUrl) return zipFromUrl;
+
+    // Check cookies (matching WordPress cookie system)
+    const getCookie = (name) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    };
+    const zipFromCookie = getCookie('customer_zip');
+    if (zipFromCookie) return zipFromCookie;
+
+    // Fallback to localStorage
+    try {
+      return localStorage.getItem('customer_zip');
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const getSellerCoordinates = () => {
+    // Get coordinates from seller account (matching WordPress field names)
+    const lat = getSellerField('car_location_latitude') ||
+               getSellerField('seller_latitude') ||
+               getSellerField('latitude') ||
+               getSellerField('lat');
+
+    const lng = getSellerField('car_location_longitude') ||
+               getSellerField('seller_longitude') ||
+               getSellerField('longitude') ||
+               getSellerField('lng');
+
+    if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng))) {
+      return {
+        lat: parseFloat(lat),
+        lng: parseFloat(lng)
+      };
+    }
+    return null;
+  };
+
+  // Haversine formula for distance calculation (matching WordPress implementation)
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 3959; // Earth's radius in miles
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a =
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
+  };
+
+  // Get user coordinates from ZIP (simplified version - in full implementation, this would call your geocoding API)
+  const getUserCoordinatesFromZip = (zip) => {
+    // This is a simplified lookup table for common ZIP codes
+    // In your full implementation, this would call your WordPress geocoding API
+    const zipCoords = {
+      '98498': { lat: 47.127, lng: -122.529 }, // Lakewood, WA
+      '98032': { lat: 47.384, lng: -122.235 }, // Kent, WA
+      '98001': { lat: 47.312, lng: -122.335 }, // Auburn, WA
+      '98004': { lat: 47.614, lng: -122.214 }, // Bellevue, WA
+      '98101': { lat: 47.610, lng: -122.334 }, // Seattle, WA
+      '98027': { lat: 47.544, lng: -122.147 }, // Issaquah, WA
+      '98055': { lat: 47.418, lng: -122.235 }, // Renton, WA
+      '98052': { lat: 47.669, lng: -122.121 }, // Redmond, WA
+    };
+    return zipCoords[zip] || null;
+  };
+
+  const getDistanceDisplay = () => {
+    const userZip = getUserZip();
+    if (!userZip) return null;
+
+    const userCoords = getUserCoordinatesFromZip(userZip);
+    const sellerCoords = getSellerCoordinates();
+
+    if (!userCoords || !sellerCoords) return null;
+
+    const distance = calculateDistance(
+      userCoords.lat, userCoords.lng,
+      sellerCoords.lat, sellerCoords.lng
+    );
+
+    return Math.round(distance) + ' miles away';
+  };
+
   const toggleFavorite = () => {
     const wasAlreadyFavorited = favorites[vehicle.id];
     onFavoriteToggle(vehicle.id, vehicle);
@@ -435,6 +528,14 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           white-space: nowrap;
         }
 
+        .dealer-distance {
+          font-size: 11px;
+          font-weight: 400;
+          color: #6B7280;
+          font-style: italic;
+          margin-top: 2px;
+        }
+
         .contact-info {
           display: flex;
           flex-direction: column;
@@ -607,6 +708,9 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           <div className="dealer-info">
             <div className="dealer-name">{getSellerName()}</div>
             <div className="dealer-location">{getSellerLocation()}</div>
+            {getDistanceDisplay() && (
+              <div className="dealer-distance">{getDistanceDisplay()}</div>
+            )}
           </div>
           <div className="contact-info">
             <div className="seller-type">{getSellerType()}</div>
