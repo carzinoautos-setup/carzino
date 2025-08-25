@@ -1372,9 +1372,7 @@ function App() {
         <p>
           {apiConnected
             ? `Connected to your WooCommerce inventory (${actualTotalResults} of ${totalResults} vehicles shown)`
-            : window.location.hostname.includes('fly.dev')
-              ? `🚀 Demo Mode: Showing ${actualTotalResults} realistic vehicles (WordPress API confirmed working but CORS restricted)`
-              : `⚠️ Showing limited demo data (${actualTotalResults} vehicles) - WordPress API connection failed`
+            : `⚠️ Showing demo data (${actualTotalResults} vehicles) - WordPress API connection failed`
           }
           {!apiConnected && (
             <span style={{ marginLeft: '10px' }}>
