@@ -310,7 +310,7 @@ function App() {
         console.log('🔗 Testing WordPress API connection...');
 
         // Direct API test with simple fetch
-        const testUrl = `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/products?per_page=3&consumer_key=${process.env.REACT_APP_WC_CONSUMER_KEY}&consumer_secret=${process.env.REACT_APP_WC_CONSUMER_SECRET}`;
+        const testUrl = `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/products?per_page=100&consumer_key=${process.env.REACT_APP_WC_CONSUMER_KEY}&consumer_secret=${process.env.REACT_APP_WC_CONSUMER_SECRET}`;
 
         const response = await fetch(testUrl, {
           method: 'GET',
@@ -1473,7 +1473,7 @@ function App() {
                   <ol style={{ margin: '0.5rem 0', paddingLeft: '1rem' }}>
                     <li>Visit your WordPress site: <a href={process.env.REACT_APP_WP_SITE_URL} target="_blank" rel="noopener noreferrer" style={{color: '#007cba'}}>{process.env.REACT_APP_WP_SITE_URL}</a></li>
                     <li>Check if WooCommerce is active in WordPress admin</li>
-                    <li>Verify API keys in WooCommerce → Settings → Advanced → REST API</li>
+                    <li>Verify API keys in WooCommerce → Settings → Advanced ��� REST API</li>
                     <li>Check WordPress error logs or contact your hosting provider</li>
                   </ol>
                 </div>
