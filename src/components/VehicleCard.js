@@ -191,8 +191,8 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
-    // IMMEDIATE FIX: Force Carson Cars for all vehicles for now
-    console.log('🚗 VEHICLE DEBUG:', vehicle.title);
+    // EMERGENCY HARDCODE: Force Carson Cars to show immediately
+    return 'Carson Cars';
 
     // Check for account number first
     const metaData = vehicle.meta_data || [];
