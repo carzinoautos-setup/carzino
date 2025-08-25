@@ -138,12 +138,31 @@ function App() {
   // Function to update only filter options (for cascading filters)
   const updateFilterOptions = async () => {
     try {
-      console.log('🔗 Updating filter options based on current selections:', filters);
+      // Check if we have meaningful filter selections to cascade
+      const hasActiveFilters = Object.entries(filters).some(([key, value]) => {
+        if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
+          return false; // Skip configuration fields
+        }
+        return Array.isArray(value) ? value.length > 0 : (value && value.toString().trim() !== '');
+      });
+
+      if (!hasActiveFilters) {
+        console.log('📋 No active filters, using base filter options');
+        return;
+      }
+
+      console.log('🔗 Updating filter options based on current selections');
       const filterData = await fetchFilterOptions(filters);
       setFilterOptions(filterData);
-      console.log('✅ Filter options updated for cascading behavior');
+
+      console.log('✅ Filter options updated for cascading behavior:', {
+        makes: filterData.makes?.length || 0,
+        models: filterData.models?.length || 0,
+        availableOptions: Object.keys(filterData).filter(key => filterData[key]?.length > 0).join(', ')
+      });
     } catch (err) {
       console.error('Error updating filter options:', err);
+      // Don't block the UI if filter update fails
     }
   };
 
