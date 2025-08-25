@@ -331,6 +331,25 @@ const VehicleSearchFilter = ({
   const allTrims = filterOptions.trims || [];
   const allFuelTypes = filterOptions.fuelTypes || [];
 
+  // Debug logging for conditional filtering
+  const hasActiveFilters = Object.entries(filters).some(([key, values]) => {
+    if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
+      return false;
+    }
+    return Array.isArray(values) ? values.length > 0 : (values && values.toString().trim() !== '');
+  });
+
+  if (hasActiveFilters && !isLoading) {
+    console.log('🔗 Conditional filtering active:', {
+      make: filters.make,
+      conditions: allConditions.length,
+      vehicleTypes: allVehicleTypes.length,
+      years: allYears.length,
+      driveTypes: allDriveTypes.length,
+      colors: allExteriorColors.length
+    });
+  }
+
 
 
 
