@@ -609,7 +609,7 @@ export const fetchVehicles = async (params = {}) => {
       }
 
       // For API errors, return fallback data instead of throwing
-      console.warn('🚨 API error detected, using fallback data');
+      console.warn('��� API error detected, using fallback data');
       return getFallbackVehicles();
     }
 
@@ -1380,16 +1380,11 @@ export const testAPIConnection = async () => {
       };
     }
 
-    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
-      // This is likely a CORS or network connectivity issue
-      console.warn('🌐 Network/CORS Issue Detected:');
-      console.warn('  • The WordPress API is working (we confirmed it returns data)');
-      console.warn('  • Issue is likely CORS blocking requests from Fly.dev domain');
-      console.warn('  • App will use demo data instead');
-
+    if (error.message.includes('Failed to fetch') || error.message === 'CORS_BLOCKED' || error.name === 'TypeError') {
+      // This is a CORS or network connectivity issue - handle silently
       return {
         success: false,
-        message: 'Network connection issue - using demo data. WordPress API is working but may have CORS restrictions.',
+        message: 'Connection blocked by browser security - using demo data',
         isCorsError: true,
         shouldUseFallback: true
       };
