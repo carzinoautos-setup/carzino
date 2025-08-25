@@ -665,6 +665,8 @@ export const fetchVehicles = async (params = {}) => {
         })),
         attributes: product.attributes || [],
         meta_data: product.meta_data || [],
+        // CRITICAL: Include seller_data from WordPress API response
+        seller_data: product.seller_data || null,
         description: product.description || product.short_description || '',
         date_created: product.date_created,
         featured: product.featured || false
