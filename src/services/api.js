@@ -1131,6 +1131,22 @@ const fetchWithTimeout = async (url, options = {}, timeoutMs = 15000, retries = 
   }
 };
 
+// Simple connectivity test to WordPress site
+const testBasicConnectivity = async () => {
+  try {
+    console.log('🌐 Testing basic connectivity to WordPress site...');
+    const response = await fetchWithTimeout(process.env.REACT_APP_WP_SITE_URL, {
+      method: 'HEAD',
+      mode: 'no-cors'
+    }, 5000, 1);
+    console.log('✅ WordPress site is reachable');
+    return true;
+  } catch (error) {
+    console.warn('❌ WordPress site unreachable:', error.message);
+    return false;
+  }
+};
+
 // Test API connection with improved CORS handling and timeout
 export const testAPIConnection = async () => {
   console.log('🔗 Testing API connection to:', WC_API_BASE);
@@ -1138,6 +1154,9 @@ export const testAPIConnection = async () => {
     key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
   });
+
+  // First test basic connectivity
+  const isReachable = await testBasicConnectivity();
 
   // Check if environment variables are missing or invalid
   if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
