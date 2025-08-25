@@ -299,7 +299,7 @@ function App() {
             setError('⚠️ WordPress server error detected - showing demo data. Please check your WordPress site configuration.');
           } else if (result.message && result.message.includes('404')) {
             setError('⚠️ WooCommerce API not found - showing demo data. Please verify WooCommerce plugin is active.');
-          } else if (result.message && result.message.includes('401') || result.message && result.message.includes('403')) {
+          } else if ((result.message && result.message.includes('401')) || (result.message && result.message.includes('403'))) {
             setError('⚠️ API authentication failed - showing demo data. Please check your WooCommerce API credentials.');
           } else if (result.message && (result.message.includes('CORS Error') || result.message.includes('Network connection'))) {
             setError('⚠️ WordPress API confirmed working but connection blocked from Fly.dev - showing demo data.');
