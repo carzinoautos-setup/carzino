@@ -315,12 +315,12 @@ function App() {
     console.log('✅ Demo data loaded with seller info:', demoData[0]?.seller_data);
   }, []);
 
-  // Load initial data when API is connected
-  useEffect(() => {
-    if (apiConnected) {
-      loadVehiclesAndFilters();
-    }
-  }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Skip API data loading since we're using demo data
+  // useEffect(() => {
+  //   if (apiConnected) {
+  //     loadVehiclesAndFilters();
+  //   }
+  // }, [apiConnected, currentPage, sortBy]);
 
   // Update filter options when filters change
   useEffect(() => {
