@@ -7,7 +7,7 @@ import SearchResultsHeader from './components/SearchResultsHeader';
 import { fetchVehicles, fetchFilterOptions, testAPIConnection } from './services/api';
 
 // URL parameter helpers
-const filtersToURLParams = (filters) => {
+const filtersToURLParams = (filters, page = 1) => {
   const params = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
@@ -25,6 +25,11 @@ const filtersToURLParams = (filters) => {
       params.set(key, value.toString());
     }
   });
+
+  // Add page parameter if not page 1
+  if (page > 1) {
+    params.set('page', page.toString());
+  }
 
   return params.toString();
 };
