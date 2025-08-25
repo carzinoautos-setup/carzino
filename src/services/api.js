@@ -7,27 +7,32 @@ const WC_API_BASE = `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3`;
 const WC_CONSUMER_KEY = process.env.REACT_APP_WC_CONSUMER_KEY;
 const WC_CONSUMER_SECRET = process.env.REACT_APP_WC_CONSUMER_SECRET;
 
-// Validate environment variables
-console.log('🔧 Environment Check:', {
-  siteUrl: process.env.REACT_APP_WP_SITE_URL,
-  hasConsumerKey: !!WC_CONSUMER_KEY,
-  hasConsumerSecret: !!WC_CONSUMER_SECRET,
-  keyLength: WC_CONSUMER_KEY?.length || 0,
-  secretLength: WC_CONSUMER_SECRET?.length || 0,
-  apiBase: WC_API_BASE,
-  fullKey: WC_CONSUMER_KEY,
-  fullSecret: WC_CONSUMER_SECRET
-});
+// Comprehensive environment variable validation
+console.log('🔧 Environment Variables Status:');
+console.log('  REACT_APP_WP_SITE_URL:', process.env.REACT_APP_WP_SITE_URL || '❌ NOT SET');
+console.log('  REACT_APP_WC_CONSUMER_KEY:', WC_CONSUMER_KEY || '❌ NOT SET');
+console.log('  REACT_APP_WC_CONSUMER_SECRET:', WC_CONSUMER_SECRET || '❌ NOT SET');
+console.log('  API Base URL:', WC_API_BASE);
 
-// Check if environment variables are actually loaded
-if (!process.env.REACT_APP_WP_SITE_URL) {
-  console.error('❌ REACT_APP_WP_SITE_URL is not set!');
+// Check for missing environment variables
+const missingVars = [];
+if (!process.env.REACT_APP_WP_SITE_URL) missingVars.push('REACT_APP_WP_SITE_URL');
+if (!WC_CONSUMER_KEY) missingVars.push('REACT_APP_WC_CONSUMER_KEY');
+if (!WC_CONSUMER_SECRET) missingVars.push('REACT_APP_WC_CONSUMER_SECRET');
+
+if (missingVars.length > 0) {
+  console.error('❌ Missing Environment Variables:', missingVars);
+  console.error('   The API calls will fail because credentials are not loaded');
+} else {
+  console.log('✅ All environment variables are loaded');
 }
-if (!WC_CONSUMER_KEY) {
-  console.error('❌ REACT_APP_WC_CONSUMER_KEY is not set!');
+
+// Validate credential format
+if (WC_CONSUMER_KEY && !WC_CONSUMER_KEY.startsWith('ck_')) {
+  console.warn('⚠️ Consumer key doesn\'t start with "ck_" - may be invalid');
 }
-if (!WC_CONSUMER_SECRET) {
-  console.error('❌ REACT_APP_WC_CONSUMER_SECRET is not set!');
+if (WC_CONSUMER_SECRET && !WC_CONSUMER_SECRET.startsWith('cs_')) {
+  console.warn('⚠️ Consumer secret doesn\'t start with "cs_" - may be invalid');
 }
 
 // Simple cache system for faster loading
