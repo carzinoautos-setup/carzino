@@ -1243,7 +1243,7 @@ export const testAPIConnection = async () => {
         'Accept': 'application/json',
         'User-Agent': 'Carzino-React-App/1.0'
       }
-    }, 8000); // 8 second timeout for better reliability
+    }, 15000); // 15 second timeout for better reliability
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ API response received in ${responseTime}ms`);
