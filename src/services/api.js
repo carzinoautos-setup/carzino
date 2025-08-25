@@ -590,12 +590,10 @@ export const fetchVehicles = async (params = {}) => {
       }
 
       // Enhanced error logging with specific guidance
-      console.error('❌ API Response Error:', {
-        status: response.status,
-        statusText: response.statusText,
-        url: urlWithAuth.replace(/consumer_(key|secret)=[^&]+/g, 'consumer_$1=***'),
-        responseText: errorText.substring(0, 300)
-      });
+      console.error('❌ API Response Error:');
+      console.error('  Status:', response.status, response.statusText);
+      console.error('  URL:', urlWithAuth.replace(/consumer_(key|secret)=[^&]+/g, 'consumer_$1=***'));
+      console.error('  Response Text:', errorText.substring(0, 300));
 
       // Specific handling for common errors
       if (response.status === 500) {
