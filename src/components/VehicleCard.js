@@ -272,22 +272,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return vehicle.seller_data.business_name;
     }
 
-    // STEP 2: Try primary field used in WordPress shortcode [seller_field field="acount_name_seller"]
-    // Note: WordPress shortcode has typo "acount" instead of "account"
-    const primarySellerName = getSellerField('acount_name_seller');
-    if (primarySellerName && primarySellerName.trim() !== '') {
-      console.log('✅ META: Found acount_name_seller:', primarySellerName);
-      return primarySellerName;
-    }
-
-    // STEP 3: Try corrected field name as fallback
-    const correctSellerName = getSellerField('account_name_seller');
-    if (correctSellerName && correctSellerName.trim() !== '') {
-      console.log('✅ META: Found account_name_seller:', correctSellerName);
-      return correctSellerName;
-    }
-
-    // STEP 4: Try alternative field names that might be used
+    // Step 4: Try alternative field names that might be used
     const alternativeNames = [
       'business_name_seller',
       'dealer_name',
