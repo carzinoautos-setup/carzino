@@ -243,7 +243,7 @@ function App() {
     if (apiConnected && vehicles.length > 0 && !loading) {
       const timeoutId = setTimeout(() => {
         updateFilterOptions();
-      }, 500); // Debounce filter updates
+      }, 150); // Faster response for better UX
 
       return () => clearTimeout(timeoutId);
     }
