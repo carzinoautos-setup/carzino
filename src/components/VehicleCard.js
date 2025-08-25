@@ -435,6 +435,24 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return '(253) 555-0100';
   };
 
+  // Backend function to get seller account number for radius filtering
+  // THIS IS FOR BACKEND USE ONLY - NEVER DISPLAY TO USERS
+  const getSellerAccountNumber = () => {
+    // Try seller_data first
+    if (vehicle.seller_data && vehicle.seller_data.account_number) {
+      return vehicle.seller_data.account_number;
+    }
+
+    // Try meta_data
+    const metaData = vehicle.meta_data || [];
+    const accountMeta = metaData.find(m => m.key === 'account_number_seller');
+    if (accountMeta && accountMeta.value) {
+      return accountMeta.value;
+    }
+
+    return null;
+  };
+
   // Distance calculation functionality (matching WordPress shortcode [vehicle_distance])
   const getUserZip = () => {
     // Match the WordPress system: check URL params, then cookies, then localStorage
