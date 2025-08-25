@@ -293,11 +293,18 @@ function App() {
         // Add filter parameters here when implementing search
       };
 
-      // Use Promise.allSettled to handle partial failures gracefully
-      const [vehicleResult, filterResult] = await Promise.allSettled([
-        fetchVehicles(vehicleParams),
-        fetchFilterOptions(filters) // Pass current filters for cascading logic
-      ]);
+      // First fetch vehicles, then calculate filter options from the loaded data
+      const vehicleResult = await fetchVehicles(vehicleParams);
+
+      // Calculate filter options from loaded vehicles for accurate counts
+      let filterData;
+      if (vehicleResult.results && vehicleResult.results.length > 0) {
+        const { getFilteredOptions } = await import('./services/api');
+        filterData = getFilteredOptions(vehicleResult.results, {});
+      } else {
+        // Fallback if no vehicles loaded
+        filterData = { makes: [], models: [], conditions: [], bodyTypes: [], total: 0 };
+      }
 
       // Handle vehicle data result
       const vehicleData = vehicleResult.status === 'fulfilled'
