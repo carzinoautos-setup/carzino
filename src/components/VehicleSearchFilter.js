@@ -861,54 +861,23 @@ const VehicleSearchFilter = ({
           count={getFilterCount('exteriorColor')}
         >
           <div className="space-y-2">
-            <ColorSwatch
-              color="#FFFFFF"
-              name="White"
-              count={9127}
-              category="exteriorColor"
-              checked={filters.exteriorColor?.includes('White')}
-              onChange={handleFilterChange}
-            />
-            <ColorSwatch
-              color="#000000"
-              name="Black"
-              count={8563}
-              category="exteriorColor"
-              checked={filters.exteriorColor?.includes('Black')}
-              onChange={handleFilterChange}
-            />
-            <ColorSwatch
-              color="#808080"
-              name="Gray"
-              count={7502}
-              category="exteriorColor"
-              checked={filters.exteriorColor?.includes('Gray')}
-              onChange={handleFilterChange}
-            />
-            <ColorSwatch
-              color="#C0C0C0"
-              name="Silver"
-              count={5093}
-              category="exteriorColor"
-              checked={filters.exteriorColor?.includes('Silver')}
-              onChange={handleFilterChange}
-            />
-            <ColorSwatch
-              color="#0066CC"
-              name="Blue"
-              count={4266}
-              category="exteriorColor"
-              checked={filters.exteriorColor?.includes('Blue')}
-              onChange={handleFilterChange}
-            />
-            <ColorSwatch
-              color="#CC0000"
-              name="Red"
-              count={3436}
-              category="exteriorColor"
-              checked={filters.exteriorColor?.includes('Red')}
-              onChange={handleFilterChange}
-            />
+            {allExteriorColors.length > 0 ? (
+              allExteriorColors.map((color) => (
+                <ColorSwatch
+                  key={color.name}
+                  color={getColorHex(color.name)}
+                  name={color.name}
+                  count={color.count}
+                  category="exteriorColor"
+                  checked={filters.exteriorColor?.includes(color.name)}
+                  onChange={handleFilterChange}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-gray-500 py-2">
+                Loading exterior colors...
+              </div>
+            )}
           </div>
         </FilterSection>
 
