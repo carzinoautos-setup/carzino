@@ -1021,7 +1021,7 @@ function App() {
   };
 
   const extractPriceFromVehicle = (vehicle) => {
-    return vehicle.rawData?.price || vehicle.rawData?.regular_price;
+    return vehicle.rawData?.price || vehicle.rawData?.regular_price || vehicle.price || vehicle.regular_price;
   };
 
   // Get current page vehicles with filtering
