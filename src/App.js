@@ -158,7 +158,7 @@ function App() {
 
     if (newURL !== window.location.pathname + window.location.search) {
       window.history.pushState(null, '', newURL);
-      console.log('🔗 Updated URL:', newURL);
+      console.log('��� Updated URL:', newURL);
     }
   };
 
@@ -995,16 +995,15 @@ function App() {
   };
 
   const extractTransmissionFromVehicle = (vehicle) => {
-    if (vehicle.rawData?.meta_data) {
-      const transMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'transmission');
-      if (transMeta?.value) return transMeta.value;
-    }
-    if (vehicle.rawData?.attributes) {
-      const transAttr = vehicle.rawData.attributes.find(attr =>
-        attr.name.toLowerCase().includes('transmission')
-      );
-      if (transAttr?.options?.[0]) return transAttr.options[0];
-    }
+    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const transMeta = metaData.find(meta => meta.key === 'transmission');
+    if (transMeta?.value) return transMeta.value;
+
+    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    const transAttr = attributes.find(attr =>
+      attr.name.toLowerCase().includes('transmission')
+    );
+    if (transAttr?.options?.[0]) return transAttr.options[0];
     return null;
   };
 
