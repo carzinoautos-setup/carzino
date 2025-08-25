@@ -191,6 +191,17 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
+    // DEBUG: Log what vehicle data we have
+    console.log('🔍 VEHICLE DATA DEBUG:', {
+      vehicleId: vehicle.id,
+      hasSellerData: !!vehicle.seller_data,
+      sellerData: vehicle.seller_data,
+      hasMetaData: !!vehicle.meta_data,
+      metaDataLength: vehicle.meta_data?.length || 0,
+      dealerProp: vehicle.dealer,
+      rawData: vehicle.rawData?.seller_data
+    });
+
     // STEP 1: Try the resolved seller_data from WordPress relationship resolver
     if (vehicle.seller_data && vehicle.seller_data.account_name) {
       console.log('✅ RESOLVED: Using account_name from seller_data:', vehicle.seller_data.account_name);
