@@ -800,7 +800,7 @@ const VehicleSearchFilter = ({
 
         {/* Search by Vehicle Type */}
         <FilterSection
-          title="Search by Vehicle Type"
+          title={hasActiveFilters ? "Vehicle Type (filtered)" : "Search by Vehicle Type"}
           isCollapsed={collapsedFilters.vehicleType}
           onToggle={() => toggleFilter('vehicleType')}
           count={getFilterCount('vehicleType')}
@@ -820,7 +820,7 @@ const VehicleSearchFilter = ({
               ))
             ) : (
               <div className="text-sm text-gray-500 py-2">
-                Loading vehicle types...
+                {isLoading ? 'Loading vehicle types...' : hasActiveFilters ? 'No vehicle types for current selection' : 'Loading vehicle types...'}
               </div>
             )}
           </div>
