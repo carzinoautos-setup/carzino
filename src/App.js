@@ -83,11 +83,11 @@ function App() {
         if (result && typeof result === 'object') {
           if (result.success) {
             setApiConnected(true);
-            console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
+            console.log(`�� Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
             setError(null); // Clear any previous errors
           } else {
             setApiConnected(false);
-            console.error('�� API Connection Failed:', result.message || 'Unknown error');
+            console.error('❌ API Connection Failed:', result.message || 'Unknown error');
 
             // Handle CORS errors more gracefully
             if (result.message && result.message.includes('CORS Error')) {
@@ -416,10 +416,12 @@ function App() {
       make: [],
       model: [],
       trim: [],
+      year: [],
       vehicleType: [],
       bodyType: [],
       driveType: [],
       transmission: [],
+      transmissionSpeed: [],
       fuelType: [],
       mileage: '',
       exteriorColor: [],
