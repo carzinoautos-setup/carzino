@@ -819,15 +819,10 @@ function App() {
   const extractMakeFromVehicle = (vehicle) => {
     let make = null;
 
-    // Debug what data we have
-    if (!vehicle?.rawData) {
-      console.log(`❌ No rawData for vehicle:`, vehicle?.title);
-      return null;
-    }
-
-    // Try meta_data first
-    if (vehicle.rawData?.meta_data && Array.isArray(vehicle.rawData.meta_data)) {
-      const makeMeta = vehicle.rawData.meta_data.find(meta =>
+    // Try meta_data first (using same structure as api.js)
+    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    if (Array.isArray(metaData)) {
+      const makeMeta = metaData.find(meta =>
         meta.key === 'make' || meta.key === '_make' || meta.key === 'vehicle_make'
       );
       if (makeMeta?.value) {
@@ -837,9 +832,10 @@ function App() {
       }
     }
 
-    // Try attributes
-    if (vehicle.rawData?.attributes && Array.isArray(vehicle.rawData.attributes)) {
-      const makeAttr = vehicle.rawData.attributes.find(attr =>
+    // Try attributes (using same structure as api.js)
+    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    if (Array.isArray(attributes)) {
+      const makeAttr = attributes.find(attr =>
         attr.name && attr.name.toLowerCase().includes('make')
       );
       if (makeAttr?.options?.[0]) {
@@ -876,15 +872,10 @@ function App() {
   const extractModelFromVehicle = (vehicle) => {
     let model = null;
 
-    // Debug what data we have
-    if (!vehicle?.rawData) {
-      console.log(`❌ No rawData for vehicle:`, vehicle?.title);
-      return null;
-    }
-
-    // Try meta_data first
-    if (vehicle.rawData?.meta_data && Array.isArray(vehicle.rawData.meta_data)) {
-      const modelMeta = vehicle.rawData.meta_data.find(meta =>
+    // Try meta_data first (using same structure as api.js)
+    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    if (Array.isArray(metaData)) {
+      const modelMeta = metaData.find(meta =>
         meta.key === 'model' || meta.key === '_model' || meta.key === 'vehicle_model'
       );
       if (modelMeta?.value) {
@@ -894,9 +885,10 @@ function App() {
       }
     }
 
-    // Try attributes
-    if (vehicle.rawData?.attributes && Array.isArray(vehicle.rawData.attributes)) {
-      const modelAttr = vehicle.rawData.attributes.find(attr =>
+    // Try attributes (using same structure as api.js)
+    const attributes = vehicle.rawData?.attributes || vehicle.attributes || [];
+    if (Array.isArray(attributes)) {
+      const modelAttr = attributes.find(attr =>
         attr.name && attr.name.toLowerCase().includes('model')
       );
       if (modelAttr?.options?.[0]) {
