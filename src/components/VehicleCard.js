@@ -422,6 +422,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
   // Backend function to get seller account number for radius filtering
   // THIS IS FOR BACKEND USE ONLY - NEVER DISPLAY TO USERS
+  // eslint-disable-next-line no-unused-vars
   const getSellerAccountNumber = () => {
     // Try seller_data first
     if (vehicle.seller_data && vehicle.seller_data.account_number) {
