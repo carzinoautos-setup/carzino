@@ -7,23 +7,31 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
-    const metaData = vehicle.meta_data || [];
-
-    // Debug: Log what fields are available
-    if (fieldName === 'acount_name_seller') {
-      console.log('🔍 Available meta fields for vehicle:', vehicle.title);
-      console.log('Meta data keys:', metaData.map(m => m.key));
+    // First, try the enhanced seller_data field from WordPress API
+    if (vehicle.seller_data && vehicle.seller_data[fieldName]) {
+      return vehicle.seller_data[fieldName];
     }
 
+    // Fallback to meta_data for backward compatibility
+    const metaData = vehicle.meta_data || [];
     const sellerField = metaData.find(meta => meta.key === fieldName);
     const value = sellerField?.value || '';
 
-    // Debug: Log the specific field we're looking for
-    if (fieldName === 'acount_name_seller') {
+    // Debug logging for troubleshooting
+    if (fieldName === 'acount_name_seller' || fieldName === 'account_name_seller') {
+      console.log('🔍 Seller data for vehicle:', vehicle.title);
+      console.log('Enhanced seller_data:', vehicle.seller_data);
+      console.log('Meta data seller fields:', metaData.filter(m => m.key.includes('seller')));
       console.log(`📝 Field '${fieldName}' value:`, value);
     }
 
     return value;
+  };
+
+  // Check if we have seller data available
+  const hasSellerData = () => {
+    return vehicle.seller_data ||
+           (vehicle.meta_data && vehicle.meta_data.some(m => m.key.includes('seller')));
   };
 
   const getCondition = () => {
@@ -46,6 +54,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
   const getSellerName = () => {
     // Primary field: exactly as used in WordPress shortcode [seller_field field="acount_name_seller"]
+    // Note: WordPress shortcode has typo "acount" instead of "account"
     const primarySellerName = getSellerField('acount_name_seller');
 
     if (primarySellerName && primarySellerName.trim() !== '') {
@@ -53,36 +62,58 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return primarySellerName;
     }
 
-    // Try alternative field names as fallbacks
-    const altSellerName = getSellerField('account_name_seller') ||
-                         getSellerField('seller_name') ||
-                         getSellerField('dealer_name');
-
-    if (altSellerName && altSellerName.trim() !== '') {
-      console.log('⚠️ Using alternative seller field:', altSellerName);
-      return altSellerName;
+    // Try corrected field name as fallback
+    const correctSellerName = getSellerField('account_name_seller');
+    if (correctSellerName && correctSellerName.trim() !== '') {
+      console.log('✅ Found account_name_seller:', correctSellerName);
+      return correctSellerName;
     }
 
-    // Fallback to vehicle.dealer, but make sure it's not the features text
-    const dealerFallback = vehicle.dealer || 'Dealer';
-
-    // Check if dealer field contains features (long text with commas)
-    if (dealerFallback.includes(',') && dealerFallback.length > 50) {
-      console.log('❌ Dealer field contains features, using generic name');
-      return 'Dealer'; // Return generic name if it's features text
+    // If no seller data available, return a helpful debug message
+    if (!hasSellerData()) {
+      console.log('❌ No seller data available for vehicle:', vehicle.title);
+      return 'No Seller Data';
     }
 
-    console.log('🔄 Using fallback dealer name:', dealerFallback);
-    return dealerFallback;
+    console.log('⚠️ Seller data available but name field missing');
+    return 'Seller Name Missing';
   };
 
   const getSellerLocation = () => {
+    const city = getSellerField('city_seller');
     const state = getSellerField('state_seller');
     const zip = getSellerField('zip_seller');
-    if (state && zip) {
-      return `${state}, ${zip}`;
+
+    // Build location string based on available data
+    let location = '';
+
+    if (city && state) {
+      location = `${city}, ${state}`;
+    } else if (city) {
+      location = city;
+    } else if (state) {
+      location = state;
     }
-    return vehicle.location || 'Location not available';
+
+    if (zip && location) {
+      location += ` ${zip}`;
+    } else if (zip) {
+      location = zip;
+    }
+
+    if (location.trim() !== '') {
+      return location;
+    }
+
+    // Debug: Show what we're getting instead of proper location
+    if (!hasSellerData()) {
+      console.log('❌ No seller data for location in vehicle:', vehicle.title);
+      return 'No Location Data';
+    }
+
+    // If we have seller data but no location fields
+    console.log('⚠️ Seller data available but location fields missing for:', vehicle.title);
+    return 'Location Missing';
   };
 
   const getSellerType = () => {
@@ -119,23 +150,24 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerCoordinates = () => {
-    // Get coordinates from seller account (matching WordPress field names)
-    const lat = getSellerField('car_location_latitude') ||
-               getSellerField('seller_latitude') ||
-               getSellerField('latitude') ||
-               getSellerField('lat');
-
-    const lng = getSellerField('car_location_longitude') ||
-               getSellerField('seller_longitude') ||
-               getSellerField('longitude') ||
-               getSellerField('lng');
+    // Get coordinates from seller account (using confirmed field names)
+    const lat = getSellerField('car_location_latitude');
+    const lng = getSellerField('car_location_longitude');
 
     if (lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng))) {
+      console.log('📍 Found seller coordinates:', { lat: parseFloat(lat), lng: parseFloat(lng) });
       return {
         lat: parseFloat(lat),
         lng: parseFloat(lng)
       };
     }
+
+    // Debug logging for missing coordinates
+    if (hasSellerData()) {
+      console.log('⚠️ Seller data available but coordinates missing for:', vehicle.title);
+      console.log('Available seller fields:', Object.keys(vehicle.seller_data || {}));
+    }
+
     return null;
   };
 
