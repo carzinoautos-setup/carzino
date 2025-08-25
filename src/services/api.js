@@ -487,9 +487,10 @@ export const fetchVehicles = async (params = {}) => {
 // Fallback filter options for when API is not available - matches fallback vehicles
 const getFallbackFilterOptions = () => ({
   makes: [
-    { name: 'Toyota', count: 2 },
-    { name: 'Ford', count: 2 },
-    { name: 'Honda', count: 1 }
+    { name: 'Ford', count: 18 },
+    { name: 'Toyota', count: 8 },
+    { name: 'Honda', count: 5 },
+    { name: 'Chevrolet', count: 4 }
   ],
   models: [
     { name: 'RAV4', count: 1 },
