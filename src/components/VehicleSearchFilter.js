@@ -941,7 +941,7 @@ const VehicleSearchFilter = ({
         {/* Model Years */}
         {allYears.length > 0 && (
           <FilterSection
-            title="Year"
+            title={hasActiveFilters ? "Year (filtered)" : "Year"}
             isCollapsed={collapsedFilters.year}
             onToggle={() => toggleFilter('year')}
             count={getFilterCount('year')}
