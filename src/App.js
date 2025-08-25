@@ -809,16 +809,44 @@ function App() {
   };
 
   const extractModelFromVehicle = (vehicle) => {
+    let model = null;
+
+    // Try meta_data first
     if (vehicle.rawData?.meta_data) {
       const modelMeta = vehicle.rawData.meta_data.find(meta => meta.key === 'model');
-      if (modelMeta?.value) return modelMeta.value;
+      if (modelMeta?.value) {
+        model = modelMeta.value;
+        console.log(`📊 Found model in meta_data: "${model}" for ${vehicle.title}`);
+        return model;
+      }
     }
+
+    // Try attributes
     if (vehicle.rawData?.attributes) {
       const modelAttr = vehicle.rawData.attributes.find(attr =>
         attr.name.toLowerCase().includes('model')
       );
-      if (modelAttr?.options?.[0]) return modelAttr.options[0];
+      if (modelAttr?.options?.[0]) {
+        model = modelAttr.options[0];
+        console.log(`📊 Found model in attributes: "${model}" for ${vehicle.title}`);
+        return model;
+      }
     }
+
+    // Try extracting from title as fallback
+    const title = vehicle.title || '';
+    if (title.toLowerCase().includes('tacoma')) model = 'Tacoma';
+    else if (title.toLowerCase().includes('4runner')) model = '4Runner';
+    else if (title.toLowerCase().includes('rav4')) model = 'RAV4 Hybrid';
+    else if (title.toLowerCase().includes('camry')) model = 'Camry';
+    else if (title.toLowerCase().includes('corolla')) model = 'Corolla';
+
+    if (model) {
+      console.log(`📊 Extracted model from title: "${model}" for ${vehicle.title}`);
+      return model;
+    }
+
+    console.log(`❌ No model found for ${vehicle.title}`);
     return null;
   };
 
