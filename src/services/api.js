@@ -450,6 +450,15 @@ export const testAPIConnection = async () => {
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
   });
 
+  // Provide manual test URL for user to verify
+  const manualTestUrl = `https://env-uploadbackup62225-czdev.kinsta.cloud/wp-json/wc/v3/products?consumer_key=ck_ba9a8da8b8ad2ef3b1093ba34e4b2a25cd299b25&consumer_secret=cs_029fd6b60c280bc10981d62871d1c0526990f607&per_page=1`;
+  console.log('');
+  console.log('🧪 MANUAL TEST: Copy this URL and test it in a new browser tab:');
+  console.log(manualTestUrl);
+  console.log('   ✅ If you see JSON data: API works, CORS issue in React app');
+  console.log('   ❌ If you see HTML/error: API endpoint has issues');
+  console.log('');
+
   // Test multiple endpoints to see which one works
   const testUrls = [
     // Test 1: Basic WordPress API (should work if WP is running)
