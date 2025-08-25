@@ -306,9 +306,9 @@ function App() {
       // Seller data display confirmed working - now using real API
 
       try {
-        // Test API connection with multiple layers of error handling
+        // Test API connection with shorter timeout for faster response
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API test timeout')), 10000)
+          setTimeout(() => reject(new Error('API test timeout')), 5000)
         );
 
         // Wrap API test in additional error handling to catch CORS/fetch errors
