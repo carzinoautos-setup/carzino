@@ -502,7 +502,10 @@ export const testAPIConnection = async () => {
   } catch (error) {
     console.error('❌ WordPress site not accessible:', error.message);
     console.error('   This could mean CORS is broken or the site is down');
-    return; // Don't continue testing if basic site isn't accessible
+    return {
+      success: false,
+      message: `WordPress site not accessible: ${error.message}. This could mean CORS is broken or the site is down.`
+    };
   }
 
   for (const [index, testUrl] of testUrls.entries()) {
