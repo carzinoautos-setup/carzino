@@ -87,7 +87,6 @@ function App() {
   const getInitialFilters = () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.toString()) {
-      console.log('🔗 Initializing filters from URL:', urlParams.toString());
       return URLParamsToFilters(urlParams);
     }
 
@@ -158,7 +157,6 @@ function App() {
 
     if (newURL !== window.location.pathname + window.location.search) {
       window.history.pushState(null, '', newURL);
-      console.log('🔗 Updated URL:', newURL);
     }
   };
 
@@ -169,7 +167,6 @@ function App() {
       const newFilters = URLParamsToFilters(urlParams);
       const newPage = parseInt(urlParams.get('page') || '1', 10);
 
-      console.log('🔙 Browser navigation detected, updating filters and page from URL');
       setFilters(newFilters);
       setCurrentPage(newPage);
     };
@@ -194,8 +191,6 @@ function App() {
   useEffect(() => {
     const testConnection = async () => {
       try {
-        console.log('🔗 Starting API connection test...');
-
         // Add timeout to prevent hanging on startup
         const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('API test timeout')), 20000)
@@ -206,46 +201,30 @@ function App() {
           timeoutPromise
         ]);
 
-        console.log('📡 API Connection Test Result:', result);
-
         // Check if result exists and has expected properties
         if (result && typeof result === 'object') {
           if (result.success) {
             setApiConnected(true);
-            console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
             setError(null); // Clear any previous errors
           } else {
           setApiConnected(false);
-          console.warn('⚠️ API Connection Failed:', result.message || 'Unknown error');
 
           // Handle different types of API failures
           if (result.message && result.message.includes('CORS Error')) {
-            console.log('📝 CORS issue detected - app will use fallback data');
             setError('⚠️ Limited demo data shown - API connection issue');
           } else if (result.timeout) {
-            console.log('📝 API timeout detected - app will use fallback data');
             setError('⚠️ Limited demo data shown - WordPress site is slow');
           } else {
-            console.log('📝 Using fallback data instead');
             setError('⚠️ Limited demo data shown - API connection issue');
           }
         }
         } else {
-          console.error('❌ API test returned invalid result:', result);
           setApiConnected(false);
           setError(null); // Don't block app - use fallback
         }
       } catch (err) {
-        console.error('❌ API Connection Error:', err);
         setApiConnected(false);
-
-        if (err.message === 'API test timeout') {
-          console.log('📝 API test timed out - app will use fallback data');
-          setError(null); // Don't show error for timeout
-        } else {
-          console.log('📝 API connection failed - app will use fallback data:', err.message);
-          setError(null); // Don't block app - use fallback
-        }
+        setError(null); // Don't block app - use fallback
       }
     };
 
