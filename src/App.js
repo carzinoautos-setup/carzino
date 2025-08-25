@@ -486,9 +486,9 @@ function App() {
         <p>
           {apiConnected
             ? `Connected to your WooCommerce inventory (${totalResults} vehicles)`
-            : error && error.includes('CORS Error')
-            ? `Showing sample data (${totalResults} vehicles) - CORS issue detected`
-            : 'Find your perfect vehicle with advanced filtering'
+            : window.location.hostname === 'carzinoautos-setup.github.io'
+            ? `Showing sample data (${totalResults} vehicles) - API connection issue`
+            : `Dev Environment: Showing sample data (${totalResults} vehicles) - Use GitHub Pages for live data`
           }
         </p>
         {error && (
