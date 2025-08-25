@@ -717,6 +717,7 @@ function App() {
 
   // Filter vehicles based on selected filters
   const getFilteredVehicles = () => {
+    console.log(`🚨 DEBUG: getFilteredVehicles called!`);
     let filtered = vehicles;
     const originalCount = filtered.length;
 
