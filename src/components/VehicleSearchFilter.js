@@ -553,6 +553,8 @@ const VehicleSearchFilter = ({
 
               // Handle array-based filters
               Object.entries(filters).forEach(([category, value]) => {
+                console.log(`🔍 Processing filter: ${category}`, value, 'IsArray?', Array.isArray(value), 'Length:', Array.isArray(value) ? value.length : 'N/A');
+
                 // Skip configuration/default fields that shouldn't show as applied filters
                 if (category === 'radius' || category === 'termLength' || category === 'interestRate' ||
                     category === 'downPayment' || category === 'zipCode' || category === 'priceMin' ||
@@ -561,7 +563,9 @@ const VehicleSearchFilter = ({
                 }
 
                 if (Array.isArray(value) && value.length > 0) {
+                  console.log(`✅ Processing array filter ${category} with items:`, value);
                   value.forEach((item, index) => {
+                    console.log(`  - Item ${index}: "${item}" (type: ${typeof item})`);
                     if (item && item.toString().trim() !== '') {
                       filterPills.push(
                         <span key={`${category}-${index}`} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
@@ -577,6 +581,7 @@ const VehicleSearchFilter = ({
                     }
                   });
                 } else if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[category] || '')) {
+                  console.log(`❌ Processing non-array filter ${category}:`, value, 'toString:', value.toString());
                   filterPills.push(
                     <span key={category} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
                       <span className="truncate flex-1">{value}</span>
