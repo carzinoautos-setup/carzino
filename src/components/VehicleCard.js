@@ -189,63 +189,70 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
-    // Primary field: exactly as used in WordPress shortcode [seller_field field="acount_name_seller"]
+    // STEP 1: Try the resolved seller_data from WordPress relationship resolver
+    if (vehicle.seller_data && vehicle.seller_data.account_name) {
+      console.log('✅ RESOLVED: Using account_name from seller_data:', vehicle.seller_data.account_name);
+      return vehicle.seller_data.account_name;
+    }
+
+    if (vehicle.seller_data && vehicle.seller_data.business_name) {
+      console.log('✅ RESOLVED: Using business_name from seller_data:', vehicle.seller_data.business_name);
+      return vehicle.seller_data.business_name;
+    }
+
+    // STEP 2: Try primary field used in WordPress shortcode [seller_field field="acount_name_seller"]
     // Note: WordPress shortcode has typo "acount" instead of "account"
     const primarySellerName = getSellerField('acount_name_seller');
-
     if (primarySellerName && primarySellerName.trim() !== '') {
-      console.log('✅ Found acount_name_seller:', primarySellerName);
+      console.log('✅ META: Found acount_name_seller:', primarySellerName);
       return primarySellerName;
     }
 
-    // Try corrected field name as fallback
+    // STEP 3: Try corrected field name as fallback
     const correctSellerName = getSellerField('account_name_seller');
     if (correctSellerName && correctSellerName.trim() !== '') {
-      console.log('✅ Found account_name_seller:', correctSellerName);
+      console.log('✅ META: Found account_name_seller:', correctSellerName);
       return correctSellerName;
     }
 
-    // Try alternative field names that might be used
+    // STEP 4: Try alternative field names that might be used
     const alternativeNames = [
-      'business_name',
+      'business_name_seller',
       'dealer_name',
       'seller_name',
       'company_name',
-      'account_name'
+      'business_name'
     ];
 
     for (const fieldName of alternativeNames) {
       const value = getSellerField(fieldName);
       if (value && value.trim() !== '') {
-        console.log(`✅ Found seller name in ${fieldName}:`, value);
+        console.log(`✅ META: Found seller name in ${fieldName}:`, value);
         return value;
       }
     }
 
-    // Check if this is fallback/sample data
-    if (vehicle.id && vehicle.id.toString().startsWith('fallback-')) {
-      console.log('📝 Using fallback data for vehicle:', vehicle.title);
-      return vehicle.dealer || 'Sample Dealer';
+    // STEP 5: Check if this is demo/fallback data
+    if (vehicle.id && (vehicle.id.toString().startsWith('fallback-') || vehicle.id.toString().startsWith('demo-'))) {
+      console.log('📝 DEMO: Using demo data seller name:', vehicle.dealer);
+      return vehicle.dealer || 'Demo Dealer';
     }
 
-    // If seller_data exists but name is missing, try to construct a name
+    // STEP 6: Try to construct a name from available seller data
     if (vehicle.seller_data) {
-      const business_name = vehicle.seller_data.business_name ||
-                           vehicle.seller_data.account_name ||
-                           vehicle.seller_data.dealer_name ||
-                           vehicle.seller_data.company_name;
-      if (business_name) {
-        console.log('✅ Using business name from seller_data:', business_name);
-        return business_name;
+      const accountNumber = vehicle.seller_data.account_number;
+      if (accountNumber && accountNumber !== 'Default') {
+        console.log('⚠️ FALLBACK: Using account number for name:', accountNumber);
+        return `Dealer Account #${accountNumber}`;
       }
     }
 
-    // Check if we have any seller fields at all
+    // STEP 7: Check if we have any seller fields at all
     const metaData = vehicle.meta_data || [];
     const hasAnySellerData = metaData.some(m => m.key && m.key.includes('seller'));
 
     if (hasAnySellerData) {
-      console.log('⚠️ Seller data available but name field missing - using account based name');
+      console.log('⚠️ META: Seller data available but name field missing');
       const accountNumber = getSellerField('account_number_seller');
       if (accountNumber) {
         return `Dealer Account #${accountNumber}`;
@@ -253,7 +260,8 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return 'Dealer Information Missing';
     }
 
-    console.log('❌ No seller data available for vehicle:', vehicle.title);
+    // STEP 8: Final fallback
+    console.log('❌ NONE: No seller data available for vehicle:', vehicle.title);
     return 'Seller Info Unavailable';
   };
 
