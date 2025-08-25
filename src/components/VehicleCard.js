@@ -5,6 +5,42 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [keeperMessage, setKeeperMessage] = useState(false);
 
+  // Helper functions to extract seller data
+  const getSellerField = (fieldName) => {
+    const metaData = vehicle.meta_data || [];
+    const sellerField = metaData.find(meta => meta.key === fieldName);
+    return sellerField?.value || '';
+  };
+
+  const getCondition = () => {
+    return getSellerField('condition') || (vehicle.stock_status === 'instock' ? 'Available' : 'Sold');
+  };
+
+  const getDrivetrain = () => {
+    return getSellerField('drivetrain') || getSellerField('drive_type') || 'N/A';
+  };
+
+  const getSellerName = () => {
+    return getSellerField('acount_name_seller') || getSellerField('account_name_seller') || vehicle.dealer || 'Dealer';
+  };
+
+  const getSellerLocation = () => {
+    const state = getSellerField('state_seller');
+    const zip = getSellerField('zip_seller');
+    if (state && zip) {
+      return `${state}, ${zip}`;
+    }
+    return vehicle.location || 'Location not available';
+  };
+
+  const getSellerType = () => {
+    return getSellerField('account_type_seller') || 'Dealer';
+  };
+
+  const getSellerPhone = () => {
+    return getSellerField('phone_number_seller') || vehicle.phone || '(253) 555-0100';
+  };
+
   const toggleFavorite = () => {
     const wasAlreadyFavorited = favorites[vehicle.id];
     onFavoriteToggle(vehicle.id, vehicle);
@@ -135,7 +171,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
         .badges-row {
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start;
           align-items: center;
           gap: 8px;
           height: 24px;
@@ -143,6 +179,19 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         }
 
         .badges-group {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+        }
+
+        .left-badges {
+          display: flex;
+          gap: 8px;
+          align-items: center;
+          flex: 1;
+        }
+
+        .right-badges {
           display: flex;
           gap: 8px;
           align-items: center;
@@ -341,22 +390,24 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           flex-shrink: 0;
         }
 
-        .call-dealer {
+        .seller-type {
           font-size: 12px;
           font-weight: 500;
           color: #000000;
-          cursor: pointer;
-          transition: color 200ms ease-in-out;
-        }
-
-        .call-dealer:hover {
-          color: #6B7280;
+          margin-bottom: 4px;
         }
 
         .dealer-phone {
           font-size: 12px;
           font-weight: 400;
           color: #000000;
+          text-decoration: none;
+          transition: color 200ms ease-in-out;
+        }
+
+        .dealer-phone:hover {
+          color: #6B7280;
+          text-decoration: underline;
         }
 
         @media (max-width: 640px) {
@@ -418,23 +469,24 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
         <div className="content-section">
           <div className="badges-row">
-            <div className="badges-group">
-              {vehicle.badges?.map((badge, index) => (
-                <span key={index} className="status-badge">
-                  {badge}
-                </span>
-              ))}
+            <div className="left-badges">
+              <span className="status-badge">
+                {getCondition()}
+              </span>
+              <span className="status-badge">
+                {getDrivetrain()}
+              </span>
               {vehicle.viewed && (
                 <span className="viewed-badge">
                   Viewed <Check />
                 </span>
               )}
             </div>
-            <div className="badges-group">
-              <Heart 
+            <div className="right-badges">
+              <Heart
                 className={`favorite-heart ${
-                  favorites[vehicle.id] 
-                    ? 'fill-current' 
+                  favorites[vehicle.id]
+                    ? 'fill-current'
                     : 'fill-white stroke-current'
                 }`}
                 onClick={toggleFavorite}
@@ -501,12 +553,17 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
         <div className="dealer-section">
           <div className="dealer-info">
-            <div className="dealer-name">{vehicle.dealer}</div>
-            <div className="dealer-location">{vehicle.location}</div>
+            <div className="dealer-name">{getSellerName()}</div>
+            <div className="dealer-location">{getSellerLocation()}</div>
           </div>
           <div className="contact-info">
-            <div className="call-dealer">Call Dealer</div>
-            <div className="dealer-phone">{vehicle.phone}</div>
+            <div className="seller-type">{getSellerType()}</div>
+            <a
+              href={`tel:${getSellerPhone()}`}
+              className="dealer-phone"
+            >
+              {getSellerPhone()}
+            </a>
           </div>
         </div>
       </div>
