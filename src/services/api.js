@@ -444,7 +444,7 @@ export const testAPIConnection = async () => {
   ];
 
   for (const [index, testUrl] of testUrls.entries()) {
-    console.log(`��� Test ${index + 1}: ${testUrl}`);
+    console.log(`🧪 Test ${index + 1}: ${testUrl}`);
 
     try {
       const response = await fetch(testUrl, {
@@ -469,10 +469,16 @@ export const testAPIConnection = async () => {
   }
 
   try {
-    const response = await fetch(`${WC_API_BASE}/products?per_page=1`, {
+    const urlWithAuth = `${WC_API_BASE}/products?per_page=1&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
+    console.log('🧪 Testing URL-based auth:', urlWithAuth);
+
+    const response = await fetch(urlWithAuth, {
       method: 'GET',
-      headers: getAuthHeaders(),
-      mode: 'cors', // Explicitly set CORS mode
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
     });
     
     if (response.ok) {
