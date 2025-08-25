@@ -947,7 +947,7 @@ export const fetchFilterOptions = async (currentFilters = {}) => {
     // Check if we should use fallback immediately
     if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
         WC_CONSUMER_KEY === 'missing' || WC_CONSUMER_SECRET === 'missing') {
-      console.warn('�� Using fallback filter options (API credentials missing)');
+      console.warn('📊 Using fallback filter options (API credentials missing)');
       return getFallbackFilterOptions();
     }
 
@@ -1242,7 +1242,7 @@ export const testAPIConnection = async () => {
         'Accept': 'application/json',
         'User-Agent': 'Carzino-React-App/1.0'
       }
-    }, 15000); // 15 second timeout for slower WordPress sites
+    }, 8000); // 8 second timeout to prevent app hanging
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ API response received in ${responseTime}ms`);
