@@ -227,22 +227,33 @@ function App() {
     const currentUrl = new URL(window.location);
     let urlChanged = false;
 
-    // Remove problematic parameters
-    if (currentUrl.searchParams.has('reload')) {
-      currentUrl.searchParams.delete('reload');
-      urlChanged = true;
-    }
+    // List of problematic parameters to remove
+    const problematicParams = ['reload'];
 
-    // Remove any timestamp-like parameters
+    // Remove known problematic parameters
+    problematicParams.forEach(param => {
+      if (currentUrl.searchParams.has(param)) {
+        currentUrl.searchParams.delete(param);
+        urlChanged = true;
+      }
+    });
+
+    // Remove any timestamp-like parameters or very long values
+    const paramsToDelete = [];
     for (const [key, value] of currentUrl.searchParams.entries()) {
-      if (/^\d{10,}$/.test(value)) {
-        currentUrl.searchParams.delete(key);
+      if (/^\d{10,}$/.test(value) || value.length > 20) {
+        paramsToDelete.push(key);
         urlChanged = true;
       }
     }
 
+    paramsToDelete.forEach(param => {
+      currentUrl.searchParams.delete(param);
+    });
+
     // Update URL if we removed anything
     if (urlChanged) {
+      console.log('🧹 Cleaned up problematic URL parameters');
       window.history.replaceState(null, '', currentUrl.pathname + currentUrl.search);
     }
   }, []);
@@ -832,7 +843,7 @@ function App() {
 
     // Apply model filter
     if (filters.model && filters.model.length > 0) {
-      console.log(`��� Applying model filter for: [${filters.model.join(', ')}]`);
+      console.log(`���� Applying model filter for: [${filters.model.join(', ')}]`);
 
       filtered = filtered.filter(vehicle => {
         const vehicleModel = extractModelFromVehicle(vehicle);
