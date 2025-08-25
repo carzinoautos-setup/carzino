@@ -538,6 +538,8 @@ export const fetchVehicles = async (params = {}) => {
       per_page: params.per_page || 200, // Load all 200 vehicles by default
       page: params.page || 1,
       status: 'publish',
+      orderby: 'date',
+      order: 'desc',
       ...params
     });
 
@@ -742,7 +744,7 @@ export const fetchVehicles = async (params = {}) => {
       const isFlyDev = currentDomain.includes('fly.dev');
 
       console.error('🚨 API CONNECTION FAILED: CORS/Network Issue!');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━���━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.error('━━━━━━━━━━━━━━━━━━━━━━━���━━━━━━━━━━━���━━━━━━━━━━━━━━━');
       console.error('🌐 Current Domain:', currentDomain);
       console.error('🎯 Target WordPress:', process.env.REACT_APP_WP_SITE_URL);
       console.error('❌ Error:', error.message);
