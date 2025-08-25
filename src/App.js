@@ -212,7 +212,7 @@ function App() {
         if (result && typeof result === 'object') {
           if (result.success) {
             setApiConnected(true);
-            console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
+            console.log(`�� Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
             setError(null); // Clear any previous errors
           } else {
           setApiConnected(false);
@@ -727,9 +727,8 @@ function App() {
         const vehicleMake = extractMakeFromVehicle(vehicle);
         const matches = vehicleMake && filters.make.includes(vehicleMake);
 
-        if (index < 5) { // Log first 5 vehicles for debugging
-          console.log(`🚗 Vehicle ${index + 1}: "${vehicle.title}" - Make: "${vehicleMake}" - Matches: ${matches}`);
-        }
+        // Log ALL vehicles when filtering by make to debug the issue
+        console.log(`🚗 Vehicle ${index + 1}: "${vehicle.title}" - Make: "${vehicleMake}" - Matches: ${matches}`);
 
         return matches;
       });
