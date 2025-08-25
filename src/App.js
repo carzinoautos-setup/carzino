@@ -130,10 +130,14 @@ function App() {
 
   // Update filter options when filters change (for cascading behavior)
   useEffect(() => {
-    if (apiConnected && vehicles.length > 0) {
-      updateFilterOptions();
+    if (apiConnected && vehicles.length > 0 && !loading) {
+      const timeoutId = setTimeout(() => {
+        updateFilterOptions();
+      }, 500); // Debounce filter updates
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [filters]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [filters, apiConnected, vehicles.length, loading]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Function to update only filter options (for cascading filters)
   const updateFilterOptions = async () => {
