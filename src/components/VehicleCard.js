@@ -314,8 +314,8 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     if (vehicle.seller_data) {
       const accountNumber = vehicle.seller_data.account_number;
       if (accountNumber && accountNumber !== 'Default') {
-        console.log('⚠️ FALLBACK: Using account number for name:', accountNumber);
-        return `Dealer Account #${accountNumber}`;
+        console.log('⚠️ FALLBACK: Account found but no name, using generic dealer name');
+        return 'Contact Dealer';
       }
     }
 
