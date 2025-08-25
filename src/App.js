@@ -984,7 +984,7 @@ function App() {
   };
 
   const extractConditionFromVehicle = (vehicle) => {
-    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const metaData = vehicle.meta_data || vehicle.rawData?.meta_data || [];
     const conditionMeta = metaData.find(meta => meta.key === 'condition');
     if (conditionMeta?.value) return conditionMeta.value;
 
@@ -993,7 +993,7 @@ function App() {
   };
 
   const extractVehicleTypeFromVehicle = (vehicle) => {
-    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const metaData = vehicle.meta_data || vehicle.rawData?.meta_data || [];
     const typeMeta = metaData.find(meta => meta.key === 'body_type');
     if (typeMeta?.value) return typeMeta.value;
 
@@ -1002,7 +1002,7 @@ function App() {
   };
 
   const extractDriveTypeFromVehicle = (vehicle) => {
-    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const metaData = vehicle.meta_data || vehicle.rawData?.meta_data || [];
     const driveMeta = metaData.find(meta => meta.key === 'drivetrain');
     if (driveMeta?.value) return driveMeta.value;
 
@@ -1015,7 +1015,7 @@ function App() {
   };
 
   const extractTransmissionFromVehicle = (vehicle) => {
-    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const metaData = vehicle.meta_data || vehicle.rawData?.meta_data || [];
     const transMeta = metaData.find(meta => meta.key === 'transmission');
     if (transMeta?.value) return transMeta.value;
 
@@ -1028,7 +1028,7 @@ function App() {
   };
 
   const extractYearFromVehicle = (vehicle) => {
-    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    const metaData = vehicle.meta_data || vehicle.rawData?.meta_data || [];
     const yearMeta = metaData.find(meta => meta.key === 'year');
     if (yearMeta?.value) return yearMeta.value;
 
@@ -1041,7 +1041,7 @@ function App() {
   };
 
   const extractPriceFromVehicle = (vehicle) => {
-    return vehicle.rawData?.price || vehicle.rawData?.regular_price || vehicle.price || vehicle.regular_price;
+    return vehicle.price || vehicle.regular_price || vehicle.rawData?.price || vehicle.rawData?.regular_price;
   };
 
   // Get current page vehicles with filtering
