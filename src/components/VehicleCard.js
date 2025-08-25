@@ -1059,6 +1059,20 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             <a
               href={`tel:${getSellerPhone()}`}
               className="dealer-phone"
+              onClick={() => {
+                // Google Analytics tracking for phone clicks
+                if (typeof gtag !== 'undefined') {
+                  gtag('event', 'phone_click', {
+                    'event_category': 'dealer_contact',
+                    'event_label': getSellerName(),
+                    'value': 1
+                  });
+                }
+                // Alternative tracking for Google Analytics Universal
+                if (typeof ga !== 'undefined') {
+                  ga('send', 'event', 'dealer_contact', 'phone_click', getSellerName(), 1);
+                }
+              }}
             >
               {getSellerPhone()}
             </a>
