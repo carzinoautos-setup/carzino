@@ -544,6 +544,10 @@ const VehicleSearchFilter = ({
 
               console.log('🔍 Applied Filters Debug - Full filters object:', filters);
               console.log('🔍 Filters type check:', typeof filters, Array.isArray(filters));
+              console.log('🔍 Filter keys:', Object.keys(filters));
+              Object.entries(filters).forEach(([key, value]) => {
+                console.log(`🔍 Filter ${key}:`, value, 'Type:', typeof value, 'IsArray:', Array.isArray(value));
+              });
 
               // Define default values that shouldn't show as applied filters
               const defaultValues = {
