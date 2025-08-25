@@ -1013,12 +1013,20 @@ function App() {
   // Update total results to reflect filtered count
   const actualTotalResults = showingFavorites ? favoritesCount : allFilteredVehicles.length;
 
-  // Apply pagination to filtered vehicles
-  const startIndex = (currentPage - 1) * resultsPerPage;
-  const endIndex = startIndex + resultsPerPage;
+  // Apply pagination to filtered vehicles with bounds checking
+  const maxPages = Math.ceil(actualTotalResults / resultsPerPage);
+  const safePage = Math.min(Math.max(currentPage, 1), maxPages || 1);
+
+  const startIndex = (safePage - 1) * resultsPerPage;
+  const endIndex = Math.min(startIndex + resultsPerPage, actualTotalResults);
   const currentVehicles = showingFavorites
     ? allFilteredVehicles
     : allFilteredVehicles.slice(startIndex, endIndex);
+
+  // Update current page if it was out of bounds
+  if (safePage !== currentPage && maxPages > 0) {
+    setCurrentPage(safePage);
+  }
 
   // Calculate total pages based on filtered results
   const filteredTotalPages = showingFavorites
