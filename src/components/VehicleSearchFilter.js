@@ -660,24 +660,30 @@ const VehicleSearchFilter = ({
         </div>
 
         {/* Make */}
-        <FilterSection 
+        <FilterSection
           title="Make"
           isCollapsed={collapsedFilters.make}
           onToggle={() => toggleFilter('make')}
           count={getFilterCount('make')}
         >
           <div className="space-y-2">
-            {displayedMakes.map((make) => (
-              <CheckboxOption
-                key={make.name}
-                label={make.name}
-                count={make.count}
-                value={make.name}
-                category="make"
-                checked={filters.make?.includes(make.name)}
-                onChange={handleFilterChange}
-              />
-            ))}
+            {allMakes.length > 0 ? (
+              displayedMakes.map((make) => (
+                <CheckboxOption
+                  key={make.name}
+                  label={make.name}
+                  count={make.count}
+                  value={make.name}
+                  category="make"
+                  checked={filters.make?.includes(make.name)}
+                  onChange={handleFilterChange}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-gray-500 py-2">
+                {isLoading ? 'Loading makes...' : 'No makes available'}
+              </div>
+            )}
           </div>
           {allMakes.length > 8 && (
             <span
