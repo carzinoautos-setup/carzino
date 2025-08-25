@@ -1050,6 +1050,9 @@ function App() {
     : Math.ceil(actualTotalResults / resultsPerPage);
 
   console.log(`📄 Pagination: Page ${currentPage}, showing vehicles ${startIndex + 1}-${Math.min(endIndex, actualTotalResults)} of ${actualTotalResults} total (${filteredTotalPages} pages)`);
+  console.log(`🚗 Total vehicles loaded: ${vehicles.length}`);
+  console.log(`🔍 All filtered vehicles count: ${allFilteredVehicles.length}`);
+  console.log(`📄 Current vehicles to display: ${currentVehicles.length}`);
 
   // Loading state
   if (loading && vehicles.length === 0) {
