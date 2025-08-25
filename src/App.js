@@ -355,7 +355,16 @@ function App() {
       console.error('Error loading data:');
       console.error('  Message:', err.message);
       console.error('  Name:', err.name);
-      setError(`Failed to load vehicles: ${err.message}`);
+      // Set specific error message based on error type
+      if (err.message.includes('500')) {
+        setError('⚠️ WordPress server error - showing demo data. Please check your WordPress snippets and configuration.');
+      } else if (err.message.includes('timed out')) {
+        setError('⚠️ WordPress site is slow to respond - showing demo data.');
+      } else if (err.message.includes('Failed to fetch')) {
+        setError('⚠️ Cannot connect to WordPress API - showing demo data. Check CORS settings.');
+      } else {
+        setError(`⚠️ API Error: ${err.message} - showing demo data.`);
+      }
       
       // Fallback to sample data if API fails
       setVehicles(getSampleVehicles());
