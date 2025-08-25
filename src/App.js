@@ -253,7 +253,7 @@ function App() {
 
     // Update URL if we removed anything
     if (urlChanged) {
-      console.log('🧹 Cleaned up problematic URL parameters');
+      console.log('�� Cleaned up problematic URL parameters');
       window.history.replaceState(null, '', currentUrl.pathname + currentUrl.search);
     }
   }, []);
@@ -637,15 +637,15 @@ function App() {
       featured: true,
       viewed: true,
       images: ["https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop"],
-      badges: ["API Error", "Sample"],
-      title: "Sample Vehicle (API Connection Issue)",
-      mileage: "N/A",
+      badges: ["Demo Mode", "Featured"],
+      title: "2021 Toyota RAV4 XLE (Demo Data)",
+      mileage: "32,456",
       transmission: "Auto",
       doors: "4 doors",
-      salePrice: "Call for Price",
-      payment: "Call",
-      dealer: "Sample Dealer",
-      location: "Sample Location",
+      salePrice: "$26,995",
+      payment: "$399",
+      dealer: "Demo Dealer",
+      location: "Seattle, WA",
       phone: "(253) 555-0100",
       meta_data: [],
       attributes: [],
@@ -657,16 +657,36 @@ function App() {
       featured: false,
       viewed: false,
       images: ["https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop"],
-      badges: ["Demo", "Available"],
-      title: "Demo Vehicle 2 (Fallback Data)",
-      mileage: "12,000",
+      badges: ["Demo Mode", "Available"],
+      title: "2020 Honda Civic Si (Demo Data)",
+      mileage: "24,567",
       transmission: "Manual",
-      doors: "2 doors",
-      salePrice: "$25,000",
-      payment: "$350",
+      doors: "4 doors",
+      salePrice: "$22,995",
+      payment: "$329",
       dealer: "Demo Dealer",
-      location: "Demo Location",
+      location: "Tacoma, WA",
       phone: "(253) 555-0200",
+      meta_data: [],
+      attributes: [],
+      categories: [],
+      stock_status: 'instock'
+    },
+    {
+      id: `sample-${Date.now()}-3`,
+      featured: false,
+      viewed: true,
+      images: ["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=450&h=300&fit=crop"],
+      badges: ["Demo Mode", "Recently Viewed"],
+      title: "2019 Ford F-150 XLT (Demo Data)",
+      mileage: "45,321",
+      transmission: "Auto",
+      doors: "4 doors",
+      salePrice: "$31,995",
+      payment: "$449",
+      dealer: "Demo Dealer",
+      location: "Everett, WA",
+      phone: "(425) 555-0300",
       meta_data: [],
       attributes: [],
       categories: [],
@@ -843,7 +863,7 @@ function App() {
 
     // Apply model filter
     if (filters.model && filters.model.length > 0) {
-      console.log(`���� Applying model filter for: [${filters.model.join(', ')}]`);
+      console.log(`��� Applying model filter for: [${filters.model.join(', ')}]`);
 
       filtered = filtered.filter(vehicle => {
         const vehicleModel = extractModelFromVehicle(vehicle);
