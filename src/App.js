@@ -78,37 +78,49 @@ const URLParamsToFilters = (searchParams) => {
 };
 
 function App() {
+  // Initialize filters from URL parameters
+  const getInitialFilters = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.toString()) {
+      console.log('🔗 Initializing filters from URL:', urlParams.toString());
+      return URLParamsToFilters(urlParams);
+    }
+
+    // Default filters if no URL parameters
+    return {
+      condition: [],
+      make: [],
+      model: [],
+      trim: [],
+      year: [],
+      vehicleType: [],
+      bodyType: [],
+      driveType: [],
+      transmission: [],
+      transmissionSpeed: [],
+      fuelType: [],
+      exteriorColor: [],
+      interiorColor: [],
+      mileage: '',
+      sellerType: [],
+      dealer: [],
+      state: [],
+      city: [],
+      zipCodeFilter: [],
+      priceMin: '',
+      priceMax: '',
+      paymentMin: '',
+      paymentMax: '',
+      zipCode: '98498',
+      radius: '200',
+      termLength: '72',
+      interestRate: '8',
+      downPayment: '2000'
+    };
+  };
+
   // State management
-  const [filters, setFilters] = useState({
-    condition: [],
-    make: [],
-    model: [],
-    trim: [],
-    year: [], // Add year filter
-    vehicleType: [],
-    bodyType: [],
-    driveType: [],
-    transmission: [], // Updated from transmissionSpeed to match ACF
-    transmissionSpeed: [], // Keep for component compatibility
-    fuelType: [], // New ACF field
-    exteriorColor: [],
-    interiorColor: [],
-    mileage: '',
-    sellerType: [],
-    dealer: [],
-    state: [],
-    city: [],
-    zipCodeFilter: [],
-    priceMin: '',
-    priceMax: '',
-    paymentMin: '',
-    paymentMax: '',
-    zipCode: '98498',
-    radius: '200',
-    termLength: '72',
-    interestRate: '8',
-    downPayment: '2000'
-  });
+  const [filters, setFilters] = useState(getInitialFilters);
 
   // Data state
   const [vehicles, setVehicles] = useState([]);
