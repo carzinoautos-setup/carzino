@@ -240,6 +240,7 @@ function App() {
           console.log('📝 API test timed out - app will use fallback data');
           setError(null); // Don't show error for timeout
         } else {
+          console.log('📝 API connection failed - app will use fallback data:', err.message);
           setError(null); // Don't block app - use fallback
         }
       }
