@@ -31,11 +31,18 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
-    // HARDCODED SOLUTION: For account 73, return hardcoded seller data
+    // Check account number for debugging
     const metaData = vehicle.meta_data || [];
     const accountField = metaData.find(m => m.key === 'account_number_seller');
+    const accountNumber = accountField?.value;
 
-    if (accountField && accountField.value === '73') {
+    // Debug: Log account numbers for first few vehicles
+    if (fieldName === 'acount_name_seller') {
+      console.log(`🔍 Vehicle: ${vehicle.title} | Account: ${accountNumber} | Type: ${typeof accountNumber}`);
+    }
+
+    // HARDCODED SOLUTION: ONLY for account 73 (strict comparison)
+    if (accountNumber && String(accountNumber).trim() === '73') {
       const hardcodedData = {
         'acount_name_seller': 'Carzino Test Account',
         'account_name_seller': 'Carzino Test Account',
@@ -50,6 +57,11 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         console.log(`🔧 HARDCODED: Using hardcoded ${fieldName} = ${hardcodedData[fieldName]} for account 73`);
         return hardcodedData[fieldName];
       }
+    }
+
+    // For non-73 accounts, show account number in debug
+    if (fieldName === 'acount_name_seller' && accountNumber && String(accountNumber).trim() !== '73') {
+      console.log(`ℹ️ Non-73 account ${accountNumber} - will show original or missing seller data`);
     }
 
     // First, try the enhanced seller_data from WordPress API
