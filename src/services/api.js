@@ -69,7 +69,7 @@ const getAuthHeaders = () => {
 
 // Fallback sample data for when API is not available - realistic vehicle inventory
 const getFallbackVehicles = () => {
-  const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
+  const isProduction = window.location.hostname !== 'localhost';
   const dataNote = isProduction ? 'API Connection Issue' : 'Dev Environment Sample';
 
   return {
@@ -85,8 +85,7 @@ const getFallbackVehicles = () => {
         images: {
           featured: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop',
           gallery: [
-            'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop',
-            'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop'
+            'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop'
           ]
         },
         categories: [{ id: 1, name: 'SUV', slug: 'suv' }],
@@ -99,6 +98,17 @@ const getFallbackVehicles = () => {
           { name: 'Drive Type', options: ['AWD'] }
         ],
         meta_data: [
+          { key: 'make', value: 'Toyota' },
+          { key: 'model', value: 'RAV4' },
+          { key: 'year', value: '2021' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'SUV' },
+          { key: 'drivetrain', value: 'AWD' },
+          { key: 'transmission', value: 'Automatic' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'XLE' },
+          { key: 'exterior_color', value: 'White' },
+          { key: 'interior_color', value: 'Black' },
           { key: 'dealer', value: 'Carzino Auto Sales' },
           { key: 'location', value: 'Tacoma, WA' },
           { key: 'phone', value: '(253) 555-0100' }
@@ -106,6 +116,37 @@ const getFallbackVehicles = () => {
         description: 'Reliable SUV with excellent safety ratings and fuel economy.',
         date_created: new Date().toISOString(),
         featured: true
+      },
+      {
+        id: 'fallback-2',
+        title: `2020 Toyota Camry LE (${dataNote})`,
+        slug: 'sample-toyota-camry',
+        url: '#',
+        price: '22995',
+        sale_price: '',
+        stock_status: 'instock',
+        images: {
+          featured: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop',
+          gallery: ['https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop']
+        },
+        categories: [{ id: 2, name: 'Sedan', slug: 'sedan' }],
+        attributes: [],
+        meta_data: [
+          { key: 'make', value: 'Toyota' },
+          { key: 'model', value: 'Camry' },
+          { key: 'year', value: '2020' },
+          { key: 'condition', value: 'Available' },
+          { key: 'body_type', value: 'Sedan' },
+          { key: 'drivetrain', value: 'FWD' },
+          { key: 'transmission', value: 'Automatic' },
+          { key: 'fuel_type', value: 'Gasoline' },
+          { key: 'trim', value: 'LE' },
+          { key: 'exterior_color', value: 'Blue' },
+          { key: 'interior_color', value: 'Gray' }
+        ],
+        description: 'Reliable sedan with excellent fuel economy.',
+        date_created: new Date().toISOString(),
+        featured: false
       },
       {
         id: 'fallback-2',
@@ -817,7 +858,7 @@ export const testAPIConnection = async () => {
   const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
   const currentDomain = window.location.origin;
 
-  console.log('🌐 Environment:', {
+  console.log('��� Environment:', {
     isProduction,
     currentDomain,
     expectedToWork: isProduction ? 'Yes (CORS configured)' : 'Maybe (depends on CORS setup)'
