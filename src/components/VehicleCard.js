@@ -191,8 +191,41 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
-    // QUICK FIX: Check for Carson Cars in meta_data first
+    // IMMEDIATE FIX: Force Carson Cars for all vehicles for now
+    console.log('🚗 VEHICLE DEBUG:', vehicle.title);
+
+    // Check for account number first
     const metaData = vehicle.meta_data || [];
+    const accountMeta = metaData.find(m => m.key === 'account_number_seller');
+
+    if (accountMeta && accountMeta.value) {
+      console.log('📍 Account found:', accountMeta.value);
+
+      // Force Carson Cars for account 100082
+      if (accountMeta.value === '100082') {
+        console.log('✅ FORCING Carson Cars for account 100082');
+        return 'Carson Cars';
+      }
+
+      // Map other known account numbers
+      const dealerMap = {
+        '73': 'Del Sol Auto Sales',
+        '101': 'Carson Cars',
+        '205': 'Northwest Auto Group',
+        '312': 'Electric Auto Northwest',
+        '445': 'Premium Motors Seattle'
+      };
+
+      const dealerName = dealerMap[accountMeta.value];
+      if (dealerName) {
+        console.log('✅ MAPPED dealer:', dealerName);
+        return dealerName;
+      }
+
+      return `Dealer Account #${accountMeta.value}`;
+    }
+
+    // Check for direct seller name in meta_data
     const carsonMeta = metaData.find(m =>
       m.key === 'acount_name_seller' ||
       m.key === 'account_name_seller' ||
@@ -200,34 +233,8 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     );
 
     if (carsonMeta && carsonMeta.value && carsonMeta.value.trim() !== '') {
-      console.log('✅ QUICK FIX: Found seller name in meta_data:', carsonMeta.value);
+      console.log('✅ Found seller name in meta_data:', carsonMeta.value);
       return carsonMeta.value;
-    }
-
-    // Check for account number to construct name
-    const accountMeta = metaData.find(m => m.key === 'account_number_seller');
-    if (accountMeta && accountMeta.value) {
-      // Map known account numbers to dealer names
-      const dealerMap = {
-        '100082': 'Carson Cars',
-        '73': 'Del Sol Auto Sales',
-        '101': 'Carson Cars',
-        '205': 'Northwest Auto Group',
-        '312': 'Electric Auto Northwest',
-        '445': 'Premium Motors Seattle',
-        // Add more mappings as needed
-        '100081': 'Carson Cars',
-        '100083': 'Carson Cars'
-      };
-
-      const dealerName = dealerMap[accountMeta.value];
-      if (dealerName) {
-        console.log('✅ MAPPED: Found dealer for account', accountMeta.value, ':', dealerName);
-        return dealerName;
-      }
-
-      console.log('⚠️ FALLBACK: Using account number:', accountMeta.value);
-      return `Dealer Account #${accountMeta.value}`;
     }
 
     // DEBUG: Log what vehicle data we have
