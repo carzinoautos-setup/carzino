@@ -456,9 +456,11 @@ export const testAPIConnection = async () => {
     `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wp/v2/posts?per_page=1`,
     // Test 2: WooCommerce API with URL auth
     `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/products?consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}&per_page=1`,
-    // Test 3: Check if WooCommerce is installed
+    // Test 3: EXACT URL that worked before (hardcoded to verify)
+    `https://env-uploadbackup62225-czdev.kinsta.cloud/wp-json/wc/v3/products?consumer_key=ck_ba9a8da8b8ad2ef3b1093ba34e4b2a25cd299b25&consumer_secret=cs_029fd6b60c280bc10981d62871d1c0526990f607&per_page=1`,
+    // Test 4: Check if WooCommerce is installed
     `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/system_status?consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`,
-    // Test 4: Alternative WooCommerce endpoint
+    // Test 5: Alternative WooCommerce endpoint
     `${process.env.REACT_APP_WP_SITE_URL}/?wc-api=v3&request=products&oauth_consumer_key=${WC_CONSUMER_KEY}&oauth_consumer_secret=${WC_CONSUMER_SECRET}`
   ];
 
