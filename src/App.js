@@ -303,6 +303,15 @@ function App() {
   // Test API connection on mount
   useEffect(() => {
     const testConnection = async () => {
+      // TEMPORARY: Skip API and load demo data with seller info for testing
+      console.log('🚀 TEMPORARY: Loading demo data to test seller display');
+      setApiConnected(false);
+      const demoData = getRealisticDemoVehicles();
+      setVehicles(demoData);
+      setTotalResults(demoData.length);
+      setLoading(false);
+      setError('🎯 Demo Mode: Testing seller data display');
+      return;
 
       try {
         // Test API connection with multiple layers of error handling
@@ -400,7 +409,7 @@ function App() {
     // Emergency fallback: if still loading after 20 seconds and no vehicles loaded yet
     const emergencyFallbackTimer = setTimeout(() => {
       if (loading && vehicles.length === 0 && !error) {
-        console.warn('⚠️ Emergency fallback activated - connection test took too long');
+        console.warn('⚠�� Emergency fallback activated - connection test took too long');
         setApiConnected(false);
         setError('⚠️ Connection timeout - using demo data. WordPress site may be slow.');
         const fallbackData = getSampleVehicles();
@@ -532,7 +541,7 @@ function App() {
       if (err.message.includes('500')) {
         setError('⚠️ WordPress server error - showing demo data. Please check your WordPress snippets and configuration.');
       } else if (err.message.includes('timed out')) {
-        setError('⚠️ WordPress site is slow to respond - showing demo data.');
+        setError('��️ WordPress site is slow to respond - showing demo data.');
       } else if (err.message.includes('Failed to fetch') || err.message.includes('Network connection')) {
         setError('⚠️ Network/CORS issue detected - connection blocked by browser security - showing demo data.');
       } else if (err.message.includes('AbortError')) {
