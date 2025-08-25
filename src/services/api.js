@@ -1298,12 +1298,12 @@ export const testAPIConnection = async () => {
           `• Ensure API user has proper permissions`;
       }
 
-      console.error('❌ API Error Response:', {
-        status: response.status,
-        statusText: response.statusText,
-        errorBody: errorText.substring(0, 500),
-        diagnostics: diagnosticMessage
-      });
+      console.error('❌ API Error Response:');
+      console.error('  Status:', response.status, response.statusText);
+      console.error('  Error Body:', errorText.substring(0, 500));
+      if (diagnosticMessage) {
+        console.error('  Diagnostics:', diagnosticMessage);
+      }
 
       return {
         success: false,
@@ -1325,7 +1325,7 @@ export const testAPIConnection = async () => {
         console.warn('Could not clone/read debug response:', e.message);
         responseText = `Content-Type: ${contentType} - Could not read response body`;
       }
-      console.error('❌ Expected JSON but got:', contentType);
+      console.error('�� Expected JSON but got:', contentType);
       console.error('❌ Response preview:', responseText.substring(0, 300));
 
       return {
