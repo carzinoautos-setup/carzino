@@ -310,8 +310,8 @@ function App() {
       const vehicleData = vehicleResult;
 
       // Transform vehicle data to match existing component structure
-      const transformedVehicles = vehicleData.results.map(vehicle => ({
-        id: vehicle.id,
+      const transformedVehicles = vehicleData.results.map((vehicle, index) => ({
+        id: vehicle.id ? `vehicle-${vehicle.id}` : `api-vehicle-${index}`,
         featured: vehicle.featured || false,
         viewed: false, // This would come from user session data
         images: vehicle.images.gallery.length > 0 ? vehicle.images.gallery : [vehicle.images.featured],
