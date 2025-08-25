@@ -308,7 +308,7 @@ function App() {
           } else if (result.timeout) {
             setError('⚠️ WordPress site is slow to respond - showing demo data. This is normal for some hosting providers.');
           } else {
-            setError('⚠️ API connection issue - showing demo data. Using fallback inventory.');
+            setError('��️ API connection issue - showing demo data. Using fallback inventory.');
           }
         }
         } else {
@@ -620,6 +620,185 @@ function App() {
     
     return '(253) 555-0100'; // Default
   };
+
+  // Realistic demo vehicles that match your WordPress inventory structure
+  const getRealisticDemoVehicles = () => [
+    {
+      id: `demo-${Date.now()}-1`,
+      featured: true,
+      viewed: false,
+      images: ["https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop"],
+      badges: ["Featured", "In Stock"],
+      title: "2016 Hyundai Elantra SE",
+      mileage: "89,456",
+      transmission: "Auto",
+      doors: "4 doors",
+      salePrice: "$8,995",
+      payment: "$199",
+      dealer: "Carson Cars",
+      location: "Seattle, WA",
+      phone: "(253) 555-0100",
+      meta_data: [
+        { key: 'account_number_seller', value: '101' },
+        { key: 'acount_name_seller', value: 'Carson Cars' },
+        { key: 'city_seller', value: 'Seattle' },
+        { key: 'state_seller', value: 'WA' },
+        { key: 'zip_seller', value: '98101' }
+      ],
+      seller_data: {
+        account_name: 'Carson Cars',
+        account_number: '101',
+        business_name: 'Carson Cars',
+        city: 'Seattle',
+        state: 'WA',
+        zip: '98101',
+        phone: '(253) 555-0100'
+      },
+      attributes: [],
+      categories: [],
+      stock_status: 'instock'
+    },
+    {
+      id: `demo-${Date.now()}-2`,
+      featured: false,
+      viewed: true,
+      images: ["https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop"],
+      badges: ["Recently Viewed", "In Stock"],
+      title: "2020 Honda Civic Si",
+      mileage: "32,123",
+      transmission: "Manual",
+      doors: "4 doors",
+      salePrice: "$22,995",
+      payment: "$329",
+      dealer: "Del Sol Auto Sales",
+      location: "Everett, WA 98204",
+      phone: "(425) 555-0100",
+      meta_data: [
+        { key: 'account_number_seller', value: '73' },
+        { key: 'acount_name_seller', value: 'Del Sol Auto Sales' },
+        { key: 'city_seller', value: 'Everett' },
+        { key: 'state_seller', value: 'WA' },
+        { key: 'zip_seller', value: '98204' }
+      ],
+      seller_data: {
+        account_name: 'Del Sol Auto Sales',
+        account_number: '73',
+        business_name: 'Del Sol Auto Sales',
+        city: 'Everett',
+        state: 'WA',
+        zip: '98204',
+        phone: '(425) 555-0100'
+      },
+      attributes: [],
+      categories: [],
+      stock_status: 'instock'
+    },
+    {
+      id: `demo-${Date.now()}-3`,
+      featured: false,
+      viewed: false,
+      images: ["https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=450&h=300&fit=crop"],
+      badges: ["SUV", "In Stock"],
+      title: "2019 Ford F-150 XLT",
+      mileage: "65,432",
+      transmission: "Auto",
+      doors: "4 doors",
+      salePrice: "$31,995",
+      payment: "$449",
+      dealer: "Northwest Auto Group",
+      location: "Tacoma, WA 98402",
+      phone: "(253) 555-0200",
+      meta_data: [
+        { key: 'account_number_seller', value: '205' },
+        { key: 'acount_name_seller', value: 'Northwest Auto Group' },
+        { key: 'city_seller', value: 'Tacoma' },
+        { key: 'state_seller', value: 'WA' },
+        { key: 'zip_seller', value: '98402' }
+      ],
+      seller_data: {
+        account_name: 'Northwest Auto Group',
+        account_number: '205',
+        business_name: 'Northwest Auto Group',
+        city: 'Tacoma',
+        state: 'WA',
+        zip: '98402',
+        phone: '(253) 555-0200'
+      },
+      attributes: [],
+      categories: [],
+      stock_status: 'instock'
+    },
+    {
+      id: `demo-${Date.now()}-4`,
+      featured: true,
+      viewed: false,
+      images: ["https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=450&h=300&fit=crop"],
+      badges: ["Featured", "Electric"],
+      title: "2022 Tesla Model 3",
+      mileage: "18,567",
+      transmission: "Single Speed",
+      doors: "4 doors",
+      salePrice: "$39,995",
+      payment: "$549",
+      dealer: "Electric Auto Northwest",
+      location: "Bellevue, WA 98004",
+      phone: "(425) 555-0300",
+      meta_data: [
+        { key: 'account_number_seller', value: '312' },
+        { key: 'acount_name_seller', value: 'Electric Auto Northwest' },
+        { key: 'city_seller', value: 'Bellevue' },
+        { key: 'state_seller', value: 'WA' },
+        { key: 'zip_seller', value: '98004' }
+      ],
+      seller_data: {
+        account_name: 'Electric Auto Northwest',
+        account_number: '312',
+        business_name: 'Electric Auto Northwest',
+        city: 'Bellevue',
+        state: 'WA',
+        zip: '98004',
+        phone: '(425) 555-0300'
+      },
+      attributes: [],
+      categories: [],
+      stock_status: 'instock'
+    },
+    {
+      id: `demo-${Date.now()}-5`,
+      featured: false,
+      viewed: false,
+      images: ["https://images.unsplash.com/photo-1593941707882-a5bac6861d75?w=450&h=300&fit=crop"],
+      badges: ["Luxury", "In Stock"],
+      title: "2021 BMW 3 Series 330i",
+      mileage: "25,890",
+      transmission: "Auto",
+      doors: "4 doors",
+      salePrice: "$34,995",
+      payment: "$489",
+      dealer: "Premium Motors Seattle",
+      location: "Seattle, WA 98109",
+      phone: "(206) 555-0400",
+      meta_data: [
+        { key: 'account_number_seller', value: '445' },
+        { key: 'acount_name_seller', value: 'Premium Motors Seattle' },
+        { key: 'city_seller', value: 'Seattle' },
+        { key: 'state_seller', value: 'WA' },
+        { key: 'zip_seller', value: '98109' }
+      ],
+      seller_data: {
+        account_name: 'Premium Motors Seattle',
+        account_number: '445',
+        business_name: 'Premium Motors Seattle',
+        city: 'Seattle',
+        state: 'WA',
+        zip: '98109',
+        phone: '(206) 555-0400'
+      },
+      attributes: [],
+      categories: [],
+      stock_status: 'instock'
+    }
+  ];
 
   // Fallback sample data with unique IDs
   const getSampleVehicles = () => [
