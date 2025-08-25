@@ -947,7 +947,7 @@ export const fetchFilterOptions = async (currentFilters = {}) => {
     // Check if we should use fallback immediately
     if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
         WC_CONSUMER_KEY === 'missing' || WC_CONSUMER_SECRET === 'missing') {
-      console.warn('📊 Using fallback filter options (API credentials missing)');
+      console.warn('�� Using fallback filter options (API credentials missing)');
       return getFallbackFilterOptions();
     }
 
@@ -1195,6 +1195,14 @@ export const testAPIConnection = async () => {
   console.log('🔑 Using credentials:', {
     key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
+  });
+
+  // Additional debugging information
+  console.log('🌐 Environment details:', {
+    wpSiteUrl: process.env.REACT_APP_WP_SITE_URL,
+    apiBase: WC_API_BASE,
+    currentOrigin: window.location.origin,
+    userAgent: navigator.userAgent.substring(0, 50) + '...'
   });
 
   // First test basic connectivity
