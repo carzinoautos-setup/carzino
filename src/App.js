@@ -76,7 +76,17 @@ function App() {
     const testConnection = async () => {
       try {
         console.log('🔗 Starting API connection test...');
-        const result = await testAPIConnection();
+
+        // Add timeout to prevent hanging on startup
+        const timeoutPromise = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('API test timeout')), 10000)
+        );
+
+        const result = await Promise.race([
+          testAPIConnection(),
+          timeoutPromise
+        ]);
+
         console.log('📡 API Connection Test Result:', result);
 
         // Check if result exists and has expected properties
@@ -89,32 +99,29 @@ function App() {
             setApiConnected(false);
             console.error('❌ API Connection Failed:', result.message || 'Unknown error');
 
-            // Handle CORS errors more gracefully
+            // Handle CORS errors more gracefully - don't block the app
             if (result.message && result.message.includes('CORS Error')) {
-              const isProduction = window.location.hostname === 'carzinoautos-setup.github.io';
-
-              if (isProduction) {
-                // This is unexpected in production
-                setError('CORS Error: Production site cannot access WooCommerce API. Please check CORS configuration.');
-              } else {
-                // This is expected in dev environment
-                setError(null); // Don't show error in dev - it's expected
-                console.log('📝 Dev Environment: CORS error is expected. GitHub Pages will work fine.');
-              }
+              console.log('📝 CORS issue detected - app will use fallback data');
+              setError(null); // Don't show error - fallback will work
             } else {
-              setError(`API Connection Failed: ${result.message || 'Unknown API error'}`);
+              setError(`API Connection Issue: ${result.message || 'Using fallback data'}`);
             }
           }
         } else {
-          // Result is undefined or not an object
           console.error('❌ API test returned invalid result:', result);
           setApiConnected(false);
-          setError('API test failed - invalid response format');
+          setError(null); // Don't block app - use fallback
         }
       } catch (err) {
         console.error('❌ API Connection Error:', err);
         setApiConnected(false);
-        setError(`Connection Error: ${err.message || 'Unknown connection error'}`);
+
+        if (err.message === 'API test timeout') {
+          console.log('📝 API test timed out - app will use fallback data');
+          setError(null); // Don't show error for timeout
+        } else {
+          setError(null); // Don't block app - use fallback
+        }
       }
     };
 
