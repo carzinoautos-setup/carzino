@@ -535,7 +535,7 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     const queryParams = new URLSearchParams({
-      per_page: params.per_page || 12, // Reduced from 20 to 12 for faster loading
+      per_page: params.per_page || 8, // Further reduced for even faster loading
       page: params.page || 1,
       status: 'publish',
       ...params
