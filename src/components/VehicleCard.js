@@ -326,7 +326,8 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       console.log('⚠️ META: Seller data available but name field missing');
       const accountNumber = getSellerField('account_number_seller');
       if (accountNumber) {
-        return `Dealer Account #${accountNumber}`;
+        // Never show account number to users - use generic dealer name
+        return 'Contact Dealer';
       }
       return 'Dealer Information Missing';
     }
