@@ -6,26 +6,45 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [keeperMessage, setKeeperMessage] = useState(false);
   const [enhancedSellerData, setEnhancedSellerData] = useState(null);
 
-  // Log seller data availability for debugging
+  // Comprehensive seller data debugging
   useEffect(() => {
-    const metaData = vehicle.meta_data || [];
-    const accountField = metaData.find(m => m.key === 'account_number_seller');
+    console.log(`🔍 VEHICLE CARD DEBUG for: ${vehicle.title}`);
+    console.log(`  Vehicle ID: ${vehicle.id}`);
+    console.log(`  Has seller_data: ${!!vehicle.seller_data}`);
+    console.log(`  seller_data content:`, vehicle.seller_data);
+    console.log(`  Has meta_data: ${!!vehicle.meta_data}`);
+    console.log(`  meta_data length: ${vehicle.meta_data?.length || 0}`);
 
-    if (accountField && accountField.value === '73') {
-      console.log('🔍 Account 73 vehicle seller_data check:', {
-        hasSellerData: !!vehicle.seller_data,
-        sellerData: vehicle.seller_data,
-        accountNumber: accountField.value
-      });
+    if (vehicle.meta_data && vehicle.meta_data.length > 0) {
+      const sellerFields = vehicle.meta_data.filter(m => m.key && m.key.includes('seller'));
+      const accountFields = vehicle.meta_data.filter(m => m.key && m.key.includes('account'));
 
-      if (vehicle.seller_data) {
-        console.log('✅ SUCCESS: seller_data found in API response!');
-        setEnhancedSellerData(vehicle.seller_data);
-      } else {
-        console.log('❌ seller_data still missing from WordPress API');
-      }
+      console.log(`  Seller meta fields (${sellerFields.length}):`, sellerFields);
+      console.log(`  Account meta fields (${accountFields.length}):`, accountFields);
+
+      // Check for specific fields we need
+      const nameField = vehicle.meta_data.find(m => m.key === 'acount_name_seller' || m.key === 'account_name_seller');
+      const cityField = vehicle.meta_data.find(m => m.key === 'city_seller');
+      const stateField = vehicle.meta_data.find(m => m.key === 'state_seller');
+      const zipField = vehicle.meta_data.find(m => m.key === 'zip_seller');
+
+      console.log(`  Key seller fields found:`);
+      console.log(`    Name field:`, nameField);
+      console.log(`    City field:`, cityField);
+      console.log(`    State field:`, stateField);
+      console.log(`    Zip field:`, zipField);
     }
-  }, [vehicle.seller_data, vehicle.meta_data]);
+
+    // If we have seller_data, enhance with it
+    if (vehicle.seller_data) {
+      console.log('✅ Setting enhanced seller data from API response');
+      setEnhancedSellerData(vehicle.seller_data);
+    } else {
+      console.log('❌ No seller_data field in vehicle object');
+    }
+
+    console.log(`  ---`);
+  }, [vehicle.seller_data, vehicle.meta_data, vehicle.title, vehicle.id]);
 
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
