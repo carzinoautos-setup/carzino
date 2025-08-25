@@ -542,6 +542,9 @@ const VehicleSearchFilter = ({
             {(() => {
               const filterPills = [];
 
+              console.log('🔍 Applied Filters Debug - Full filters object:', filters);
+              console.log('🔍 Filters type check:', typeof filters, Array.isArray(filters));
+
               // Define default values that shouldn't show as applied filters
               const defaultValues = {
                 zipCode: '98498',
