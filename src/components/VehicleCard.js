@@ -6,16 +6,20 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [keeperMessage, setKeeperMessage] = useState(false);
   const [enhancedSellerData, setEnhancedSellerData] = useState(null);
 
-  // Comprehensive seller data debugging
+  // AGGRESSIVE seller data debugging
   useEffect(() => {
-    console.log(`🔍 VEHICLE CARD DEBUG for: ${vehicle.title}`);
+    console.log(`🔥 AGGRESSIVE DEBUG for: ${vehicle.title}`);
     console.log(`  Vehicle ID: ${vehicle.id}`);
+    console.log(`  Raw vehicle object:`, vehicle);
     console.log(`  Has seller_data: ${!!vehicle.seller_data}`);
     console.log(`  seller_data content:`, vehicle.seller_data);
     console.log(`  Has meta_data: ${!!vehicle.meta_data}`);
     console.log(`  meta_data length: ${vehicle.meta_data?.length || 0}`);
 
+    // Show ALL meta_data fields
     if (vehicle.meta_data && vehicle.meta_data.length > 0) {
+      console.log(`  ALL META DATA:`, vehicle.meta_data);
+
       const sellerFields = vehicle.meta_data.filter(m => m.key && m.key.includes('seller'));
       const accountFields = vehicle.meta_data.filter(m => m.key && m.key.includes('account'));
 
@@ -28,11 +32,18 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       const stateField = vehicle.meta_data.find(m => m.key === 'state_seller');
       const zipField = vehicle.meta_data.find(m => m.key === 'zip_seller');
 
-      console.log(`  Key seller fields found:`);
+      console.log(`  🎯 KEY SELLER FIELDS:`);
       console.log(`    Name field:`, nameField);
       console.log(`    City field:`, cityField);
       console.log(`    State field:`, stateField);
       console.log(`    Zip field:`, zipField);
+
+      // Test the getSellerField function
+      console.log(`  🧪 TESTING getSellerField():`);
+      console.log(`    getSellerField('acount_name_seller'):`, getSellerField('acount_name_seller'));
+      console.log(`    getSellerField('city_seller'):`, getSellerField('city_seller'));
+      console.log(`    getSellerField('state_seller'):`, getSellerField('state_seller'));
+      console.log(`    getSellerField('zip_seller'):`, getSellerField('zip_seller'));
     }
 
     // If we have seller_data, enhance with it
@@ -42,6 +53,11 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     } else {
       console.log('❌ No seller_data field in vehicle object');
     }
+
+    // Test the final display functions
+    console.log(`  🎭 FINAL DISPLAY VALUES:`);
+    console.log(`    getSellerName():`, getSellerName());
+    console.log(`    getSellerLocation():`, getSellerLocation());
 
     console.log(`  ---`);
   }, [vehicle.seller_data, vehicle.meta_data, vehicle.title, vehicle.id]);
