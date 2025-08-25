@@ -255,6 +255,10 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerPhone = () => {
+    // Try seller_data first
+    if (vehicle.seller_data && vehicle.seller_data.phone) {
+      return vehicle.seller_data.phone;
+    }
     return getSellerField('phone_number_seller') || vehicle.phone || '(253) 555-0100';
   };
 
