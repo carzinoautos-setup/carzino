@@ -351,6 +351,30 @@ const VehicleSearchFilter = ({
   const displayedMakes = showMoreMakes ? allMakes : allMakes.slice(0, 8);
   const displayedModels = showMoreModels ? allModels : allModels.slice(0, 8);
 
+  // Helper function to get color hex values
+  const getColorHex = useCallback((colorName) => {
+    const colorMap = {
+      'white': '#FFFFFF',
+      'black': '#000000',
+      'gray': '#808080',
+      'grey': '#808080',
+      'silver': '#C0C0C0',
+      'blue': '#0066CC',
+      'red': '#CC0000',
+      'green': '#008000',
+      'yellow': '#FFFF00',
+      'orange': '#FFA500',
+      'purple': '#800080',
+      'brown': '#8B4513',
+      'beige': '#F5F5DC',
+      'tan': '#D2B48C',
+      'gold': '#FFD700',
+      'maroon': '#800000',
+      'navy': '#000080'
+    };
+    return colorMap[colorName.toLowerCase()] || '#666666';
+  }, []);
+
   // Get filter counts
   const getFilterCount = useCallback((category) => {
     // Define default values that shouldn't count as applied filters
