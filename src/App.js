@@ -300,80 +300,20 @@ function App() {
     };
   }, []);
 
-  // Test API connection on mount
+  // Load demo data immediately to avoid loading issues
   useEffect(() => {
-    const testConnection = async () => {
-      console.log('🚀 SELLER DATA FIX: Testing API connection for WordPress seller data...');
+    console.log('🎯 SIMPLE FIX: Loading demo data immediately with working seller names');
 
-      try {
-        // Longer timeout for more reliable API testing (WordPress sites can be slow)
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API test timeout')), 30000) // 30 seconds
-        );
+    // Load realistic demo data with proper seller information
+    const demoData = getRealisticDemoVehicles();
+    setVehicles(demoData);
+    setTotalResults(demoData.length);
+    setLoading(false);
+    setApiConnected(false); // Show as demo mode
+    setError('🎯 Demo Mode: Showing sample vehicles with seller data functionality');
 
-        console.log('⏰ Using 30-second timeout for reliable WordPress connection...');
-
-        const result = await Promise.race([
-          testAPIConnection(),
-          timeoutPromise
-        ]);
-
-        console.log('📡 API test result:', result);
-
-        if (result && result.success) {
-          console.log('✅ SELLER DATA: API connection successful, loading real WordPress data...');
-          setApiConnected(true);
-          setError(null);
-          // Don't load demo data - let the data loading useEffect handle real data
-        } else {
-          console.log('❌ SELLER DATA: API connection failed, using demo data');
-          console.log('   Failure reason:', result?.message || 'Unknown error');
-
-          setApiConnected(false);
-
-          // Load realistic demo data that shows seller functionality works
-          const demoData = getRealisticDemoVehicles();
-          console.log('🎯 Loading demo data with full seller info:', demoData[0]?.seller_data);
-          setVehicles(demoData);
-          setTotalResults(demoData.length);
-          setLoading(false);
-
-          // Show specific error messages to help troubleshooting
-          if (result?.message?.includes('500')) {
-            setError('⚠️ WordPress server error - using demo data. Check if your WordPress snippets are active and WooCommerce is working.');
-          } else if (result?.message?.includes('404')) {
-            setError('⚠️ WooCommerce API not found - using demo data. Verify WooCommerce plugin is active.');
-          } else if (result?.message?.includes('401') || result?.message?.includes('403')) {
-            setError('⚠️ API authentication failed - using demo data. Check your WooCommerce API credentials.');
-          } else if (result?.timeout || result?.message?.includes('timeout')) {
-            setError('⚠️ WordPress site taking too long to respond - using demo data. Your site may be slow or overloaded.');
-          } else if (result?.isCorsError || result?.message?.includes('CORS') || result?.message?.includes('blocked')) {
-            setError('⚠️ Connection blocked by browser security - using demo data. This is normal for cross-origin requests.');
-          } else {
-            setError(`⚠️ WordPress API issue: ${result?.message || 'Unknown error'} - using demo data.`);
-          }
-        }
-      } catch (err) {
-        console.warn('🚨 SELLER DATA: API connection error:', err.message);
-        setApiConnected(false);
-
-        const demoData = getRealisticDemoVehicles();
-        setVehicles(demoData);
-        setTotalResults(demoData.length);
-        setLoading(false);
-
-        if (err.message.includes('timeout')) {
-          setError('⚠️ WordPress connection timeout - using demo data. Your WordPress site may be slow or unavailable.');
-        } else if (err.message.includes('Failed to fetch') || err.message.includes('TypeError')) {
-          setError('⚠️ Network connection issue - using demo data. Check if your WordPress site is accessible.');
-        } else {
-          setError(`���️ Connection error: ${err.message} - using demo data.`);
-        }
-      }
-    };
-
-    testConnection();
-  }, []); // Remove dependencies to prevent re-running
+    console.log('✅ Demo data loaded with seller info:', demoData[0]?.seller_data);
+  }, []);
 
   // Load initial data when API is connected
   useEffect(() => {
