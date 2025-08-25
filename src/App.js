@@ -309,11 +309,6 @@ function App() {
       // Use the fetched vehicle data directly
       const vehicleData = vehicleResult;
 
-      if (filterResult.status === 'rejected') {
-        console.warn('Filter data failed, using fallback:', filterResult.reason.message);
-        // Don't show error for filter failure, just log it
-      }
-
       // Transform vehicle data to match existing component structure
       const transformedVehicles = vehicleData.results.map(vehicle => ({
         id: vehicle.id,
