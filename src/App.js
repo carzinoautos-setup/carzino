@@ -640,6 +640,10 @@ function App() {
       });
     }
 
+    if (originalCount !== filtered.length) {
+      console.log(`✅ Final filtering result: ${originalCount} → ${filtered.length} vehicles`);
+    }
+
     return filtered;
   };
 
