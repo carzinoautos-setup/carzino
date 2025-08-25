@@ -581,7 +581,10 @@ const VehicleSearchFilter = ({
                   return;
                 }
 
-                if (Array.isArray(value) && value.length > 0) {
+                // Force check if value is actually an array (sometimes React state can be tricky)
+                const isReallyArray = Array.isArray(value) || (value && typeof value === 'object' && value.length !== undefined);
+
+                if (isReallyArray && value.length > 0) {
                   console.log(`✅ Processing array filter ${category} with items:`, value);
                   value.forEach((item, index) => {
                     console.log(`  - Item ${index}: "${item}" (type: ${typeof item})`);
@@ -600,8 +603,8 @@ const VehicleSearchFilter = ({
                       );
                     }
                   });
-                } else if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[category] || '')) {
-                  console.log(`❌ Processing non-array filter ${category}:`, value, 'toString:', value.toString());
+                } else if (value && typeof value === 'string' && value.trim() !== '' && value !== (defaultValues[category] || '')) {
+                  console.log(`❌ Processing string filter ${category}:`, value);
                   console.log(`🎯 ADDING FILTER PILL: ${category} = "${value}"`);
                   filterPills.push(
                     <span key={category} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
@@ -614,6 +617,8 @@ const VehicleSearchFilter = ({
                       </button>
                     </span>
                   );
+                } else {
+                  console.log(`⚠️ SKIPPED filter ${category}:`, value, 'Type:', typeof value, 'IsArray:', Array.isArray(value));
                 }
               });
 
