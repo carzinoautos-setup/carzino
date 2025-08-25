@@ -274,7 +274,7 @@ function App() {
     const testConnection = async () => {
 
       try {
-        // Test API connection with reasonable timeout for local development
+        // Test API connection with reasonable timeout
         const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('API test timeout')), 10000)
         );
@@ -289,55 +289,62 @@ function App() {
           if (result.success) {
             setApiConnected(true);
             setError(null); // Clear any previous errors
+            console.log('✅ API connection successful');
           } else {
-          setApiConnected(false);
+            // API failed but returned a structured result
+            setApiConnected(false);
 
-          // Handle different types of API failures with specific messaging
-          if (result.message && result.message.includes('500')) {
-            setError('⚠️ WordPress server error detected - showing demo data. Please check your WordPress site configuration.');
-          } else if (result.message && result.message.includes('404')) {
-            setError('⚠️ WooCommerce API not found - showing demo data. Please verify WooCommerce plugin is active.');
-          } else if ((result.message && result.message.includes('401')) || (result.message && result.message.includes('403'))) {
-            setError('⚠️ API authentication failed - showing demo data. Please check your WooCommerce API credentials.');
-          } else if (result.message && (result.message.includes('CORS Error') || result.message.includes('Network connection'))) {
-            setError('⚠️ Network/CORS issue - connection blocked by browser security - showing demo data.');
-          } else if (result.timeout) {
-            setError('⚠️ WordPress site is slow to respond - showing demo data. This is normal for some hosting providers.');
-          } else {
-            setError('⚠️ API connection issue - showing demo data. Using fallback inventory.');
+            // Immediately load demo data for any API failure
+            const demoData = getRealisticDemoVehicles();
+            setVehicles(demoData);
+            setTotalResults(demoData.length);
+            setLoading(false);
+
+            // Show appropriate message based on error type
+            if (result.message && result.message.includes('500')) {
+              setError('⚠️ WordPress server error - using demo data. Check WordPress configuration.');
+            } else if (result.message && result.message.includes('404')) {
+              setError('⚠️ WooCommerce API not found - using demo data. Verify WooCommerce plugin is active.');
+            } else if (result.message && (result.message.includes('401') || result.message.includes('403'))) {
+              setError('⚠️ API authentication failed - using demo data. Check API credentials.');
+            } else if (result.isCorsError || result.message.includes('Network connection')) {
+              // Don't show scary error for CORS - this is expected on deployments
+              setError('⚠️ Using demo data - WordPress API may have CORS restrictions.');
+            } else if (result.timeout) {
+              setError('⚠️ WordPress site slow to respond - using demo data.');
+            } else {
+              setError('⚠️ Using demo data - WordPress API connection issue.');
+            }
           }
-        }
         } else {
+          // No result returned
           setApiConnected(false);
-          setError('⚠️ API connection failed - showing demo data. Check WordPress site configuration.');
-          // Immediately load fallback data
           const fallbackData = getSampleVehicles();
           setVehicles(fallbackData);
           setTotalResults(fallbackData.length);
           setLoading(false);
+          setError('⚠️ Using demo data - API connection failed.');
         }
       } catch (err) {
-        console.error('🚨 DETAILED API ERROR:');
-        console.error('  Error message:', err.message);
-        console.error('  Error name:', err.name);
-        console.error('  Error stack:', err.stack);
-
+        // Catch any errors thrown by the API test itself
+        console.warn('🚨 API connection error:', err.message);
         setApiConnected(false);
 
-        // Provide specific error message based on error type
-        if (err.message.includes('Failed to fetch') || err.message.includes('Network connection')) {
-          setError('⚠️ Network/CORS issue - connection blocked by browser security - showing demo data.');
-        } else if (err.message.includes('timed out')) {
-          setError('⚠️ Connection timeout - WordPress site slow to respond - showing demo data.');
-        } else {
-          setError(`⚠️ API connection failed: ${err.message} - showing demo data.`);
-        }
-
-        // Immediately load fallback data
-        const fallbackData = getSampleVehicles();
-        setVehicles(fallbackData);
-        setTotalResults(fallbackData.length);
+        // Immediately load demo data instead of showing error
+        const demoData = getRealisticDemoVehicles();
+        setVehicles(demoData);
+        setTotalResults(demoData.length);
         setLoading(false);
+
+        // Show user-friendly message based on error type
+        if (err.message.includes('Failed to fetch') || err.message.includes('TypeError')) {
+          // CORS/network issue - common on deployments
+          setError('⚠️ Using demo data - connection blocked by browser security policies.');
+        } else if (err.message.includes('timed out') || err.message.includes('timeout')) {
+          setError('⚠️ Using demo data - WordPress site taking too long to respond.');
+        } else {
+          setError('⚠️ Using demo data - WordPress API unavailable.');
+        }
       }
     };
 
