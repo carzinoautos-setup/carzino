@@ -572,8 +572,16 @@ export const fetchVehicles = async (params = {}) => {
     console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
     console.log('📡 Response status:', response.status);
 
+    // Clone response for multiple reads if needed
+    const responseClone = response.clone();
+
     if (!response.ok) {
-      const errorText = await response.text();
+      let errorText = '';
+      try {
+        errorText = await responseClone.text();
+      } catch (e) {
+        errorText = 'Could not read error response';
+      }
       console.error('❌ API Response Error:', {
         status: response.status,
         statusText: response.statusText,
@@ -588,7 +596,12 @@ export const fetchVehicles = async (params = {}) => {
     // Check if response is actually JSON
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
-      const responseText = await response.text();
+      let responseText = '';
+      try {
+        responseText = await responseClone.text();
+      } catch (e) {
+        responseText = 'Could not read response';
+      }
       console.error('❌ Expected JSON but got:', contentType);
       console.error('❌ Response text:', responseText.substring(0, 300));
 
@@ -602,7 +615,14 @@ export const fetchVehicles = async (params = {}) => {
       return getFallbackVehicles();
     }
 
-    const products = await response.json();
+    let products;
+    try {
+      products = await response.json();
+    } catch (e) {
+      console.error('❌ Failed to parse JSON response:', e);
+      console.warn('🚨 JSON parsing error, using fallback data');
+      return getFallbackVehicles();
+    }
     console.log(`✅ Successfully fetched ${products.length} vehicles from WooCommerce API`);
 
     const result = {
