@@ -117,7 +117,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     const hasMetaData = vehicle.meta_data && vehicle.meta_data.some(m => m.key.includes('seller'));
 
     // Debug: Log the vehicle data structure for first vehicle
-    if (vehicle.id === 'fallback-1' || vehicle.title.includes('Toyota RAV4') || vehicle.title.includes('Chevrolet Trax')) {
+    if (vehicle.id === 'fallback-1' || vehicle.id.toString().startsWith('fallback-') || vehicle.title.includes('Toyota RAV4') || vehicle.title.includes('Chevrolet Trax')) {
       console.log('🔍 DEBUGGING VEHICLE DATA STRUCTURE:');
       console.log('Vehicle ID:', vehicle.id);
       console.log('Vehicle Title:', vehicle.title);
@@ -225,7 +225,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     }
 
     // If we have seller data but no location fields
-    console.log('⚠️ Seller data available but location fields missing for:', vehicle.title);
+    console.log('���️ Seller data available but location fields missing for:', vehicle.title);
     return 'Location Missing';
   };
 
