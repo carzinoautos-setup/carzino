@@ -715,7 +715,7 @@ const VehicleSearchFilter = ({
         {/* Model */}
         {filters.make?.length > 0 && (
           <FilterSection
-            title="Model"
+            title={`Model${hasActiveFilters ? ' (select multiple)' : ''}`}
             isCollapsed={collapsedFilters.model}
             onToggle={() => toggleFilter('model')}
             count={getFilterCount('model')}
