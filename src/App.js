@@ -307,62 +307,74 @@ function App() {
       setLoading(true);
 
       try {
-        // Quick 5-second test
-        const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('CORS_BLOCKED')), 5000)
-        );
+        console.log('🔗 Testing WordPress API connection...');
 
-        const result = await Promise.race([
-          testAPIConnection(),
-          timeoutPromise
-        ]);
+        // Direct API test with simple fetch
+        const testUrl = `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/products?per_page=3&consumer_key=${process.env.REACT_APP_WC_CONSUMER_KEY}&consumer_secret=${process.env.REACT_APP_WC_CONSUMER_SECRET}`;
 
-        if (result && result.success) {
-          console.log('✅ API CONNECTED! Loading your vehicles...');
-          setApiConnected(true);
-
-          // Load actual vehicle data
-          const vehicleData = await fetchVehicles({ per_page: 12 });
-
-          if (vehicleData && vehicleData.results) {
-            // Transform data for React
-            const transformedVehicles = vehicleData.results.map((vehicle, index) => ({
-              id: vehicle.id || `vehicle-${index}`,
-              featured: vehicle.featured || false,
-              viewed: false,
-              images: vehicle.images.gallery.length > 0 ? vehicle.images.gallery : [vehicle.images.featured],
-              badges: [],
-              title: vehicle.title,
-              mileage: "Contact Dealer",
-              transmission: "Auto",
-              doors: "4 doors",
-              salePrice: vehicle.price ? `$${parseFloat(vehicle.price).toLocaleString()}` : 'Call for Price',
-              payment: vehicle.price ? `$${Math.round(parseFloat(vehicle.price) * 0.02)}` : 'Call',
-              dealer: vehicle.seller_data?.account_name || 'Carzino Auto Sales',
-              location: vehicle.seller_data ? `${vehicle.seller_data.city || 'Seattle'}, ${vehicle.seller_data.state || 'WA'}` : 'Seattle, WA',
-              phone: vehicle.seller_data?.phone || '(253) 555-0100',
-              seller_data: vehicle.seller_data,
-              meta_data: vehicle.meta_data || [],
-              rawData: vehicle
-            }));
-
-            setVehicles(transformedVehicles);
-            setTotalResults(vehicleData.total);
-            setLoading(false);
-            setError(null);
-
-            console.log('✅ VEHICLES LOADED WITH SELLER DATA:', transformedVehicles[0]);
+        const response = await fetch(testUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json'
           }
-        } else {
-          throw new Error('API test failed');
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
+
+        const vehicles = await response.json();
+        console.log('✅ API CONNECTED! Received vehicles:', vehicles.length);
+
+        // Look for vehicles with seller_data (from your WordPress snippet)
+        const vehiclesWithSeller = vehicles.filter(v => v.seller_data);
+        console.log(`🎯 Found ${vehiclesWithSeller.length} vehicles with seller_data`);
+
+        if (vehiclesWithSeller.length > 0) {
+          console.log('✅ SELLER DATA WORKING:', vehiclesWithSeller[0].seller_data);
+        }
+
+        // Transform data for React
+        const transformedVehicles = vehicles.map((vehicle, index) => ({
+          id: vehicle.id || `vehicle-${index}`,
+          featured: vehicle.featured || false,
+          viewed: false,
+          images: vehicle.images?.length > 0 ? vehicle.images.map(img => img.src) : ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop'],
+          badges: [],
+          title: vehicle.name,
+          mileage: "Contact Dealer",
+          transmission: "Auto",
+          doors: "4 doors",
+          salePrice: vehicle.price ? `$${parseFloat(vehicle.price).toLocaleString()}` : 'Call for Price',
+          payment: vehicle.price ? `$${Math.round(parseFloat(vehicle.price) * 0.02)}` : 'Call',
+          dealer: vehicle.seller_data?.account_name || 'Carzino Auto Sales',
+          location: vehicle.seller_data ? `${vehicle.seller_data.city || 'Seattle'}, ${vehicle.seller_data.state || 'WA'}` : 'Seattle, WA',
+          phone: vehicle.seller_data?.phone || '(253) 555-0100',
+          seller_data: vehicle.seller_data,
+          meta_data: vehicle.meta_data || [],
+          rawData: vehicle
+        }));
+
+        setVehicles(transformedVehicles);
+        setTotalResults(vehicles.length);
+        setLoading(false);
+        setApiConnected(true);
+        setError(null);
+
+        console.log('✅ REAL WORDPRESS VEHICLES LOADED!');
+
       } catch (error) {
-        console.error('❌ BLOCKED BY CORS - SHOWING SOLUTION');
+        console.error('❌ API CONNECTION FAILED:', error.message);
         setApiConnected(false);
         setLoading(false);
-        setError(`🔧 CORS BLOCKED: Add wordpress-cors-fix.php to WordPress via WPCode to connect to your real data. Using demo for now.`);
 
-        // Load demo data so app works
+        if (error.message.includes('Failed to fetch') || error.message.includes('CORS')) {
+          setError(`🔧 STEP 1: Add "wordpress-cors-headers.php" to WordPress via WPCode plugin, then refresh this page.`);
+        } else {
+          setError(`❌ WordPress API Error: ${error.message}`);
+        }
+
+        // Load demo data so app works while fixing CORS
         const demoData = getRealisticDemoVehicles();
         setVehicles(demoData);
         setTotalResults(demoData.length);
