@@ -274,20 +274,9 @@ function App() {
         return;
       }
 
-      // Check if we have meaningful filter selections to cascade
-      const hasActiveFilters = Object.entries(filters).some(([key, value]) => {
-        if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
-          return false; // Skip configuration fields
-        }
-        return Array.isArray(value) ? value.length > 0 : (value && value.toString().trim() !== '');
-      });
-
-      if (!hasActiveFilters) {
-        console.log('📋 No active filters, skipping filter options update');
-        return;
-      }
-
-      console.log('🔗 Updating filter options based on current selections');
+      // Always update filter options for cascading, even if no filters are active
+      // This ensures base options are shown when no filters are selected
+      console.log('🔗 Updating ALL filter options for conditional filtering based on:', filters);
 
       // Add timeout to prevent hanging
       const timeoutPromise = new Promise((_, reject) =>
@@ -301,10 +290,18 @@ function App() {
 
       setFilterOptions(filterData);
 
-      console.log('✅ Filter options updated for cascading behavior:', {
+      console.log('✅ ALL filter options updated for conditional behavior:', {
         makes: filterData.makes?.length || 0,
         models: filterData.models?.length || 0,
-        availableOptions: Object.keys(filterData).filter(key => filterData[key]?.length > 0).join(', ')
+        conditions: filterData.conditions?.length || 0,
+        vehicleTypes: filterData.bodyTypes?.length || 0,
+        driveTypes: filterData.drivetrains?.length || 0,
+        years: filterData.years?.length || 0,
+        transmissions: filterData.transmissions?.length || 0,
+        exteriorColors: filterData.exteriorColors?.length || 0,
+        interiorColors: filterData.interiorColors?.length || 0,
+        fuelTypes: filterData.fuelTypes?.length || 0,
+        trims: filterData.trims?.length || 0
       });
     } catch (err) {
       console.warn('⚠️ Filter options update failed, keeping existing options:', err.message);
