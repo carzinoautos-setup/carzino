@@ -465,10 +465,10 @@ function App() {
       setLoading(true);
       setError(null); // Clear any previous errors
 
-      // Load more vehicles from your inventory
+      // Load ALL vehicles from your inventory
       const vehicleParams = {
         page: 1,
-        per_page: 25, // Load 25 vehicles at a time (can increase gradually)
+        per_page: 200, // Load all 200 vehicles
         // Add filter parameters here when implementing search
       };
 
