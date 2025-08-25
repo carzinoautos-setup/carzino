@@ -232,10 +232,10 @@ const VehicleSearchFilter = ({
   const handleFilterChange = useCallback((category, value, checked) => {
     const currentValues = filters[category] || [];
     
-    if (category === 'condition' || category === 'make' || category === 'model' || category === 'trim' || 
-        category === 'vehicleType' || category === 'bodyType' || category === 'driveType' || category === 'exteriorColor' || 
-        category === 'interiorColor' || category === 'sellerType' || category === 'dealer' || category === 'state' || category === 'city' || 
-        category === 'zipCodeFilter') {
+    if (category === 'condition' || category === 'make' || category === 'model' || category === 'trim' ||
+        category === 'vehicleType' || category === 'bodyType' || category === 'driveType' || category === 'exteriorColor' ||
+        category === 'interiorColor' || category === 'sellerType' || category === 'dealer' || category === 'state' || category === 'city' ||
+        category === 'zipCodeFilter' || category === 'transmissionSpeed' || category === 'transmission' || category === 'year' || category === 'fuelType') {
       // Array-based filters
       let newValues;
       if (checked) {
