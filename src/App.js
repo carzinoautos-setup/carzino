@@ -306,28 +306,8 @@ function App() {
         filterData = { makes: [], models: [], conditions: [], bodyTypes: [], total: 0 };
       }
 
-      // Handle vehicle data result
-      const vehicleData = vehicleResult.status === 'fulfilled'
-        ? vehicleResult.value
-        : { results: [], total: 0, totalPages: 1 };
-
-      // Handle filter data result
-      const filterData = filterResult.status === 'fulfilled'
-        ? filterResult.value
-        : { makes: [], models: [], conditions: [], bodyTypes: [], total: 0 };
-
-      if (vehicleResult.status === 'rejected') {
-        console.warn('Vehicle data failed, using fallback:', vehicleResult.reason.message);
-        console.log('📊 Vehicle data after failure:', {
-          hasResults: !!vehicleData.results,
-          resultsLength: vehicleData.results?.length || 0,
-          total: vehicleData.total
-        });
-        // Don't show error if we have fallback data working
-        if (!vehicleData.results || vehicleData.results.length === 0) {
-          setError('Failed to load vehicle data');
-        }
-      }
+      // Use the fetched vehicle data directly
+      const vehicleData = vehicleResult;
 
       if (filterResult.status === 'rejected') {
         console.warn('Filter data failed, using fallback:', filterResult.reason.message);
@@ -1011,7 +991,7 @@ function App() {
   console.log(`📄 Pagination: Page ${currentPage}, showing vehicles ${startIndex + 1}-${Math.min(endIndex, actualTotalResults)} of ${actualTotalResults} total (${filteredTotalPages} pages)`);
   console.log(`🚗 Total vehicles loaded: ${vehicles.length}`);
   console.log(`���� All filtered vehicles count: ${allFilteredVehicles.length}`);
-  console.log(`📄 Current vehicles to display: ${currentVehicles.length}`);
+  console.log(`��� Current vehicles to display: ${currentVehicles.length}`);
   console.log(`🎯 Current filters:`, filters);
 
   // Debug: Show first few filtered vehicles
@@ -1087,7 +1067,7 @@ function App() {
             margin: '0.5rem 0',
             fontSize: '0.9rem'
           }}>
-            ⚠️ {error}
+            ���️ {error}
           </div>
         )}
       </header>
