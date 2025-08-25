@@ -251,6 +251,10 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerType = () => {
+    // Try seller_data first
+    if (vehicle.seller_data && vehicle.seller_data.account_type) {
+      return vehicle.seller_data.account_type;
+    }
     return getSellerField('account_type_seller') || 'Dealer';
   };
 
