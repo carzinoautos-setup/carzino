@@ -709,19 +709,8 @@ function App() {
 
       filtered = filtered.filter(vehicle => {
         const vehicleModel = extractModelFromVehicle(vehicle);
-        const matches = vehicleModel && filters.model.includes(vehicleModel);
-
-        console.log(`🚗 Vehicle: ${vehicle.title} - Model: "${vehicleModel}" - Matches: ${matches}`);
-
-        if (!matches && vehicleModel) {
-          console.log(`🚫 Filtering out ${vehicle.title} - Model: "${vehicleModel}" not in [${filters.model.join('", "')}]`);
-        } else if (matches) {
-          console.log(`✅ Keeping ${vehicle.title} - Model: "${vehicleModel}" matches filter`);
-        }
-
-        return matches;
+        return vehicleModel && filters.model.includes(vehicleModel);
       });
-      console.log(`🔍 Model filter applied: ${beforeModelFilter} → ${filtered.length} vehicles (filtered by: [${filters.model.join(', ')}])`);
     }
 
     // Apply condition filter
