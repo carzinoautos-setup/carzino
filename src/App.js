@@ -198,7 +198,7 @@ function App() {
 
         // Add timeout to prevent hanging on startup
         const timeoutPromise = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('API test timeout')), 10000)
+          setTimeout(() => reject(new Error('API test timeout')), 20000)
         );
 
         const result = await Promise.race([
@@ -212,7 +212,7 @@ function App() {
         if (result && typeof result === 'object') {
           if (result.success) {
             setApiConnected(true);
-            console.log(`�� Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
+            console.log(`✅ Connected to WooCommerce API. Found ${result.productCount || 'unknown'} products.`);
             setError(null); // Clear any previous errors
           } else {
           setApiConnected(false);
