@@ -373,7 +373,7 @@ function App() {
       setTotalPages(Math.ceil(vehicleData.total / resultsPerPage));
       
       console.log(`📊 Loaded ${transformedVehicles.length} vehicles from WooCommerce API`);
-      console.log('🏷�� Filter options:', filterData);
+      console.log('🏷️ Filter options:', filterData);
       
     } catch (err) {
       console.error('Error loading data:', err);
@@ -863,11 +863,37 @@ function App() {
 
     // Try extracting from title as fallback
     const title = vehicle.title || '';
-    if (title.toLowerCase().includes('tacoma')) model = 'Tacoma';
-    else if (title.toLowerCase().includes('4runner')) model = '4Runner';
-    else if (title.toLowerCase().includes('rav4')) model = 'RAV4 Hybrid';
-    else if (title.toLowerCase().includes('camry')) model = 'Camry';
-    else if (title.toLowerCase().includes('corolla')) model = 'Corolla';
+    const lowerTitle = title.toLowerCase();
+
+    // Toyota models
+    if (lowerTitle.includes('tacoma')) model = 'Tacoma';
+    else if (lowerTitle.includes('4runner') || lowerTitle.includes('4-runner')) model = '4Runner';
+    else if (lowerTitle.includes('rav4') && lowerTitle.includes('hybrid')) model = 'RAV4 Hybrid';
+    else if (lowerTitle.includes('rav4')) model = 'RAV4';
+    else if (lowerTitle.includes('camry')) model = 'Camry';
+    else if (lowerTitle.includes('corolla')) model = 'Corolla';
+    else if (lowerTitle.includes('prius')) model = 'Prius';
+    else if (lowerTitle.includes('highlander')) model = 'Highlander';
+    else if (lowerTitle.includes('sienna')) model = 'Sienna';
+
+    // Ford models
+    else if (lowerTitle.includes('f-150') || lowerTitle.includes('f150')) model = 'F-150';
+    else if (lowerTitle.includes('mustang')) model = 'Mustang';
+    else if (lowerTitle.includes('explorer')) model = 'Explorer';
+    else if (lowerTitle.includes('focus')) model = 'Focus Electric';
+    else if (lowerTitle.includes('edge')) model = 'Edge';
+    else if (lowerTitle.includes('escape')) model = 'Escape';
+
+    // Jeep models
+    else if (lowerTitle.includes('wrangler')) model = 'Wrangler';
+    else if (lowerTitle.includes('grand cherokee')) model = 'Grand Cherokee';
+    else if (lowerTitle.includes('cherokee')) model = 'Cherokee';
+
+    // Honda models
+    else if (lowerTitle.includes('civic')) model = 'Civic';
+    else if (lowerTitle.includes('accord')) model = 'Accord';
+    else if (lowerTitle.includes('cr-v') || lowerTitle.includes('crv')) model = 'CR-V';
+    else if (lowerTitle.includes('pilot')) model = 'Pilot';
 
     if (model) {
       console.log(`📊 Extracted model from title: "${model}" for ${vehicle.title}`);
