@@ -562,13 +562,20 @@ function App() {
   // Filter vehicles based on selected filters
   const getFilteredVehicles = () => {
     let filtered = vehicles;
+    const originalCount = filtered.length;
 
     // Apply make filter
     if (filters.make && filters.make.length > 0) {
+      const beforeMakeFilter = filtered.length;
       filtered = filtered.filter(vehicle => {
         const vehicleMake = extractMakeFromVehicle(vehicle);
-        return vehicleMake && filters.make.includes(vehicleMake);
+        const matches = vehicleMake && filters.make.includes(vehicleMake);
+        if (!matches && vehicleMake) {
+          console.log(`🚫 Filtering out ${vehicle.title} - Make: ${vehicleMake} not in [${filters.make.join(', ')}]`);
+        }
+        return matches;
       });
+      console.log(`🔍 Make filter applied: ${beforeMakeFilter} → ${filtered.length} vehicles (filtered by: ${filters.make.join(', ')})`);
     }
 
     // Apply model filter
