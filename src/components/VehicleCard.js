@@ -73,8 +73,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       }
     }
 
-    // Fallback to meta_data for backward compatibility
-    const metaData = vehicle.meta_data || [];
+    // Fallback to meta_data for backward compatibility (metaData already declared above)
     const sellerField = metaData.find(meta => meta.key === fieldName);
     const value = sellerField?.value || '';
 
