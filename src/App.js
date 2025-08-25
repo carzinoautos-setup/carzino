@@ -377,7 +377,7 @@ function App() {
     if (apiConnected && !window.location.hostname.includes('fly.dev')) {
       loadVehiclesAndFilters();
     }
-  }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps</thinking>
+  }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Update filter options when filters change (for cascading behavior)
   useEffect(() => {
