@@ -151,9 +151,9 @@ function App() {
   const [totalPages, setTotalPages] = useState(1);
   const resultsPerPage = 12; // Reduced from 25 to 12 for faster loading
 
-  // Update URL when filters change
-  const updateURL = (newFilters) => {
-    const params = filtersToURLParams(newFilters);
+  // Update URL when filters or page change
+  const updateURL = (newFilters, page = currentPage) => {
+    const params = filtersToURLParams(newFilters, page);
     const newURL = params ? `${window.location.pathname}?${params}` : window.location.pathname;
 
     if (newURL !== window.location.pathname + window.location.search) {
