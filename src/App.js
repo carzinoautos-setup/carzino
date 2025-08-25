@@ -1049,7 +1049,12 @@ function App() {
     ? allFilteredVehicles
     : allFilteredVehicles.slice(startIndex, endIndex);
 
-  console.log(`📄 Pagination: Page ${currentPage}, showing vehicles ${startIndex + 1}-${Math.min(endIndex, actualTotalResults)} of ${actualTotalResults} total`);
+  // Calculate total pages based on filtered results
+  const filteredTotalPages = showingFavorites
+    ? Math.ceil(favoritesCount / resultsPerPage)
+    : Math.ceil(actualTotalResults / resultsPerPage);
+
+  console.log(`📄 Pagination: Page ${currentPage}, showing vehicles ${startIndex + 1}-${Math.min(endIndex, actualTotalResults)} of ${actualTotalResults} total (${filteredTotalPages} pages)`);
 
   // Loading state
   if (loading && vehicles.length === 0) {
