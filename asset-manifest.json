@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/carzino/static/css/main.c985db4a.css",
-    "main.js": "/carzino/static/js/main.5064057d.js",
+    "main.js": "/carzino/static/js/main.c56bb369.js",
     "index.html": "/carzino/index.html",
     "main.c985db4a.css.map": "/carzino/static/css/main.c985db4a.css.map",
-    "main.5064057d.js.map": "/carzino/static/js/main.5064057d.js.map"
+    "main.c56bb369.js.map": "/carzino/static/js/main.c56bb369.js.map"
   },
   "entrypoints": [
     "static/css/main.c985db4a.css",
-    "static/js/main.5064057d.js"
+    "static/js/main.c56bb369.js"
   ]
 }
