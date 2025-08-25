@@ -845,6 +845,13 @@ function App() {
       // Debug: Show all available meta_data keys for first few vehicles
       if (vehicle.id && (vehicle.id.toString().endsWith('1') || vehicle.id.toString().endsWith('2'))) {
         console.log(`🔍 Available meta_data keys for ${vehicle.title}:`, metaData.map(m => m.key));
+        console.log(`🔍 Full meta_data for ${vehicle.title}:`, metaData);
+        console.log(`���� Vehicle structure for ${vehicle.title}:`, {
+          hasDirectMeta: !!vehicle.meta_data,
+          hasRawDataMeta: !!vehicle.rawData?.meta_data,
+          directMetaLength: vehicle.meta_data?.length || 0,
+          rawDataMetaLength: vehicle.rawData?.meta_data?.length || 0
+        });
       }
 
       const makeMeta = metaData.find(meta =>
