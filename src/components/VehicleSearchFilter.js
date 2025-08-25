@@ -562,6 +562,18 @@ const VehicleSearchFilter = ({
               Object.entries(filters).forEach(([category, value]) => {
                 console.log(`🔍 Processing filter: ${category}`, value, 'IsArray?', Array.isArray(value), 'Length:', Array.isArray(value) ? value.length : 'N/A');
 
+                if (category === 'make') {
+                  console.log(`🎯 MAKE FILTER SPECIAL DEBUG:`, {
+                    category,
+                    value,
+                    isArray: Array.isArray(value),
+                    length: Array.isArray(value) ? value.length : 'N/A',
+                    valueType: typeof value,
+                    valueString: value.toString(),
+                    firstItem: Array.isArray(value) && value.length > 0 ? value[0] : 'N/A'
+                  });
+                }
+
                 // Skip configuration/default fields that shouldn't show as applied filters
                 if (category === 'radius' || category === 'termLength' || category === 'interestRate' ||
                     category === 'downPayment' || category === 'zipCode' || category === 'priceMin' ||
