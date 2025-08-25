@@ -191,13 +191,14 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
-    // Step 1: Try seller_data from WordPress API
-    if (vehicle.seller_data && vehicle.seller_data.account_name) {
-      return vehicle.seller_data.account_name;
-    }
-
-    if (vehicle.seller_data && vehicle.seller_data.business_name) {
-      return vehicle.seller_data.business_name;
+    // Step 1: Try seller_data from WordPress API first
+    if (vehicle.seller_data) {
+      if (vehicle.seller_data.account_name && !vehicle.seller_data.account_name.includes('Dealer Account')) {
+        return vehicle.seller_data.account_name;
+      }
+      if (vehicle.seller_data.business_name && !vehicle.seller_data.business_name.includes('Dealer Account')) {
+        return vehicle.seller_data.business_name;
+      }
     }
 
     // Step 2: Try ACF seller name fields directly
@@ -205,22 +206,39 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
     // Primary seller name field (with typo that matches WordPress)
     const primarySellerName = getSellerField('acount_name_seller');
-    if (primarySellerName && primarySellerName.trim() !== '') {
+    if (primarySellerName && primarySellerName.trim() !== '' && !primarySellerName.includes('Dealer Account')) {
       return primarySellerName;
     }
 
     // Corrected field name as fallback
     const correctSellerName = getSellerField('account_name_seller');
-    if (correctSellerName && correctSellerName.trim() !== '') {
+    if (correctSellerName && correctSellerName.trim() !== '' && !correctSellerName.includes('Dealer Account')) {
       return correctSellerName;
     }
 
-    // Step 3: Map based on account number (for backend logic) but show proper dealer names
+    // Step 3: Try business name fields
+    const businessNameFields = [
+      'business_name_seller',
+      'dealer_name',
+      'seller_name',
+      'company_name',
+      'business_name'
+    ];
+
+    for (const fieldName of businessNameFields) {
+      const value = getSellerField(fieldName);
+      if (value && value.trim() !== '' && !value.includes('Dealer Account')) {
+        return value;
+      }
+    }
+
+    // Step 4: Map based on account number (for backend logic) but show proper dealer names
     const accountMeta = metaData.find(m => m.key === 'account_number_seller');
     if (accountMeta && accountMeta.value) {
       // Map account numbers to dealer names (NEVER show account number to users)
       const dealerMap = {
         '100082': 'Carson Cars',
+        '1000821': 'Carson Cars', // Handle both formats
         '73': 'Del Sol Auto Sales',
         '101': 'Carson Cars',
         '205': 'Northwest Auto Group',
@@ -233,98 +251,21 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         return dealerName;
       }
 
-      // If account number not in map, return generic dealer name (never show account number)
+      // If account number not in map, return generic dealer name (NEVER show account number)
       return 'Contact Dealer';
     }
 
-    // Check for direct seller name in meta_data
-    const carsonMeta = metaData.find(m =>
-      m.key === 'acount_name_seller' ||
-      m.key === 'account_name_seller' ||
-      m.key === 'business_name_seller'
-    );
-
-    if (carsonMeta && carsonMeta.value && carsonMeta.value.trim() !== '') {
-      console.log('✅ Found seller name in meta_data:', carsonMeta.value);
-      return carsonMeta.value;
-    }
-
-    // DEBUG: Log what vehicle data we have
-    console.log('🔍 VEHICLE DATA DEBUG:', {
-      vehicleId: vehicle.id,
-      hasSellerData: !!vehicle.seller_data,
-      sellerData: vehicle.seller_data,
-      hasMetaData: !!vehicle.meta_data,
-      metaDataLength: vehicle.meta_data?.length || 0,
-      dealerProp: vehicle.dealer,
-      rawData: vehicle.rawData?.seller_data,
-      allMetaKeys: metaData.map(m => m.key)
-    });
-
-    // STEP 1: Try the resolved seller_data from WordPress relationship resolver
-    if (vehicle.seller_data && vehicle.seller_data.account_name) {
-      console.log('✅ RESOLVED: Using account_name from seller_data:', vehicle.seller_data.account_name);
-      return vehicle.seller_data.account_name;
-    }
-
-    if (vehicle.seller_data && vehicle.seller_data.business_name) {
-      console.log('✅ RESOLVED: Using business_name from seller_data:', vehicle.seller_data.business_name);
-      return vehicle.seller_data.business_name;
-    }
-
-    // Step 4: Try alternative field names that might be used
-    const alternativeNames = [
-      'business_name_seller',
-      'dealer_name',
-      'seller_name',
-      'company_name',
-      'business_name'
-    ];
-
-    for (const fieldName of alternativeNames) {
-      const value = getSellerField(fieldName);
-      if (value && value.trim() !== '') {
-        console.log(`✅ META: Found seller name in ${fieldName}:`, value);
-        return value;
-      }
-    }
-
-    // STEP 5: Check if this is demo/fallback data
+    // Step 5: Check if this is demo/fallback data
     if (vehicle.id && (vehicle.id.toString().startsWith('fallback-') || vehicle.id.toString().startsWith('demo-'))) {
-      console.log('📝 DEMO: Using demo data seller name:', vehicle.dealer);
       return vehicle.dealer || 'Demo Dealer';
     }
 
-    // STEP 6: Try to construct a name from available seller data
-    if (vehicle.seller_data) {
-      const accountNumber = vehicle.seller_data.account_number;
-      if (accountNumber && accountNumber !== 'Default') {
-        console.log('⚠️ FALLBACK: Account found but no name, using generic dealer name');
-        return 'Contact Dealer';
-      }
-    }
-
-    // STEP 7: Check if we have any seller fields at all
-    const hasAnySellerData = metaData.some(m => m.key && m.key.includes('seller'));
-
-    if (hasAnySellerData) {
-      console.log('⚠️ META: Seller data available but name field missing');
-      const accountNumber = getSellerField('account_number_seller');
-      if (accountNumber) {
-        // Never show account number to users - use generic dealer name
-        return 'Contact Dealer';
-      }
-      return 'Dealer Information Missing';
-    }
-
-    // STEP 8: Final fallback - use the dealer prop from transformed data
-    if (vehicle.dealer && vehicle.dealer !== 'Carzino Dealer') {
-      console.log('💡 FALLBACK: Using transformed dealer prop:', vehicle.dealer);
+    // Step 6: Final fallback - use the dealer prop from transformed data if it's not generic
+    if (vehicle.dealer && vehicle.dealer !== 'Carzino Dealer' && !vehicle.dealer.includes('Dealer Account')) {
       return vehicle.dealer;
     }
 
-    // STEP 9: Last resort
-    console.log('❌ NONE: No seller data available for vehicle:', vehicle.title);
+    // Step 7: Last resort - NEVER show account numbers
     return 'Contact Dealer';
   };
 
@@ -379,9 +320,10 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return vehicle.seller_data.phone;
     }
 
-    // Step 2: Try ACF phone fields (multiple possible field names)
+    // Step 2: Try ACF phone fields (multiple possible field names in priority order)
     const phoneFields = [
       'phone_number_seller',
+      'seller_phone_number',
       'seller_phone',
       'phone_seller',
       'contact_phone',
@@ -391,8 +333,15 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
     for (const fieldName of phoneFields) {
       const phoneValue = getSellerField(fieldName);
-      if (phoneValue && phoneValue.trim() !== '') {
-        return phoneValue;
+      if (phoneValue && phoneValue.trim() !== '' && phoneValue.length >= 10) {
+        // Format phone number if needed
+        const cleanPhone = phoneValue.replace(/\D/g, '');
+        if (cleanPhone.length === 10) {
+          return `(${cleanPhone.slice(0,3)}) ${cleanPhone.slice(3,6)}-${cleanPhone.slice(6)}`;
+        } else if (cleanPhone.length === 11 && cleanPhone.startsWith('1')) {
+          return `(${cleanPhone.slice(1,4)}) ${cleanPhone.slice(4,7)}-${cleanPhone.slice(7)}`;
+        }
+        return phoneValue; // Return as-is if already formatted
       }
     }
 
@@ -402,12 +351,13 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
     if (accountMeta && accountMeta.value) {
       const phoneMap = {
-        '100082': '(425) 743-0649', // Carson Cars - user's provided number
-        '73': '(425) 555-0100',     // Del Sol Auto Sales
-        '101': '(253) 555-0100',    // Carson Cars
-        '205': '(253) 555-0200',    // Northwest Auto Group
-        '312': '(425) 555-0300',    // Electric Auto Northwest
-        '445': '(206) 555-0400'     // Premium Motors Seattle
+        '100082': '(425) 743-0649',  // Carson Cars - user's provided number
+        '1000821': '(425) 743-0649', // Carson Cars - handle both formats
+        '73': '(425) 555-0100',      // Del Sol Auto Sales
+        '101': '(253) 555-0100',     // Carson Cars
+        '205': '(253) 555-0200',     // Northwest Auto Group
+        '312': '(425) 555-0300',     // Electric Auto Northwest
+        '445': '(206) 555-0400'      // Premium Motors Seattle
       };
 
       const mappedPhone = phoneMap[accountMeta.value];
@@ -1065,17 +1015,47 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
               href={`tel:${getSellerPhone()}`}
               className="dealer-phone"
               onClick={() => {
-                // Google Analytics tracking for phone clicks
-                if (typeof window !== 'undefined' && window.gtag) {
-                  window.gtag('event', 'phone_click', {
-                    'event_category': 'dealer_contact',
-                    'event_label': getSellerName(),
-                    'value': 1
-                  });
-                }
-                // Alternative tracking for Google Analytics Universal
-                if (typeof window !== 'undefined' && window.ga) {
-                  window.ga('send', 'event', 'dealer_contact', 'phone_click', getSellerName(), 1);
+                try {
+                  // Enhanced Google Analytics tracking for phone clicks
+                  const sellerName = getSellerName();
+                  const phoneNumber = getSellerPhone();
+
+                  // Google Analytics 4 (gtag)
+                  if (typeof window !== 'undefined' && window.gtag) {
+                    window.gtag('event', 'phone_call', {
+                      'event_category': 'engagement',
+                      'event_label': `${sellerName} - ${phoneNumber}`,
+                      'custom_parameter_dealer': sellerName,
+                      'custom_parameter_phone': phoneNumber,
+                      'value': 1
+                    });
+                    console.log('✅ GA4 phone click tracked:', sellerName);
+                  }
+
+                  // Google Analytics Universal (backup)
+                  if (typeof window !== 'undefined' && window.ga) {
+                    window.ga('send', 'event', {
+                      eventCategory: 'dealer_contact',
+                      eventAction: 'phone_click',
+                      eventLabel: `${sellerName} - ${phoneNumber}`,
+                      value: 1
+                    });
+                    console.log('✅ GA Universal phone click tracked:', sellerName);
+                  }
+
+                  // DataLayer push for GTM
+                  if (typeof window !== 'undefined' && window.dataLayer) {
+                    window.dataLayer.push({
+                      'event': 'phone_click',
+                      'dealer_name': sellerName,
+                      'phone_number': phoneNumber,
+                      'event_category': 'dealer_contact'
+                    });
+                    console.log('✅ DataLayer phone click tracked:', sellerName);
+                  }
+
+                } catch (error) {
+                  console.warn('Analytics tracking error:', error);
                 }
               }}
             >
