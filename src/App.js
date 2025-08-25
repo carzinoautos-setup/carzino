@@ -368,7 +368,12 @@ function App() {
         dealer: extractDealer(vehicle),
         location: extractLocation(vehicle),
         phone: extractPhone(vehicle),
-        rawData: vehicle // Keep original data for debugging
+        rawData: vehicle, // Keep original data for debugging
+        // Make ACF fields easily accessible for filtering
+        meta_data: vehicle.meta_data || [],
+        attributes: vehicle.attributes || [],
+        categories: vehicle.categories || [],
+        stock_status: vehicle.stock_status
       }));
 
       setVehicles(transformedVehicles);
