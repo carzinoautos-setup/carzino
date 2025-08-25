@@ -470,10 +470,10 @@ function App() {
       setLoading(true);
       setError(null); // Clear any previous errors
 
-      // Fetch vehicles in smaller batches for faster loading
+      // Load minimal vehicles for immediate display
       const vehicleParams = {
         page: 1,
-        per_page: 12, // Load fewer vehicles initially for faster performance
+        per_page: 3, // Load only 3 vehicles for immediate display
         // Add filter parameters here when implementing search
       };
 
