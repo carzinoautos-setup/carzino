@@ -438,9 +438,14 @@ export const testAPIConnection = async () => {
 
   // Test multiple endpoints to see which one works
   const testUrls = [
-    `${WC_API_BASE}/products?per_page=1`,
+    // Test 1: Basic WordPress API (should work if WP is running)
     `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wp/v2/posts?per_page=1`,
-    `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/products?consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}&per_page=1`
+    // Test 2: WooCommerce API with URL auth
+    `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/products?consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}&per_page=1`,
+    // Test 3: Check if WooCommerce is installed
+    `${process.env.REACT_APP_WP_SITE_URL}/wp-json/wc/v3/system_status?consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`,
+    // Test 4: Alternative WooCommerce endpoint
+    `${process.env.REACT_APP_WP_SITE_URL}/?wc-api=v3&request=products&oauth_consumer_key=${WC_CONSUMER_KEY}&oauth_consumer_secret=${WC_CONSUMER_SECRET}`
   ];
 
   for (const [index, testUrl] of testUrls.entries()) {
