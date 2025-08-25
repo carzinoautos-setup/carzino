@@ -367,7 +367,7 @@ function App() {
 
   // Update filter options when filters change (for cascading behavior)
   useEffect(() => {
-    if (apiConnected && vehicles.length > 0 && !loading && !window.location.hostname.includes('fly.dev')) {
+    if (apiConnected && vehicles.length > 0 && !loading) {
       const timeoutId = setTimeout(() => {
         updateFilterOptions();
       }, 150); // Faster response for better UX
