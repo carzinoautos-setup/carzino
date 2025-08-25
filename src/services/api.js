@@ -1170,7 +1170,7 @@ const testBasicConnectivity = async () => {
 // Test API connection with improved CORS handling and timeout
 export const testAPIConnection = async () => {
   console.log('🔗 Testing API connection to:', WC_API_BASE);
-  console.log('🔑 Using credentials:', {
+  console.log('��� Using credentials:', {
     key: WC_CONSUMER_KEY ? WC_CONSUMER_KEY.substring(0, 10) + '...' : 'Missing',
     secret: WC_CONSUMER_SECRET ? WC_CONSUMER_SECRET.substring(0, 10) + '...' : 'Missing'
   });
@@ -1229,12 +1229,13 @@ export const testAPIConnection = async () => {
 
     if (!response.ok) {
       // Clone for error text reading
-      const errorClone = response.clone();
       let errorText = '';
       try {
+        const errorClone = response.clone();
         errorText = await errorClone.text();
       } catch (e) {
-        errorText = 'Could not read error response';
+        console.warn('Could not clone/read error response:', e.message);
+        errorText = `Error ${response.status}: Could not read response body`;
       }
       console.error('❌ API Error Response:', errorText.substring(0, 500));
 
