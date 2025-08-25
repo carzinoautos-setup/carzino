@@ -194,15 +194,23 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return vehicle.dealer || 'Sample Dealer';
     }
 
-    // If no seller data available, return a helpful debug message
+    // If no seller data available, return a helpful default
     if (!hasSellerData()) {
       console.log('❌ No seller data available for vehicle:', vehicle.title);
-      console.log('Vehicle data source:', vehicle.id?.toString().startsWith('fallback-') ? 'Fallback/Sample' : 'WordPress API');
-      return 'No Seller Data';
+      return 'Carzino Dealer';
     }
 
-    console.log('⚠️ Seller data available but name field missing');
-    return 'Seller Name Missing';
+    // If seller_data exists but name is missing, try to construct a name
+    if (vehicle.seller_data) {
+      const business_name = vehicle.seller_data.business_name || vehicle.seller_data.account_name;
+      if (business_name) {
+        console.log('✅ Using business name from seller_data:', business_name);
+        return business_name;
+      }
+    }
+
+    console.log('⚠️ Seller data available but name field missing - using default');
+    return 'Carzino Dealer';
   };
 
   const getSellerLocation = () => {
