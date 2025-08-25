@@ -377,7 +377,7 @@ function App() {
       setTotalPages(Math.ceil(vehicleData.total / resultsPerPage));
 
       console.log(`📊 Loaded ${transformedVehicles.length} vehicles from WooCommerce API`);
-      console.log('����️ Filter options:', filterData);
+      console.log('🏷️ Filter options:', filterData);
 
       // Debug first few vehicles
       console.log('🚗 First 3 vehicles for debugging:');
@@ -834,8 +834,8 @@ function App() {
   const extractMakeFromVehicle = (vehicle) => {
     let make = null;
 
-    // Try meta_data first (using same structure as api.js)
-    const metaData = vehicle.rawData?.meta_data || vehicle.meta_data || [];
+    // Try meta_data first - ACF fields are directly in vehicle.meta_data from API
+    const metaData = vehicle.meta_data || vehicle.rawData?.meta_data || [];
     if (Array.isArray(metaData)) {
       // Debug: Show all available meta_data keys for first few vehicles
       if (vehicle.id && (vehicle.id.toString().endsWith('1') || vehicle.id.toString().endsWith('2'))) {
