@@ -341,8 +341,9 @@ const getFallbackVehicles = () => {
 export const fetchVehicles = async (params = {}) => {
   try {
     // Check if environment variables are available
-    if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL) {
-      console.warn('⚠️ Missing API credentials, using fallback data');
+    if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
+        WC_CONSUMER_KEY === 'missing' || WC_CONSUMER_SECRET === 'missing') {
+      console.warn('⚠️ Missing or invalid API credentials, using fallback data');
       return getFallbackVehicles();
     }
 
