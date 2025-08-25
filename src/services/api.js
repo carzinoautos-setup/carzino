@@ -535,7 +535,7 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     const queryParams = new URLSearchParams({
-      per_page: params.per_page || 25, // Load 25 vehicles by default
+      per_page: params.per_page || 200, // Load all 200 vehicles by default
       page: params.page || 1,
       status: 'publish',
       ...params
@@ -565,7 +565,7 @@ export const fetchVehicles = async (params = {}) => {
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
-    console.log('�� Response status:', response.status);
+    console.log('📡 Response status:', response.status);
 
     // Clone response for multiple reads if needed
     const responseClone = response.clone();
@@ -742,7 +742,7 @@ export const fetchVehicles = async (params = {}) => {
       const isFlyDev = currentDomain.includes('fly.dev');
 
       console.error('🚨 API CONNECTION FAILED: CORS/Network Issue!');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.error('━━━━━━━━━━━━━━━━━━━━━━━���━━━━━━━━━━━━━━━━━━━━━━━━━━━');
       console.error('🌐 Current Domain:', currentDomain);
       console.error('🎯 Target WordPress:', process.env.REACT_APP_WP_SITE_URL);
       console.error('❌ Error:', error.message);
