@@ -633,7 +633,7 @@ function App() {
 
   // Handle clear all filters
   const handleClearAllFilters = () => {
-    setFilters({
+    const clearedFilters = {
       condition: [],
       make: [],
       model: [],
@@ -662,8 +662,14 @@ function App() {
       termLength: filters.termLength,
       interestRate: filters.interestRate,
       downPayment: filters.downPayment
-    });
+    };
+
+    setFilters(clearedFilters);
     setCurrentPage(1);
+
+    // Clear URL parameters (go to base URL)
+    window.history.pushState(null, '', window.location.pathname);
+    console.log('🔗 Cleared all filters, reset URL to base path');
   };
 
   // Handle search
