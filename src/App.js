@@ -342,8 +342,9 @@ function App() {
             // API failed but returned a structured result
             setApiConnected(false);
 
-            // Immediately load demo data for any API failure
+            // Load demo data with seller information for any API failure
             const demoData = getRealisticDemoVehicles();
+            console.log('🎯 Loading demo data with seller info:', demoData[0]);
             setVehicles(demoData);
             setTotalResults(demoData.length);
             setLoading(false);
