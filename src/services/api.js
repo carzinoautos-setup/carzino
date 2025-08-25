@@ -645,6 +645,27 @@ export const fetchVehicles = async (params = {}) => {
     }
     console.log(`✅ Successfully fetched ${products.length} vehicles from WooCommerce API`);
 
+    // Debug seller data availability
+    const vehiclesWithSellerData = products.filter(p => p.seller_data);
+    const vehiclesWithSellerMeta = products.filter(p => p.meta_data && p.meta_data.some(m => m.key.includes('seller')));
+
+    console.log(`🔍 SELLER DATA DEBUG:`);
+    console.log(`  Vehicles with seller_data field: ${vehiclesWithSellerData.length}/${products.length}`);
+    console.log(`  Vehicles with seller meta_data: ${vehiclesWithSellerMeta.length}/${products.length}`);
+
+    if (vehiclesWithSellerData.length > 0) {
+      console.log(`  ✅ First vehicle with seller_data:`, {
+        id: vehiclesWithSellerData[0].id,
+        name: vehiclesWithSellerData[0].name,
+        seller_data: vehiclesWithSellerData[0].seller_data
+      });
+    }
+
+    if (vehiclesWithSellerMeta.length > 0) {
+      const sellerMetaFields = vehiclesWithSellerMeta[0].meta_data.filter(m => m.key.includes('seller'));
+      console.log(`  📋 First vehicle seller meta fields:`, sellerMetaFields);
+    }
+
     const result = {
       results: products.map(product => ({
         id: product.id,
@@ -1085,7 +1106,7 @@ export const fetchFilterOptions = async (currentFilters = {}) => {
       total: allProducts.total
     };
 
-    console.log('✅ Filter options extracted successfully:', {
+    console.log('��� Filter options extracted successfully:', {
       makes: filterOptions.makes.length,
       models: filterOptions.models.length,
       years: filterOptions.years.length,
