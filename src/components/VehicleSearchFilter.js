@@ -909,86 +909,77 @@ const VehicleSearchFilter = ({
           </div>
         </FilterSection>
 
-        {/* Dealer */}
-        <FilterSection
-          title="Dealer"
-          isCollapsed={collapsedFilters.dealer}
-          onToggle={() => toggleFilter('dealer')}
-          count={getFilterCount('dealer')}
-        >
-          <div className="space-y-2">
-            <CheckboxOption
-              label="Bayside Auto Sales"
-              count={234}
-              value="Bayside Auto Sales"
-              category="dealer"
-              checked={filters.dealer?.includes('Bayside Auto Sales')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="ABC Car Sales"
-              count={156}
-              value="ABC Car Sales"
-              category="dealer"
-              checked={filters.dealer?.includes('ABC Car Sales')}
-              onChange={handleFilterChange}
-            />
-          </div>
-        </FilterSection>
+        {/* Model Years */}
+        {allYears.length > 0 && (
+          <FilterSection
+            title="Year"
+            isCollapsed={collapsedFilters.year}
+            onToggle={() => toggleFilter('year')}
+            count={getFilterCount('year')}
+          >
+            <div className="space-y-2">
+              {allYears.map((year) => (
+                <CheckboxOption
+                  key={year.name}
+                  label={year.name}
+                  count={year.count}
+                  value={year.name}
+                  category="year"
+                  checked={filters.year?.includes(year.name)}
+                  onChange={handleFilterChange}
+                />
+              ))}
+            </div>
+          </FilterSection>
+        )}
 
-        {/* State */}
-        <FilterSection
-          title="State"
-          isCollapsed={collapsedFilters.state}
-          onToggle={() => toggleFilter('state')}
-          count={getFilterCount('state')}
-        >
-          <div className="space-y-2">
-            <CheckboxOption
-              label="Washington"
-              count={12456}
-              value="Washington"
-              category="state"
-              checked={filters.state?.includes('Washington')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Oregon"
-              count={8234}
-              value="Oregon"
-              category="state"
-              checked={filters.state?.includes('Oregon')}
-              onChange={handleFilterChange}
-            />
-          </div>
-        </FilterSection>
+        {/* Fuel Type */}
+        {allFuelTypes.length > 0 && (
+          <FilterSection
+            title="Fuel Type"
+            isCollapsed={collapsedFilters.fuelType}
+            onToggle={() => toggleFilter('fuelType')}
+            count={getFilterCount('fuelType')}
+          >
+            <div className="space-y-2">
+              {allFuelTypes.map((fuelType) => (
+                <CheckboxOption
+                  key={fuelType.name}
+                  label={fuelType.name}
+                  count={fuelType.count}
+                  value={fuelType.name}
+                  category="fuelType"
+                  checked={filters.fuelType?.includes(fuelType.name)}
+                  onChange={handleFilterChange}
+                />
+              ))}
+            </div>
+          </FilterSection>
+        )}
 
-        {/* City */}
-        <FilterSection
-          title="City"
-          isCollapsed={collapsedFilters.city}
-          onToggle={() => toggleFilter('city')}
-          count={getFilterCount('city')}
-        >
-          <div className="space-y-2">
-            <CheckboxOption
-              label="Seattle"
-              count={4567}
-              value="Seattle"
-              category="city"
-              checked={filters.city?.includes('Seattle')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="Portland"
-              count={3234}
-              value="Portland"
-              category="city"
-              checked={filters.city?.includes('Portland')}
-              onChange={handleFilterChange}
-            />
-          </div>
-        </FilterSection>
+        {/* Trim Levels */}
+        {allTrims.length > 0 && (
+          <FilterSection
+            title="Trim"
+            isCollapsed={collapsedFilters.trim}
+            onToggle={() => toggleFilter('trim')}
+            count={getFilterCount('trim')}
+          >
+            <div className="space-y-2">
+              {allTrims.map((trim) => (
+                <CheckboxOption
+                  key={trim.name}
+                  label={trim.name}
+                  count={trim.count}
+                  value={trim.name}
+                  category="trim"
+                  checked={filters.trim?.includes(trim.name)}
+                  onChange={handleFilterChange}
+                />
+              ))}
+            </div>
+          </FilterSection>
+        )}
 
         {/* Mobile Footer */}
         {isMobile && (
