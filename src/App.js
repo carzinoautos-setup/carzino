@@ -783,11 +783,7 @@ function App() {
       );
       if (makeMeta?.value) {
         make = makeMeta.value;
-        console.log(`📊 Found make in meta_data: "${make}" (key: ${makeMeta.key}) for ${vehicle.title}`);
         return make;
-      } else {
-        // Debug: Show why we didn't find the make
-        console.log(`❌ No make found in meta_data for ${vehicle.title}. Available keys:`, metaData.map(m => `${m.key}=${m.value}`));
       }
     }
 
@@ -799,7 +795,6 @@ function App() {
       );
       if (makeAttr?.options?.[0]) {
         make = makeAttr.options[0];
-        console.log(`📊 Found make in attributes: "${make}" for ${vehicle.title}`);
         return make;
       }
     }
@@ -819,11 +814,6 @@ function App() {
     else if (title.includes('audi')) make = 'Audi';
     else if (title.includes('volkswagen') || title.includes('vw')) make = 'Volkswagen';
 
-    if (make) {
-      console.log(`📊 Extracted make from title: "${make}" for ${vehicle.title}`);
-    } else {
-      console.log(`❌ No make found for ${vehicle.title}`);
-    }
 
     return make;
   };
