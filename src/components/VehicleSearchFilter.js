@@ -217,9 +217,8 @@ const VehicleSearchFilter = ({
     transmissionSpeed: false,
     exteriorColor: false,
     interiorColor: false,
-    dealer: false,
-    state: false,
-    city: false
+    fuelType: false,
+    year: false
   });
 
   // Toggle filter section
