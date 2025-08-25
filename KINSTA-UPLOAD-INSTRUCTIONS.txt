@@ -1,0 +1,78 @@
+🚀 KINSTA HOSTING SETUP INSTRUCTIONS
+==========================================
+
+Your React vehicle search app is now ready to be hosted on your Kinsta WordPress site!
+
+📍 YOUR NEW APP URL WILL BE:
+https://env-uploadbackup62225-czdev.kinsta.cloud/vehicle-search
+
+🗂️ FILES TO UPLOAD:
+==================
+You need to upload these files from the 'build' folder:
+
+1. index.html (main page)
+2. asset-manifest.json (asset mapping)
+3. static/css/main.c985db4a.css (styles)
+4. static/css/main.c985db4a.css.map (CSS source map)
+5. static/js/main.df0fafdf.js (main JavaScript)
+6. static/js/main.df0fafdf.js.LICENSE.txt (licenses)
+7. static/js/main.df0fafdf.js.map (JS source map)
+
+📂 KINSTA UPLOAD STEPS:
+=======================
+
+OPTION 1: Using Kinsta MyKinsta Panel (Recommended)
+---------------------------------------------------
+1. Log into your MyKinsta dashboard
+2. Go to your site: env-uploadbackup62225-kinsta.cloud
+3. Click "SFTP/SSH" in the sidebar
+4. Use the provided SFTP credentials with an FTP client like FileZilla
+
+OPTION 2: WordPress File Manager Plugin
+----------------------------------------
+1. Install a file manager plugin like "File Manager" by wp-media
+2. Navigate to /public/ or /public_html/ directory
+3. Create folder called "vehicle-search"
+4. Upload all files maintaining the folder structure
+
+📁 FOLDER STRUCTURE ON KINSTA:
+==============================
+Create this structure in your Kinsta public folder:
+
+/public_html/vehicle-search/
+├── index.html
+├── asset-manifest.json
+└── static/
+    ├── css/
+    │   ├── main.c985db4a.css
+    │   └── main.c985db4a.css.map
+    └── js/
+        ├── main.df0fafdf.js
+        ├── main.df0fafdf.js.LICENSE.txt
+        └── main.df0fafdf.js.map
+
+🎯 AFTER UPLOAD:
+================
+1. Visit: https://env-uploadbackup62225-czdev.kinsta.cloud/vehicle-search
+2. You should see your vehicle search app
+3. It will load your real WooCommerce inventory
+4. Test all the filters and search functionality
+
+🔧 TROUBLESHOOTING:
+==================
+- If you get 404 errors: Check the file paths match exactly
+- If CSS doesn't load: Ensure the static folder structure is correct
+- If API doesn't work: The CORS settings are already configured
+
+✅ INTEGRATION OPTIONS:
+======================
+Once working, you can:
+1. Link to it from your main WordPress site
+2. Embed it in a WordPress page using an iframe
+3. Add it to your main navigation menu
+
+📞 NEED HELP?
+=============
+If you have issues with the Kinsta upload process, their support team can help you upload the files to the correct directory.
+
+🎉 That's it! Your vehicle search app will be running on your own Kinsta domain!
