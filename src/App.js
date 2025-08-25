@@ -580,6 +580,9 @@ function App() {
   const handlePageChange = (page) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Update URL with new page
+    updateURL(filters, page);
   };
 
   // Handle sort change
