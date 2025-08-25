@@ -5,7 +5,6 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [keeperMessage, setKeeperMessage] = useState(false);
   const [enhancedSellerData, setEnhancedSellerData] = useState(null);
-  const [sellerDataLoaded, setSellerDataLoaded] = useState(false);
 
   // Log seller data availability for debugging
   useEffect(() => {
