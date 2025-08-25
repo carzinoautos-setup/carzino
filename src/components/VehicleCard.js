@@ -43,32 +43,39 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       console.log(`🔍 String comparison: "${String(accountNumber).trim()}" === "73" is ${String(accountNumber).trim() === '73'}`);
     }
 
-    // REALISTIC SELLER DATA: For account 73, use realistic dealer information
-    if (accountNumber && String(accountNumber).trim() === '73') {
-      const realisticSellerData = {
-        'acount_name_seller': 'Del Sol Auto Sales',
-        'account_name_seller': 'Del Sol Auto Sales',
-        'city_seller': 'Everett',
-        'state_seller': 'WA',
-        'zip_seller': '98204',
-        'phone_number_seller': '(425) 555-0100',
-        'account_type_seller': 'dealer'
+    // First, try the enhanced seller_data from WordPress API
+    if (vehicle.seller_data) {
+      // Map field names to match WordPress seller_data structure
+      const fieldMap = {
+        'acount_name_seller': 'account_name',
+        'account_name_seller': 'account_name',
+        'city_seller': 'city',
+        'state_seller': 'state',
+        'zip_seller': 'zip',
+        'phone_number_seller': 'phone',
+        'account_type_seller': 'account_type'
       };
 
-      if (realisticSellerData[fieldName]) {
-        console.log(`✅ REALISTIC DATA: Using ${fieldName} = ${realisticSellerData[fieldName]} for account 73`);
-        return realisticSellerData[fieldName];
+      const mappedField = fieldMap[fieldName] || fieldName;
+
+      if (vehicle.seller_data[mappedField]) {
+        console.log(`✅ SELLER DATA: Using ${fieldName} = ${vehicle.seller_data[mappedField]} from WordPress API`);
+        return vehicle.seller_data[mappedField];
+      }
+
+      // Also try the original field name
+      if (vehicle.seller_data[fieldName]) {
+        console.log(`✅ SELLER DATA: Using ${fieldName} = ${vehicle.seller_data[fieldName]} from WordPress API`);
+        return vehicle.seller_data[fieldName];
       }
     }
 
-    // For other accounts, show account number in debug
-    if (fieldName === 'acount_name_seller' && accountNumber && String(accountNumber).trim() !== '73') {
-      console.log(`ℹ️ Account ${accountNumber} - no seller data available`);
-    }
-
-    // First, try the enhanced seller_data from WordPress API
-    if (vehicle.seller_data && vehicle.seller_data[fieldName]) {
-      return vehicle.seller_data[fieldName];
+    // Debug: Log when seller_data is missing
+    if (fieldName === 'acount_name_seller') {
+      console.log(`🔍 Vehicle: ${vehicle.title}`);
+      console.log(`🔍 Account: "${accountNumber}" | Type: ${typeof accountNumber}`);
+      console.log(`🔍 Has seller_data:`, !!vehicle.seller_data);
+      console.log(`🔍 Seller data content:`, vehicle.seller_data);
     }
 
     // Second, try the enhanced seller data (from WordPress API)
