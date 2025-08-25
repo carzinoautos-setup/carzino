@@ -825,38 +825,31 @@ const VehicleSearchFilter = ({
           </div>
         </FilterSection>
 
-        {/* Transmission Speed */}
+        {/* Transmission */}
         <FilterSection
-          title="Transmission Speed"
+          title="Transmission"
           isCollapsed={collapsedFilters.transmissionSpeed}
           onToggle={() => toggleFilter('transmissionSpeed')}
           count={getFilterCount('transmissionSpeed')}
         >
           <div className="space-y-2">
-            <CheckboxOption
-              label="4-Speed Automatic"
-              count={1245}
-              value="4-Speed Automatic"
-              category="transmissionSpeed"
-              checked={filters.transmissionSpeed?.includes('4-Speed Automatic')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="5-Speed Automatic"
-              count={2341}
-              value="5-Speed Automatic"
-              category="transmissionSpeed"
-              checked={filters.transmissionSpeed?.includes('5-Speed Automatic')}
-              onChange={handleFilterChange}
-            />
-            <CheckboxOption
-              label="6-Speed Automatic"
-              count={3456}
-              value="6-Speed Automatic"
-              category="transmissionSpeed"
-              checked={filters.transmissionSpeed?.includes('6-Speed Automatic')}
-              onChange={handleFilterChange}
-            />
+            {allTransmissions.length > 0 ? (
+              allTransmissions.map((transmission) => (
+                <CheckboxOption
+                  key={transmission.name}
+                  label={transmission.name}
+                  count={transmission.count}
+                  value={transmission.name}
+                  category="transmissionSpeed"
+                  checked={filters.transmissionSpeed?.includes(transmission.name)}
+                  onChange={handleFilterChange}
+                />
+              ))
+            ) : (
+              <div className="text-sm text-gray-500 py-2">
+                Loading transmissions...
+              </div>
+            )}
           </div>
         </FilterSection>
 
