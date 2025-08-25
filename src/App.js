@@ -304,7 +304,7 @@ function App() {
 
       if (vehicleResult.status === 'rejected') {
         console.warn('Vehicle data failed, using fallback:', vehicleResult.reason.message);
-        console.log('📊 Vehicle data after failure:', {
+        console.log('��� Vehicle data after failure:', {
           hasResults: !!vehicleData.results,
           resultsLength: vehicleData.results?.length || 0,
           total: vehicleData.total
@@ -687,7 +687,6 @@ function App() {
 
   // Handle search
   const handleSearch = (query) => {
-    console.log('Searching for:', query);
     // TODO: Implement search in API call
     setCurrentPage(1);
   };
