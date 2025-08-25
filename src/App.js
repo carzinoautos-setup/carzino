@@ -135,7 +135,11 @@ function App() {
   const [apiConnected, setApiConnected] = useState(false);
 
   const [favorites, setFavorites] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pageParam = urlParams.get('page');
+    return pageParam ? parseInt(pageParam, 10) : 1;
+  });
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('relevance');
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
