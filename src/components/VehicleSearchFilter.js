@@ -337,7 +337,6 @@ const VehicleSearchFilter = ({
 
 
   const displayedMakes = showMoreMakes ? allMakes : allMakes.slice(0, 8);
-  const displayedModels = showMoreModels ? allModels : allModels.slice(0, 8);
 
   // Helper function to get color hex values
   const getColorHex = useCallback((colorName) => {
