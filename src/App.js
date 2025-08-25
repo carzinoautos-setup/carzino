@@ -705,7 +705,6 @@ function App() {
 
     // Apply model filter
     if (filters.model && filters.model.length > 0) {
-      const beforeModelFilter = filtered.length;
       console.log(`��� Applying model filter for: [${filters.model.join(', ')}]`);
 
       filtered = filtered.filter(vehicle => {
@@ -1035,7 +1034,7 @@ function App() {
 
   console.log(`📄 Pagination: Page ${currentPage}, showing vehicles ${startIndex + 1}-${Math.min(endIndex, actualTotalResults)} of ${actualTotalResults} total (${filteredTotalPages} pages)`);
   console.log(`🚗 Total vehicles loaded: ${vehicles.length}`);
-  console.log(`🔍 All filtered vehicles count: ${allFilteredVehicles.length}`);
+  console.log(`���� All filtered vehicles count: ${allFilteredVehicles.length}`);
   console.log(`📄 Current vehicles to display: ${currentVehicles.length}`);
   console.log(`🎯 Current filters:`, filters);
 
