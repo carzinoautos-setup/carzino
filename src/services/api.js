@@ -863,8 +863,7 @@ export const fetchFilterOptions = async (currentFilters = {}) => {
     return filterOptions;
 
   } catch (error) {
-    console.error('Error fetching filter options:', error);
-    console.warn('🚨 Filter options error, using fallback data');
+    console.warn('🚨 Filter options error, using fallback data:', error.message);
     return getFallbackFilterOptions();
   }
 };
