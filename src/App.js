@@ -368,7 +368,7 @@ function App() {
 
   // Load initial data when API is connected
   useEffect(() => {
-    if (apiConnected && vehicles.length === 0) {
+    if (apiConnected) {
       loadVehiclesAndFilters();
     }
   }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
