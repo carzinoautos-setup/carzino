@@ -332,7 +332,7 @@ const getFallbackVehicles = () => {
         featured: false
       }
     ],
-    total: 6,
+    total: 5,
     totalPages: 1
   };
 };
@@ -378,7 +378,7 @@ export const fetchVehicles = async (params = {}) => {
     }, 5000); // 5 second timeout - fail faster in production
 
     const responseTime = Date.now() - startTime;
-    console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
+    console.log(`⏱��� Vehicles loaded in ${responseTime}ms`);
     console.log('📡 Response status:', response.status);
 
     if (!response.ok) {
