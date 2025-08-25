@@ -366,10 +366,9 @@ function App() {
     }
   }, [apiConnected, currentPage, sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Update filter options when filters change (skip on Fly.dev)
+  // Update filter options when filters change
   useEffect(() => {
-    const isOnFlyDev = window.location.hostname.includes('fly.dev');
-    if (apiConnected && vehicles.length > 0 && !loading && !isOnFlyDev) {
+    if (apiConnected && vehicles.length > 0 && !loading) {
       const timeoutId = setTimeout(() => {
         updateFilterOptions();
       }, 150); // Faster response for better UX
