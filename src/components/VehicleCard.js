@@ -30,8 +30,23 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
   // Check if we have seller data available
   const hasSellerData = () => {
-    return vehicle.seller_data ||
-           (vehicle.meta_data && vehicle.meta_data.some(m => m.key.includes('seller')));
+    const hasEnhancedData = !!vehicle.seller_data;
+    const hasMetaData = vehicle.meta_data && vehicle.meta_data.some(m => m.key.includes('seller'));
+
+    // Debug: Log the vehicle data structure for first vehicle
+    if (vehicle.id === 'fallback-1' || vehicle.title.includes('Toyota RAV4')) {
+      console.log('🔍 DEBUGGING VEHICLE DATA STRUCTURE:');
+      console.log('Vehicle ID:', vehicle.id);
+      console.log('Vehicle Title:', vehicle.title);
+      console.log('Has enhanced seller_data:', hasEnhancedData);
+      console.log('Enhanced seller_data:', vehicle.seller_data);
+      console.log('Has meta_data with seller fields:', hasMetaData);
+      console.log('All meta_data:', vehicle.meta_data);
+      console.log('Raw vehicle object:', vehicle);
+      console.log('Vehicle keys:', Object.keys(vehicle));
+    }
+
+    return hasEnhancedData || hasMetaData;
   };
 
   const getCondition = () => {
@@ -69,9 +84,16 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return correctSellerName;
     }
 
+    // Check if this is fallback/sample data
+    if (vehicle.id && vehicle.id.toString().startsWith('fallback-')) {
+      console.log('📝 Using fallback data for vehicle:', vehicle.title);
+      return vehicle.dealer || 'Sample Dealer';
+    }
+
     // If no seller data available, return a helpful debug message
     if (!hasSellerData()) {
       console.log('❌ No seller data available for vehicle:', vehicle.title);
+      console.log('Vehicle data source:', vehicle.id?.toString().startsWith('fallback-') ? 'Fallback/Sample' : 'WordPress API');
       return 'No Seller Data';
     }
 
