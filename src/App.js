@@ -281,7 +281,7 @@ function App() {
 
       // Add timeout to prevent hanging
       const timeoutPromise = new Promise((_, reject) =>
-        setTimeout(() => reject(new Error('Filter update timeout')), 5000)
+        setTimeout(() => reject(new Error('Filter update timeout')), 15000)
       );
 
       const filterData = await Promise.race([
