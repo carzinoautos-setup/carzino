@@ -1156,10 +1156,26 @@ function App() {
         <p>
           {apiConnected
             ? `Connected to your WooCommerce inventory (${actualTotalResults} of ${totalResults} vehicles shown)`
-            : window.location.hostname === 'carzinoautos-setup.github.io'
-            ? `Showing sample data (${actualTotalResults} vehicles) - API connection issue`
-            : `Dev Environment: Showing sample data (${actualTotalResults} vehicles) - Use GitHub Pages for live data`
+            : `⚠️ Showing limited demo data (${actualTotalResults} vehicles) - WordPress API connection failed`
           }
+          {!apiConnected && (
+            <span style={{ marginLeft: '10px' }}>
+              <button
+                onClick={() => window.location.reload()}
+                style={{
+                  background: '#007cba',
+                  color: 'white',
+                  border: 'none',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px'
+                }}
+              >
+                Retry Connection
+              </button>
+            </span>
+          )}
         </p>
         {error && (
           <div style={{ 
