@@ -1356,7 +1356,12 @@ export const testAPIConnection = async () => {
     };
 
   } catch (error) {
-    console.error('❌ API Connection Error:', error);
+    console.error('❌ API Connection Error:');
+    console.error('  Message:', error.message);
+    console.error('  Name:', error.name);
+    if (error.stack) {
+      console.error('  Stack:', error.stack.substring(0, 500));
+    }
 
     // Enhanced error handling with specific messages
     if (error.message.includes('timed out')) {
