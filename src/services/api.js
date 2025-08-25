@@ -476,12 +476,23 @@ const getFallbackFilterOptions = () => ({
   total: 6
 });
 
-// Fetch filter options based on real data
+// Fetch filter options based on real data with improved error handling
 export const fetchFilterOptions = async () => {
   try {
+    console.log('🔍 Fetching filter options from vehicle data...');
+
     // Fetch all products to analyze for filter options
+    // This will use the improved fetchVehicles function with all its error handling
     const allProducts = await fetchVehicles({ per_page: 100 });
-    
+
+    // If we got fallback data, return fallback filter options
+    if (allProducts.results.some(vehicle => vehicle.id.toString().startsWith('fallback-'))) {
+      console.log('📊 Using fallback filter options (matches fallback vehicle data)');
+      return getFallbackFilterOptions();
+    }
+
+    console.log(`📊 Analyzing ${allProducts.results.length} vehicles for filter options...`);
+
     // Extract unique data from ACF fields
     const makes = new Map();
     const models = new Map();
@@ -494,7 +505,7 @@ export const fetchFilterOptions = async () => {
     const trims = new Map();
     const exteriorColors = new Map();
     const interiorColors = new Map();
-    
+
     allProducts.results.forEach(product => {
       // Extract ACF data from product meta_data
       const metaData = product.meta_data || [];
@@ -559,7 +570,7 @@ export const fetchFilterOptions = async () => {
       }
 
       // Extract DRIVETRAIN from ACF field 'drivetrain'
-      const drivetrain = getACFValue('drivetrain') || getAttributeValue('drivetrain');
+      const drivetrain = getACFValue('drivetrain') || getAttributeValue('drivetrain') || getAttributeValue('drive');
       if (drivetrain) {
         drivetrains.set(drivetrain, (drivetrains.get(drivetrain) || 0) + 1);
       }
@@ -588,8 +599,8 @@ export const fetchFilterOptions = async () => {
         interiorColors.set(interiorColor, (interiorColors.get(interiorColor) || 0) + 1);
       }
     });
-    
-    return {
+
+    const filterOptions = {
       makes: Array.from(makes.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
       models: Array.from(models.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
       years: Array.from(years.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.name - a.name),
@@ -603,24 +614,20 @@ export const fetchFilterOptions = async () => {
       interiorColors: Array.from(interiorColors.entries()).map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count),
       total: allProducts.total
     };
+
+    console.log('✅ Filter options extracted successfully:', {
+      makes: filterOptions.makes.length,
+      models: filterOptions.models.length,
+      years: filterOptions.years.length,
+      bodyTypes: filterOptions.bodyTypes.length
+    });
+
+    return filterOptions;
+
   } catch (error) {
     console.error('Error fetching filter options:', error);
-
-    // Check if it's a CORS error
-    if (error.message.includes('Failed to fetch') || error.name === 'TypeError') {
-      console.warn('🚨 CORS Error in filter options. Using fallback data.');
-      return getFallbackFilterOptions();
-    }
-
-    // Return fallback empty data if other API error
-    return {
-      makes: [],
-      models: [],
-      years: [],
-      conditions: [],
-      bodyTypes: [],
-      total: 0
-    };
+    console.warn('🚨 Filter options error, using fallback data');
+    return getFallbackFilterOptions();
   }
 };
 
