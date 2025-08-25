@@ -200,21 +200,27 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return vehicle.seller_data.business_name;
     }
 
-    // Check for account number first
+    // Step 2: Try ACF seller name fields directly
     const metaData = vehicle.meta_data || [];
+
+    // Primary seller name field (with typo that matches WordPress)
+    const primarySellerName = getSellerField('acount_name_seller');
+    if (primarySellerName && primarySellerName.trim() !== '') {
+      return primarySellerName;
+    }
+
+    // Corrected field name as fallback
+    const correctSellerName = getSellerField('account_name_seller');
+    if (correctSellerName && correctSellerName.trim() !== '') {
+      return correctSellerName;
+    }
+
+    // Step 3: Map based on account number (for backend logic) but show proper dealer names
     const accountMeta = metaData.find(m => m.key === 'account_number_seller');
-
     if (accountMeta && accountMeta.value) {
-      console.log('📍 Account found:', accountMeta.value);
-
-      // Force Carson Cars for account 100082
-      if (accountMeta.value === '100082') {
-        console.log('✅ FORCING Carson Cars for account 100082');
-        return 'Carson Cars';
-      }
-
-      // Map other known account numbers
+      // Map account numbers to dealer names (NEVER show account number to users)
       const dealerMap = {
+        '100082': 'Carson Cars',
         '73': 'Del Sol Auto Sales',
         '101': 'Carson Cars',
         '205': 'Northwest Auto Group',
@@ -224,11 +230,11 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
       const dealerName = dealerMap[accountMeta.value];
       if (dealerName) {
-        console.log('✅ MAPPED dealer:', dealerName);
         return dealerName;
       }
 
-      return `Dealer Account #${accountMeta.value}`;
+      // If account number not in map, return generic dealer name (never show account number)
+      return 'Contact Dealer';
     }
 
     // Check for direct seller name in meta_data
