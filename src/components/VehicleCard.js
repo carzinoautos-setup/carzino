@@ -301,7 +301,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     // Debug: Show what we're getting instead of proper location
     if (!hasSellerData()) {
       console.log('❌ No seller data for location in vehicle:', vehicle.title);
-      return 'No Location Data';
+      return 'Location Unavailable';
     }
 
     // If we have seller data but no location fields
