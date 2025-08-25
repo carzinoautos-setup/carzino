@@ -400,7 +400,7 @@ export const fetchVehicles = async (params = {}) => {
     }
 
     // For any other error, still return fallback data to keep app working
-    console.warn('🚨 Unexpected error, using fallback data:', error.message);
+    console.warn('��� Unexpected error, using fallback data:', error.message);
     return getFallbackVehicles();
   }
 };
@@ -476,8 +476,118 @@ const getFallbackFilterOptions = () => ({
   total: 6
 });
 
+// Generate cascading filter options based on current filter selections
+export const getFilteredOptions = (allVehicles, currentFilters = {}) => {
+  // Filter vehicles based on current selections (excluding the filter we're calculating options for)
+  const getFilteredVehicles = (excludeCategory = null) => {
+    return allVehicles.filter(vehicle => {
+      // Check each filter category except the one we're excluding
+      for (const [category, values] of Object.entries(currentFilters)) {
+        if (category === excludeCategory) continue;
+        if (!values || (Array.isArray(values) && values.length === 0)) continue;
+        if (category === 'priceMin' || category === 'priceMax' || category === 'paymentMin' || category === 'paymentMax') continue;
+
+        // Get vehicle value for this category
+        const vehicleValue = getVehicleFieldValue(vehicle, category);
+        if (!vehicleValue) continue;
+
+        // Check if vehicle matches filter
+        if (Array.isArray(values)) {
+          if (!values.includes(vehicleValue)) {
+            return false;
+          }
+        } else if (values && vehicleValue !== values) {
+          return false;
+        }
+      }
+      return true;
+    });
+  };
+
+  // Helper function to extract field value from vehicle
+  const getVehicleFieldValue = (vehicle, category) => {
+    const metaData = vehicle.meta_data || [];
+    const attributes = vehicle.attributes || [];
+
+    const getACFValue = (fieldName) => {
+      const acfField = metaData.find(meta => meta.key === fieldName);
+      return acfField?.value || null;
+    };
+
+    const getAttributeValue = (attrName) => {
+      const attr = attributes.find(attr =>
+        attr.name.toLowerCase().includes(attrName.toLowerCase())
+      );
+      return attr?.options?.[0] || null;
+    };
+
+    switch (category) {
+      case 'make':
+        return getACFValue('make') || getAttributeValue('make');
+      case 'model':
+        return getACFValue('model') || getAttributeValue('model');
+      case 'year':
+        return (getACFValue('year') || getAttributeValue('year'))?.toString();
+      case 'condition':
+        return getACFValue('condition') || (vehicle.stock_status === 'instock' ? 'Available' : 'Sold');
+      case 'vehicleType':
+      case 'bodyType':
+        const bodyType = getACFValue('body_type');
+        if (bodyType) return bodyType;
+        return vehicle.categories.find(cat => cat.name !== 'Uncategorized')?.name || null;
+      case 'driveType':
+        return getACFValue('drivetrain') || getAttributeValue('drivetrain') || getAttributeValue('drive');
+      case 'transmissionSpeed':
+      case 'transmission':
+        return getACFValue('transmission') || getAttributeValue('transmission');
+      case 'fuelType':
+        return getACFValue('fuel_type') || getAttributeValue('fuel');
+      case 'trim':
+        return getACFValue('trim');
+      case 'exteriorColor':
+        return getACFValue('exterior_color');
+      case 'interiorColor':
+        return getACFValue('interior_color');
+      default:
+        return null;
+    }
+  };
+
+  // Generate options for each category based on filtered vehicles
+  const generateOptions = (category) => {
+    const filteredVehicles = getFilteredVehicles(category);
+    const counts = new Map();
+
+    filteredVehicles.forEach(vehicle => {
+      const value = getVehicleFieldValue(vehicle, category);
+      if (value) {
+        counts.set(value, (counts.get(value) || 0) + 1);
+      }
+    });
+
+    return Array.from(counts.entries())
+      .map(([name, count]) => ({ name, count }))
+      .sort((a, b) => b.count - a.count);
+  };
+
+  return {
+    makes: generateOptions('make'),
+    models: generateOptions('model'),
+    years: generateOptions('year'),
+    conditions: generateOptions('condition'),
+    bodyTypes: generateOptions('vehicleType'),
+    drivetrains: generateOptions('driveType'),
+    transmissions: generateOptions('transmissionSpeed'),
+    fuelTypes: generateOptions('fuelType'),
+    trims: generateOptions('trim'),
+    exteriorColors: generateOptions('exteriorColor'),
+    interiorColors: generateOptions('interiorColor'),
+    total: allVehicles.length
+  };
+};
+
 // Fetch filter options based on real data with improved error handling
-export const fetchFilterOptions = async () => {
+export const fetchFilterOptions = async (currentFilters = {}) => {
   try {
     console.log('🔍 Fetching filter options from vehicle data...');
 
