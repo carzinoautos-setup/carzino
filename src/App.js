@@ -339,12 +339,15 @@ function App() {
         : { makes: [], models: [], conditions: [], bodyTypes: [], total: 0 };
 
       if (vehicleResult.status === 'rejected') {
-        console.error('Vehicle data failed:', vehicleResult.reason);
-        setError('Failed to load vehicle data - using fallback');
+        console.warn('Vehicle data failed, using fallback:', vehicleResult.reason.message);
+        // Don't show error if we have fallback data working
+        if (!vehicleData.results || vehicleData.results.length === 0) {
+          setError('Failed to load vehicle data');
+        }
       }
 
       if (filterResult.status === 'rejected') {
-        console.error('Filter data failed:', filterResult.reason);
+        console.warn('Filter data failed, using fallback:', filterResult.reason.message);
         // Don't show error for filter failure, just log it
       }
 
