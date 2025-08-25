@@ -304,7 +304,7 @@ function App() {
 
       if (vehicleResult.status === 'rejected') {
         console.warn('Vehicle data failed, using fallback:', vehicleResult.reason.message);
-        console.log('��� Vehicle data after failure:', {
+        console.log('📊 Vehicle data after failure:', {
           hasResults: !!vehicleData.results,
           resultsLength: vehicleData.results?.length || 0,
           total: vehicleData.total
@@ -693,40 +693,14 @@ function App() {
 
   // Filter vehicles based on selected filters
   const getFilteredVehicles = () => {
-    console.log(`🚨 DEBUG: getFilteredVehicles called!`);
     let filtered = vehicles;
-    const originalCount = filtered.length;
-
-    console.log(`🔍 Starting vehicle filtering with ${originalCount} total vehicles`);
-    console.log(`🔍 Current filters:`, filters);
-
-    // Debug: Show what makes we have in all vehicles
-    if (filters.make && filters.make.length > 0) {
-      const allMakes = vehicles.map(v => extractMakeFromVehicle(v)).filter(Boolean);
-      const makeCount = allMakes.reduce((acc, make) => {
-        acc[make] = (acc[make] || 0) + 1;
-        return acc;
-      }, {});
-      console.log(`📊 Make distribution in all vehicles:`, makeCount);
-    }
 
     // Apply make filter
     if (filters.make && filters.make.length > 0) {
-      const beforeMakeFilter = filtered.length;
-      console.log(`🔍 Applying make filter for: [${filters.make.join(', ')}]`);
-
-      filtered = filtered.filter((vehicle, index) => {
+      filtered = filtered.filter((vehicle) => {
         const vehicleMake = extractMakeFromVehicle(vehicle);
-        const matches = vehicleMake && filters.make.includes(vehicleMake);
-
-        // Log first 10 vehicles when filtering by make to debug the issue
-        if (index < 10) {
-          console.log(`🚗 Vehicle ${index + 1}: "${vehicle.title}" - Make: "${vehicleMake}" - Matches: ${matches}`);
-        }
-
-        return matches;
+        return vehicleMake && filters.make.includes(vehicleMake);
       });
-      console.log(`🔍 Make filter applied: ${beforeMakeFilter} → ${filtered.length} vehicles (filtered by: ${filters.make.join(', ')})`);
     }
 
     // Apply model filter
