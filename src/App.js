@@ -274,13 +274,29 @@ function App() {
     const testConnection = async () => {
 
       try {
-        // Test API connection with reasonable timeout
+        // Test API connection with multiple layers of error handling
         const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('API test timeout')), 10000)
         );
 
+        // Wrap API test in additional error handling to catch CORS/fetch errors
+        const safeAPITest = async () => {
+          try {
+            return await testAPIConnection();
+          } catch (apiError) {
+            // Catch any errors from the API test function itself
+            console.warn('🔒 API test caught error:', apiError.message);
+            return {
+              success: false,
+              message: 'Connection blocked by browser security',
+              isCorsError: true,
+              shouldUseFallback: true
+            };
+          }
+        };
+
         const result = await Promise.race([
-          testAPIConnection(),
+          safeAPITest(),
           timeoutPromise
         ]);
 
