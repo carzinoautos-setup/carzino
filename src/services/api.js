@@ -554,19 +554,14 @@ export const fetchVehicles = async (params = {}) => {
     // Try URL-based authentication with timeout
     const urlWithAuth = `${WC_API_BASE}/products?${queryParams}&consumer_key=${WC_CONSUMER_KEY}&consumer_secret=${WC_CONSUMER_SECRET}`;
     console.log('📍 Fetching vehicles from:', urlWithAuth.substring(0, 100) + '...');
-    console.log('🌍 Current origin:', window.location.origin);
-    console.log('🎯 Target API:', WC_API_BASE);
 
     const startTime = Date.now();
     const response = await fetchWithTimeout(urlWithAuth, {
       method: 'GET',
-      mode: 'cors',
       headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'Carzino-React-App/1.0',
-        'Origin': window.location.origin
+        'Accept': 'application/json'
       }
-    }, 15000); // 15 second timeout for better reliability
+    }, 10000); // 10 second timeout
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
