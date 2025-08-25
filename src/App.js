@@ -651,7 +651,7 @@ function App() {
       newFilters.model = [];
       newFilters.trim = [];
     } else if (category === 'model') {
-      console.log('��� Model filter removed, clearing dependent trim filters');
+      console.log('🔗 Model filter removed, clearing dependent trim filters');
       newFilters.trim = [];
     }
 
@@ -715,7 +715,7 @@ function App() {
     let filtered = vehicles;
     const originalCount = filtered.length;
 
-    console.log(`🔍 Starting vehicle filtering with ${originalCount} total vehicles`);
+    console.log(`��� Starting vehicle filtering with ${originalCount} total vehicles`);
     console.log(`🔍 Current filters:`, filters);
 
     // Apply make filter
@@ -1054,6 +1054,15 @@ function App() {
   console.log(`🚗 Total vehicles loaded: ${vehicles.length}`);
   console.log(`🔍 All filtered vehicles count: ${allFilteredVehicles.length}`);
   console.log(`📄 Current vehicles to display: ${currentVehicles.length}`);
+  console.log(`🎯 Current filters:`, filters);
+
+  // Debug: Show first few filtered vehicles
+  if (allFilteredVehicles.length > 0 && allFilteredVehicles.length !== vehicles.length) {
+    console.log(`📋 First 5 filtered vehicles:`, allFilteredVehicles.slice(0, 5).map(v => ({
+      title: v.title,
+      id: v.id
+    })));
+  }
 
   // Loading state
   if (loading && vehicles.length === 0) {
