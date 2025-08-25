@@ -1027,15 +1027,38 @@ function App() {
           )}
         </p>
         {error && (
-          <div style={{ 
-            background: '#fee', 
-            color: '#c33', 
-            padding: '0.5rem 1rem', 
-            borderRadius: '4px', 
+          <div style={{
+            background: '#fee',
+            color: '#c33',
+            padding: '0.5rem 1rem',
+            borderRadius: '4px',
             margin: '0.5rem 0',
             fontSize: '0.9rem'
           }}>
-            ���️ {error}
+            ⚠️ {error}
+            {error.includes('server error') && (
+              <details style={{ marginTop: '0.5rem', fontSize: '0.8rem', color: '#666' }}>
+                <summary style={{ cursor: 'pointer', fontWeight: 'bold' }}>
+                  🔍 Troubleshooting Steps (Click to expand)
+                </summary>
+                <div style={{ marginTop: '0.5rem', paddingLeft: '1rem' }}>
+                  <p><strong>Common causes of 500 errors:</strong></p>
+                  <ul style={{ margin: '0.5rem 0', paddingLeft: '1rem' }}>
+                    <li>WooCommerce plugin not active or properly configured</li>
+                    <li>WordPress PHP errors or memory limits</li>
+                    <li>Invalid API credentials or permissions</li>
+                    <li>Database connection issues</li>
+                  </ul>
+                  <p><strong>Quick checks:</strong></p>
+                  <ol style={{ margin: '0.5rem 0', paddingLeft: '1rem' }}>
+                    <li>Visit your WordPress site: <a href={process.env.REACT_APP_WP_SITE_URL} target="_blank" rel="noopener noreferrer" style={{color: '#007cba'}}>{process.env.REACT_APP_WP_SITE_URL}</a></li>
+                    <li>Check if WooCommerce is active in WordPress admin</li>
+                    <li>Verify API keys in WooCommerce → Settings → Advanced → REST API</li>
+                    <li>Check WordPress error logs or contact your hosting provider</li>
+                  </ol>
+                </div>
+              </details>
+            )}
           </div>
         )}
       </header>
