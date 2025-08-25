@@ -1135,7 +1135,7 @@ const fetchWithTimeout = async (url, options = {}, timeoutMs = 15000, retries = 
 const testBasicConnectivity = async () => {
   try {
     console.log('🌐 Testing basic connectivity to WordPress site...');
-    const response = await fetchWithTimeout(process.env.REACT_APP_WP_SITE_URL, {
+    await fetchWithTimeout(process.env.REACT_APP_WP_SITE_URL, {
       method: 'HEAD',
       mode: 'no-cors'
     }, 5000, 1);
@@ -1156,7 +1156,7 @@ export const testAPIConnection = async () => {
   });
 
   // First test basic connectivity
-  const isReachable = await testBasicConnectivity();
+  await testBasicConnectivity();
 
   // Check if environment variables are missing or invalid
   if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
