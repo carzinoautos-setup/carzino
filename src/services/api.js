@@ -493,11 +493,12 @@ const getFallbackFilterOptions = () => ({
     { name: 'Chevrolet', count: 4 }
   ],
   models: [
-    { name: 'RAV4', count: 1 },
-    { name: 'Camry', count: 1 },
-    { name: 'F-150', count: 1 },
-    { name: 'Mustang', count: 1 },
-    { name: 'Civic', count: 1 }
+    { name: 'F-150', count: 6 },
+    { name: 'Mustang', count: 4 },
+    { name: 'Explorer', count: 3 },
+    { name: 'RAV4', count: 3 },
+    { name: 'Camry', count: 2 },
+    { name: 'Civic', count: 2 }
   ],
   years: [
     { name: '2021', count: 2 },
