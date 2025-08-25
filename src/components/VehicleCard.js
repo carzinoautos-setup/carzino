@@ -953,10 +953,18 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           </div>
         </div>
 
-        <div className="dealer-section">
+        <div className="dealer-section" style={{border: '2px solid red', background: '#ffe6e6'}}>
           <div className="dealer-info">
-            <div className="dealer-name">{getSellerName()}</div>
-            <div className="dealer-location">{getSellerLocation()}</div>
+            <div className="dealer-name" style={{color: 'red', fontWeight: 'bold'}}>
+              DEBUG: {getSellerName()}
+              {vehicle.seller_data ? ' (has seller_data)' : ' (no seller_data)'}
+            </div>
+            <div className="dealer-location" style={{color: 'blue', fontWeight: 'bold'}}>
+              LOCATION: {getSellerLocation()}
+            </div>
+            <div style={{fontSize: '10px', color: 'purple'}}>
+              META: {vehicle.meta_data ? `${vehicle.meta_data.length} fields` : 'none'}
+            </div>
             {getDistanceDisplay() && (
               <div className="dealer-distance">{getDistanceDisplay()}</div>
             )}
