@@ -301,7 +301,7 @@ export const fetchVehicles = async (params = {}) => {
         'Accept': 'application/json',
         'User-Agent': 'Carzino-React-App/1.0'
       }
-    }, 15000); // 15 second timeout for larger data
+    }, 5000); // 5 second timeout - fail faster in production
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
