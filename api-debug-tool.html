@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carzino API Debug Tool</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .debug-section { background: #f5f5f5; padding: 15px; margin: 15px 0; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; }
+        .warning { background: #fff3cd; border: 1px solid #ffeaa7; }
+        button { background: #007cba; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #005a87; }
+        pre { background: white; padding: 10px; border-radius: 3px; overflow-x: auto; font-size: 12px; }
+        .field-test { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Carzino API Debug Tool</h1>
+    <p>This tool helps debug your WordPress WooCommerce API and seller data integration.</p>
+
+    <!-- WordPress Site URL Input -->
+    <div class="debug-section">
+        <h3>🌐 WordPress Site Configuration</h3>
+        <label for="wpUrl">WordPress Site URL:</label>
+        <input type="text" id="wpUrl" placeholder="https://your-site.com" style="width: 300px; padding: 5px;" />
+        <button onclick="loadFromReact()">Load from React App</button>
+        <div id="urlStatus"></div>
+    </div>
+
+    <!-- Test Buttons -->
+    <div class="debug-section">
+        <h3>🧪 API Tests</h3>
+        <button onclick="testBasicAPI()">1. Test Basic WooCommerce API</button>
+        <button onclick="testSingleProduct()">2. Test Single Product</button>
+        <button onclick="testSellerData()">3. Test Seller Data Enhancement</button>
+        <button onclick="clearResults()">Clear Results</button>
+    </div>
+
+    <!-- Results -->
+    <div id="results"></div>
+
+    <script>
+        // Get WordPress URL from React app environment
+        function loadFromReact() {
+            // Try to get from current page if we're on the same domain
+            const currentDomain = window.location.origin;
+            document.getElementById('wpUrl').value = currentDomain;
+            updateUrlStatus('Loaded from current domain: ' + currentDomain, 'success');
+        }
+
+        function updateUrlStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('urlStatus');
+            statusDiv.innerHTML = `<div class="${type}" style="margin-top: 10px; padding: 10px;">${message}</div>`;
+        }
+
+        function addResult(title, content, type = 'info') {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `debug-section ${type}`;
+            resultDiv.innerHTML = `
+                <h4>${title}</h4>
+                <div>${content}</div>
+            `;
+            resultsDiv.appendChild(resultDiv);
+            resultDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function testBasicAPI() {
+            const wpUrl = document.getElementById('wpUrl').value.trim();
+            if (!wpUrl) {
+                addResult('❌ Error', 'Please enter your WordPress site URL first.', 'error');
+                return;
+            }
+
+            try {
+                addResult('🔄 Testing...', 'Testing basic WooCommerce API connectivity...', 'warning');
+                
+                const testUrl = `${wpUrl}/wp-json/wc/v3/products?per_page=1`;
+                const response = await fetch(testUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addResult('✅ Basic API Test', `
+                        <p><strong>Success!</strong> WooCommerce API is accessible.</p>
+                        <p><strong>Response Status:</strong> ${response.status}</p>
+                        <p><strong>Products Found:</strong> ${data.length}</p>
+                        <p><strong>Test URL:</strong> <code>${testUrl}</code></p>
+                        <details>
+                            <summary>View Raw Response</summary>
+                            <pre>${JSON.stringify(data, null, 2)}</pre>
+                        </details>
+                    `, 'success');
+                } else {
+                    addResult('❌ Basic API Test Failed', `
+                        <p><strong>HTTP Status:</strong> ${response.status} ${response.statusText}</p>
+                        <p><strong>Test URL:</strong> <code>${testUrl}</code></p>
+                        <p><strong>Possible Issues:</strong></p>
+                        <ul>
+                            <li>WooCommerce not installed or activated</li>
+                            <li>REST API disabled</li>
+                            <li>CORS issues</li>
+                            <li>Site URL incorrect</li>
+                        </ul>
+                    `, 'error');
+                }
+            } catch (error) {
+                addResult('❌ Basic API Test Error', `
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>Possible Issues:</strong></p>
+                    <ul>
+                        <li>CORS not configured for this domain</li>
+                        <li>Network connectivity issue</li>
+                        <li>Site URL incorrect</li>
+                    </ul>
+                `, 'error');
+            }
+        }
+
+        async function testSingleProduct() {
+            const wpUrl = document.getElementById('wpUrl').value.trim();
+            if (!wpUrl) {
+                addResult('❌ Error', 'Please enter your WordPress site URL first.', 'error');
+                return;
+            }
+
+            try {
+                addResult('🔄 Testing...', 'Fetching single product to examine data structure...', 'warning');
+                
+                const testUrl = `${wpUrl}/wp-json/wc/v3/products?per_page=1`;
+                const response = await fetch(testUrl);
+
+                if (response.ok) {
+                    const products = await response.json();
+                    if (products.length > 0) {
+                        const product = products[0];
+                        
+                        // Check for seller-related fields
+                        const sellerFields = [];
+                        const accountNumberField = product.meta_data?.find(m => m.key === 'account_number_seller');
+                        
+                        if (product.seller_data) {
+                            sellerFields.push('✅ Enhanced seller_data field found!');
+                        } else {
+                            sellerFields.push('❌ No enhanced seller_data field');
+                        }
+
+                        if (accountNumberField) {
+                            sellerFields.push(`✅ account_number_seller: ${accountNumberField.value}`);
+                        } else {
+                            sellerFields.push('❌ No account_number_seller field found');
+                        }
+
+                        // Check meta_data for seller fields
+                        const sellerMetaFields = product.meta_data?.filter(m => m.key.includes('seller')) || [];
+                        
+                        addResult('📊 Single Product Analysis', `
+                            <p><strong>Product:</strong> ${product.name}</p>
+                            <p><strong>Product ID:</strong> ${product.id}</p>
+                            
+                            <h5>🔍 Seller Data Status:</h5>
+                            <ul>
+                                ${sellerFields.map(field => `<li>${field}</li>`).join('')}
+                            </ul>
+                            
+                            <h5>📋 Meta Data Seller Fields (${sellerMetaFields.length}):</h5>
+                            ${sellerMetaFields.length > 0 ? 
+                                `<ul>${sellerMetaFields.map(field => 
+                                    `<li><strong>${field.key}:</strong> ${field.value}</li>`
+                                ).join('')}</ul>` :
+                                '<p>No seller fields found in meta_data</p>'
+                            }
+                            
+                            <details>
+                                <summary>View All Meta Data (${product.meta_data?.length || 0} fields)</summary>
+                                <pre>${JSON.stringify(product.meta_data, null, 2)}</pre>
+                            </details>
+                            
+                            <details>
+                                <summary>View Full Product Data</summary>
+                                <pre>${JSON.stringify(product, null, 2)}</pre>
+                            </details>
+                        `, product.seller_data ? 'success' : 'warning');
+                    } else {
+                        addResult('❌ No Products Found', 'No products found in your WooCommerce store.', 'error');
+                    }
+                } else {
+                    addResult('❌ Product Test Failed', `HTTP Status: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult('❌ Product Test Error', error.message, 'error');
+            }
+        }
+
+        async function testSellerData() {
+            const wpUrl = document.getElementById('wpUrl').value.trim();
+            if (!wpUrl) {
+                addResult('❌ Error', 'Please enter your WordPress site URL first.', 'error');
+                return;
+            }
+
+            try {
+                addResult('🔄 Testing...', 'Testing seller data enhancement specifically...', 'warning');
+                
+                const testUrl = `${wpUrl}/wp-json/wc/v3/products?per_page=3`;
+                const response = await fetch(testUrl);
+
+                if (response.ok) {
+                    const products = await response.json();
+                    let enhancedCount = 0;
+                    let relationshipCount = 0;
+                    const analysisResults = [];
+
+                    products.forEach((product, index) => {
+                        const hasEnhanced = !!product.seller_data;
+                        const hasRelationship = product.meta_data?.some(m => m.key === 'account_number_seller');
+                        
+                        if (hasEnhanced) enhancedCount++;
+                        if (hasRelationship) relationshipCount++;
+
+                        analysisResults.push(`
+                            <div class="field-test">
+                                <strong>Product ${index + 1}:</strong> ${product.name}<br>
+                                <strong>Enhanced Data:</strong> ${hasEnhanced ? '✅ Yes' : '❌ No'}<br>
+                                <strong>Relationship Field:</strong> ${hasRelationship ? '✅ Yes' : '❌ No'}<br>
+                                ${hasEnhanced ? 
+                                    `<strong>Seller Name:</strong> ${product.seller_data.account_name_seller || product.seller_data.acount_name_seller || 'Missing'}<br>
+                                     <strong>Seller Location:</strong> ${product.seller_data.city_seller || 'Missing'}, ${product.seller_data.state_seller || 'Missing'}` :
+                                    ''
+                                }
+                            </div>
+                        `);
+                    });
+
+                    const status = enhancedCount > 0 ? 'success' : 'warning';
+                    const message = enhancedCount > 0 ? 
+                        '✅ Seller Data Enhancement is Working!' : 
+                        '⚠️ Seller Data Enhancement Not Detected';
+
+                    addResult('🎯 Seller Data Enhancement Test', `
+                        <h5>${message}</h5>
+                        <p><strong>Products Tested:</strong> ${products.length}</p>
+                        <p><strong>Products with Enhanced Data:</strong> ${enhancedCount}</p>
+                        <p><strong>Products with Relationship Field:</strong> ${relationshipCount}</p>
+                        
+                        <h5>📋 Product Analysis:</h5>
+                        ${analysisResults.join('')}
+                        
+                        ${enhancedCount === 0 ? `
+                            <h5>❓ Next Steps:</h5>
+                            <ol>
+                                <li>Install the WordPress enhancement code via WPCode plugin</li>
+                                <li>Make sure the code is activated</li>
+                                <li>Check that you have products with account_number_seller field</li>
+                                <li>Verify sellers_account post type exists</li>
+                            </ol>
+                        ` : ''}
+                    `, status);
+                } else {
+                    addResult('❌ Seller Data Test Failed', `HTTP Status: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                addResult('❌ Seller Data Test Error', error.message, 'error');
+            }
+        }
+
+        // Auto-load from current domain on page load
+        window.addEventListener('load', () => {
+            loadFromReact();
+        });
+    </script>
+</body>
+</html>
