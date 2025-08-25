@@ -91,11 +91,34 @@ const URLParamsToFilters = (searchParams) => {
 };
 
 function App() {
-  // Initialize filters from URL parameters
+  // Initialize filters from URL parameters with cleanup
   const getInitialFilters = () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.toString()) {
-      return URLParamsToFilters(urlParams);
+      const filters = URLParamsToFilters(urlParams);
+
+      // Clean up any problematic filter values
+      const cleanFilters = { ...filters };
+
+      // Remove any array filters with suspicious values (like timestamps)
+      Object.keys(cleanFilters).forEach(key => {
+        if (Array.isArray(cleanFilters[key])) {
+          cleanFilters[key] = cleanFilters[key].filter(value => {
+            // Remove values that look like timestamps or are unusually long
+            return value && value.length < 20 && !(/^\d{10,}$/.test(value));
+          });
+        }
+      });
+
+      // If we cleaned anything, update the URL
+      const originalString = filtersToURLParams(filters);
+      const cleanedString = filtersToURLParams(cleanFilters);
+      if (originalString !== cleanedString) {
+        console.log('🧹 Cleaned up problematic filters');
+        window.history.replaceState(null, '', cleanedString ? `?${cleanedString}` : window.location.pathname);
+      }
+
+      return cleanFilters;
     }
 
     // Default filters if no URL parameters
