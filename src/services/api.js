@@ -1141,7 +1141,7 @@ export const testAPIConnection = async () => {
         'Accept': 'application/json',
         'User-Agent': 'Carzino-React-App/1.0'
       }
-    }, 6000); // 6 second timeout for faster startup
+    }, 15000); // 15 second timeout for slower WordPress sites
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ API response received in ${responseTime}ms`);
