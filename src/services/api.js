@@ -579,14 +579,36 @@ export const fetchVehicles = async (params = {}) => {
       let errorText = '';
       try {
         errorText = await responseClone.text();
-      } catch (e) {
-        errorText = 'Could not read error response';
+      } catch (cloneError) {
+        console.warn('Could not clone error response:', cloneError.message);
+        try {
+          const buffer = await response.arrayBuffer();
+          errorText = new TextDecoder().decode(buffer);
+        } catch (bufferError) {
+          errorText = 'Could not read error response body';
+        }
       }
+
+      // Enhanced error logging with specific guidance
       console.error('❌ API Response Error:', {
         status: response.status,
         statusText: response.statusText,
-        responseText: errorText.substring(0, 200) + '...'
+        url: urlWithAuth.replace(/consumer_(key|secret)=[^&]+/g, 'consumer_$1=***'),
+        responseText: errorText.substring(0, 300)
       });
+
+      // Specific handling for common errors
+      if (response.status === 500) {
+        console.error('🔧 500 Internal Server Error - Likely WordPress/WooCommerce configuration issue:');
+        console.error('  • Check WordPress site health');
+        console.error('  • Verify WooCommerce plugin is active');
+        console.error('  • Check WordPress error logs');
+        console.error('  • Test API credentials in WordPress admin');
+      } else if (response.status === 404) {
+        console.error('🔍 404 Not Found - WooCommerce API endpoint not available:');
+        console.error('  • Ensure WooCommerce plugin is installed and active');
+        console.error('  • Check if REST API is enabled in WooCommerce settings');
+      }
 
       // For API errors, return fallback data instead of throwing
       console.warn('🚨 API error detected, using fallback data');
