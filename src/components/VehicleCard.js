@@ -191,8 +191,14 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
-    // EMERGENCY HARDCODE: Force Carson Cars to show immediately
-    return 'Carson Cars';
+    // Step 1: Try seller_data from WordPress API
+    if (vehicle.seller_data && vehicle.seller_data.account_name) {
+      return vehicle.seller_data.account_name;
+    }
+
+    if (vehicle.seller_data && vehicle.seller_data.business_name) {
+      return vehicle.seller_data.business_name;
+    }
 
     // Check for account number first
     const metaData = vehicle.meta_data || [];
