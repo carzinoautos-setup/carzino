@@ -648,6 +648,21 @@ export const getFilteredOptions = (allVehicles, currentFilters = {}) => {
       .sort((a, b) => b.count - a.count);
   };
 
+  // Debug logging for cascading
+  const hasActiveFilters = Object.entries(currentFilters).some(([key, values]) => {
+    if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
+      return false;
+    }
+    return Array.isArray(values) ? values.length > 0 : (values && values.toString().trim() !== '');
+  });
+
+  if (hasActiveFilters) {
+    console.log('🔗 Generating cascading filter options based on selections:', currentFilters);
+    const totalVehicles = allVehicles.length;
+    const filteredForMake = getFilteredVehicles('make').length;
+    console.log(`📊 Cascading filters: ${totalVehicles} total → ${filteredForMake} matching current filters`);
+  }
+
   return {
     makes: generateOptions('make'),
     models: generateOptions('model'),
