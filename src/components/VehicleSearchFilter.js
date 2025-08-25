@@ -574,6 +574,7 @@ const VehicleSearchFilter = ({
                   value.forEach((item, index) => {
                     console.log(`  - Item ${index}: "${item}" (type: ${typeof item})`);
                     if (item && item.toString().trim() !== '') {
+                      console.log(`🎯 ADDING FILTER PILL: ${category} = "${item}"`);
                       filterPills.push(
                         <span key={`${category}-${index}`} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
                           <span className="truncate flex-1">{item}</span>
@@ -589,6 +590,7 @@ const VehicleSearchFilter = ({
                   });
                 } else if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[category] || '')) {
                   console.log(`❌ Processing non-array filter ${category}:`, value, 'toString:', value.toString());
+                  console.log(`🎯 ADDING FILTER PILL: ${category} = "${value}"`);
                   filterPills.push(
                     <span key={category} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
                       <span className="truncate flex-1">{value}</span>
