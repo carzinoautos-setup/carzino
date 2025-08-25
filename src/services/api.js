@@ -1228,21 +1228,59 @@ export const testAPIConnection = async () => {
     const contentType = response.headers.get('content-type');
 
     if (!response.ok) {
-      // Clone for error text reading
+      // Handle different error types with specific messaging
       let errorText = '';
+      let diagnosticMessage = '';
+
+      // Attempt to read error response body with multiple strategies
       try {
         const errorClone = response.clone();
         errorText = await errorClone.text();
-      } catch (e) {
-        console.warn('Could not clone/read error response:', e.message);
-        errorText = `Error ${response.status}: Could not read response body`;
+      } catch (cloneError) {
+        console.warn('Could not clone error response:', cloneError.message);
+
+        // Try alternative approach for malformed responses
+        try {
+          const buffer = await response.arrayBuffer();
+          errorText = new TextDecoder().decode(buffer);
+        } catch (bufferError) {
+          console.warn('Could not read response as buffer:', bufferError.message);
+          errorText = `Unable to read error response body`;
+        }
       }
-      console.error('❌ API Error Response:', errorText.substring(0, 500));
+
+      // Provide specific diagnostics for common API errors
+      if (response.status === 500) {
+        diagnosticMessage = `🔧 WordPress Internal Server Error (500):\n` +
+          `• Check if WooCommerce plugin is active and properly configured\n` +
+          `• Verify WordPress site is functioning (visit ${process.env.REACT_APP_WP_SITE_URL})\n` +
+          `• Check WordPress error logs for PHP errors\n` +
+          `• Ensure API credentials are valid and have proper permissions`;
+      } else if (response.status === 404) {
+        diagnosticMessage = `🔍 API Endpoint Not Found (404):\n` +
+          `• WooCommerce REST API may not be enabled\n` +
+          `• Check if WooCommerce plugin is installed and active\n` +
+          `• Verify API endpoint URL: ${WC_API_BASE}`;
+      } else if (response.status === 401 || response.status === 403) {
+        diagnosticMessage = `🔑 API Authentication Error (${response.status}):\n` +
+          `• Check WooCommerce API credentials\n` +
+          `• Verify Consumer Key and Secret are correct\n` +
+          `• Ensure API user has proper permissions`;
+      }
+
+      console.error('❌ API Error Response:', {
+        status: response.status,
+        statusText: response.statusText,
+        errorBody: errorText.substring(0, 500),
+        diagnostics: diagnosticMessage
+      });
 
       return {
         success: false,
         message: `API Error: ${response.status} ${response.statusText}`,
-        details: errorText.substring(0, 200)
+        details: errorText.substring(0, 200),
+        diagnostics: diagnosticMessage,
+        shouldUseFallback: true
       };
     }
 
