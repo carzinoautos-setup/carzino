@@ -1224,14 +1224,15 @@ export const testAPIConnection = async () => {
       responseTime: `${responseTime}ms`
     });
 
-    // Clone response for multiple reads if needed
-    const responseClone = response.clone();
+    // Get content type before any body reading
+    const contentType = response.headers.get('content-type');
 
     if (!response.ok) {
-      // Read error response text
+      // Clone for error text reading
+      const errorClone = response.clone();
       let errorText = '';
       try {
-        errorText = await responseClone.text();
+        errorText = await errorClone.text();
       } catch (e) {
         errorText = 'Could not read error response';
       }
@@ -1244,13 +1245,13 @@ export const testAPIConnection = async () => {
       };
     }
 
-    // Check content type before reading
-    const contentType = response.headers.get('content-type');
+    // Check content type before reading body
     if (!contentType || !contentType.includes('application/json')) {
-      // Read non-JSON response text for debugging
+      // Clone for debug text reading
+      const debugClone = response.clone();
       let responseText = '';
       try {
-        responseText = await responseClone.text();
+        responseText = await debugClone.text();
       } catch (e) {
         responseText = 'Could not read response';
       }
@@ -1264,7 +1265,7 @@ export const testAPIConnection = async () => {
       };
     }
 
-    // Try to parse JSON response
+    // Use original response for JSON parsing (should be safe now)
     let data;
     try {
       data = await response.json();
