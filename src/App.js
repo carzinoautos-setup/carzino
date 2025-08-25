@@ -715,8 +715,18 @@ function App() {
     let filtered = vehicles;
     const originalCount = filtered.length;
 
-    console.log(`��� Starting vehicle filtering with ${originalCount} total vehicles`);
+    console.log(`🔍 Starting vehicle filtering with ${originalCount} total vehicles`);
     console.log(`🔍 Current filters:`, filters);
+
+    // Debug: Show what makes we have in all vehicles
+    if (filters.make && filters.make.length > 0) {
+      const allMakes = vehicles.map(v => extractMakeFromVehicle(v)).filter(Boolean);
+      const makeCount = allMakes.reduce((acc, make) => {
+        acc[make] = (acc[make] || 0) + 1;
+        return acc;
+      }, {});
+      console.log(`📊 Make distribution in all vehicles:`, makeCount);
+    }
 
     // Apply make filter
     if (filters.make && filters.make.length > 0) {
@@ -964,7 +974,7 @@ function App() {
       return model;
     }
 
-    console.log(`❌ No model found for ${vehicle.title}`);
+    console.log(`�� No model found for ${vehicle.title}`);
     return null;
   };
 
