@@ -4,7 +4,7 @@ import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
-import { fetchVehicles, fetchFilterOptions, testAPIConnection } from './services/api';
+import { fetchVehicles, fetchFilterOptions } from './services/api';
 
 // URL parameter helpers
 const filtersToURLParams = (filters, page = 1) => {
@@ -303,7 +303,7 @@ function App() {
   // Connect to real WordPress API
   useEffect(() => {
     const connectToAPI = async () => {
-      console.log('🚀 CONNECTING TO YOUR REAL WORDPRESS DATA...');
+      console.log('�� CONNECTING TO YOUR REAL WORDPRESS DATA...');
       setLoading(true);
 
       try {
