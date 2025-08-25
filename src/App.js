@@ -1348,7 +1348,7 @@ function App() {
 
   // Debug: Show first few filtered vehicles
   if (allFilteredVehicles.length > 0 && allFilteredVehicles.length !== vehicles.length) {
-    console.log(`📋 First 5 filtered vehicles:`, allFilteredVehicles.slice(0, 5).map(v => ({
+    console.log(`���� First 5 filtered vehicles:`, allFilteredVehicles.slice(0, 5).map(v => ({
       title: v.title,
       id: v.id
     })));
@@ -1389,7 +1389,9 @@ function App() {
         <p>
           {apiConnected
             ? `Connected to your WooCommerce inventory (${actualTotalResults} of ${totalResults} vehicles shown)`
-            : `⚠️ Showing limited demo data (${actualTotalResults} vehicles) - WordPress API connection failed`
+            : window.location.hostname.includes('fly.dev')
+              ? `🚀 Demo Mode: Showing ${actualTotalResults} realistic vehicles (WordPress API confirmed working but CORS restricted)`
+              : `⚠️ Showing limited demo data (${actualTotalResults} vehicles) - WordPress API connection failed`
           }
           {!apiConnected && (
             <span style={{ marginLeft: '10px' }}>
