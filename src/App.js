@@ -272,21 +272,6 @@ function App() {
   // Test API connection on mount
   useEffect(() => {
     const testConnection = async () => {
-      // Detect if we're on Fly.dev deployment
-      const isOnFlyDev = window.location.hostname.includes('fly.dev');
-
-      if (isOnFlyDev) {
-        console.log('🚀 Fly.dev deployment detected - WordPress API confirmed working but using demo data due to CORS');
-        setApiConnected(false);
-        setError('⚠️ Demo Mode: WordPress API working but CORS restricted. Showing realistic demo data.');
-
-        // Load realistic demo data immediately
-        const demoData = getRealisticDemoVehicles();
-        setVehicles(demoData);
-        setTotalResults(demoData.length);
-        setLoading(false);
-        return;
-      }
 
       try {
         // Test API connection with reasonable timeout for local development
