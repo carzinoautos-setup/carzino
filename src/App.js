@@ -167,8 +167,11 @@ function App() {
     const handlePopState = () => {
       const urlParams = new URLSearchParams(window.location.search);
       const newFilters = URLParamsToFilters(urlParams);
-      console.log('🔙 Browser navigation detected, updating filters from URL');
+      const newPage = parseInt(urlParams.get('page') || '1', 10);
+
+      console.log('🔙 Browser navigation detected, updating filters and page from URL');
       setFilters(newFilters);
+      setCurrentPage(newPage);
     };
 
     window.addEventListener('popstate', handlePopState);
