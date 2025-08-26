@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
 import './App.css';
 import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import VehicleCardSkeleton from './components/VehicleCardSkeleton';
-import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
+
+// Lazy load heavy components for better performance
+const Pagination = lazy(() => import('./components/Pagination'));
 import { fetchVehiclesPaginated } from './services/api-paginated';
 
 // URL parameter helpers
@@ -617,7 +619,7 @@ function App() {
             <p className="error">❌ {error}</p>
           ) : (
             <div className="status-info">
-              <p>{apiConnected ? '��� Connected to WooCommerce inventory' : '🎯 Demo Mode - WooCommerce API unreachable'} ({totalResults.toLocaleString()} {apiConnected ? 'vehicles' : 'sample vehicles'})</p>
+              <p>{apiConnected ? '✅ Connected to WooCommerce inventory' : '🎯 Demo Mode - WooCommerce API unreachable'} ({totalResults.toLocaleString()} {apiConnected ? 'vehicles' : 'sample vehicles'})</p>
               <div className="search-stats">
                 <span>📄 Showing {startResult.toLocaleString()}-{endResult.toLocaleString()}</span>
                 <span>⏱️ Search: {searchTime}ms{searchTime < 50 ? ' ⚡ CACHED' : ''}</span>
