@@ -67,6 +67,102 @@ const testAPIConnectivity = async () => {
   }
 };
 
+/**
+ * Fetch all vehicles matching filters for filter option extraction
+ */
+export const fetchAllFilteredVehicles = async (filters = {}) => {
+  try {
+    console.log('🔍 Fetching ALL vehicles for filter options with filters:', filters);
+
+    const baseParams = {
+      per_page: '100', // Fetch more for filter options (can increase if needed)
+      status: 'publish'
+    };
+
+    const filterParams = buildWooCommerceFilters(filters);
+    const allParams = { ...baseParams, ...filterParams };
+    const params = new URLSearchParams(allParams);
+    const fullUrl = `${API_BASE}/products?${params}`;
+
+    // Prepare authentication headers
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    };
+
+    if (process.env.REACT_APP_WC_CONSUMER_KEY) {
+      const credentials = btoa(`${process.env.REACT_APP_WC_CONSUMER_KEY}:${process.env.REACT_APP_WC_CONSUMER_SECRET}`);
+      headers['Authorization'] = `Basic ${credentials}`;
+    }
+
+    const response = await fetch(fullUrl, {
+      method: 'GET',
+      headers: headers,
+    });
+
+    if (!response.ok) {
+      console.warn('⚠️ Failed to fetch vehicles for filter options, using empty array');
+      return [];
+    }
+
+    const vehicles = await response.json();
+    console.log('📦 Fetched', vehicles.length, 'vehicles for filter option extraction');
+
+    // Transform and apply client-side filtering
+    const transformedVehicles = vehicles.map(transformWooCommerceVehicle);
+
+    const filteredVehicles = transformedVehicles.filter(vehicle => {
+      const getMeta = (key) => {
+        const meta = vehicle.meta_data?.find(m => m.key === key);
+        return meta ? meta.value : '';
+      };
+
+      const extractMakeFromTitle = () => {
+        const titleParts = vehicle.title.split(' ');
+        return titleParts[1] || '';
+      };
+
+      // Apply all filter types for comprehensive filtering
+      if (filters.make && filters.make.length > 0) {
+        const vehicleMake = getMeta('make') || extractMakeFromTitle();
+        if (!filters.make.includes(vehicleMake)) {
+          return false;
+        }
+      }
+
+      if (filters.model && filters.model.length > 0) {
+        const vehicleModel = getMeta('model');
+        if (!filters.model.includes(vehicleModel)) {
+          return false;
+        }
+      }
+
+      if (filters.condition && filters.condition.length > 0) {
+        const vehicleCondition = getMeta('condition');
+        if (!filters.condition.includes(vehicleCondition)) {
+          return false;
+        }
+      }
+
+      if (filters.vehicleType && filters.vehicleType.length > 0) {
+        const vehicleType = getMeta('body_type') || getMeta('vehicleType');
+        if (!filters.vehicleType.includes(vehicleType)) {
+          return false;
+        }
+      }
+
+      return true;
+    });
+
+    console.log('✅ Filtered to', filteredVehicles.length, 'vehicles for filter options');
+    return filteredVehicles;
+
+  } catch (error) {
+    console.warn('⚠️ Error fetching vehicles for filter options:', error.message);
+    return [];
+  }
+};
+
 export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {}, sortBy = 'relevance') => {
   // First check if the API is reachable
   const isAPIReachable = await testAPIConnectivity();
