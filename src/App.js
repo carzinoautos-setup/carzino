@@ -157,7 +157,7 @@ function App() {
   // Pagination state
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(6); // 🚀 PERFORMANCE: Start with 6 for ultra-fast loading
+  const [itemsPerPage, setItemsPerPage] = useState(19); // 🚀 PERFORMANCE: Show 19 results as requested
   const [searchTime, setSearchTime] = useState(0);
 
   // Update URL when filters or page change
@@ -617,7 +617,7 @@ function App() {
             <p className="error">❌ {error}</p>
           ) : (
             <div className="status-info">
-              <p>{apiConnected ? '✅ Connected to WooCommerce inventory' : '🎯 Demo Mode - WooCommerce API unreachable'} ({totalResults.toLocaleString()} {apiConnected ? 'vehicles' : 'sample vehicles'})</p>
+              <p>{apiConnected ? '��� Connected to WooCommerce inventory' : '🎯 Demo Mode - WooCommerce API unreachable'} ({totalResults.toLocaleString()} {apiConnected ? 'vehicles' : 'sample vehicles'})</p>
               <div className="search-stats">
                 <span>📄 Showing {startResult.toLocaleString()}-{endResult.toLocaleString()}</span>
                 <span>⏱️ Search: {searchTime}ms{searchTime < 50 ? ' ⚡ CACHED' : ''}</span>
