@@ -181,13 +181,10 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [showingFavorites, setShowingFavorites] = useState(false);
 
-  // Pagination state - NEW: Proper server-side pagination
+  // NEW: Pagination state for server-side pagination
   const [totalResults, setTotalResults] = useState(0);
-  // eslint-disable-next-line no-unused-vars
   const [totalPages, setTotalPages] = useState(0);
-  // eslint-disable-next-line no-unused-vars
   const [itemsPerPage, setItemsPerPage] = useState(20); // Show 20 vehicles per page
-  // eslint-disable-next-line no-unused-vars
   const [searchTime, setSearchTime] = useState(0);
 
   // Update URL when filters or page change
@@ -339,7 +336,7 @@ function App() {
           console.log(`   ${index + 1}. ${vehicle.name} - Account: ${accountNumber} - Has seller_data: ${!!vehicle.seller_data}`);
 
           if (vehicle.seller_data) {
-            console.log(`      ✅ Seller: ${vehicle.seller_data.account_name}`);
+            console.log(`      �� Seller: ${vehicle.seller_data.account_name}`);
           } else {
             console.log(`      ❌ No seller_data for account ${accountNumber}`);
           }
