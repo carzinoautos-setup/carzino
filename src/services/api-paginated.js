@@ -419,18 +419,17 @@ const buildWooCommerceFilters = (filters) => {
  * Build WooCommerce sort - Using only valid WooCommerce orderby values
  */
 const buildWooCommerceSort = (sortBy) => {
+  // Only use the most basic, guaranteed-to-work sorting options
   const sortMap = {
     'price_low': { orderby: 'price', order: 'asc' },
     'price_high': { orderby: 'price', order: 'desc' },
-    'year_new': { orderby: 'date', order: 'desc' }, // Use date as proxy for newest
-    'year_old': { orderby: 'date', order: 'asc' },
-    'relevance': { orderby: 'popularity', order: 'desc' }, // Use popularity as default
     'title': { orderby: 'title', order: 'asc' },
-    'random': { orderby: 'random' }
+    'date': { orderby: 'date', order: 'desc' }
   };
 
-  const result = sortMap[sortBy] || sortMap['relevance'];
-  console.log('🔧 Built WooCommerce sort:', result);
+  // Default to no sorting to avoid API errors
+  const result = sortMap[sortBy] || {};
+  console.log('🔧 Built WooCommerce sort:', result, 'for sortBy:', sortBy);
   return result;
 };
 
