@@ -138,6 +138,10 @@ function App() {
   const [error, setError] = useState(null);
   const [apiConnected, setApiConnected] = useState(false);
 
+  // Smart caching for sequential filtering (Ford → Explorer scenario)
+  const [cachedVehicles, setCachedVehicles] = useState(new Map());
+  const [lastMakeFilter, setLastMakeFilter] = useState(null);
+
   const [favorites, setFavorites] = useState({});
   const [currentPage, setCurrentPage] = useState(() => {
     const urlParams = new URLSearchParams(window.location.search);
