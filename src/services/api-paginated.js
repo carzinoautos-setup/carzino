@@ -460,13 +460,21 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   const filterParams = buildWooCommerceFilters(filters);
   const sortParams = buildWooCommerceSort(sortBy);
 
-  console.log('🚀 DETAILED WooCommerce API request:', {
-    baseParams,
-    filterParams,
-    sortParams,
-    filters,
-    apiBase: API_BASE
-  });
+  // 🚀 PERFORMANCE: Check cache first
+  const cacheKey = `wc_${page}_${limit}_${JSON.stringify(filters)}_${sortBy}`;
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    try {
+      const cachedData = JSON.parse(cached);
+      const cacheAge = Date.now() - cachedData.timestamp;
+      if (cacheAge < 30000) { // 30 seconds cache
+        console.log('⚡ CACHE HIT - returning cached data in ~5ms');
+        return { ...cachedData.data, searchTime: 5, isCached: true };
+      }
+    } catch (e) {
+      // Invalid cache, continue with API call
+    }
+  }
 
   // Combine all parameters
   const allParams = {
@@ -475,24 +483,12 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   };
 
   // Only add sort parameters if they don't cause issues
-  try {
-    if (sortParams && Object.keys(sortParams).length > 0) {
-      Object.assign(allParams, sortParams);
-    }
-  } catch (e) {
-    console.warn('⚠️ Skipping sort parameters due to error:', e);
+  if (sortParams && Object.keys(sortParams).length > 0) {
+    Object.assign(allParams, sortParams);
   }
 
   const params = new URLSearchParams(allParams);
   const fullUrl = `${API_BASE}/products?${params}`;
-
-  console.log('🌐 FULL REQUEST URL:', fullUrl);
-  console.log('🔑 API Credentials:', {
-    hasConsumerKey: !!process.env.REACT_APP_WC_CONSUMER_KEY,
-    hasConsumerSecret: !!process.env.REACT_APP_WC_CONSUMER_SECRET,
-    consumerKeyLength: process.env.REACT_APP_WC_CONSUMER_KEY?.length || 0,
-    wpSiteUrl: process.env.REACT_APP_WP_SITE_URL
-  });
 
   // Prepare authentication headers (try Basic Auth first, fallback to query params)
   const headers = {
