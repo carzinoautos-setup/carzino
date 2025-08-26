@@ -842,6 +842,9 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             alt={vehicle.title}
             className="vehicle-image"
             loading="lazy"
+            decoding="async"
+            width="380"
+            height="200"
           />
 
           {vehicle.featured && (
