@@ -134,22 +134,54 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   const fullUrl = `${API_BASE}/products?${params}`;
   console.log('🌐 Full WooCommerce URL:', fullUrl);
 
-  const response = await fetch(fullUrl);
+  let response;
+
+  try {
+    response = await fetch(fullUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+  } catch (networkError) {
+    console.error('❌ Network Error:', {
+      message: networkError.message,
+      url: fullUrl,
+      type: 'NETWORK_ERROR'
+    });
+    throw new Error(`Network error: Unable to connect to WooCommerce API. ${networkError.message}`);
+  }
 
   if (!response.ok) {
-    const errorText = await response.text();
-    const errorDetails = {
+    let errorText = '';
+    let errorDetails;
+
+    try {
+      errorText = await response.text();
+    } catch (readError) {
+      errorText = `Unable to read error response: ${readError.message}`;
+    }
+
+    errorDetails = {
       status: response.status,
       statusText: response.statusText,
       url: fullUrl,
-      response: errorText
+      response: errorText,
+      type: 'HTTP_ERROR'
     };
 
     console.error('❌ WooCommerce API Error Details:', JSON.stringify(errorDetails, null, 2));
     throw new Error(`WooCommerce API error: ${response.status} - ${errorText}`);
   }
 
-  const vehicles = await response.json();
+  let vehicles;
+  try {
+    vehicles = await response.json();
+  } catch (parseError) {
+    console.error('❌ JSON Parse Error:', parseError.message);
+    throw new Error(`Failed to parse API response: ${parseError.message}`);
+  }
 
   console.log('📦 Received vehicles from WooCommerce:', vehicles.length);
 
