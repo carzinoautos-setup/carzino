@@ -349,6 +349,26 @@ body {
   }
 }
 
+/* Main content area - sits beside the filter sidebar */
+.main-content {
+  flex: 1;
+  min-width: 0; /* Prevents flex item from overflowing */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hide filter sidebar on mobile */
+@media (max-width: 1024px) {
+  .carzino-filter-container {
+    display: none;
+  }
+
+  .main-content {
+    flex: none;
+    width: 100%;
+  }
+}
+
 /* ============================================
    VEHICLE GRID
 ============================================ */
