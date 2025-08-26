@@ -569,13 +569,31 @@ function App() {
       // Fetch ALL vehicles matching current filters for proper conditional filtering
       try {
         console.log('🔄 Fetching all filtered vehicles for conditional filter options...');
-        const allFilteredVehicles = await fetchAllFilteredVehicles(newFilters);
 
-        // Extract filter options from ALL filtered vehicles for proper conditional filtering
+        // Check if we have any active filters
+        const hasActiveFilters = Object.entries(newFilters).some(([key, values]) => {
+          if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
+            return false;
+          }
+          return Array.isArray(values) ? values.length > 0 : (values && values.toString().trim() !== '');
+        });
+
+        let allFilteredVehicles;
+        if (hasActiveFilters) {
+          // If we have filters, get vehicles matching those filters
+          allFilteredVehicles = await fetchAllFilteredVehicles(newFilters);
+          console.log('🎯 Active filters detected - got', allFilteredVehicles.length, 'filtered vehicles for options');
+        } else {
+          // If no filters, get all vehicles for full filter options
+          allFilteredVehicles = await fetchAllFilteredVehicles({});
+          console.log('🎯 No active filters - got', allFilteredVehicles.length, 'total vehicles for options');
+        }
+
+        // Extract filter options from ALL relevant vehicles
         const filterOptionsExtracted = extractFilterOptions(allFilteredVehicles);
         setFilterOptions(filterOptionsExtracted);
 
-        console.log('🎯 Conditional filter options updated from', allFilteredVehicles.length, 'filtered vehicles');
+        console.log('✅ Conditional filter options updated successfully');
       } catch (filterError) {
         console.warn('⚠️ Failed to fetch filter options, using current page vehicles:', filterError.message);
         // Fallback to current page vehicles for filter options
@@ -585,7 +603,7 @@ function App() {
 
       const dataSource = result.isDemo ? 'demo data' : 'API';
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
-      console.log(`📊 Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
+      console.log(`�� Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
 
       // Update URL
       updateURL(newFilters, page);
