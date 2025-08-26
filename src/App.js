@@ -467,13 +467,27 @@ function App() {
     }
   }, [filters, fetchVehiclesPage]);
 
-  // Handle filter changes
-  const handleFilterChange = useCallback((newFilters) => {
-    console.log('🔄 Filters changed:', newFilters);
-    setFilters(newFilters);
+  // Debounced filter handler to prevent rapid API calls
+  const debouncedFilterChange = useCallback((newFilters) => {
     setCurrentPage(1);
     fetchVehiclesPage(1, newFilters);
   }, [fetchVehiclesPage]);
+
+  // Handle filter changes with debouncing
+  const handleFilterChange = useCallback((newFilters) => {
+    console.log('🔄 Filters changed:', newFilters);
+    setFilters(newFilters);
+
+    // Clear previous timeout
+    if (window.filterTimeout) {
+      clearTimeout(window.filterTimeout);
+    }
+
+    // Debounce API calls by 300ms to prevent rapid requests
+    window.filterTimeout = setTimeout(() => {
+      debouncedFilterChange(newFilters);
+    }, 300);
+  }, [debouncedFilterChange]);
 
   // Handle sort changes
   const handleSortChange = useCallback((newSortBy) => {
