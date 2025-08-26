@@ -513,23 +513,21 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         .vehicle-card {
           width: 100%;
           max-width: 380px;
-          background: #FFFFFF;
-          border: 1px solid #E5E7EB;
+          background: #fff;
+          border: 1px solid #e5e7eb;
           border-radius: 12px;
           overflow: hidden;
-          transition: box-shadow 200ms ease-in-out;
+          transition: box-shadow .2s ease;
           box-sizing: border-box;
         }
 
         .vehicle-card:hover {
-          box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+          box-shadow: 0 10px 25px rgba(0,0,0,.1);
         }
 
         @media (max-width: 640px) {
           .vehicle-card {
             max-width: 100%;
-            width: 100%;
-            margin: 0;
           }
         }
 
