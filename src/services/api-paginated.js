@@ -18,15 +18,23 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
   try {
     // Use Elasticsearch if available, fallback to WooCommerce
     const useElasticsearch = process.env.REACT_APP_USE_ELASTICSEARCH === 'true';
-    
+
     if (useElasticsearch) {
       return await fetchFromElasticsearch(page, limit, filters, sortBy);
     } else {
       return await fetchFromWooCommerce(page, limit, filters, sortBy);
     }
   } catch (error) {
-    console.error('Error fetching paginated vehicles:', error);
-    throw error;
+    console.error('❌ API Error Details:', {
+      message: error.message,
+      filters,
+      page,
+      limit,
+      sortBy
+    });
+
+    // Return a proper error structure that the calling code expects
+    throw new Error(`API Error: ${error.message}`);
   }
 };
 
