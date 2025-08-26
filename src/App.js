@@ -658,7 +658,7 @@ function App() {
             sortBy={sortBy}
             onSortChange={handleSortChange}
             onItemsPerPageChange={handleItemsPerPageChange}
-            searchTime={searchTime}
+            searchTime={optimisticLoading ? 'Updating...' : searchTime}
             currentFilters={filters}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
