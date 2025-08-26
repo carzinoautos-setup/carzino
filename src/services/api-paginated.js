@@ -17,7 +17,7 @@ const ELASTICSEARCH_ENDPOINT = process.env.REACT_APP_ELASTICSEARCH_URL || `${pro
 // Demo data functions removed - now handled in App.js
 
 /**
- * Test API connectivity with proper authentication
+ * Test API connectivity with proper authentication and robust error handling
  */
 const testAPIConnectivity = async () => {
   try {
@@ -38,31 +38,41 @@ const testAPIConnectivity = async () => {
       headers['Authorization'] = `Basic ${credentials}`;
     }
 
-    console.log('🔍 Testing API connectivity:', {
-      url: testUrl,
-      hasAuth: !!headers['Authorization']
-    });
+    // Use AbortController for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
 
-    const response = await fetch(testUrl, {
-      method: 'GET',
-      headers: headers,
-    });
+    let response;
+    try {
+      response = await fetch(testUrl, {
+        method: 'GET',
+        headers: headers,
+        signal: controller.signal
+      });
+      clearTimeout(timeoutId);
+    } catch (networkError) {
+      clearTimeout(timeoutId);
+      // Silently handle network errors - API is clearly not reachable
+      console.warn('⚠️ API connectivity test: Network unreachable');
+      return false;
+    }
 
     if (response.ok) {
-      const data = await response.json();
-      console.log('✅ API connectivity test successful - found', data.length, 'products');
-      return true;
+      try {
+        const data = await response.json();
+        console.log('✅ API connectivity test successful - found', data.length, 'products');
+        return true;
+      } catch (parseError) {
+        console.warn('⚠️ API connectivity test: Response parse error');
+        return false;
+      }
     } else {
-      const errorText = await response.text();
-      console.warn('⚠️ API connectivity test failed:', {
-        status: response.status,
-        statusText: response.statusText,
-        error: errorText
-      });
+      console.warn('⚠️ API connectivity test failed: HTTP', response.status);
       return false;
     }
   } catch (error) {
-    console.warn('⚠️ API connectivity test failed:', error.message);
+    // Catch any other unexpected errors
+    console.warn('⚠️ API connectivity test failed: Unexpected error');
     return false;
   }
 };
