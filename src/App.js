@@ -663,9 +663,11 @@ function App() {
 
           {/* Vehicle Grid */}
           {loading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>Loading vehicles...</p>
+            <div className={`vehicle-grid ${viewMode}-view p-2`}>
+              {/* Show skeleton cards during loading */}
+              {Array.from({ length: itemsPerPage }, (_, index) => (
+                <VehicleCardSkeleton key={`skeleton-${index}`} />
+              ))}
             </div>
           ) : error ? (
             <div className="error-container">
