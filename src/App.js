@@ -356,7 +356,7 @@ function App() {
   }, []);
 
   // Toggle favorites
-  const toggleFavorite = (vehicleId) => {
+  const toggleFavorite = (vehicleId, vehicle) => {
     setFavorites(prev => ({
       ...prev,
       [vehicleId]: !prev[vehicleId]
