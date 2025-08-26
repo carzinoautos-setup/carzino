@@ -402,12 +402,7 @@ function App() {
       const isRealAPIData = !result.isDemo;
       setApiConnected(isRealAPIData);
 
-      console.log('🔍 API Connection Status:', {
-        isDemo: result.isDemo,
-        isRealAPIData,
-        vehicleCount: result.totalResults,
-        firstVehicleTitle: result.vehicles[0]?.title || 'No vehicles'
-      });
+      // API connection confirmed
 
       // Clear any previous errors if we successfully got data (even if demo)
       setError(null);
