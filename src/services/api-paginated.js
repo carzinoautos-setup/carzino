@@ -400,17 +400,22 @@ const buildWooCommerceFilters = (filters) => {
 };
 
 /**
- * Build WooCommerce sort
+ * Build WooCommerce sort - Using only valid WooCommerce orderby values
  */
 const buildWooCommerceSort = (sortBy) => {
   const sortMap = {
-    'price_low': { orderby: 'meta_value_num', meta_key: '_price', order: 'asc' },
-    'price_high': { orderby: 'meta_value_num', meta_key: '_price', order: 'desc' },
-    'year_new': { orderby: 'meta_value_num', meta_key: 'year', order: 'desc' },
-    'relevance': { orderby: 'relevance', order: 'desc' }
+    'price_low': { orderby: 'price', order: 'asc' },
+    'price_high': { orderby: 'price', order: 'desc' },
+    'year_new': { orderby: 'date', order: 'desc' }, // Use date as proxy for newest
+    'year_old': { orderby: 'date', order: 'asc' },
+    'relevance': { orderby: 'popularity', order: 'desc' }, // Use popularity as default
+    'title': { orderby: 'title', order: 'asc' },
+    'random': { orderby: 'random' }
   };
 
-  return sortMap[sortBy] || sortMap['relevance'];
+  const result = sortMap[sortBy] || sortMap['relevance'];
+  console.log('🔧 Built WooCommerce sort:', result);
+  return result;
 };
 
 /**
