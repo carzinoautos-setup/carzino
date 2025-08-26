@@ -566,40 +566,12 @@ function App() {
       // Clear any previous errors since we got data
       setError(null);
 
-      // Fetch ALL vehicles matching current filters for proper conditional filtering
-      try {
-        console.log('🔄 Fetching all filtered vehicles for conditional filter options...');
+      // Quick filter options from current page for fast loading
+      // TODO: Implement smart conditional filtering in background
+      const filterOptionsExtracted = extractFilterOptions(result.vehicles);
+      setFilterOptions(filterOptionsExtracted);
 
-        // Check if we have any active filters
-        const hasActiveFilters = Object.entries(newFilters).some(([key, values]) => {
-          if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
-            return false;
-          }
-          return Array.isArray(values) ? values.length > 0 : (values && values.toString().trim() !== '');
-        });
-
-        let allFilteredVehicles;
-        if (hasActiveFilters) {
-          // If we have filters, get vehicles matching those filters
-          allFilteredVehicles = await fetchAllFilteredVehicles(newFilters);
-          console.log('🎯 Active filters detected - got', allFilteredVehicles.length, 'filtered vehicles for options');
-        } else {
-          // If no filters, get all vehicles for full filter options
-          allFilteredVehicles = await fetchAllFilteredVehicles({});
-          console.log('🎯 No active filters - got', allFilteredVehicles.length, 'total vehicles for options');
-        }
-
-        // Extract filter options from ALL relevant vehicles
-        const filterOptionsExtracted = extractFilterOptions(allFilteredVehicles);
-        setFilterOptions(filterOptionsExtracted);
-
-        console.log('✅ Conditional filter options updated successfully');
-      } catch (filterError) {
-        console.warn('⚠️ Failed to fetch filter options, using current page vehicles:', filterError.message);
-        // Fallback to current page vehicles for filter options
-        const filterOptionsExtracted = extractFilterOptions(result.vehicles);
-        setFilterOptions(filterOptionsExtracted);
-      }
+      console.log('⚡ Fast loading: Filter options from current page vehicles');
 
       const dataSource = result.isDemo ? 'demo data' : 'API';
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
