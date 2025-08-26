@@ -394,14 +394,38 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   // Transform vehicles
   const transformedVehicles = vehicles.map(transformWooCommerceVehicle);
 
-  // For now, minimal client-side filtering only for basic display
-  // TODO: Move complex filtering to server-side for better performance
-  const filteredVehicles = transformedVehicles; // Skip client-side filtering for now
+  // Apply client-side filtering only for make/model/condition filters
+  // Keep it simple for now - only filter what's clearly needed
+  const filteredVehicles = transformedVehicles.filter(vehicle => {
+    // Helper function to get meta value
+    const getMeta = (key) => {
+      const meta = vehicle.meta_data?.find(m => m.key === key);
+      return meta ? meta.value : '';
+    };
 
+    // Extract make from title if not in meta
+    const extractMakeFromTitle = () => {
+      const titleParts = vehicle.title.split(' ');
+      return titleParts[1] || '';
+    };
+
+    // Check make filter only
+    if (filters.make && filters.make.length > 0) {
+      const vehicleMake = getMeta('make') || extractMakeFromTitle();
+      if (!filters.make.includes(vehicleMake)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
+
+  // Important: Use API total count, not filtered count, to show full inventory size
+  // The filtering is just for display, not for total count
   return {
     vehicles: filteredVehicles,
-    totalResults,
-    totalPages,
+    totalResults, // Keep the API's total count
+    totalPages,   // Keep the API's total pages
     currentPage: page
   };
 };
