@@ -4,6 +4,7 @@ import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import VehicleCardSkeleton from './components/VehicleCardSkeleton';
 import SearchResultsHeader from './components/SearchResultsHeader';
+import { fetchVehiclesPaginated } from './services/api-paginated';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
