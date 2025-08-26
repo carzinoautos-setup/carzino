@@ -597,7 +597,13 @@ const SearchResultsHeader = ({
           
           <div className="results-count-bar">
             <span className="results-text">
-              {showingFavorites ? `Saved Vehicles - ${favoritesCount} Results` : `All Vehicles - ${totalResults.toLocaleString()} Results`}
+              {showingFavorites ?
+                `Saved Vehicles - ${favoritesCount} Results` :
+                `Showing ${startResult.toLocaleString()}-${endResult.toLocaleString()} of ${totalResults.toLocaleString()} vehicles`
+              }
+              {searchTime > 0 && !showingFavorites && (
+                <span className="search-time"> • {searchTime}ms</span>
+              )}
             </span>
           </div>
         </div>
@@ -610,7 +616,16 @@ const SearchResultsHeader = ({
                 {showingFavorites ? 'Saved Vehicles' : 'New and Used Vehicles for sale'}
               </h1>
               <p className="subtitle">
-                {showingFavorites ? `${favoritesCount} Saved` : `${totalResults.toLocaleString()} Matches`}
+                {showingFavorites ?
+                  `${favoritesCount} Saved` :
+                  `${startResult.toLocaleString()}-${endResult.toLocaleString()} of ${totalResults.toLocaleString()} vehicles`
+                }
+                {searchTime > 0 && !showingFavorites && (
+                  <span className="search-time"> • Search: {searchTime}ms</span>
+                )}
+                {totalResults > itemsPerPage && !showingFavorites && (
+                  <span className="page-info"> • Page {currentPage}</span>
+                )}
               </p>
             </div>
             
@@ -652,13 +667,15 @@ const SearchResultsHeader = ({
                 ))}
               </select>
               
-              <select 
+              <select
                 className="view-select"
                 value={itemsPerPage}
-                onChange={(e) => setItemsPerPage(Number(e.target.value))}
+                onChange={(e) => onItemsPerPageChange?.(Number(e.target.value))}
               >
+                <option value={10}>View: 10</option>
+                <option value={20}>View: 20</option>
                 <option value={30}>View: 30</option>
-                <option value={60}>View: 60</option>
+                <option value={50}>View: 50</option>
                 <option value={100}>View: 100</option>
               </select>
             </div>
