@@ -138,7 +138,8 @@ function App() {
   const [error, setError] = useState(null);
   const [apiConnected, setApiConnected] = useState(false);
 
-  // Caching removed for immediate performance
+  // Caching state for sequential filtering performance
+  const [cachedVehicles, setCachedVehicles] = useState(new Map());
 
   const [favorites, setFavorites] = useState({});
   const [currentPage, setCurrentPage] = useState(() => {
