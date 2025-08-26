@@ -463,6 +463,9 @@ function App() {
       setError(`Unexpected error: ${error.message}`);
       setApiConnected(false);
 
+      // Clean up failed request from deduplication map
+      activeRequests.current.delete(requestKey);
+
       // This should rarely happen now since API service handles fallbacks
       // But just in case, provide a minimal fallback
       setVehicles([]);
