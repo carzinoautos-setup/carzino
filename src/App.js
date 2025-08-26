@@ -461,7 +461,6 @@ function App() {
             return newCache;
           });
 
-          setLastMakeFilter(newFilters.make[0]);
           console.log(`✅ Cached ${allMakeVehicles.length} ${newFilters.make[0]} vehicles for sequential filtering`);
         } catch (cacheError) {
           console.warn('⚠️ Failed to cache make vehicles:', cacheError.message);
