@@ -616,11 +616,18 @@ function App() {
       setTotalResults(filteredDemoData.length);
       setTotalPages(Math.ceil(filteredDemoData.length / itemsPerPage));
 
-      // Extract filter options from ALL filtered demo data for conditional filtering
-      const filterOptionsExtracted = extractFilterOptions(filteredDemoData);
-      setFilterOptions(filterOptionsExtracted);
+      // Fast loading: Extract filter options from current page demo data
+      const quickFilterOptions = extractFilterOptions(currentPageData);
+      setFilterOptions(quickFilterOptions);
 
-      console.log('🎯 Demo mode: Filter options extracted from', filteredDemoData.length, 'filtered demo vehicles');
+      // Background: Use all filtered demo data for conditional filtering
+      setTimeout(() => {
+        const conditionalFilterOptions = extractFilterOptions(filteredDemoData);
+        setFilterOptions(conditionalFilterOptions);
+        console.log('🎯 Demo mode: Conditional filter options from', filteredDemoData.length, 'filtered demo vehicles');
+      }, 100);
+
+      console.log('⚡ Demo mode: Fast loading with', currentPageData.length, 'vehicles');
     } finally {
       setLoading(false);
     }
