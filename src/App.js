@@ -412,7 +412,6 @@ function App() {
       // FAST LOADING: Use current page vehicles for immediate filter options
       const quickFilterOptions = extractFilterOptions(result.vehicles);
       setFilterOptions(quickFilterOptions);
-      console.log('⚡ Fast loading: Immediate filter options from current page');
 
       // 🚀 PERFORMANCE: Skip background fetch for immediate speed
       // Use only current page filter options for ultra-fast loading
