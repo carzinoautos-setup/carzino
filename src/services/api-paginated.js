@@ -82,15 +82,10 @@ const testAPIConnectivity = async () => {
  */
 export const fetchAllFilteredVehicles = async (filters = {}) => {
   try {
-    console.log('🔍 Fetching vehicles for filter options with filters:', filters);
+    console.log('🔍 FORCE FETCHING VEHICLES FROM YOUR API for filter options with filters:', filters);
 
-    // Quick check: if API is not reachable, return demo data subset immediately
-    const isAPIReachable = await testAPIConnectivity();
-    if (!isAPIReachable) {
-      console.warn('⚠️ API not reachable for filter options, using demo data');
-      const demoResult = getDemoDataFallback(1, 50, filters);
-      return demoResult.vehicles;
-    }
+    // Skip connectivity test - attempt real API call directly
+    console.log('📡 Skipping connectivity test - trying real API directly');
 
     // Smart fetch size: Use smaller number for better performance
     const baseParams = {
