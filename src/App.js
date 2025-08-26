@@ -364,7 +364,7 @@ function App() {
 
     // Check if same request is already in progress
     if (activeRequests.current.has(requestKey)) {
-      console.log('🔄 DEDUP: Request already in progress, skipping duplicate');
+      // console.log('🔄 DEDUP: Request already in progress, skipping duplicate');
       return activeRequests.current.get(requestKey);
     }
 
