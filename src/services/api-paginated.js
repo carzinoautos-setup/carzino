@@ -372,21 +372,19 @@ const getDemoDataFallback = (page = 1, limit = 20, filters = {}) => {
 };
 
 export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {}, sortBy = 'relevance') => {
-  // First check if the API is reachable
-  const isAPIReachable = await testAPIConnectivity();
-
-  if (!isAPIReachable) {
-    console.warn('⚠️ WooCommerce API not reachable, using demo data immediately');
-    return getDemoDataFallback(page, limit, filters);
-  }
+  console.log('🚀 FORCE CONNECTING TO YOUR WOOCOMMERCE API...');
+  console.log(`📡 API Endpoint: ${API_BASE}`);
+  console.log(`🔑 Has Credentials: ${process.env.REACT_APP_WC_CONSUMER_KEY ? 'Yes' : 'No'}`);
 
   try {
     // Use Elasticsearch if available, fallback to WooCommerce
     const useElasticsearch = process.env.REACT_APP_USE_ELASTICSEARCH === 'true';
 
     if (useElasticsearch) {
+      console.log('📊 Attempting Elasticsearch connection...');
       return await fetchFromElasticsearch(page, limit, filters, sortBy);
     } else {
+      console.log('🛒 Attempting WooCommerce API connection...');
       return await fetchFromWooCommerce(page, limit, filters, sortBy);
     }
   } catch (error) {
@@ -401,9 +399,10 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
       timestamp: new Date().toISOString()
     };
 
-    console.warn('⚠️ API Error, falling back to demo data:', JSON.stringify(errorDetails, null, 2));
+    console.error('❌ REAL API CONNECTION FAILED:', JSON.stringify(errorDetails, null, 2));
+    console.warn('⚠️ Now falling back to demo data as last resort');
 
-    // Graceful fallback to demo data instead of throwing error
+    // Only fall back to demo data after real API attempt fails
     return getDemoDataFallback(page, limit, filters);
   }
 };
