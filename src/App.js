@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './App.css';
 import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
-import { fetchFilterOptions } from './services/api';
+import { fetchVehicles, fetchFilterOptions, fetchVehiclesPaginated, getVehicleCount } from './services/api';
 
 // URL parameter helpers
 const filtersToURLParams = (filters, page = 1) => {
