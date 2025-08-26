@@ -14,8 +14,38 @@ const ELASTICSEARCH_ENDPOINT = process.env.REACT_APP_ELASTICSEARCH_URL || `${pro
  * @param {string} sortBy - Sort field
  * @returns {object} { vehicles, totalResults, totalPages, currentPage }
  */
+/**
+ * Test API connectivity
+ */
+const testAPIConnectivity = async () => {
+  try {
+    const testUrl = `${API_BASE}/products?per_page=1&status=publish`;
+    console.log('🔍 Testing API connectivity:', testUrl);
+
+    const response = await fetch(testUrl, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+
+    return response.ok;
+  } catch (error) {
+    console.warn('⚠️ API connectivity test failed:', error.message);
+    return false;
+  }
+};
+
 export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {}, sortBy = 'relevance') => {
   try {
+    // First check if the API is reachable
+    const isAPIReachable = await testAPIConnectivity();
+
+    if (!isAPIReachable) {
+      console.warn('⚠️ API not reachable, falling back to demo data');
+      throw new Error('API not reachable - using demo data');
+    }
+
     // Use Elasticsearch if available, fallback to WooCommerce
     const useElasticsearch = process.env.REACT_APP_USE_ELASTICSEARCH === 'true';
 
@@ -31,7 +61,8 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
       page,
       limit,
       sortBy,
-      stack: error.stack
+      apiBase: API_BASE,
+      timestamp: new Date().toISOString()
     };
 
     console.error('❌ API Error Details:', JSON.stringify(errorDetails, null, 2));
