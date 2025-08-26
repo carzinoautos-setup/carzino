@@ -502,40 +502,26 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
     headers['Authorization'] = `Basic ${credentials}`;
   }
 
-  console.log('🌐 WooCommerce Request:', {
-    url: fullUrl,
-    hasAuth: !!headers['Authorization'],
-    method: 'GET'
-  });
+  console.log('🔄 WooCommerce API call...');
+
+  // 🚀 PERFORMANCE: Add 10 second timeout to prevent hanging
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
 
   let response;
-
-  console.log('🔄 Attempting WooCommerce API connection...');
 
   try {
     response = await fetch(fullUrl, {
       method: 'GET',
       headers: headers,
+      signal: controller.signal
     });
 
-    console.log('✅ WooCommerce API Response received:', {
-      status: response.status,
-      statusText: response.statusText,
-      ok: response.ok,
-      headers: Object.fromEntries(response.headers.entries())
-    });
+    clearTimeout(timeoutId);
 
   } catch (networkError) {
-    console.error('❌ DETAILED Network Error:', {
-      errorName: networkError.name,
-      errorMessage: networkError.message,
-      errorStack: networkError.stack,
-      requestUrl: fullUrl,
-      requestHeaders: headers,
-      apiBase: API_BASE,
-      wpSiteUrl: process.env.REACT_APP_WP_SITE_URL,
-      type: 'NETWORK_ERROR'
-    });
+    clearTimeout(timeoutId);
+    console.error('❌ Network Error:', networkError.message);
     throw new Error(`Network error: Unable to connect to WooCommerce API. ${networkError.message}`);
   }
 
