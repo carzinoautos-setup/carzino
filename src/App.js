@@ -416,9 +416,25 @@ function App() {
       // 🚀 PERFORMANCE: Skip background fetch for immediate speed
       // Use only current page filter options for ultra-fast loading
 
-      console.log(`�� Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
+      console.log(`🎯 Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
 
-      // 🚀 PERFORMANCE: Caching disabled for immediate speed
+      // 🚀 SMART CACHING: Store make-specific data for Ford → Explorer scenarios
+      if (isRealAPIData && newFilters.make && newFilters.make.length === 1 && !newFilters.model?.length) {
+        const makeFilter = newFilters.make[0];
+        const cacheKey = `make_${makeFilter}`;
+
+        // Cache the full result for this make (e.g., all Ford vehicles)
+        setCachedVehicles(prev => {
+          const updated = new Map(prev);
+          updated.set(cacheKey, {
+            vehicles: result.allVehicles || result.vehicles, // Store all vehicles if available
+            timestamp: Date.now(),
+            totalResults: result.totalResults
+          });
+          console.log(`💾 CACHED: ${makeFilter} vehicles (${result.totalResults} total)`);
+          return updated;
+        });
+      }
 
       // Update URL
       updateURL(newFilters, page);
