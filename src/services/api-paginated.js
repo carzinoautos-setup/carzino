@@ -155,28 +155,39 @@ const testAPIConnectivity = async () => {
       status: 'publish'
     });
 
-    // Add authentication credentials
+    const testUrl = `${API_BASE}/products?${params}`;
+
+    // Prepare headers with Basic Auth
+    const headers = {
+      'Accept': 'application/json',
+    };
+
     if (process.env.REACT_APP_WC_CONSUMER_KEY) {
-      params.append('consumer_key', process.env.REACT_APP_WC_CONSUMER_KEY);
-      params.append('consumer_secret', process.env.REACT_APP_WC_CONSUMER_SECRET);
+      const credentials = btoa(`${process.env.REACT_APP_WC_CONSUMER_KEY}:${process.env.REACT_APP_WC_CONSUMER_SECRET}`);
+      headers['Authorization'] = `Basic ${credentials}`;
     }
 
-    const testUrl = `${API_BASE}/products?${params}`;
-    console.log('🔍 Testing API connectivity with auth:', testUrl.replace(/consumer_(key|secret)=[^&]*/g, 'consumer_$1=***'));
+    console.log('🔍 Testing API connectivity:', {
+      url: testUrl,
+      hasAuth: !!headers['Authorization']
+    });
 
     const response = await fetch(testUrl, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
+      headers: headers,
     });
 
     if (response.ok) {
-      console.log('✅ API connectivity test successful');
+      const data = await response.json();
+      console.log('✅ API connectivity test successful - found', data.length, 'products');
       return true;
     } else {
       const errorText = await response.text();
-      console.warn('⚠️ API connectivity test failed:', response.status, errorText);
+      console.warn('⚠️ API connectivity test failed:', {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorText
+      });
       return false;
     }
   } catch (error) {
