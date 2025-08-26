@@ -512,15 +512,30 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
 
   let response;
 
+  console.log('🔄 Attempting WooCommerce API connection...');
+
   try {
     response = await fetch(fullUrl, {
       method: 'GET',
       headers: headers,
     });
+
+    console.log('✅ WooCommerce API Response received:', {
+      status: response.status,
+      statusText: response.statusText,
+      ok: response.ok,
+      headers: Object.fromEntries(response.headers.entries())
+    });
+
   } catch (networkError) {
-    console.error('❌ Network Error:', {
-      message: networkError.message,
-      url: fullUrl,
+    console.error('❌ DETAILED Network Error:', {
+      errorName: networkError.name,
+      errorMessage: networkError.message,
+      errorStack: networkError.stack,
+      requestUrl: fullUrl,
+      requestHeaders: headers,
+      apiBase: API_BASE,
+      wpSiteUrl: process.env.REACT_APP_WP_SITE_URL,
       type: 'NETWORK_ERROR'
     });
     throw new Error(`Network error: Unable to connect to WooCommerce API. ${networkError.message}`);
