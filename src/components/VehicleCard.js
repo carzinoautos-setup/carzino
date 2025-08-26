@@ -163,7 +163,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
       // Show the account number field specifically
       const accountField = vehicle.meta_data?.find(m => m.key === 'account_number_seller');
-      console.log('�� Account number field:', accountField);
+      console.log('🔗 Account number field:', accountField);
 
       console.log('Raw vehicle object keys:', Object.keys(vehicle));
     }
@@ -878,38 +878,16 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       <div className="vehicle-card">
         <div className="image-container">
           <img
-            src={vehicle.images ? vehicle.images[currentIndex] : vehicle.image}
+            src={getFeaturedImage()}
             alt={vehicle.title}
             className="vehicle-image"
             loading="lazy"
           />
-          
+
           {vehicle.featured && (
             <div className="featured-badge">
               Featured!
             </div>
-          )}
-          
-          {vehicle.images && vehicle.images.length > 1 && (
-            <>
-              <button
-                onClick={prevImage}
-                className="nav-arrow nav-arrow-left"
-                aria-label="Previous image"
-              >
-                <ChevronLeft />
-              </button>
-              <button
-                onClick={nextImage}
-                className="nav-arrow nav-arrow-right"
-                aria-label="Next image"
-              >
-                <ChevronRight />
-              </button>
-              <div className="image-counter">
-                {currentIndex + 1}/{totalImages}
-              </div>
-            </>
           )}
         </div>
 
