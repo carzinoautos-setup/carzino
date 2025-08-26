@@ -620,17 +620,17 @@ const applyClientSideFilters = (vehicles, filters) => {
 };
 
 /**
- * Build WooCommerce filters - Using only basic WooCommerce supported parameters
+ * Build WooCommerce filters using supported parameters and meta queries
  */
 const buildWooCommerceFilters = (filters) => {
   const params = {};
 
-  // Only use basic WooCommerce parameters to avoid 400 errors
+  // Basic WooCommerce parameters
   if (filters.search) {
     params.search = filters.search;
   }
 
-  // Price range - WooCommerce supports these
+  // Price range - WooCommerce native support
   if (filters.priceMin) {
     params.min_price = filters.priceMin;
   }
@@ -639,8 +639,24 @@ const buildWooCommerceFilters = (filters) => {
     params.max_price = filters.priceMax;
   }
 
-  // For other filters, we'll handle them client-side in the transform function
-  // This prevents 400 errors from unsupported parameters
+  // Category filtering - if your products are categorized
+  if (filters.category && filters.category.length > 0) {
+    params.category = filters.category.join(',');
+  }
+
+  // Tag filtering - if your products have tags
+  if (filters.tag && filters.tag.length > 0) {
+    params.tag = filters.tag.join(',');
+  }
+
+  // For custom meta fields like make, model, etc., WooCommerce supports meta_query
+  // but it's complex in URL format, so we'll do basic attribute filtering where possible
+
+  // If WooCommerce product attributes are set up properly:
+  if (filters.make && filters.make.length > 0) {
+    params.attribute = 'pa_make';
+    params.attribute_term = filters.make.join(',');
+  }
 
   console.log('🔧 Built WooCommerce filters:', params);
   return params;
