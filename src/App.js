@@ -697,13 +697,15 @@ function App() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  totalResults={totalResults}
-                  resultsPerPage={itemsPerPage}
-                  onPageChange={handlePageChange}
-                />
+                <Suspense fallback={<div className="flex justify-center py-4"><div className="loading-spinner"></div></div>}>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalResults={totalResults}
+                    resultsPerPage={itemsPerPage}
+                    onPageChange={handlePageChange}
+                  />
+                </Suspense>
               )}
             </>
           )}
