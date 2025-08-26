@@ -464,9 +464,11 @@ function App() {
   // Removed unused loadVehiclesAndFilters function
 
   // Helper functions to transform WooCommerce data
+  // These are currently unused but may be useful for future enhancements
+  /*
   const getBadgesForVehicle = (vehicle) => {
     const badges = [];
-    
+
     // Add condition badges
     if (vehicle.stock_status === 'instock') {
       badges.push('Available');
@@ -477,53 +479,53 @@ function App() {
     if (vehicle.sale_price && vehicle.sale_price !== vehicle.price) {
       badges.push('Sale');
     }
-    
+
     // Add category-based badges
     vehicle.categories.forEach(cat => {
       if (cat.name !== 'Uncategorized') {
         badges.push(cat.name);
       }
     });
-    
+
     return badges.slice(0, 3); // Limit to 3 badges
   };
 
   const extractMileage = (vehicle) => {
     // Look for mileage in meta data or attributes
-    const mileageAttr = vehicle.attributes.find(attr => 
-      attr.name.toLowerCase().includes('mileage') || 
+    const mileageAttr = vehicle.attributes.find(attr =>
+      attr.name.toLowerCase().includes('mileage') ||
       attr.name.toLowerCase().includes('miles')
     );
-    
+
     if (mileageAttr?.options?.[0]) {
       return mileageAttr.options[0];
     }
-    
+
     // Default for new vehicles
     return 'New';
   };
 
   const extractTransmission = (vehicle) => {
-    const transAttr = vehicle.attributes.find(attr => 
+    const transAttr = vehicle.attributes.find(attr =>
       attr.name.toLowerCase().includes('transmission')
     );
-    
+
     if (transAttr?.options?.[0]) {
       return transAttr.options[0];
     }
-    
+
     return 'Auto'; // Default
   };
 
   const extractDoors = (vehicle) => {
-    const doorsAttr = vehicle.attributes.find(attr => 
+    const doorsAttr = vehicle.attributes.find(attr =>
       attr.name.toLowerCase().includes('doors')
     );
-    
+
     if (doorsAttr?.options?.[0]) {
       return `${doorsAttr.options[0]} doors`;
     }
-    
+
     return '4 doors'; // Default
   };
 
@@ -555,6 +557,7 @@ function App() {
 
     return `$${monthlyPayment}`;
   };
+  */
 
   const extractDealer = (vehicle) => {
     // Look for dealer info in meta data
