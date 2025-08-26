@@ -500,6 +500,13 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return vehicle.image || '/api/placeholder/380/200';
   };
 
+  // Preload image for better performance
+  useEffect(() => {
+    const imageUrl = getFeaturedImage();
+    const img = new Image();
+    img.src = imageUrl;
+  }, [vehicle]);
+
   return (
     <>
       <style>{`
