@@ -1525,3 +1525,176 @@ export const testAPIConnection = async () => {
     };
   }
 };
+
+/**
+ * NEW: Fetch vehicles with server-side pagination
+ * This is the key function for handling 500K+ vehicles efficiently
+ */
+export const fetchVehiclesPaginated = async (page = 1, perPage = DEFAULT_PER_PAGE, filters = {}) => {
+  console.log(`🔍 Fetching page ${page} with ${perPage} items per page`);
+  console.log('🔧 Filters:', filters);
+
+  // Ensure perPage is within limits
+  const safePerPage = Math.min(perPage, MAX_PER_PAGE);
+
+  try {
+    // Build query parameters for WooCommerce API
+    const params = new URLSearchParams({
+      page: page.toString(),
+      per_page: safePerPage.toString(),
+      status: 'publish',
+      orderby: 'date',
+      order: 'desc'
+    });
+
+    // Add search filter
+    if (filters.search && filters.search.trim()) {
+      params.append('search', filters.search.trim());
+    }
+
+    // Add make filter (assuming you store make as a meta field or category)
+    if (filters.make && filters.make.length > 0) {
+      // This depends on how you store make data in WooCommerce
+      // Option 1: If make is stored as meta_data
+      params.append('meta_key', 'make');
+      params.append('meta_value', filters.make[0]); // Take first make for now
+
+      // Option 2: If make is stored as a product category/tag
+      // params.append('category', filters.make.join(','));
+    }
+
+    // Add price filters
+    if (filters.priceMin) {
+      params.append('min_price', filters.priceMin.toString());
+    }
+    if (filters.priceMax) {
+      params.append('max_price', filters.priceMax.toString());
+    }
+
+    // Add authentication
+    params.append('consumer_key', WC_CONSUMER_KEY);
+    params.append('consumer_secret', WC_CONSUMER_SECRET);
+
+    const url = `${WC_API_BASE}/products?${params}`;
+    console.log('📡 API URL:', url);
+
+    const response = await fetchWithTimeout(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      }
+    }, 15000);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+    }
+
+    const vehicles = await response.json();
+
+    // Get total count from WooCommerce headers
+    const totalResults = parseInt(response.headers.get('X-WP-Total') || '0');
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
+
+    console.log(`✅ Loaded ${vehicles.length} vehicles from page ${page}`);
+    console.log(`📊 Total results: ${totalResults}, Total pages: ${totalPages}`);
+
+    // Transform vehicles to your expected format
+    const transformedVehicles = vehicles.map((vehicle, index) => ({
+      id: vehicle.id || `vehicle-${page}-${index}`,
+      featured: vehicle.featured || false,
+      viewed: false,
+      images: vehicle.images?.length > 0 ?
+        vehicle.images.map(img => img.src) :
+        ['https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=450&h=300&fit=crop'],
+      badges: [],
+      title: vehicle.name,
+      mileage: "Contact Dealer",
+      transmission: "Auto",
+      doors: "4 doors",
+      salePrice: vehicle.price ? `$${parseFloat(vehicle.price).toLocaleString()}` : 'Call for Price',
+      payment: vehicle.price ? `$${Math.round(parseFloat(vehicle.price) * 0.02)}` : 'Call',
+      dealer: vehicle.seller_data?.account_name || 'Carzino Auto Sales',
+      location: vehicle.seller_data ?
+        `${vehicle.seller_data.city || 'Seattle'}, ${vehicle.seller_data.state || 'WA'}` :
+        'Seattle, WA',
+      phone: vehicle.seller_data?.phone || '(253) 555-0100',
+      seller_data: vehicle.seller_data,
+      meta_data: vehicle.meta_data || [],
+      rawData: vehicle
+    }));
+
+    return {
+      vehicles: transformedVehicles,
+      totalResults,
+      totalPages,
+      currentPage: page,
+      perPage: safePerPage,
+      hasNextPage: page < totalPages,
+      hasPrevPage: page > 1
+    };
+
+  } catch (error) {
+    console.error('❌ Paginated fetch error:', error);
+
+    // Return empty result with error info
+    return {
+      vehicles: [],
+      totalResults: 0,
+      totalPages: 0,
+      currentPage: page,
+      perPage: safePerPage,
+      hasNextPage: false,
+      hasPrevPage: false,
+      error: error.message
+    };
+  }
+};
+
+/**
+ * NEW: Get just the count of search results (fast)
+ * This gets the total without loading all the data
+ */
+export const getVehicleCount = async (filters = {}) => {
+  try {
+    // Make a request for just 1 item to get the total count from headers
+    const params = new URLSearchParams({
+      per_page: '1', // Minimal data transfer
+      status: 'publish'
+    });
+
+    // Add same filters as fetchVehiclesPaginated
+    if (filters.search && filters.search.trim()) {
+      params.append('search', filters.search.trim());
+    }
+    if (filters.make && filters.make.length > 0) {
+      params.append('meta_key', 'make');
+      params.append('meta_value', filters.make[0]);
+    }
+    if (filters.priceMin) {
+      params.append('min_price', filters.priceMin.toString());
+    }
+    if (filters.priceMax) {
+      params.append('max_price', filters.priceMax.toString());
+    }
+
+    params.append('consumer_key', WC_CONSUMER_KEY);
+    params.append('consumer_secret', WC_CONSUMER_SECRET);
+
+    const response = await fetchWithTimeout(`${WC_API_BASE}/products?${params}`, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' }
+    }, 5000);
+
+    if (response.ok) {
+      const totalResults = parseInt(response.headers.get('X-WP-Total') || '0');
+      console.log(`📊 Total matching vehicles: ${totalResults}`);
+      return totalResults;
+    }
+
+    return 0;
+  } catch (error) {
+    console.error('❌ Count fetch error:', error);
+    return 0;
+  }
+};
