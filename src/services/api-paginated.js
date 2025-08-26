@@ -305,25 +305,32 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   }
 
   const params = new URLSearchParams(allParams);
+  const fullUrl = `${API_BASE}/products?${params}`;
 
-  // Add authentication
+  // Prepare authentication headers (try Basic Auth first, fallback to query params)
+  const headers = {
+    'Accept': 'application/json',
+    'Content-Type': 'application/json',
+  };
+
+  // Add Basic Auth header if credentials are available
   if (process.env.REACT_APP_WC_CONSUMER_KEY) {
-    params.append('consumer_key', process.env.REACT_APP_WC_CONSUMER_KEY);
-    params.append('consumer_secret', process.env.REACT_APP_WC_CONSUMER_SECRET);
+    const credentials = btoa(`${process.env.REACT_APP_WC_CONSUMER_KEY}:${process.env.REACT_APP_WC_CONSUMER_SECRET}`);
+    headers['Authorization'] = `Basic ${credentials}`;
   }
 
-  const fullUrl = `${API_BASE}/products?${params}`;
-  console.log('🌐 Full WooCommerce URL:', fullUrl);
+  console.log('🌐 WooCommerce Request:', {
+    url: fullUrl,
+    hasAuth: !!headers['Authorization'],
+    method: 'GET'
+  });
 
   let response;
 
   try {
     response = await fetch(fullUrl, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
+      headers: headers,
     });
   } catch (networkError) {
     console.error('❌ Network Error:', {
