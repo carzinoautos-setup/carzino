@@ -163,7 +163,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
       // Show the account number field specifically
       const accountField = vehicle.meta_data?.find(m => m.key === 'account_number_seller');
-      console.log('🔗 Account number field:', accountField);
+      console.log('�� Account number field:', accountField);
 
       console.log('Raw vehicle object keys:', Object.keys(vehicle));
     }
@@ -485,22 +485,19 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const toggleFavorite = () => {
     const wasAlreadyFavorited = favorites[vehicle.id];
     onFavoriteToggle(vehicle.id, vehicle);
-    
+
     if (!wasAlreadyFavorited) {
       setKeeperMessage(true);
       setTimeout(() => setKeeperMessage(false), 2000);
     }
   };
 
-  const currentIndex = currentImageIndex;
-  const totalImages = vehicle.images?.length || 1;
-
-  const nextImage = () => {
-    setCurrentImageIndex((currentIndex + 1) % totalImages);
-  };
-
-  const prevImage = () => {
-    setCurrentImageIndex(currentIndex === 0 ? totalImages - 1 : currentIndex - 1);
+  // Get the featured image (first image or fallback)
+  const getFeaturedImage = () => {
+    if (vehicle.images && vehicle.images.length > 0) {
+      return vehicle.images[0];
+    }
+    return vehicle.image || '/api/placeholder/380/200';
   };
 
   return (
