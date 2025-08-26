@@ -722,7 +722,7 @@ function App() {
             <p className="error">❌ {error}</p>
           ) : (
             <div className="status-info">
-              <p>{apiConnected ? '✅ Connected to WooCommerce inventory' : '🎯 Demo Mode - API unavailable, showing sample data'} ({totalResults.toLocaleString()} vehicles)</p>
+              <p>{apiConnected ? '✅ Connected to WooCommerce inventory' : '🎯 Demo Mode - WooCommerce API unreachable'} ({totalResults.toLocaleString()} {apiConnected ? 'vehicles' : 'sample vehicles'})</p>
               <div className="search-stats">
                 <span>📄 Showing {startResult.toLocaleString()}-{endResult.toLocaleString()}</span>
                 <span>⏱️ Search: {searchTime}ms</span>
