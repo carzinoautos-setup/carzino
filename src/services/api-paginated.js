@@ -108,11 +108,22 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
     filters
   });
 
-  const params = new URLSearchParams({
+  // Combine all parameters
+  const allParams = {
     ...baseParams,
-    ...filterParams,
-    ...sortParams
-  });
+    ...filterParams
+  };
+
+  // Only add sort parameters if they don't cause issues
+  try {
+    if (sortParams && Object.keys(sortParams).length > 0) {
+      Object.assign(allParams, sortParams);
+    }
+  } catch (e) {
+    console.warn('⚠️ Skipping sort parameters due to error:', e);
+  }
+
+  const params = new URLSearchParams(allParams);
 
   // Add authentication
   if (process.env.REACT_APP_WC_CONSUMER_KEY) {
