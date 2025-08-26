@@ -86,6 +86,121 @@ const URLParamsToFilters = (searchParams) => {
   return filters;
 };
 
+// Function to apply filters to vehicle data (for demo mode)
+const applyFiltersToVehicles = (vehicles, filters) => {
+  return vehicles.filter(vehicle => {
+    // Helper function to get meta value
+    const getMeta = (key) => {
+      const meta = vehicle.meta_data?.find(m => m.key === key);
+      return meta ? meta.value : '';
+    };
+
+    // Helper function to extract make from title
+    const extractMakeFromTitle = () => {
+      const titleParts = vehicle.title.split(' ');
+      return titleParts[1] || ''; // Position 1 is typically the make (after year)
+    };
+
+    // Check make filter
+    if (filters.make && filters.make.length > 0) {
+      const vehicleMake = getMeta('make') || extractMakeFromTitle();
+      if (!filters.make.includes(vehicleMake)) {
+        return false;
+      }
+    }
+
+    // Check model filter
+    if (filters.model && filters.model.length > 0) {
+      const vehicleModel = getMeta('model');
+      if (!filters.model.includes(vehicleModel)) {
+        return false;
+      }
+    }
+
+    // Check condition filter
+    if (filters.condition && filters.condition.length > 0) {
+      const vehicleCondition = getMeta('condition');
+      if (!filters.condition.includes(vehicleCondition)) {
+        return false;
+      }
+    }
+
+    // Check vehicle type filter
+    if (filters.vehicleType && filters.vehicleType.length > 0) {
+      const vehicleType = getMeta('body_type') || getMeta('vehicleType');
+      if (!filters.vehicleType.includes(vehicleType)) {
+        return false;
+      }
+    }
+
+    // Check year filter
+    if (filters.year && filters.year.length > 0) {
+      const titleParts = vehicle.title.split(' ');
+      const vehicleYear = titleParts[0] || getMeta('year');
+      if (!filters.year.includes(vehicleYear)) {
+        return false;
+      }
+    }
+
+    // Check drivetrain filter
+    if (filters.driveType && filters.driveType.length > 0) {
+      const driveType = getMeta('drivetrain') || getMeta('drive_type');
+      if (!filters.driveType.includes(driveType)) {
+        return false;
+      }
+    }
+
+    // Check exterior color filter
+    if (filters.exteriorColor && filters.exteriorColor.length > 0) {
+      const exteriorColor = getMeta('exterior_color');
+      if (!filters.exteriorColor.includes(exteriorColor)) {
+        return false;
+      }
+    }
+
+    // Check interior color filter
+    if (filters.interiorColor && filters.interiorColor.length > 0) {
+      const interiorColor = getMeta('interior_color');
+      if (!filters.interiorColor.includes(interiorColor)) {
+        return false;
+      }
+    }
+
+    // Check fuel type filter
+    if (filters.fuelType && filters.fuelType.length > 0) {
+      const fuelType = getMeta('fuel_type');
+      if (!filters.fuelType.includes(fuelType)) {
+        return false;
+      }
+    }
+
+    // Check trim filter
+    if (filters.trim && filters.trim.length > 0) {
+      const trim = getMeta('trim');
+      if (!filters.trim.includes(trim)) {
+        return false;
+      }
+    }
+
+    // Check price range
+    if (filters.priceMin || filters.priceMax) {
+      const priceStr = vehicle.salePrice?.replace(/[$,]/g, '') || '0';
+      const price = parseFloat(priceStr);
+
+      if (filters.priceMin && price < parseFloat(filters.priceMin)) {
+        return false;
+      }
+
+      if (filters.priceMax && price > parseFloat(filters.priceMax)) {
+        return false;
+      }
+    }
+
+    // If all filters pass, include the vehicle
+    return true;
+  });
+};
+
 // Demo data function
 const getRealisticDemoVehicles = () => {
   return [
@@ -354,7 +469,7 @@ function App() {
 
   // Function to fetch vehicles with server-side pagination
   const fetchVehiclesPage = useCallback(async (page = currentPage, newFilters = filters) => {
-    console.log(`��� Loading page ${page} with filters:`, newFilters);
+    console.log(`🔍 Loading page ${page} with filters:`, newFilters);
     setLoading(true);
     setError(null);
 
