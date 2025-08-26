@@ -417,7 +417,6 @@ function App() {
       // Use only current page filter options for ultra-fast loading
 
       const dataSource = result.isDemo ? 'demo data' : 'API';
-      console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
       console.log(`�� Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
 
       // 🚀 PERFORMANCE: Caching disabled for immediate speed
