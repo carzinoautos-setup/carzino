@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { Filter, Search, Heart, Check, ChevronDown } from 'lucide-react';
 
-const SearchResultsHeader = ({ 
-  totalResults, 
+const SearchResultsHeader = ({
+  totalResults,
+  currentPage = 1,
+  itemsPerPage = 20,
+  startResult = 0,
+  endResult = 0,
+  searchTime = 0,
   currentFilters,
   viewMode,
   onViewModeChange,
   sortBy,
   onSortChange,
+  onItemsPerPageChange,
   onMobileFiltersOpen,
   favoritesCount = 0,
   showingFavorites = false,
@@ -18,7 +24,7 @@ const SearchResultsHeader = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(30);
+  // Remove local state since it's now passed as props
 
   // Calculate active filters for display
   const getActiveFilters = () => {
