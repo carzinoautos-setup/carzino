@@ -4,7 +4,7 @@ import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
-import { fetchVehiclesPaginated, fetchAllFilteredVehicles } from './services/api-paginated';
+import { fetchVehiclesPaginated } from './services/api-paginated';
 
 // URL parameter helpers
 const filtersToURLParams = (filters, page = 1) => {
