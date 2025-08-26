@@ -566,9 +566,15 @@ function App() {
       // Clear any previous errors since we got data
       setError(null);
 
-      // Extract and set filter options from the loaded vehicles
-      const filterOptionsExtracted = extractFilterOptions(result.vehicles);
+      // Fetch ALL vehicles matching current filters for proper filter options
+      console.log('🔄 Fetching all filtered vehicles for conditional filter options...');
+      const allFilteredVehicles = await fetchAllFilteredVehicles(newFilters);
+
+      // Extract filter options from ALL filtered vehicles, not just current page
+      const filterOptionsExtracted = extractFilterOptions(allFilteredVehicles);
       setFilterOptions(filterOptionsExtracted);
+
+      console.log('🎯 Filter options extracted from', allFilteredVehicles.length, 'filtered vehicles');
 
       const dataSource = result.isDemo ? 'demo data' : 'API';
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
