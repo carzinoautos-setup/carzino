@@ -183,9 +183,12 @@ function App() {
 
   // Pagination state - NEW: Proper server-side pagination
   const [totalResults, setTotalResults] = useState(0);
-  const [totalPages, setTotalPages] = useState(0); // eslint-disable-line no-unused-vars
-  const [itemsPerPage, setItemsPerPage] = useState(20); // eslint-disable-line no-unused-vars
-  const [searchTime, setSearchTime] = useState(0); // eslint-disable-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
+  const [totalPages, setTotalPages] = useState(0);
+  // eslint-disable-next-line no-unused-vars
+  const [itemsPerPage, setItemsPerPage] = useState(20); // Show 20 vehicles per page
+  // eslint-disable-next-line no-unused-vars
+  const [searchTime, setSearchTime] = useState(0);
 
   // Update URL when filters or page change
   const updateURL = (newFilters, page = currentPage) => {
