@@ -272,6 +272,75 @@ const getRealisticDemoVehicles = () => {
         { key: 'body_type', value: 'Truck' }
       ],
       rawData: {}
+    },
+    {
+      id: 'demo-4',
+      title: '2022 Ford Mustang GT (Demo Data)',
+      featured: true,
+      viewed: false,
+      images: ['https://images.unsplash.com/photo-1600712242805-5f78671b24da?w=450&h=300&fit=crop'],
+      badges: ['Popular'],
+      mileage: "12,450",
+      transmission: "Auto",
+      doors: "2 doors",
+      salePrice: "$45,995",
+      payment: "$689",
+      dealer: "Performance Motors",
+      location: "Bellevue, WA",
+      phone: "(425) 555-0400",
+      seller_data: null,
+      meta_data: [
+        { key: 'make', value: 'Ford' },
+        { key: 'condition', value: 'Used' },
+        { key: 'body_type', value: 'Coupe' }
+      ],
+      rawData: {}
+    },
+    {
+      id: 'demo-5',
+      title: '2020 Toyota Camry LE (Demo Data)',
+      featured: false,
+      viewed: false,
+      images: ['https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop'],
+      badges: [],
+      mileage: "38,900",
+      transmission: "Auto",
+      doors: "4 doors",
+      salePrice: "$24,995",
+      payment: "$399",
+      dealer: "City Toyota",
+      location: "Kent, WA",
+      phone: "(253) 555-0500",
+      seller_data: null,
+      meta_data: [
+        { key: 'make', value: 'Toyota' },
+        { key: 'condition', value: 'Used' },
+        { key: 'body_type', value: 'Sedan' }
+      ],
+      rawData: {}
+    },
+    {
+      id: 'demo-6',
+      title: '2018 Honda CR-V EX (Demo Data)',
+      featured: false,
+      viewed: false,
+      images: ['https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop'],
+      badges: [],
+      mileage: "54,200",
+      transmission: "Auto",
+      doors: "4 doors",
+      salePrice: "$26,995",
+      payment: "$429",
+      dealer: "Honda Center",
+      location: "Renton, WA",
+      phone: "(425) 555-0600",
+      seller_data: null,
+      meta_data: [
+        { key: 'make', value: 'Honda' },
+        { key: 'condition', value: 'Used' },
+        { key: 'body_type', value: 'SUV' }
+      ],
+      rawData: {}
     }
   ];
 };
