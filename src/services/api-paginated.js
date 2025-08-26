@@ -87,10 +87,11 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
     // Skip connectivity test - attempt real API call directly
     console.log('📡 Skipping connectivity test - trying real API directly');
 
-    // Smart fetch size: Use smaller number for better performance
+    // 🚀 PERFORMANCE: Further reduced for speed
     const baseParams = {
-      per_page: '50', // Reduced from 100 for faster loading
-      status: 'publish'
+      per_page: '30', // Reduced from 50 for even faster loading
+      status: 'publish',
+      _fields: 'id,name,meta_data' // Only essential fields for filter extraction
     };
 
     const filterParams = buildWooCommerceFilters(filters);
