@@ -341,7 +341,8 @@ function App() {
       const startTime = Date.now();
 
       // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
-      if (canUseSequentialCache(newFilters, filters)) {
+      // Only use caching when we have a reliable API connection
+      if (apiConnected && canUseSequentialCache(newFilters, filters)) {
         const makeFilter = newFilters.make[0];
         const cacheKey = `make_${makeFilter}`;
         const cachedResult = filterCachedVehicles(cacheKey, newFilters);
