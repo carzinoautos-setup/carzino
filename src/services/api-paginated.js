@@ -25,13 +25,16 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
       return await fetchFromWooCommerce(page, limit, filters, sortBy);
     }
   } catch (error) {
-    console.error('❌ API Error Details:', {
+    const errorDetails = {
       message: error.message,
       filters,
       page,
       limit,
-      sortBy
-    });
+      sortBy,
+      stack: error.stack
+    };
+
+    console.error('❌ API Error Details:', JSON.stringify(errorDetails, null, 2));
 
     // Return a proper error structure that the calling code expects
     throw new Error(`API Error: ${error.message}`);
