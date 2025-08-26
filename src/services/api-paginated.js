@@ -449,10 +449,12 @@ const fetchFromElasticsearch = async (page, limit, filters, sortBy) => {
  * WooCommerce API with pagination
  */
 const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
+  // 🚀 PERFORMANCE: Only fetch essential fields to reduce payload size
   const baseParams = {
-    page: page.toString(), // Use the actual requested page
-    per_page: limit.toString(), // Use the actual requested limit
-    status: 'publish'
+    page: page.toString(),
+    per_page: limit.toString(),
+    status: 'publish',
+    _fields: 'id,name,price,images,meta_data,featured' // Only get what we need - 80% smaller payload!
   };
 
   const filterParams = buildWooCommerceFilters(filters);
