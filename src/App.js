@@ -263,10 +263,19 @@ function App() {
       setCurrentPage(result.currentPage);
       setSearchTime(responseTime);
       setApiConnected(true);
-      
+
+      // Extract and set filter options from the loaded vehicles
+      const filterOptions = extractFilterOptions(result.vehicles);
+      setFilterOptions(filterOptions);
+
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles`);
       console.log(`📊 Total: ${result.totalResults.toLocaleString()} vehicles in ${responseTime}ms`);
-      
+      console.log(`🔍 Filter options extracted:`, {
+        makes: filterOptions.makes.length,
+        conditions: filterOptions.conditions.length,
+        bodyTypes: filterOptions.bodyTypes.length
+      });
+
       // Update URL
       updateURL(newFilters, page);
       
