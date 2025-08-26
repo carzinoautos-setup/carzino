@@ -138,8 +138,7 @@ function App() {
   const [error, setError] = useState(null);
   const [apiConnected, setApiConnected] = useState(false);
 
-  // Smart caching for sequential filtering (Ford → Explorer scenario)
-  const [cachedVehicles, setCachedVehicles] = useState(new Map());
+  // Caching removed for immediate performance
 
   const [favorites, setFavorites] = useState({});
   const [currentPage, setCurrentPage] = useState(() => {
