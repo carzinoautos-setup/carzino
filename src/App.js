@@ -218,8 +218,21 @@ function App() {
     };
   }, [cachedVehicles, itemsPerPage]);
 
-  // Extract filter options from vehicle data
+  // Cache for filter options to avoid expensive recalculations
+  const filterOptionsCache = useRef(new Map());
+
+  // Extract filter options from vehicle data with memoization
   const extractFilterOptions = useCallback((vehicles) => {
+    // Create cache key based on vehicle IDs and count
+    const cacheKey = vehicles.map(v => v.id).sort().join('-') + '-' + vehicles.length;
+
+    // Return cached result if available
+    if (filterOptionsCache.current.has(cacheKey)) {
+      console.log('🚀 Using cached filter options');
+      return filterOptionsCache.current.get(cacheKey);
+    }
+
+    console.log('⚙️ Calculating filter options for', vehicles.length, 'vehicles');
     const options = {
       makes: [],
       models: [],
