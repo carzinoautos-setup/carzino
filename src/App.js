@@ -340,10 +340,50 @@ function App() {
 
     try {
       const startTime = Date.now();
-      
-      // Use the new paginated API
+
+      // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
+      if (canUseSequentialCache(newFilters, filters)) {
+        const makeFilter = newFilters.make[0];
+        const cacheKey = `make_${makeFilter}`;
+        const cachedResult = filterCachedVehicles(cacheKey, newFilters);
+
+        if (cachedResult) {
+          console.log(`⚡ ULTRA-FAST: Using cached ${makeFilter} vehicles for model filtering`);
+
+          // Apply pagination to cached results
+          const startIndex = (page - 1) * itemsPerPage;
+          const paginatedVehicles = cachedResult.vehicles.slice(startIndex, startIndex + itemsPerPage);
+
+          const fastResult = {
+            ...cachedResult,
+            vehicles: paginatedVehicles,
+            currentPage: page
+          };
+
+          // Update state immediately with cached data
+          setVehicles(fastResult.vehicles);
+          setTotalResults(fastResult.totalResults);
+          setTotalPages(fastResult.totalPages);
+          setCurrentPage(fastResult.currentPage);
+          setSearchTime(fastResult.searchTime);
+          setApiConnected(true);
+          setError(null);
+
+          // Update filter options from cached data
+          const filterOptionsExtracted = extractFilterOptions(cachedResult.vehicles);
+          setFilterOptions(filterOptionsExtracted);
+
+          updateURL(newFilters, page);
+          setLoading(false);
+
+          console.log(`🎯 CACHED RESULT: ${fastResult.vehicles.length} vehicles in ${fastResult.searchTime}ms`);
+          return;
+        }
+      }
+
+      // Regular API call when cache not available
       const result = await fetchVehiclesPaginated(page, itemsPerPage, newFilters);
-      
+
       const endTime = Date.now();
       const responseTime = endTime - startTime;
       
