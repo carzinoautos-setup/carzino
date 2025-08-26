@@ -77,12 +77,26 @@ const fetchFromElasticsearch = async (page, limit, filters, sortBy) => {
  * WooCommerce API with pagination
  */
 const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
-  const params = new URLSearchParams({
+  const baseParams = {
     page: page.toString(),
     per_page: limit.toString(),
-    status: 'publish',
-    ...buildWooCommerceFilters(filters),
-    ...buildWooCommerceSort(sortBy)
+    status: 'publish'
+  };
+
+  const filterParams = buildWooCommerceFilters(filters);
+  const sortParams = buildWooCommerceSort(sortBy);
+
+  console.log('🔍 WooCommerce API request:', {
+    baseParams,
+    filterParams,
+    sortParams,
+    filters
+  });
+
+  const params = new URLSearchParams({
+    ...baseParams,
+    ...filterParams,
+    ...sortParams
   });
 
   // Add authentication
@@ -91,10 +105,20 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
     params.append('consumer_secret', process.env.REACT_APP_WC_CONSUMER_SECRET);
   }
 
-  const response = await fetch(`${API_BASE}/products?${params}`);
-  
+  const fullUrl = `${API_BASE}/products?${params}`;
+  console.log('🌐 Full WooCommerce URL:', fullUrl);
+
+  const response = await fetch(fullUrl);
+
   if (!response.ok) {
-    throw new Error(`WooCommerce API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error('❌ WooCommerce API Error Details:', {
+      status: response.status,
+      statusText: response.statusText,
+      url: fullUrl,
+      response: errorText
+    });
+    throw new Error(`WooCommerce API error: ${response.status} - ${errorText}`);
   }
 
   const vehicles = await response.json();
