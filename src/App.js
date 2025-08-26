@@ -555,21 +555,25 @@ function App() {
         throw new Error(result.error);
       }
 
-      // Update state with paginated results
+      // Update state with paginated results (could be real API data or demo data)
       setVehicles(result.vehicles);
       setTotalResults(result.totalResults);
       setTotalPages(result.totalPages);
       setCurrentPage(result.currentPage);
-      setSearchTime(responseTime);
-      setApiConnected(true);
-      
+      setSearchTime(result.searchTime || responseTime);
+      setApiConnected(!result.isDemo); // Set false if demo data
+
+      // Clear any previous errors since we got data
+      setError(null);
+
       // Extract and set filter options from the loaded vehicles
       const filterOptionsExtracted = extractFilterOptions(result.vehicles);
       setFilterOptions(filterOptionsExtracted);
-      
-      console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles`);
-      console.log(`📊 Total: ${result.totalResults.toLocaleString()} vehicles in ${responseTime}ms`);
-      
+
+      const dataSource = result.isDemo ? 'demo data' : 'API';
+      console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
+      console.log(`📊 Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
+
       // Update URL
       updateURL(newFilters, page);
       
