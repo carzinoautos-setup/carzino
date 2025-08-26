@@ -783,6 +783,7 @@ function App() {
   ];
 
   // Fallback sample data with unique IDs
+  /*
   const getSampleVehicles = () => [
     {
       id: `sample-${Date.now()}-1`,
@@ -845,6 +846,7 @@ function App() {
       stock_status: 'instock'
     }
   ];
+  */
 
   // Load favorites from localStorage
   useEffect(() => {
