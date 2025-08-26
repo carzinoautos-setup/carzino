@@ -156,7 +156,7 @@ function App() {
   // Pagination state
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // 🚀 PERFORMANCE: Start with 10 for faster loading
+  const [itemsPerPage, setItemsPerPage] = useState(6); // 🚀 PERFORMANCE: Start with 6 for ultra-fast loading
   const [searchTime, setSearchTime] = useState(0);
 
   // Update URL when filters or page change
