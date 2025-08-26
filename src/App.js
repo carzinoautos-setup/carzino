@@ -363,6 +363,120 @@ function App() {
     }));
   };
 
+  // Extract filter options from vehicle data
+  const extractFilterOptions = useCallback((vehicles) => {
+    const options = {
+      makes: [],
+      models: [],
+      conditions: [],
+      bodyTypes: [],
+      drivetrains: [],
+      transmissions: [],
+      exteriorColors: [],
+      interiorColors: [],
+      years: [],
+      trims: [],
+      fuelTypes: []
+    };
+
+    // Count occurrences for each filter option
+    const counts = {};
+
+    vehicles.forEach(vehicle => {
+      // Extract make from title or meta data
+      const title = vehicle.title || '';
+      const titleParts = title.split(' ');
+      const year = titleParts[0];
+      const make = titleParts[1];
+      const model = titleParts.slice(2).join(' ').split(' ')[0];
+
+      // Makes
+      if (make && make.trim() !== '') {
+        counts[`make_${make}`] = (counts[`make_${make}`] || 0) + 1;
+      }
+
+      // Models
+      if (model && model.trim() !== '') {
+        counts[`model_${model}`] = (counts[`model_${model}`] || 0) + 1;
+      }
+
+      // Years
+      if (year && !isNaN(year) && year.length === 4) {
+        counts[`year_${year}`] = (counts[`year_${year}`] || 0) + 1;
+      }
+
+      // Extract from meta_data if available
+      const metaData = vehicle.meta_data || [];
+
+      metaData.forEach(meta => {
+        const key = meta.key;
+        const value = meta.value;
+
+        if (value && value.toString().trim() !== '') {
+          if (key === 'condition') {
+            counts[`condition_${value}`] = (counts[`condition_${value}`] || 0) + 1;
+          } else if (key === 'body_type' || key === 'vehicleType') {
+            counts[`bodyType_${value}`] = (counts[`bodyType_${value}`] || 0) + 1;
+          } else if (key === 'drivetrain' || key === 'drive_type') {
+            counts[`drivetrain_${value}`] = (counts[`drivetrain_${value}`] || 0) + 1;
+          } else if (key === 'transmission') {
+            counts[`transmission_${value}`] = (counts[`transmission_${value}`] || 0) + 1;
+          } else if (key === 'exterior_color') {
+            counts[`exteriorColor_${value}`] = (counts[`exteriorColor_${value}`] || 0) + 1;
+          } else if (key === 'interior_color') {
+            counts[`interiorColor_${value}`] = (counts[`interiorColor_${value}`] || 0) + 1;
+          } else if (key === 'fuel_type') {
+            counts[`fuelType_${value}`] = (counts[`fuelType_${value}`] || 0) + 1;
+          } else if (key === 'trim') {
+            counts[`trim_${value}`] = (counts[`trim_${value}`] || 0) + 1;
+          }
+        }
+      });
+
+      // Default values for common fields
+      counts['condition_Used'] = (counts['condition_Used'] || 0) + 1;
+      counts['transmission_Automatic'] = (counts['transmission_Automatic'] || 0) + 1;
+      counts['drivetrain_FWD'] = (counts['drivetrain_FWD'] || 0) + 1;
+    });
+
+    // Convert counts to filter options format
+    Object.keys(counts).forEach(key => {
+      const [category, value] = key.split('_');
+      const count = counts[key];
+
+      if (category === 'make') {
+        options.makes.push({ name: value, count });
+      } else if (category === 'model') {
+        options.models.push({ name: value, count });
+      } else if (category === 'year') {
+        options.years.push({ name: value, count });
+      } else if (category === 'condition') {
+        options.conditions.push({ name: value, count });
+      } else if (category === 'bodyType') {
+        options.bodyTypes.push({ name: value, count });
+      } else if (category === 'drivetrain') {
+        options.drivetrains.push({ name: value, count });
+      } else if (category === 'transmission') {
+        options.transmissions.push({ name: value, count });
+      } else if (category === 'exteriorColor') {
+        options.exteriorColors.push({ name: value, count });
+      } else if (category === 'interiorColor') {
+        options.interiorColors.push({ name: value, count });
+      } else if (category === 'fuelType') {
+        options.fuelTypes.push({ name: value, count });
+      } else if (category === 'trim') {
+        options.trims.push({ name: value, count });
+      }
+    });
+
+    // Sort each category by count (most popular first)
+    Object.keys(options).forEach(category => {
+      options[category].sort((a, b) => b.count - a.count);
+    });
+
+    return options;
+  }, []);
+
   // Calculate display metrics
   const startResult = totalResults > 0 ? (currentPage - 1) * itemsPerPage + 1 : 0;
   const endResult = Math.min(currentPage * itemsPerPage, totalResults);
