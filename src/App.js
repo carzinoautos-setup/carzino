@@ -341,6 +341,15 @@ function App() {
       options[category].sort((a, b) => b.count - a.count);
     });
 
+    // Cache the result for future use
+    filterOptionsCache.current.set(cacheKey, options);
+
+    // Limit cache size to prevent memory leaks
+    if (filterOptionsCache.current.size > 10) {
+      const firstKey = filterOptionsCache.current.keys().next().value;
+      filterOptionsCache.current.delete(firstKey);
+    }
+
     return options;
   }, []);
 
