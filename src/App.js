@@ -297,7 +297,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, itemsPerPage, filters, updateURL]);
+  }, [currentPage, itemsPerPage, filters, updateURL, extractFilterOptions]);
 
   // Handle page changes
   const handlePageChange = useCallback((newPage) => {
