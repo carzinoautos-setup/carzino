@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import './App.css';
 import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
+import VehicleCardSkeleton from './components/VehicleCardSkeleton';
 import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
 import { fetchVehiclesPaginated } from './services/api-paginated';
