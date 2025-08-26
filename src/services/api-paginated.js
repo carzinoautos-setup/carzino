@@ -99,10 +99,11 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
     const params = new URLSearchParams(allParams);
     const fullUrl = `${API_BASE}/products?${params}`;
 
-    // Prepare authentication headers
+    // Prepare authentication headers with compression
     const headers = {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'Accept-Encoding': 'gzip, deflate, br',
     };
 
     if (process.env.REACT_APP_WC_CONSUMER_KEY) {
