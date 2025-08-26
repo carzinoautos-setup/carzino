@@ -173,8 +173,8 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
     const isAPIReachable = await testAPIConnectivity();
 
     if (!isAPIReachable) {
-      console.warn('⚠️ API not reachable, falling back to demo data');
-      throw new Error('API not reachable - using demo data');
+      console.warn('⚠️ API not reachable, using demo data');
+      return getDemoDataResponse(page, limit, filters);
     }
 
     // Use Elasticsearch if available, fallback to WooCommerce
@@ -196,10 +196,10 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
       timestamp: new Date().toISOString()
     };
 
-    console.error('❌ API Error Details:', JSON.stringify(errorDetails, null, 2));
+    console.warn('⚠️ API Error, falling back to demo data:', JSON.stringify(errorDetails, null, 2));
 
-    // Return a proper error structure that the calling code expects
-    throw new Error(`API Error: ${error.message}`);
+    // Return demo data instead of throwing error
+    return getDemoDataResponse(page, limit, filters);
   }
 };
 
