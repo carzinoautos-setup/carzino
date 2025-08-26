@@ -302,7 +302,7 @@ function App() {
     };
   }, []);
 
-  // Connect to real WordPress API
+  // NEW: Function to fetch vehicles with server-side pagination
   useEffect(() => {
     const connectToAPI = async () => {
       console.log('�� CONNECTING TO YOUR REAL WORDPRESS DATA...');
