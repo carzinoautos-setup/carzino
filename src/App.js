@@ -333,7 +333,6 @@ function App() {
 
   // Function to fetch vehicles with server-side pagination
   const fetchVehiclesPage = useCallback(async (page = currentPage, newFilters = filters) => {
-    console.log(`🔍 Loading page ${page} with filters:`, newFilters);
     setLoading(true);
     setError(null);
 
