@@ -458,11 +458,12 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   const filterParams = buildWooCommerceFilters(filters);
   const sortParams = buildWooCommerceSort(sortBy);
 
-  console.log('🔍 WooCommerce API request:', {
+  console.log('🚀 DETAILED WooCommerce API request:', {
     baseParams,
     filterParams,
     sortParams,
-    filters
+    filters,
+    apiBase: API_BASE
   });
 
   // Combine all parameters
@@ -482,6 +483,14 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
 
   const params = new URLSearchParams(allParams);
   const fullUrl = `${API_BASE}/products?${params}`;
+
+  console.log('🌐 FULL REQUEST URL:', fullUrl);
+  console.log('🔑 API Credentials:', {
+    hasConsumerKey: !!process.env.REACT_APP_WC_CONSUMER_KEY,
+    hasConsumerSecret: !!process.env.REACT_APP_WC_CONSUMER_SECRET,
+    consumerKeyLength: process.env.REACT_APP_WC_CONSUMER_KEY?.length || 0,
+    wpSiteUrl: process.env.REACT_APP_WP_SITE_URL
+  });
 
   // Prepare authentication headers (try Basic Auth first, fallback to query params)
   const headers = {
