@@ -397,7 +397,17 @@ function App() {
       setTotalPages(result.totalPages);
       setCurrentPage(result.currentPage);
       setSearchTime(result.searchTime || responseTime);
-      setApiConnected(!result.isDemo); // Set false if demo data
+
+      // Properly detect if we're using real API data vs demo data
+      const isRealAPIData = !result.isDemo;
+      setApiConnected(isRealAPIData);
+
+      console.log('🔍 API Connection Status:', {
+        isDemo: result.isDemo,
+        isRealAPIData,
+        vehicleCount: result.totalResults,
+        firstVehicleTitle: result.vehicles[0]?.title || 'No vehicles'
+      });
 
       // Clear any previous errors if we successfully got data (even if demo)
       setError(null);
