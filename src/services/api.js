@@ -1,5 +1,5 @@
 /**
- * WooCommerce API Service
+ * WooCommerce API Service with Server-Side Pagination
  * Connects to real vehicle inventory data
  */
 
@@ -38,6 +38,10 @@ if (WC_CONSUMER_SECRET && !WC_CONSUMER_SECRET.startsWith('cs_')) {
 // Simple cache system for faster loading
 const cache = new Map();
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+// Pagination settings
+const DEFAULT_PER_PAGE = 20;
+const MAX_PER_PAGE = 100;
 
 const getCacheKey = (url, params) => {
   return `${url}?${JSON.stringify(params)}`;
@@ -820,7 +824,7 @@ export const fetchVehicles = async (params = {}) => {
       }
 
       console.error('📞 If issue persists:');
-      console.error('   • Check WordPress site is accessible');
+      console.error('   �� Check WordPress site is accessible');
       console.error('   • Verify WooCommerce plugin is active');
       console.error('   • Check API credentials are correct');
       console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
