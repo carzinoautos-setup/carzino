@@ -124,12 +124,14 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error('❌ WooCommerce API Error Details:', {
+    const errorDetails = {
       status: response.status,
       statusText: response.statusText,
       url: fullUrl,
       response: errorText
-    });
+    };
+
+    console.error('❌ WooCommerce API Error Details:', JSON.stringify(errorDetails, null, 2));
     throw new Error(`WooCommerce API error: ${response.status} - ${errorText}`);
   }
 
