@@ -280,13 +280,9 @@ const fetchFromElasticsearch = async (page, limit, filters, sortBy) => {
  * WooCommerce API with pagination
  */
 const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
-  // Fetch more products for client-side filtering
-  // We'll fetch up to 100 products and filter them client-side
-  const fetchSize = Math.max(limit * 5, 100); // Get 5x the page size or 100, whichever is larger
-
   const baseParams = {
-    page: '1', // Always get from first page since we're filtering client-side
-    per_page: fetchSize.toString(),
+    page: page.toString(), // Use the actual requested page
+    per_page: limit.toString(), // Use the actual requested limit
     status: 'publish'
   };
 
