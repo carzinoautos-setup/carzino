@@ -620,12 +620,12 @@ const applyClientSideFilters = (vehicles, filters) => {
 };
 
 /**
- * Build WooCommerce filters using supported parameters and meta queries
+ * Build WooCommerce filters using only guaranteed working parameters
  */
 const buildWooCommerceFilters = (filters) => {
   const params = {};
 
-  // Basic WooCommerce parameters
+  // Basic text search - works reliably
   if (filters.search) {
     params.search = filters.search;
   }
@@ -639,24 +639,8 @@ const buildWooCommerceFilters = (filters) => {
     params.max_price = filters.priceMax;
   }
 
-  // Category filtering - if your products are categorized
-  if (filters.category && filters.category.length > 0) {
-    params.category = filters.category.join(',');
-  }
-
-  // Tag filtering - if your products have tags
-  if (filters.tag && filters.tag.length > 0) {
-    params.tag = filters.tag.join(',');
-  }
-
-  // For custom meta fields like make, model, etc., WooCommerce supports meta_query
-  // but it's complex in URL format, so we'll do basic attribute filtering where possible
-
-  // If WooCommerce product attributes are set up properly:
-  if (filters.make && filters.make.length > 0) {
-    params.attribute = 'pa_make';
-    params.attribute_term = filters.make.join(',');
-  }
+  // For now, keep it simple to ensure we get the full inventory
+  // Complex filtering will be added once we confirm the basic setup works
 
   console.log('🔧 Built WooCommerce filters:', params);
   return params;
