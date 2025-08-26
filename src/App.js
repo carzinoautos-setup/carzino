@@ -563,6 +563,11 @@ function App() {
       setSearchTime(result.searchTime || responseTime);
       setApiConnected(!result.isDemo); // Set false if demo data
 
+      // Update error state based on demo mode
+      if (result.isDemo) {
+        setError('WooCommerce API unavailable - showing demo data');
+      }
+
       // Clear any previous errors since we got data
       setError(null);
 
