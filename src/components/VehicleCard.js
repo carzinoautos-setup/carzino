@@ -553,52 +553,6 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           font-weight: 500;
         }
 
-        .nav-arrow {
-          position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          width: 24px;
-          height: 24px;
-          background: rgba(0, 0, 0, 0.5);
-          color: white;
-          border: none;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: background-color 200ms ease-in-out;
-          padding: 0;
-        }
-
-        .nav-arrow:hover {
-          background: rgba(0, 0, 0, 0.7);
-        }
-
-        .nav-arrow-left {
-          left: 8px;
-        }
-
-        .nav-arrow-right {
-          right: 8px;
-        }
-
-        .nav-arrow svg {
-          width: 16px;
-          height: 16px;
-        }
-
-        .image-counter {
-          position: absolute;
-          bottom: 12px;
-          right: 12px;
-          background: rgba(0, 0, 0, 0.6);
-          color: white;
-          padding: 4px 8px;
-          border-radius: 50px;
-          font-size: 12px;
-          font-weight: 400;
-        }
 
         .content-section {
           padding: 12px;
