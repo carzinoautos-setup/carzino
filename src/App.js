@@ -566,12 +566,32 @@ function App() {
       // Clear any previous errors since we got data
       setError(null);
 
-      // Quick filter options from current page for fast loading
-      // TODO: Implement smart conditional filtering in background
-      const filterOptionsExtracted = extractFilterOptions(result.vehicles);
-      setFilterOptions(filterOptionsExtracted);
+      // FAST LOADING: Use current page vehicles for immediate filter options
+      const quickFilterOptions = extractFilterOptions(result.vehicles);
+      setFilterOptions(quickFilterOptions);
+      console.log('⚡ Fast loading: Immediate filter options from current page');
 
-      console.log('⚡ Fast loading: Filter options from current page vehicles');
+      // BACKGROUND: Fetch proper conditional filter options asynchronously (non-blocking)
+      const hasActiveFilters = Object.entries(newFilters).some(([key, values]) => {
+        if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
+          return false;
+        }
+        return Array.isArray(values) ? values.length > 0 : (values && values.toString().trim() !== '');
+      });
+
+      if (hasActiveFilters) {
+        // Non-blocking background fetch for conditional filtering
+        fetchAllFilteredVehicles(newFilters)
+          .then(allFilteredVehicles => {
+            const conditionalFilterOptions = extractFilterOptions(allFilteredVehicles);
+            setFilterOptions(conditionalFilterOptions);
+            console.log('🎯 Background update: Conditional filter options from', allFilteredVehicles.length, 'filtered vehicles');
+          })
+          .catch(error => {
+            console.warn('⚠️ Background filter options fetch failed:', error.message);
+            // Keep the quick filter options if background fetch fails
+          });
+      }
 
       const dataSource = result.isDemo ? 'demo data' : 'API';
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
