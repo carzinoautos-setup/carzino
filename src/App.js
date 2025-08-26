@@ -331,8 +331,20 @@ function App() {
     return options;
   }, []);
 
+  // Request deduplication map
+  const activeRequests = useRef(new Map());
+
   // Function to fetch vehicles with server-side pagination
   const fetchVehiclesPage = useCallback(async (page = currentPage, newFilters = filters) => {
+    // Create unique request key for deduplication
+    const requestKey = JSON.stringify({ page, filters: newFilters, itemsPerPage });
+
+    // Check if same request is already in progress
+    if (activeRequests.current.has(requestKey)) {
+      console.log('🔄 DEDUP: Request already in progress, skipping duplicate');
+      return activeRequests.current.get(requestKey);
+    }
+
     setLoading(true);
     setError(null);
 
