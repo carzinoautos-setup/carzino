@@ -1285,11 +1285,11 @@ function App() {
   const actualTotalResults = showingFavorites ? favoritesCount : allFilteredVehicles.length;
 
   // Apply pagination to filtered vehicles with bounds checking
-  const maxPages = Math.ceil(actualTotalResults / resultsPerPage);
+  const maxPages = Math.ceil(actualTotalResults / itemsPerPage);
   const safePage = Math.min(Math.max(currentPage, 1), maxPages || 1);
 
-  const startIndex = (safePage - 1) * resultsPerPage;
-  const endIndex = Math.min(startIndex + resultsPerPage, actualTotalResults);
+  const startIndex = (safePage - 1) * itemsPerPage;
+  const endIndex = Math.min(startIndex + itemsPerPage, actualTotalResults);
   const currentVehicles = showingFavorites
     ? allFilteredVehicles
     : allFilteredVehicles.slice(startIndex, endIndex);
@@ -1301,8 +1301,8 @@ function App() {
 
   // Calculate total pages based on filtered results
   const filteredTotalPages = showingFavorites
-    ? Math.ceil(favoritesCount / resultsPerPage)
-    : Math.ceil(actualTotalResults / resultsPerPage);
+    ? Math.ceil(favoritesCount / itemsPerPage)
+    : Math.ceil(actualTotalResults / itemsPerPage);
 
   console.log(`📄 Pagination: Page ${currentPage}, showing vehicles ${startIndex + 1}-${Math.min(endIndex, actualTotalResults)} of ${actualTotalResults} total (${filteredTotalPages} pages)`);
   console.log(`🚗 Total vehicles loaded: ${vehicles.length}`);
@@ -1507,7 +1507,7 @@ function App() {
               currentPage={currentPage}
               totalPages={filteredTotalPages}
               totalResults={actualTotalResults}
-              resultsPerPage={resultsPerPage}
+              resultsPerPage={itemsPerPage}
               onPageChange={handlePageChange}
             />
           )}
