@@ -580,12 +580,21 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   let vehicles;
   try {
     vehicles = await response.json();
+    console.log('🎉 SUCCESS! Parsed WooCommerce API response');
   } catch (parseError) {
     console.error('❌ JSON Parse Error:', parseError.message);
     throw new Error(`Failed to parse API response: ${parseError.message}`);
   }
 
-  console.log('📦 Received vehicles from WooCommerce:', vehicles.length);
+  console.log('📦 SUCCESS! Received vehicles from WooCommerce:', {
+    vehicleCount: vehicles.length,
+    isArray: Array.isArray(vehicles),
+    firstVehicle: vehicles[0] ? {
+      id: vehicles[0].id,
+      name: vehicles[0].name,
+      hasMetaData: !!vehicles[0].meta_data
+    } : 'No vehicles'
+  });
 
   // Get total count from WooCommerce headers (this is the real inventory size)
   const totalResults = parseInt(response.headers.get('X-WP-Total') || vehicles.length);
