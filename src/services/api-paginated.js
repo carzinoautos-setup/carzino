@@ -72,10 +72,12 @@ const testAPIConnectivity = async () => {
  */
 export const fetchAllFilteredVehicles = async (filters = {}) => {
   try {
-    console.log('🔍 Fetching ALL vehicles for filter options with filters:', filters);
+    console.log('🔍 Fetching vehicles for filter options with filters:', filters);
 
+    // Smart fetch size: Use smaller number for better performance
+    // This is enough for most filter option extraction
     const baseParams = {
-      per_page: '100', // Fetch more for filter options (can increase if needed)
+      per_page: '50', // Reduced from 100 for faster loading
       status: 'publish'
     };
 
