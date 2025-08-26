@@ -400,10 +400,10 @@ function App() {
       </header>
 
       <div className="main-container">
-        {/* Search and Filter Section */}
+        {/* Search and Filter Section - Sidebar */}
         <VehicleSearchFilter
           filters={filters}
-          onFilterChange={handleFilterChange}
+          onFiltersChange={handleFilterChange}
           loading={loading}
           filterOptions={filterOptions}
           isOpen={isMobileFiltersOpen}
@@ -411,68 +411,71 @@ function App() {
           isMobile={isMobile}
         />
 
-        {/* Results Header with Sort and View Options */}
-        <SearchResultsHeader
-          totalResults={totalResults}
-          currentPage={currentPage}
-          itemsPerPage={itemsPerPage}
-          startResult={startResult}
-          endResult={endResult}
-          sortBy={sortBy}
-          onSortChange={handleSortChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-          searchTime={searchTime}
-          currentFilters={filters}
-          viewMode={viewMode}
-          onViewModeChange={setViewMode}
-          onMobileFiltersOpen={() => setIsMobileFiltersOpen(true)}
-          favoritesCount={Object.values(favorites).filter(Boolean).length}
-          showingFavorites={showingFavorites}
-          onToggleFavorites={handleToggleFavorites}
-        />
+        {/* Main Content Area */}
+        <div className="main-content">
+          {/* Results Header with Sort and View Options */}
+          <SearchResultsHeader
+            totalResults={totalResults}
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            startResult={startResult}
+            endResult={endResult}
+            sortBy={sortBy}
+            onSortChange={handleSortChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+            searchTime={searchTime}
+            currentFilters={filters}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            onMobileFiltersOpen={() => setIsMobileFiltersOpen(true)}
+            favoritesCount={Object.values(favorites).filter(Boolean).length}
+            showingFavorites={showingFavorites}
+            onToggleFavorites={handleToggleFavorites}
+          />
 
-        {/* Vehicle Grid */}
-        {loading ? (
-          <div className="loading-container">
-            <div className="loading-spinner"></div>
-            <p>Loading vehicles...</p>
-          </div>
-        ) : error ? (
-          <div className="error-container">
-            <p>Error loading vehicles: {error}</p>
-            <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
-          </div>
-        ) : vehicles.length === 0 ? (
-          <div className="no-results">
-            <h3>No vehicles found</h3>
-            <p>Try adjusting your search filters</p>
-          </div>
-        ) : (
-          <>
-            {/* Vehicle Cards */}
-            <div className={`vehicle-grid ${viewMode}-view p-2`}>
-              {vehicles.map((vehicle, index) => (
-                <VehicleCard
-                  key={`${vehicle.id}-${currentPage}-${index}`}
-                  vehicle={vehicle}
-                  favorites={favorites}
-                  onFavoriteToggle={toggleFavorite}
-                />
-              ))}
+          {/* Vehicle Grid */}
+          {loading ? (
+            <div className="loading-container">
+              <div className="loading-spinner"></div>
+              <p>Loading vehicles...</p>
             </div>
+          ) : error ? (
+            <div className="error-container">
+              <p>Error loading vehicles: {error}</p>
+              <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
+            </div>
+          ) : vehicles.length === 0 ? (
+            <div className="no-results">
+              <h3>No vehicles found</h3>
+              <p>Try adjusting your search filters</p>
+            </div>
+          ) : (
+            <>
+              {/* Vehicle Cards */}
+              <div className={`vehicle-grid ${viewMode}-view p-2`}>
+                {vehicles.map((vehicle, index) => (
+                  <VehicleCard
+                    key={`${vehicle.id}-${currentPage}-${index}`}
+                    vehicle={vehicle}
+                    favorites={favorites}
+                    onFavoriteToggle={toggleFavorite}
+                  />
+                ))}
+              </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                totalResults={totalResults}
-                resultsPerPage={itemsPerPage}
-                onPageChange={handlePageChange}
-              />
-            )}
-          </>
-        )}
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  totalResults={totalResults}
+                  resultsPerPage={itemsPerPage}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
