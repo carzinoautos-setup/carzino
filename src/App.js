@@ -204,7 +204,7 @@ function App() {
 
   // Data state
   const [vehicles, setVehicles] = useState([]);
-  const [filterOptions] = useState({});
+  const [filterOptions, setFilterOptions] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [apiConnected, setApiConnected] = useState(false);
