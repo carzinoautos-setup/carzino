@@ -392,8 +392,15 @@ function App() {
         }
       }
 
+      // Create and store request promise for deduplication
+      const requestPromise = fetchVehiclesPaginated(page, itemsPerPage, newFilters);
+      activeRequests.current.set(requestKey, requestPromise);
+
       // Regular API call when cache not available
-      const result = await fetchVehiclesPaginated(page, itemsPerPage, newFilters);
+      const result = await requestPromise;
+
+      // Clean up completed request from deduplication map
+      activeRequests.current.delete(requestKey);
 
       const endTime = Date.now();
       const responseTime = endTime - startTime;
