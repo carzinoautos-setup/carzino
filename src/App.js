@@ -6,12 +6,11 @@ import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
 import { fetchVehiclesPaginated } from './services/api';
 
-// URL parameter helpers (keep your existing functions)
+// URL parameter helpers
 const filtersToURLParams = (filters, page = 1) => {
   const params = new URLSearchParams();
 
   Object.entries(filters).forEach(([key, value]) => {
-    // Skip empty values and default configuration
     if (!value ||
         (Array.isArray(value) && value.length === 0) ||
         ['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment'].includes(key)) {
@@ -19,14 +18,12 @@ const filtersToURLParams = (filters, page = 1) => {
     }
 
     if (Array.isArray(value)) {
-      // For arrays, add each value separately
       value.forEach(item => params.append(key, item));
     } else if (value.toString().trim() !== '') {
       params.set(key, value.toString());
     }
   });
 
-  // Add page parameter if not page 1
   if (page > 1) {
     params.set('page', page.toString());
   }
@@ -66,27 +63,21 @@ const URLParamsToFilters = (searchParams) => {
     downPayment: '2000'
   };
 
-  // Parse URL parameters with validation
   for (const [key, value] of searchParams.entries()) {
-    // Skip invalid or problematic keys
     if (key === 'page' || key === 'reload' || !value || value.length > 50) {
       continue;
     }
 
-    // Skip timestamp-like values
     if (/^\d{10,}$/.test(value)) {
       continue;
     }
 
-    // Only process known filter keys
     if (filters.hasOwnProperty(key)) {
       if (Array.isArray(filters[key])) {
-        // For array filters, collect all values
         if (!filters[key].includes(value)) {
           filters[key].push(value);
         }
       } else {
-        // For single value filters
         filters[key] = value;
       }
     }
@@ -95,7 +86,7 @@ const URLParamsToFilters = (searchParams) => {
   return filters;
 };
 
-// Demo data function (keep your existing one)
+// Demo data function
 const getRealisticDemoVehicles = () => {
   return [
     {
@@ -114,7 +105,11 @@ const getRealisticDemoVehicles = () => {
       location: "Seattle, WA",
       phone: "(253) 555-0100",
       seller_data: null,
-      meta_data: [],
+      meta_data: [
+        { key: 'make', value: 'Toyota' },
+        { key: 'condition', value: 'Used' },
+        { key: 'body_type', value: 'SUV' }
+      ],
       rawData: {}
     },
     {
@@ -133,7 +128,11 @@ const getRealisticDemoVehicles = () => {
       location: "Tacoma, WA",
       phone: "(253) 555-0200",
       seller_data: null,
-      meta_data: [],
+      meta_data: [
+        { key: 'make', value: 'Honda' },
+        { key: 'condition', value: 'Used' },
+        { key: 'body_type', value: 'Sedan' }
+      ],
       rawData: {}
     },
     {
@@ -152,7 +151,11 @@ const getRealisticDemoVehicles = () => {
       location: "Everett, WA",
       phone: "(425) 555-0300",
       seller_data: null,
-      meta_data: [],
+      meta_data: [
+        { key: 'make', value: 'Ford' },
+        { key: 'condition', value: 'Used' },
+        { key: 'body_type', value: 'Truck' }
+      ],
       rawData: {}
     }
   ];
@@ -166,7 +169,6 @@ function App() {
       return URLParamsToFilters(urlParams);
     }
 
-    // Default filters if no URL parameters
     return {
       condition: [],
       make: [],
@@ -221,10 +223,10 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [showingFavorites, setShowingFavorites] = useState(false);
 
-  // NEW: Pagination state for server-side pagination
+  // Pagination state
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(20); // Show 20 vehicles per page
+  const [itemsPerPage, setItemsPerPage] = useState(20);
   const [searchTime, setSearchTime] = useState(0);
 
   // Update URL when filters or page change
@@ -253,9 +255,8 @@ function App() {
       fuelTypes: []
     };
 
-    // Count occurrences for each filter option
     const counts = {};
-
+    
     vehicles.forEach(vehicle => {
       // Extract make from title or meta data
       const title = vehicle.title || '';
@@ -269,7 +270,7 @@ function App() {
         counts[`make_${make}`] = (counts[`make_${make}`] || 0) + 1;
       }
 
-      // Models
+      // Models  
       if (model && model.trim() !== '') {
         counts[`model_${model}`] = (counts[`model_${model}`] || 0) + 1;
       }
@@ -281,11 +282,11 @@ function App() {
 
       // Extract from meta_data if available
       const metaData = vehicle.meta_data || [];
-
+      
       metaData.forEach(meta => {
         const key = meta.key;
         const value = meta.value;
-
+        
         if (value && value.toString().trim() !== '') {
           if (key === 'condition') {
             counts[`condition_${value}`] = (counts[`condition_${value}`] || 0) + 1;
@@ -317,7 +318,7 @@ function App() {
     Object.keys(counts).forEach(key => {
       const [category, value] = key.split('_');
       const count = counts[key];
-
+      
       if (category === 'make') {
         options.makes.push({ name: value, count });
       } else if (category === 'model') {
@@ -351,7 +352,7 @@ function App() {
     return options;
   }, []);
 
-  // NEW: Function to fetch vehicles with server-side pagination
+  // Function to fetch vehicles with server-side pagination
   const fetchVehiclesPage = useCallback(async (page = currentPage, newFilters = filters) => {
     console.log(`🔍 Loading page ${page} with filters:`, newFilters);
     setLoading(true);
@@ -377,19 +378,14 @@ function App() {
       setCurrentPage(result.currentPage);
       setSearchTime(responseTime);
       setApiConnected(true);
-
+      
       // Extract and set filter options from the loaded vehicles
-      const filterOptions = extractFilterOptions(result.vehicles);
-      setFilterOptions(filterOptions);
-
+      const filterOptionsExtracted = extractFilterOptions(result.vehicles);
+      setFilterOptions(filterOptionsExtracted);
+      
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles`);
       console.log(`📊 Total: ${result.totalResults.toLocaleString()} vehicles in ${responseTime}ms`);
-      console.log(`🔍 Filter options extracted:`, {
-        makes: filterOptions.makes.length,
-        conditions: filterOptions.conditions.length,
-        bodyTypes: filterOptions.bodyTypes.length
-      });
-
+      
       // Update URL
       updateURL(newFilters, page);
       
@@ -400,14 +396,14 @@ function App() {
       
       // Load demo data as fallback
       const demoData = getRealisticDemoVehicles();
-      const currentPageData = demoData.slice(0, itemsPerPage); // Only show current page worth
+      const currentPageData = demoData.slice(0, itemsPerPage);
       setVehicles(currentPageData);
       setTotalResults(demoData.length);
       setTotalPages(Math.ceil(demoData.length / itemsPerPage));
-
+      
       // Extract filter options from demo data
-      const filterOptions = extractFilterOptions(currentPageData);
-      setFilterOptions(filterOptions);
+      const filterOptionsExtracted = extractFilterOptions(currentPageData);
+      setFilterOptions(filterOptionsExtracted);
     } finally {
       setLoading(false);
     }
@@ -419,7 +415,6 @@ function App() {
     setCurrentPage(newPage);
     fetchVehiclesPage(newPage, filters);
     
-    // Scroll to top of results
     const resultsElement = document.querySelector('.vehicle-grid');
     if (resultsElement) {
       resultsElement.scrollIntoView({ behavior: 'smooth' });
@@ -430,7 +425,7 @@ function App() {
   const handleFilterChange = useCallback((newFilters) => {
     console.log('🔄 Filters changed:', newFilters);
     setFilters(newFilters);
-    setCurrentPage(1); // Reset to first page when filters change
+    setCurrentPage(1);
     fetchVehiclesPage(1, newFilters);
   }, [fetchVehiclesPage]);
 
@@ -438,7 +433,7 @@ function App() {
   const handleSortChange = useCallback((newSortBy) => {
     console.log(`🔄 Sort changed to: ${newSortBy}`);
     setSortBy(newSortBy);
-    setCurrentPage(1); // Reset to first page when sort changes
+    setCurrentPage(1);
     fetchVehiclesPage(1, filters);
   }, [filters, fetchVehiclesPage]);
 
@@ -446,14 +441,14 @@ function App() {
   const handleItemsPerPageChange = useCallback((newItemsPerPage) => {
     console.log(`📋 Items per page changed to: ${newItemsPerPage}`);
     setItemsPerPage(newItemsPerPage);
-    setCurrentPage(1); // Reset to first page
+    setCurrentPage(1);
     fetchVehiclesPage(1, filters);
   }, [filters, fetchVehiclesPage]);
 
   // Initial data load
   useEffect(() => {
     fetchVehiclesPage(currentPage, filters);
-  }, [currentPage, filters, fetchVehiclesPage]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle browser back/forward navigation
   useEffect(() => {
