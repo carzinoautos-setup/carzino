@@ -577,14 +577,11 @@ function App() {
       console.error('❌ Failed to load vehicles:', error);
       setError(`Failed to load vehicles: ${error.message}`);
       setApiConnected(false);
-      
-      // Load demo data as fallback
+
+      // The API service now handles demo data fallback automatically
+      // If we reach here, something is seriously wrong, but let's still try demo data
       const demoData = getRealisticDemoVehicles();
-
-      // Apply filters to demo data
       const filteredDemoData = applyFiltersToVehicles(demoData, newFilters);
-
-      // Apply pagination to filtered data
       const startIndex = (page - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
       const currentPageData = filteredDemoData.slice(startIndex, endIndex);
@@ -593,7 +590,6 @@ function App() {
       setTotalResults(filteredDemoData.length);
       setTotalPages(Math.ceil(filteredDemoData.length / itemsPerPage));
 
-      // Extract filter options from ALL demo data (not just current page)
       const filterOptionsExtracted = extractFilterOptions(demoData);
       setFilterOptions(filterOptionsExtracted);
     } finally {
