@@ -930,7 +930,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
         <div className="dealer-section">
           <div className="dealer-info">
-            <div className="dealer-name">{getSellerName()}</div>
+            <div className="dealer-name"><p>{getSellerName()}</p></div>
             <div className="dealer-location">{getSellerLocation()}</div>
             {getDistanceDisplay() && (
               <div className="dealer-distance">{getDistanceDisplay()}</div>
