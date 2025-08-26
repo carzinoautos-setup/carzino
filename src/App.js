@@ -415,7 +415,6 @@ function App() {
       // 🚀 PERFORMANCE: Skip background fetch for immediate speed
       // Use only current page filter options for ultra-fast loading
 
-      const dataSource = result.isDemo ? 'demo data' : 'API';
       console.log(`�� Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
 
       // 🚀 PERFORMANCE: Caching disabled for immediate speed
