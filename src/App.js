@@ -436,9 +436,42 @@ function App() {
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
       console.log(`�� Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
 
+      // 💾 CACHE MAKE FILTER RESULTS for sequential filtering optimization
+      if (newFilters.make && newFilters.make.length === 1 && (!newFilters.model || newFilters.model.length === 0)) {
+        // User just selected a make (like Ford) - cache all Ford vehicles for fast model filtering
+        try {
+          console.log(`💾 Caching all ${newFilters.make[0]} vehicles for fast sequential filtering...`);
+
+          const allMakeVehicles = await fetchAllFilteredVehicles(newFilters);
+          const cacheKey = `make_${newFilters.make[0]}`;
+
+          setCachedVehicles(prev => {
+            const newCache = new Map(prev);
+            newCache.set(cacheKey, {
+              vehicles: allMakeVehicles,
+              timestamp: Date.now(),
+              filters: { ...newFilters }
+            });
+
+            // Keep cache size reasonable (max 5 makes)
+            if (newCache.size > 5) {
+              const oldestKey = Array.from(newCache.keys())[0];
+              newCache.delete(oldestKey);
+            }
+
+            return newCache;
+          });
+
+          setLastMakeFilter(newFilters.make[0]);
+          console.log(`✅ Cached ${allMakeVehicles.length} ${newFilters.make[0]} vehicles for sequential filtering`);
+        } catch (cacheError) {
+          console.warn('⚠️ Failed to cache make vehicles:', cacheError.message);
+        }
+      }
+
       // Update URL
       updateURL(newFilters, page);
-      
+
     } catch (error) {
       console.error('❌ Unexpected error in fetchVehiclesPage:', error);
       setError(`Unexpected error: ${error.message}`);
