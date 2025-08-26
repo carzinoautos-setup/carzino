@@ -229,11 +229,11 @@ function App() {
 
     // Return cached result if available
     if (filterOptionsCache.current.has(cacheKey)) {
-      console.log('🚀 Using cached filter options');
+      // console.log('🚀 Using cached filter options');
       return filterOptionsCache.current.get(cacheKey);
     }
 
-    console.log('⚙️ Calculating filter options for', vehicles.length, 'vehicles');
+    // console.log('⚙️ Calculating filter options for', vehicles.length, 'vehicles');
     const options = {
       makes: [],
       models: [],
