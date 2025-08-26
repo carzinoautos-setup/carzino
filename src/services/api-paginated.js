@@ -122,13 +122,25 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   }
 
   const vehicles = await response.json();
-  
-  // Get total count from headers
-  const totalResults = parseInt(response.headers.get('X-WP-Total') || '0');
-  const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1');
+
+  console.log('📦 Received vehicles from WooCommerce:', vehicles.length);
+
+  // Transform vehicles first
+  const transformedVehicles = vehicles.map(transformWooCommerceVehicle);
+
+  // Apply client-side filtering for unsupported WooCommerce parameters
+  const filteredVehicles = applyClientSideFilters(transformedVehicles, filters);
+
+  console.log('✅ Filtered vehicles count:', filteredVehicles.length);
+
+  // Since we're doing client-side filtering, recalculate pagination
+  const totalResults = filteredVehicles.length;
+  const totalPages = Math.ceil(totalResults / limit);
+  const startIndex = (page - 1) * limit;
+  const paginatedVehicles = filteredVehicles.slice(startIndex, startIndex + limit);
 
   return {
-    vehicles: vehicles.map(transformWooCommerceVehicle),
+    vehicles: paginatedVehicles,
     totalResults,
     totalPages,
     currentPage: page
