@@ -138,6 +138,7 @@ function App() {
   const [vehicles, setVehicles] = useState([]);
   const [filterOptions, setFilterOptions] = useState({});
   const [loading, setLoading] = useState(true);
+  const [optimisticLoading, setOptimisticLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiConnected, setApiConnected] = useState(false);
 
