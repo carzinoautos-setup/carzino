@@ -380,22 +380,26 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
 
   console.log('📦 Received vehicles from WooCommerce:', vehicles.length);
 
-  // Transform vehicles first
+  // Get total count from WooCommerce headers (this is the real inventory size)
+  const totalResults = parseInt(response.headers.get('X-WP-Total') || vehicles.length);
+  const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || Math.ceil(totalResults / limit));
+
+  console.log('📊 WooCommerce API Response:', {
+    currentPageVehicles: vehicles.length,
+    totalInventory: totalResults,
+    totalPages: totalPages,
+    currentPage: page
+  });
+
+  // Transform vehicles
   const transformedVehicles = vehicles.map(transformWooCommerceVehicle);
 
-  // Apply client-side filtering for unsupported WooCommerce parameters
-  const filteredVehicles = applyClientSideFilters(transformedVehicles, filters);
-
-  console.log('✅ Filtered vehicles count:', filteredVehicles.length);
-
-  // Since we're doing client-side filtering, recalculate pagination
-  const totalResults = filteredVehicles.length;
-  const totalPages = Math.ceil(totalResults / limit);
-  const startIndex = (page - 1) * limit;
-  const paginatedVehicles = filteredVehicles.slice(startIndex, startIndex + limit);
+  // For now, minimal client-side filtering only for basic display
+  // TODO: Move complex filtering to server-side for better performance
+  const filteredVehicles = transformedVehicles; // Skip client-side filtering for now
 
   return {
-    vehicles: paginatedVehicles,
+    vehicles: filteredVehicles,
     totalResults,
     totalPages,
     currentPage: page
