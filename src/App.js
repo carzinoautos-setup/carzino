@@ -8,7 +8,6 @@ import { fetchVehiclesPaginated } from './services/api-paginated';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
-import { fetchVehiclesPaginated } from './services/api-paginated';
 
 // URL parameter helpers
 const filtersToURLParams = (filters, page = 1) => {
