@@ -521,10 +521,13 @@ function App() {
     fetchVehiclesPage(1, newFilters);
   }, [fetchVehiclesPage]);
 
-  // Handle filter changes with debouncing
+  // Handle filter changes with optimistic loading and debouncing
   const handleFilterChange = useCallback((newFilters) => {
     console.log('🔄 Filters changed:', newFilters);
     setFilters(newFilters);
+
+    // Show instant optimistic loading state
+    setOptimisticLoading(true);
 
     // Clear previous timeout
     if (window.filterTimeout) {
@@ -533,6 +536,7 @@ function App() {
 
     // Debounce API calls by 300ms to prevent rapid requests
     window.filterTimeout = setTimeout(() => {
+      setOptimisticLoading(false);
       debouncedFilterChange(newFilters);
     }, 300);
   }, [debouncedFilterChange]);
