@@ -455,8 +455,8 @@ function App() {
                 <VehicleCard
                   key={`${vehicle.id}-${currentPage}-${index}`}
                   vehicle={vehicle}
-                  favorite={favorites[vehicle.id]}
-                  onToggleFavorite={() => toggleFavorite(vehicle.id)}
+                  favorites={favorites}
+                  onFavoriteToggle={toggleFavorite}
                 />
               ))}
             </div>
