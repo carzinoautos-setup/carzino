@@ -286,9 +286,14 @@ function App() {
       
       // Load demo data as fallback
       const demoData = getRealisticDemoVehicles();
-      setVehicles(demoData.slice(0, itemsPerPage)); // Only show current page worth
+      const currentPageData = demoData.slice(0, itemsPerPage); // Only show current page worth
+      setVehicles(currentPageData);
       setTotalResults(demoData.length);
       setTotalPages(Math.ceil(demoData.length / itemsPerPage));
+
+      // Extract filter options from demo data
+      const filterOptions = extractFilterOptions(currentPageData);
+      setFilterOptions(filterOptions);
     } finally {
       setLoading(false);
     }
