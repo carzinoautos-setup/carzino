@@ -354,7 +354,7 @@ function App() {
 
   // Function to fetch vehicles with server-side pagination
   const fetchVehiclesPage = useCallback(async (page = currentPage, newFilters = filters) => {
-    console.log(`🔍 Loading page ${page} with filters:`, newFilters);
+    console.log(`��� Loading page ${page} with filters:`, newFilters);
     setLoading(true);
     setError(null);
 
@@ -396,13 +396,21 @@ function App() {
       
       // Load demo data as fallback
       const demoData = getRealisticDemoVehicles();
-      const currentPageData = demoData.slice(0, itemsPerPage);
+
+      // Apply filters to demo data
+      const filteredDemoData = applyFiltersToVehicles(demoData, newFilters);
+
+      // Apply pagination to filtered data
+      const startIndex = (page - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const currentPageData = filteredDemoData.slice(startIndex, endIndex);
+
       setVehicles(currentPageData);
-      setTotalResults(demoData.length);
-      setTotalPages(Math.ceil(demoData.length / itemsPerPage));
-      
-      // Extract filter options from demo data
-      const filterOptionsExtracted = extractFilterOptions(currentPageData);
+      setTotalResults(filteredDemoData.length);
+      setTotalPages(Math.ceil(filteredDemoData.length / itemsPerPage));
+
+      // Extract filter options from ALL demo data (not just current page)
+      const filterOptionsExtracted = extractFilterOptions(demoData);
       setFilterOptions(filterOptionsExtracted);
     } finally {
       setLoading(false);
