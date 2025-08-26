@@ -28,9 +28,10 @@ const testAPIConnectivity = async () => {
 
     const testUrl = `${API_BASE}/products?${params}`;
 
-    // Prepare headers with Basic Auth
+    // Prepare headers with Basic Auth and compression
     const headers = {
       'Accept': 'application/json',
+      'Accept-Encoding': 'gzip, deflate, br',
     };
 
     if (process.env.REACT_APP_WC_CONSUMER_KEY) {
@@ -118,7 +119,7 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
         headers: headers,
       });
     } catch (networkError) {
-      console.warn('⚠️ Network error fetching filter options, using demo data:', networkError.message);
+      console.warn('��️ Network error fetching filter options, using demo data:', networkError.message);
       const demoResult = getDemoDataFallback(1, 50, filters);
       return demoResult.vehicles;
     }
