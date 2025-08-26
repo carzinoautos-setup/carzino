@@ -140,56 +140,6 @@ function App() {
 
   // Smart caching for sequential filtering (Ford → Explorer scenario)
   const [cachedVehicles, setCachedVehicles] = useState(new Map());
-  const [lastMakeFilter, setLastMakeFilter] = useState(null);
-
-  // Helper function to check if we can use cached data for sequential filtering
-  const canUseSequentialCache = useCallback((newFilters, currentFilters) => {
-    // Check if this is a Ford → Explorer type scenario
-    const newMake = newFilters.make || [];
-    const currentMake = currentFilters.make || [];
-    const newModel = newFilters.model || [];
-    const currentModel = currentFilters.model || [];
-
-    // Scenario: User selected Ford, now adding Explorer model
-    if (newMake.length === 1 && currentMake.length === 1 &&
-        newMake[0] === currentMake[0] && // Same make (Ford)
-        newModel.length > currentModel.length) { // Adding model filter
-
-      const cacheKey = `make_${newMake[0]}`;
-      return cachedVehicles.has(cacheKey);
-    }
-
-    return false;
-  }, [cachedVehicles]);
-
-  // Helper function to filter cached vehicles client-side
-  const filterCachedVehicles = useCallback((cacheKey, newFilters) => {
-    const cached = cachedVehicles.get(cacheKey);
-    if (!cached) return null;
-
-    // Apply model filter to cached Ford vehicles
-    const filteredVehicles = cached.vehicles.filter(vehicle => {
-      if (newFilters.model && newFilters.model.length > 0) {
-        const getMeta = (key) => {
-          const meta = vehicle.meta_data?.find(m => m.key === key);
-          return meta ? meta.value : '';
-        };
-
-        const vehicleModel = getMeta('model') || vehicle.title.split(' ')[2];
-        return newFilters.model.includes(vehicleModel);
-      }
-      return true;
-    });
-
-    return {
-      vehicles: filteredVehicles,
-      totalResults: filteredVehicles.length,
-      totalPages: Math.ceil(filteredVehicles.length / itemsPerPage),
-      currentPage: 1,
-      searchTime: 10, // Ultra-fast client-side filtering
-      isCached: true
-    };
-  }, [cachedVehicles, itemsPerPage]);
 
   const [favorites, setFavorites] = useState({});
   const [currentPage, setCurrentPage] = useState(() => {
