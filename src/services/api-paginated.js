@@ -215,16 +215,93 @@ const buildWooCommerceFilters = (filters) => {
     params.search = filters.search;
   }
 
+  // Vehicle attributes - use meta queries for custom fields
   if (filters.make && filters.make.length > 0) {
     params.make = filters.make.join(',');
   }
 
+  if (filters.model && filters.model.length > 0) {
+    params.model = filters.model.join(',');
+  }
+
+  if (filters.condition && filters.condition.length > 0) {
+    params.condition = filters.condition.join(',');
+  }
+
+  if (filters.vehicleType && filters.vehicleType.length > 0) {
+    params.vehicle_type = filters.vehicleType.join(',');
+  }
+
+  if (filters.bodyType && filters.bodyType.length > 0) {
+    params.body_type = filters.bodyType.join(',');
+  }
+
+  if (filters.driveType && filters.driveType.length > 0) {
+    params.drive_type = filters.driveType.join(',');
+  }
+
+  if (filters.transmission && filters.transmission.length > 0) {
+    params.transmission = filters.transmission.join(',');
+  }
+
+  if (filters.transmissionSpeed && filters.transmissionSpeed.length > 0) {
+    params.transmission_speed = filters.transmissionSpeed.join(',');
+  }
+
+  if (filters.fuelType && filters.fuelType.length > 0) {
+    params.fuel_type = filters.fuelType.join(',');
+  }
+
+  if (filters.exteriorColor && filters.exteriorColor.length > 0) {
+    params.exterior_color = filters.exteriorColor.join(',');
+  }
+
+  if (filters.interiorColor && filters.interiorColor.length > 0) {
+    params.interior_color = filters.interiorColor.join(',');
+  }
+
+  if (filters.year && filters.year.length > 0) {
+    params.year = filters.year.join(',');
+  }
+
+  if (filters.trim && filters.trim.length > 0) {
+    params.trim = filters.trim.join(',');
+  }
+
+  // Price range
   if (filters.priceMin) {
     params.min_price = filters.priceMin;
   }
 
   if (filters.priceMax) {
     params.max_price = filters.priceMax;
+  }
+
+  // Mileage
+  if (filters.mileage) {
+    params.max_mileage = filters.mileage;
+  }
+
+  // Geographic filters
+  if (filters.state && filters.state.length > 0) {
+    params.state = filters.state.join(',');
+  }
+
+  if (filters.city && filters.city.length > 0) {
+    params.city = filters.city.join(',');
+  }
+
+  if (filters.zipCodeFilter && filters.zipCodeFilter.length > 0) {
+    params.zip_code = filters.zipCodeFilter.join(',');
+  }
+
+  // Dealer filters
+  if (filters.dealer && filters.dealer.length > 0) {
+    params.dealer = filters.dealer.join(',');
+  }
+
+  if (filters.sellerType && filters.sellerType.length > 0) {
+    params.seller_type = filters.sellerType.join(',');
   }
 
   return params;
@@ -267,13 +344,48 @@ const transformElasticsearchVehicle = (hit) => {
  * Transform WooCommerce vehicle data
  */
 const transformWooCommerceVehicle = (product) => {
-  // Your existing transformation logic
+  // Extract meta data for filtering
+  const meta_data = product.meta_data || [];
+
+  // Helper function to get meta value
+  const getMeta = (key) => {
+    const meta = meta_data.find(m => m.key === key);
+    return meta ? meta.value : '';
+  };
+
+  // Get seller data if available
+  const seller_data = product.seller_data || null;
+
   return {
     id: product.id,
     title: product.name,
-    price: parseFloat(product.price),
-    images: product.images.map(img => img.src),
-    // Add other transformations
+    featured: product.featured || false,
+    viewed: false,
+    images: product.images?.map(img => img.src) || [],
+    badges: product.tags?.map(tag => tag.name) || [],
+    mileage: getMeta('mileage') || getMeta('_mileage') || '0',
+    transmission: getMeta('transmission') || getMeta('_transmission') || 'Auto',
+    doors: getMeta('doors') || getMeta('_doors') || '4 doors',
+    salePrice: product.price ? `$${parseFloat(product.price).toLocaleString()}` : '',
+    payment: getMeta('monthly_payment') || getMeta('_monthly_payment') || '',
+    dealer: seller_data?.company_name || getMeta('dealer') || getMeta('_dealer') || 'Unknown Dealer',
+    location: `${getMeta('city') || getMeta('_city') || ''}, ${getMeta('state') || getMeta('_state') || ''}`.trim().replace(/^,|,$/, ''),
+    phone: seller_data?.phone || getMeta('phone') || getMeta('_phone') || '',
+    seller_data: seller_data,
+    meta_data: [
+      { key: 'make', value: getMeta('make') || getMeta('_make') },
+      { key: 'model', value: getMeta('model') || getMeta('_model') },
+      { key: 'year', value: getMeta('year') || getMeta('_year') },
+      { key: 'condition', value: getMeta('condition') || getMeta('_condition') || 'Used' },
+      { key: 'body_type', value: getMeta('body_type') || getMeta('vehicle_type') || getMeta('_body_type') || getMeta('_vehicle_type') },
+      { key: 'drivetrain', value: getMeta('drivetrain') || getMeta('drive_type') || getMeta('_drivetrain') || getMeta('_drive_type') },
+      { key: 'transmission', value: getMeta('transmission') || getMeta('_transmission') },
+      { key: 'fuel_type', value: getMeta('fuel_type') || getMeta('_fuel_type') },
+      { key: 'exterior_color', value: getMeta('exterior_color') || getMeta('_exterior_color') },
+      { key: 'interior_color', value: getMeta('interior_color') || getMeta('_interior_color') },
+      { key: 'trim', value: getMeta('trim') || getMeta('_trim') }
+    ].filter(meta => meta.value && meta.value.toString().trim() !== ''),
+    rawData: product
   };
 };
 
