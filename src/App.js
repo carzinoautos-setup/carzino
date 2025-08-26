@@ -4,7 +4,7 @@ import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
-import { fetchVehicles, fetchFilterOptions, fetchVehiclesPaginated, getVehicleCount } from './services/api';
+import { fetchVehiclesPaginated } from './services/api';
 
 // URL parameter helpers (keep your existing functions)
 const filtersToURLParams = (filters, page = 1) => {
@@ -204,7 +204,6 @@ function App() {
 
   // Data state
   const [vehicles, setVehicles] = useState([]);
-  const [filterOptions, setFilterOptions] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [apiConnected, setApiConnected] = useState(false);
@@ -228,14 +227,14 @@ function App() {
   const [searchTime, setSearchTime] = useState(0);
 
   // Update URL when filters or page change
-  const updateURL = (newFilters, page = currentPage) => {
+  const updateURL = useCallback((newFilters, page = currentPage) => {
     const params = filtersToURLParams(newFilters, page);
     const newURL = params ? `${window.location.pathname}?${params}` : window.location.pathname;
 
     if (newURL !== window.location.pathname + window.location.search) {
       window.history.pushState(null, '', newURL);
     }
-  };
+  }, [currentPage]);
 
   // NEW: Function to fetch vehicles with server-side pagination
   const fetchVehiclesPage = useCallback(async (page = currentPage, newFilters = filters) => {
@@ -325,7 +324,7 @@ function App() {
   // Initial data load
   useEffect(() => {
     fetchVehiclesPage(currentPage, filters);
-  }, []); // Only run on mount
+  }, [currentPage, filters, fetchVehiclesPage]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle browser back/forward navigation
   useEffect(() => {
