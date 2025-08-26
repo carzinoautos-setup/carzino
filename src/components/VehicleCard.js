@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Gauge, Settings, ChevronLeft, ChevronRight, Heart, Check } from 'lucide-react';
+import { Gauge, Settings, Heart, Check } from 'lucide-react';
 
 const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const [keeperMessage, setKeeperMessage] = useState(false);
