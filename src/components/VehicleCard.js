@@ -812,7 +812,6 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
         @media (max-width: 640px) {
           .featured-badge,
-          .image-counter,
           .status-badge,
           .viewed-badge,
           .detail-text,
