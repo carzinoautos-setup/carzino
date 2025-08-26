@@ -555,11 +555,25 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
       status: response.status,
       statusText: response.statusText,
       url: fullUrl,
+      requestHeaders: headers,
+      responseHeaders: Object.fromEntries(response.headers.entries()),
       response: errorText,
+      apiEndpoint: API_BASE,
+      wpSiteUrl: process.env.REACT_APP_WP_SITE_URL,
       type: 'HTTP_ERROR'
     };
 
-    console.error('❌ WooCommerce API Error Details:', JSON.stringify(errorDetails, null, 2));
+    console.error('❌ DETAILED WooCommerce API HTTP Error:', JSON.stringify(errorDetails, null, 2));
+
+    // Specific error handling for common issues
+    if (response.status === 401) {
+      console.error('🔐 AUTHENTICATION ERROR: Check your WooCommerce API credentials');
+    } else if (response.status === 404) {
+      console.error('🔍 ENDPOINT NOT FOUND: Check your WooCommerce API URL');
+    } else if (response.status === 403) {
+      console.error('🚫 PERMISSION DENIED: Check WooCommerce API permissions');
+    }
+
     throw new Error(`WooCommerce API error: ${response.status} - ${errorText}`);
   }
 
