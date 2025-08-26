@@ -230,69 +230,17 @@ const buildElasticsearchSort = (sortBy) => {
 };
 
 /**
- * Build WooCommerce filters
+ * Build WooCommerce filters - Using only basic WooCommerce supported parameters
  */
 const buildWooCommerceFilters = (filters) => {
   const params = {};
 
+  // Only use basic WooCommerce parameters to avoid 400 errors
   if (filters.search) {
     params.search = filters.search;
   }
 
-  // Vehicle attributes - use meta queries for custom fields
-  if (filters.make && filters.make.length > 0) {
-    params.make = filters.make.join(',');
-  }
-
-  if (filters.model && filters.model.length > 0) {
-    params.model = filters.model.join(',');
-  }
-
-  if (filters.condition && filters.condition.length > 0) {
-    params.condition = filters.condition.join(',');
-  }
-
-  if (filters.vehicleType && filters.vehicleType.length > 0) {
-    params.vehicle_type = filters.vehicleType.join(',');
-  }
-
-  if (filters.bodyType && filters.bodyType.length > 0) {
-    params.body_type = filters.bodyType.join(',');
-  }
-
-  if (filters.driveType && filters.driveType.length > 0) {
-    params.drive_type = filters.driveType.join(',');
-  }
-
-  if (filters.transmission && filters.transmission.length > 0) {
-    params.transmission = filters.transmission.join(',');
-  }
-
-  if (filters.transmissionSpeed && filters.transmissionSpeed.length > 0) {
-    params.transmission_speed = filters.transmissionSpeed.join(',');
-  }
-
-  if (filters.fuelType && filters.fuelType.length > 0) {
-    params.fuel_type = filters.fuelType.join(',');
-  }
-
-  if (filters.exteriorColor && filters.exteriorColor.length > 0) {
-    params.exterior_color = filters.exteriorColor.join(',');
-  }
-
-  if (filters.interiorColor && filters.interiorColor.length > 0) {
-    params.interior_color = filters.interiorColor.join(',');
-  }
-
-  if (filters.year && filters.year.length > 0) {
-    params.year = filters.year.join(',');
-  }
-
-  if (filters.trim && filters.trim.length > 0) {
-    params.trim = filters.trim.join(',');
-  }
-
-  // Price range
+  // Price range - WooCommerce supports these
   if (filters.priceMin) {
     params.min_price = filters.priceMin;
   }
@@ -301,33 +249,10 @@ const buildWooCommerceFilters = (filters) => {
     params.max_price = filters.priceMax;
   }
 
-  // Mileage
-  if (filters.mileage) {
-    params.max_mileage = filters.mileage;
-  }
+  // For other filters, we'll handle them client-side in the transform function
+  // This prevents 400 errors from unsupported parameters
 
-  // Geographic filters
-  if (filters.state && filters.state.length > 0) {
-    params.state = filters.state.join(',');
-  }
-
-  if (filters.city && filters.city.length > 0) {
-    params.city = filters.city.join(',');
-  }
-
-  if (filters.zipCodeFilter && filters.zipCodeFilter.length > 0) {
-    params.zip_code = filters.zipCodeFilter.join(',');
-  }
-
-  // Dealer filters
-  if (filters.dealer && filters.dealer.length > 0) {
-    params.dealer = filters.dealer.join(',');
-  }
-
-  if (filters.sellerType && filters.sellerType.length > 0) {
-    params.seller_type = filters.sellerType.join(',');
-  }
-
+  console.log('🔧 Built WooCommerce filters:', params);
   return params;
 };
 
