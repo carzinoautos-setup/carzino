@@ -4,7 +4,7 @@ import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import Pagination from './components/Pagination';
 import SearchResultsHeader from './components/SearchResultsHeader';
-import { fetchVehicles, fetchFilterOptions } from './services/api';
+import { fetchVehicles, fetchFilterOptions, fetchVehiclesPaginated, getVehicleCount } from './services/api';
 
 // URL parameter helpers
 const filtersToURLParams = (filters, page = 1) => {
@@ -181,9 +181,11 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [showingFavorites, setShowingFavorites] = useState(false);
 
-  // Pagination state
+  // Pagination state - NEW: Proper server-side pagination
   const [totalResults, setTotalResults] = useState(0);
-  const resultsPerPage = 100; // Show up to 100 vehicles per page
+  const [totalPages, setTotalPages] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(20); // Show 20 vehicles per page
+  const [searchTime, setSearchTime] = useState(0);
 
   // Update URL when filters or page change
   const updateURL = (newFilters, page = currentPage) => {
