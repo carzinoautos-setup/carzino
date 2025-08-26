@@ -420,27 +420,8 @@ function App() {
       setFilterOptions(quickFilterOptions);
       console.log('⚡ Fast loading: Immediate filter options from current page');
 
-      // BACKGROUND: Fetch proper conditional filter options asynchronously (non-blocking)
-      const hasActiveFilters = Object.entries(newFilters).some(([key, values]) => {
-        if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
-          return false;
-        }
-        return Array.isArray(values) ? values.length > 0 : (values && values.toString().trim() !== '');
-      });
-
-      if (hasActiveFilters) {
-        // Non-blocking background fetch for conditional filtering
-        fetchAllFilteredVehicles(newFilters)
-          .then(allFilteredVehicles => {
-            const conditionalFilterOptions = extractFilterOptions(allFilteredVehicles);
-            setFilterOptions(conditionalFilterOptions);
-            console.log('🎯 Background update: Conditional filter options from', allFilteredVehicles.length, 'filtered vehicles');
-          })
-          .catch(error => {
-            console.warn('⚠️ Background filter options fetch failed:', error.message);
-            // Keep the quick filter options if background fetch fails
-          });
-      }
+      // 🚀 PERFORMANCE: Skip background fetch for immediate speed
+      // Use only current page filter options for ultra-fast loading
 
       const dataSource = result.isDemo ? 'demo data' : 'API';
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
