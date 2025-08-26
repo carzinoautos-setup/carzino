@@ -146,12 +146,23 @@ const getDemoDataResponse = (page = 1, limit = 20, filters = {}) => {
 };
 
 /**
- * Test API connectivity
+ * Test API connectivity with proper authentication
  */
 const testAPIConnectivity = async () => {
   try {
-    const testUrl = `${API_BASE}/products?per_page=1&status=publish`;
-    console.log('🔍 Testing API connectivity:', testUrl);
+    const params = new URLSearchParams({
+      per_page: '1',
+      status: 'publish'
+    });
+
+    // Add authentication credentials
+    if (process.env.REACT_APP_WC_CONSUMER_KEY) {
+      params.append('consumer_key', process.env.REACT_APP_WC_CONSUMER_KEY);
+      params.append('consumer_secret', process.env.REACT_APP_WC_CONSUMER_SECRET);
+    }
+
+    const testUrl = `${API_BASE}/products?${params}`;
+    console.log('🔍 Testing API connectivity with auth:', testUrl.replace(/consumer_(key|secret)=[^&]*/g, 'consumer_$1=***'));
 
     const response = await fetch(testUrl, {
       method: 'GET',
@@ -160,7 +171,14 @@ const testAPIConnectivity = async () => {
       },
     });
 
-    return response.ok;
+    if (response.ok) {
+      console.log('✅ API connectivity test successful');
+      return true;
+    } else {
+      const errorText = await response.text();
+      console.warn('⚠️ API connectivity test failed:', response.status, errorText);
+      return false;
+    }
   } catch (error) {
     console.warn('⚠️ API connectivity test failed:', error.message);
     return false;
