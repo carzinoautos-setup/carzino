@@ -436,35 +436,44 @@ function App() {
       console.log(`�� Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
 
       // 💾 CACHE MAKE FILTER RESULTS for sequential filtering optimization
-      if (newFilters.make && newFilters.make.length === 1 && (!newFilters.model || newFilters.model.length === 0)) {
+      // Only cache when API is connected (not in demo mode)
+      if (apiConnected &&
+          newFilters.make && newFilters.make.length === 1 &&
+          (!newFilters.model || newFilters.model.length === 0)) {
+
         // User just selected a make (like Ford) - cache all Ford vehicles for fast model filtering
-        try {
-          console.log(`💾 Caching all ${newFilters.make[0]} vehicles for fast sequential filtering...`);
+        console.log(`💾 Attempting to cache ${newFilters.make[0]} vehicles for fast sequential filtering...`);
 
-          const allMakeVehicles = await fetchAllFilteredVehicles(newFilters);
-          const cacheKey = `make_${newFilters.make[0]}`;
+        // Use a non-blocking background cache operation
+        fetchAllFilteredVehicles(newFilters)
+          .then(allMakeVehicles => {
+            const cacheKey = `make_${newFilters.make[0]}`;
 
-          setCachedVehicles(prev => {
-            const newCache = new Map(prev);
-            newCache.set(cacheKey, {
-              vehicles: allMakeVehicles,
-              timestamp: Date.now(),
-              filters: { ...newFilters }
+            setCachedVehicles(prev => {
+              const newCache = new Map(prev);
+              newCache.set(cacheKey, {
+                vehicles: allMakeVehicles,
+                timestamp: Date.now(),
+                filters: { ...newFilters }
+              });
+
+              // Keep cache size reasonable (max 5 makes)
+              if (newCache.size > 5) {
+                const oldestKey = Array.from(newCache.keys())[0];
+                newCache.delete(oldestKey);
+              }
+
+              return newCache;
             });
 
-            // Keep cache size reasonable (max 5 makes)
-            if (newCache.size > 5) {
-              const oldestKey = Array.from(newCache.keys())[0];
-              newCache.delete(oldestKey);
-            }
-
-            return newCache;
+            console.log(`✅ Successfully cached ${allMakeVehicles.length} ${newFilters.make[0]} vehicles for sequential filtering`);
+          })
+          .catch(cacheError => {
+            console.warn(`⚠️ Background caching failed for ${newFilters.make[0]}:`, cacheError.message);
+            // Cache failure doesn't affect user experience - just log it
           });
-
-          console.log(`✅ Cached ${allMakeVehicles.length} ${newFilters.make[0]} vehicles for sequential filtering`);
-        } catch (cacheError) {
-          console.warn('⚠️ Failed to cache make vehicles:', cacheError.message);
-        }
+      } else if (!apiConnected) {
+        console.log('⏭️ Skipping cache operation - API not connected (demo mode)');
       }
 
       // Update URL
