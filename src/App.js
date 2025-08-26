@@ -566,15 +566,22 @@ function App() {
       // Clear any previous errors since we got data
       setError(null);
 
-      // Fetch ALL vehicles matching current filters for proper filter options
-      console.log('🔄 Fetching all filtered vehicles for conditional filter options...');
-      const allFilteredVehicles = await fetchAllFilteredVehicles(newFilters);
+      // Fetch ALL vehicles matching current filters for proper conditional filtering
+      try {
+        console.log('🔄 Fetching all filtered vehicles for conditional filter options...');
+        const allFilteredVehicles = await fetchAllFilteredVehicles(newFilters);
 
-      // Extract filter options from ALL filtered vehicles, not just current page
-      const filterOptionsExtracted = extractFilterOptions(allFilteredVehicles);
-      setFilterOptions(filterOptionsExtracted);
+        // Extract filter options from ALL filtered vehicles for proper conditional filtering
+        const filterOptionsExtracted = extractFilterOptions(allFilteredVehicles);
+        setFilterOptions(filterOptionsExtracted);
 
-      console.log('🎯 Filter options extracted from', allFilteredVehicles.length, 'filtered vehicles');
+        console.log('🎯 Conditional filter options updated from', allFilteredVehicles.length, 'filtered vehicles');
+      } catch (filterError) {
+        console.warn('⚠️ Failed to fetch filter options, using current page vehicles:', filterError.message);
+        // Fallback to current page vehicles for filter options
+        const filterOptionsExtracted = extractFilterOptions(result.vehicles);
+        setFilterOptions(filterOptionsExtracted);
+      }
 
       const dataSource = result.isDemo ? 'demo data' : 'API';
       console.log(`✅ Loaded page ${page}: ${result.vehicles.length} vehicles from ${dataSource}`);
