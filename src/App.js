@@ -559,47 +559,49 @@ function App() {
   };
   */
 
+  /*
   const extractDealer = (vehicle) => {
     // Look for dealer info in meta data
-    const dealerMeta = vehicle.meta_data.find(meta => 
-      meta.key.toLowerCase().includes('dealer') || 
+    const dealerMeta = vehicle.meta_data.find(meta =>
+      meta.key.toLowerCase().includes('dealer') ||
       meta.key.toLowerCase().includes('seller')
     );
-    
+
     if (dealerMeta?.value) {
       return dealerMeta.value;
     }
-    
+
     return 'Carzino Dealer'; // Default
   };
 
   const extractLocation = (vehicle) => {
     // Look for location in meta data
-    const locationMeta = vehicle.meta_data.find(meta => 
-      meta.key.toLowerCase().includes('location') || 
+    const locationMeta = vehicle.meta_data.find(meta =>
+      meta.key.toLowerCase().includes('location') ||
       meta.key.toLowerCase().includes('city')
     );
-    
+
     if (locationMeta?.value) {
       return locationMeta.value;
     }
-    
+
     return 'Washington State'; // Default
   };
 
   const extractPhone = (vehicle) => {
     // Look for phone in meta data
-    const phoneMeta = vehicle.meta_data.find(meta => 
-      meta.key.toLowerCase().includes('phone') || 
+    const phoneMeta = vehicle.meta_data.find(meta =>
+      meta.key.toLowerCase().includes('phone') ||
       meta.key.toLowerCase().includes('contact')
     );
-    
+
     if (phoneMeta?.value) {
       return phoneMeta.value;
     }
-    
+
     return '(253) 555-0100'; // Default
   };
+  */
 
   // Realistic demo vehicles that match your WordPress inventory structure
   const getRealisticDemoVehicles = () => [
