@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Gauge, Settings, ChevronLeft, ChevronRight, Heart, Check } from 'lucide-react';
 
 const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [keeperMessage, setKeeperMessage] = useState(false);
   const [enhancedSellerData, setEnhancedSellerData] = useState(null);
 
