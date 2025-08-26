@@ -624,22 +624,22 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         .favorite-heart {
           width: 16px;
           height: 16px;
-          color: #CF0D0D;
+          color: #cf0d0d;
           cursor: pointer;
-          transition: color 200ms ease-in-out;
+          transition: color .2s ease;
           margin-left: 4px;
         }
 
         .keeper-message {
-          font-size: 12px;
-          color: #6B7280;
+          font: 12px/1 sans-serif;
+          color: #6b7280;
           margin-left: 4px;
-          animation: pulse 2s ease-in-out;
+          animation: pulse 2s ease;
         }
 
         @keyframes pulse {
           0%, 100% { opacity: 1; }
-          50% { opacity: 0.5; }
+          50% { opacity: .5; }
         }
 
         .vehicle-title {
