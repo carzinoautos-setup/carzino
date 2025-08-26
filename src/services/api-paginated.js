@@ -74,8 +74,15 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
   try {
     console.log('🔍 Fetching vehicles for filter options with filters:', filters);
 
+    // Quick check: if API is not reachable, return demo data subset immediately
+    const isAPIReachable = await testAPIConnectivity();
+    if (!isAPIReachable) {
+      console.warn('⚠️ API not reachable for filter options, using demo data');
+      const demoResult = getDemoDataFallback(1, 50, filters);
+      return demoResult.vehicles;
+    }
+
     // Smart fetch size: Use smaller number for better performance
-    // This is enough for most filter option extraction
     const baseParams = {
       per_page: '50', // Reduced from 100 for faster loading
       status: 'publish'
@@ -97,14 +104,22 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
       headers['Authorization'] = `Basic ${credentials}`;
     }
 
-    const response = await fetch(fullUrl, {
-      method: 'GET',
-      headers: headers,
-    });
+    let response;
+    try {
+      response = await fetch(fullUrl, {
+        method: 'GET',
+        headers: headers,
+      });
+    } catch (networkError) {
+      console.warn('⚠️ Network error fetching filter options, using demo data:', networkError.message);
+      const demoResult = getDemoDataFallback(1, 50, filters);
+      return demoResult.vehicles;
+    }
 
     if (!response.ok) {
-      console.warn('⚠️ Failed to fetch vehicles for filter options, using empty array');
-      return [];
+      console.warn('⚠️ HTTP error fetching filter options, using demo data');
+      const demoResult = getDemoDataFallback(1, 50, filters);
+      return demoResult.vehicles;
     }
 
     const vehicles = await response.json();
@@ -160,8 +175,9 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
     return filteredVehicles;
 
   } catch (error) {
-    console.warn('⚠️ Error fetching vehicles for filter options:', error.message);
-    return [];
+    console.warn('⚠️ Error fetching vehicles for filter options, using demo data:', error.message);
+    const demoResult = getDemoDataFallback(1, 50, filters);
+    return demoResult.vehicles;
   }
 };
 
