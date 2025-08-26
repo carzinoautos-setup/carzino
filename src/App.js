@@ -601,33 +601,16 @@ function App() {
       updateURL(newFilters, page);
       
     } catch (error) {
-      console.error('❌ Failed to load vehicles:', error);
-      setError(`Failed to load vehicles: ${error.message}`);
+      console.error('❌ Unexpected error in fetchVehiclesPage:', error);
+      setError(`Unexpected error: ${error.message}`);
       setApiConnected(false);
 
-      // Fallback to demo data with proper conditional filtering
-      const demoData = getRealisticDemoVehicles();
-      const filteredDemoData = applyFiltersToVehicles(demoData, newFilters);
-      const startIndex = (page - 1) * itemsPerPage;
-      const endIndex = startIndex + itemsPerPage;
-      const currentPageData = filteredDemoData.slice(startIndex, endIndex);
-
-      setVehicles(currentPageData);
-      setTotalResults(filteredDemoData.length);
-      setTotalPages(Math.ceil(filteredDemoData.length / itemsPerPage));
-
-      // Fast loading: Extract filter options from current page demo data
-      const quickFilterOptions = extractFilterOptions(currentPageData);
-      setFilterOptions(quickFilterOptions);
-
-      // Background: Use all filtered demo data for conditional filtering
-      setTimeout(() => {
-        const conditionalFilterOptions = extractFilterOptions(filteredDemoData);
-        setFilterOptions(conditionalFilterOptions);
-        console.log('🎯 Demo mode: Conditional filter options from', filteredDemoData.length, 'filtered demo vehicles');
-      }, 100);
-
-      console.log('⚡ Demo mode: Fast loading with', currentPageData.length, 'vehicles');
+      // This should rarely happen now since API service handles fallbacks
+      // But just in case, provide a minimal fallback
+      setVehicles([]);
+      setTotalResults(0);
+      setTotalPages(0);
+      setFilterOptions({});
     } finally {
       setLoading(false);
     }
