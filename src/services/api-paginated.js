@@ -186,15 +186,15 @@ const testAPIConnectivity = async () => {
 };
 
 export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {}, sortBy = 'relevance') => {
+  // First check if the API is reachable
+  const isAPIReachable = await testAPIConnectivity();
+
+  if (!isAPIReachable) {
+    console.error('❌ WooCommerce API authentication failed. Please check your API credentials.');
+    // Let's try the actual API call anyway to get the real error
+  }
+
   try {
-    // First check if the API is reachable
-    const isAPIReachable = await testAPIConnectivity();
-
-    if (!isAPIReachable) {
-      console.warn('⚠️ API not reachable, using demo data');
-      return getDemoDataResponse(page, limit, filters);
-    }
-
     // Use Elasticsearch if available, fallback to WooCommerce
     const useElasticsearch = process.env.REACT_APP_USE_ELASTICSEARCH === 'true';
 
@@ -211,13 +211,14 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
       limit,
       sortBy,
       apiBase: API_BASE,
+      credentials: process.env.REACT_APP_WC_CONSUMER_KEY ? 'Present' : 'Missing',
       timestamp: new Date().toISOString()
     };
 
-    console.warn('⚠️ API Error, falling back to demo data:', JSON.stringify(errorDetails, null, 2));
+    console.error('❌ API Error Details:', JSON.stringify(errorDetails, null, 2));
 
-    // Return demo data instead of throwing error
-    return getDemoDataResponse(page, limit, filters);
+    // Don't fall back to demo data - let the error bubble up
+    throw new Error(`WooCommerce API Error: ${error.message}`);
   }
 };
 
