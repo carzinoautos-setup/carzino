@@ -607,12 +607,24 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
 
   // Important: Use API total count, not filtered count, to show full inventory size
   // The filtering is just for display, not for total count
-  return {
+  const result = {
     vehicles: filteredVehicles,
     totalResults, // Keep the API's total count
     totalPages,   // Keep the API's total pages
     currentPage: page
   };
+
+  // 🚀 PERFORMANCE: Cache successful result for 30 seconds
+  try {
+    localStorage.setItem(cacheKey, JSON.stringify({
+      data: result,
+      timestamp: Date.now()
+    }));
+  } catch (e) {
+    // Ignore cache errors
+  }
+
+  return result;
 };
 
 /**
