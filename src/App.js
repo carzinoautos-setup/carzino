@@ -909,34 +909,49 @@ function App() {
           />
 
           {/* Vehicle Grid */}
-          {loading ? (
-            <div className={`vehicle-grid ${viewMode}-view p-2`}>
-              {Array.from({ length: itemsPerPage }, (_, index) => (
-                <VehicleCardSkeleton key={`skeleton-${index}`} />
-              ))}
-            </div>
-          ) : error ? (
-            <div className="error-container">
-              <p>Error loading vehicles: {error}</p>
-              <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
-            </div>
-          ) : vehicles.length === 0 ? (
-            <div className="no-results" style={isMobile ? {paddingLeft: '20px', paddingRight: '20px'} : {}}>
-              <h3>No vehicles found</h3>
-              <p>Try adjusting your search filters</p>
-            </div>
-          ) : (
-            <div className={`vehicle-grid ${viewMode}-view p-2`}>
-              {vehicles.map((vehicle, index) => (
-                <VehicleCard
-                  key={`${vehicle.id}-${currentPage}-${index}`}
-                  vehicle={vehicle}
-                  favorites={favorites}
-                  onFavoriteToggle={toggleFavorite}
-                />
-              ))}
-            </div>
-          )}
+          <VehicleGridErrorBoundary
+            onRetry={() => fetchVehiclesPage(currentPage, filters)}
+            onReset={() => {
+              // Clear cache and reset to first page
+              setCachedVehicles(new Map());
+              setPreloadedPages(new Map());
+              fetchVehiclesPage(1, filters);
+            }}
+          >
+            {loading ? (
+              <div className={`vehicle-grid ${viewMode}-view p-2`}>
+                {Array.from({ length: itemsPerPage }, (_, index) => (
+                  <VehicleCardSkeleton key={`skeleton-${index}`} />
+                ))}
+              </div>
+            ) : error ? (
+              <div className="error-container">
+                <p>Error loading vehicles: {error}</p>
+                <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
+              </div>
+            ) : vehicles.length === 0 ? (
+              <div className="no-results" style={isMobile ? {paddingLeft: '20px', paddingRight: '20px'} : {}}>
+                <h3>No vehicles found</h3>
+                <p>Try adjusting your search filters</p>
+              </div>
+            ) : (
+              <div className={`vehicle-grid ${viewMode}-view p-2`}>
+                {vehicles.map((vehicle, index) => (
+                  <VehicleCardErrorBoundary
+                    key={`boundary-${vehicle.id}-${currentPage}-${index}`}
+                    vehicleId={vehicle.id}
+                  >
+                    <VehicleCard
+                      key={`${vehicle.id}-${currentPage}-${index}`}
+                      vehicle={vehicle}
+                      favorites={favorites}
+                      onFavoriteToggle={toggleFavorite}
+                    />
+                  </VehicleCardErrorBoundary>
+                ))}
+              </div>
+            )}
+          </VehicleGridErrorBoundary>
 
           {/* Pagination */}
           {totalPages > 1 && (
