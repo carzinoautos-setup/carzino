@@ -572,7 +572,7 @@ function App() {
     try {
       const startTime = Date.now();
 
-      // ��� SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
+      // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
       if (apiConnected && canUseSequentialCache(newFilters, filters)) {
         const makeFilter = newFilters.make[0];
         const cacheKey = `make_${makeFilter}`;
@@ -795,7 +795,7 @@ function App() {
         const newPage = parseInt(pageParam, 10);
         const safePage = (newPage > 0 && newPage < 10000) ? newPage : 1;
 
-        setFilters(newFilters);
+        forceUpdateFilters(newFilters); // Force immediate update for navigation
         setCurrentPage(safePage);
         fetchVehiclesPage(safePage, newFilters);
       } catch (error) {
@@ -805,7 +805,7 @@ function App() {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [fetchVehiclesPage]);
+  }, [fetchVehiclesPage, forceUpdateFilters]);
 
   // Check if mobile
   useEffect(() => {
