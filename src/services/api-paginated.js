@@ -1009,7 +1009,22 @@ const transformWooCommerceVehicle = (product) => {
   const extractImages = () => {
     const imageUrls = [];
 
-    // Primary WooCommerce images array
+    // PRIORITY 1: WordPress Featured Media from embedded objects (with _embed=true)
+    if (product._embedded?.['wp:featuredmedia']?.[0]) {
+      const featuredMedia = product._embedded['wp:featuredmedia'][0];
+      if (featuredMedia.source_url) {
+        imageUrls.push(featuredMedia.source_url);
+      }
+      // Try different size variations
+      if (featuredMedia.media_details?.sizes?.full?.source_url) {
+        imageUrls.push(featuredMedia.media_details.sizes.full.source_url);
+      }
+      if (featuredMedia.media_details?.sizes?.large?.source_url) {
+        imageUrls.push(featuredMedia.media_details.sizes.large.source_url);
+      }
+    }
+
+    // PRIORITY 2: Primary WooCommerce images array
     if (product.images && Array.isArray(product.images)) {
       product.images.forEach(img => {
         if (img.src) imageUrls.push(img.src);
@@ -1017,25 +1032,51 @@ const transformWooCommerceVehicle = (product) => {
       });
     }
 
-    // Featured image
+    // PRIORITY 3: Featured image URL
     if (product.featured_media_src) {
       imageUrls.push(product.featured_media_src);
     }
 
-    // Check meta data for image URLs
-    const imageFromMeta = getMeta('vehicle_image') || getMeta('_vehicle_image') ||
-                         getMeta('featured_image') || getMeta('_featured_image') ||
-                         getMeta('gallery_images') || getMeta('_gallery_images');
-    if (imageFromMeta) {
-      if (Array.isArray(imageFromMeta)) {
-        imageUrls.push(...imageFromMeta);
-      } else if (typeof imageFromMeta === 'string' && imageFromMeta.includes('http')) {
-        imageUrls.push(imageFromMeta);
-      }
+    // PRIORITY 4: Check ACF image fields
+    if (product.acf) {
+      const acfImageFields = ['featured_image', 'vehicle_image', 'main_image', 'product_image'];
+      acfImageFields.forEach(fieldName => {
+        const acfField = product.acf[fieldName];
+        if (acfField) {
+          const imageUrl = typeof acfField === 'object' ? acfField.url : acfField;
+          if (imageUrl && imageUrl.includes('http')) {
+            imageUrls.push(imageUrl);
+          }
+        }
+      });
     }
 
+    // PRIORITY 5: Check meta data for image URLs
+    const imageFields = [
+      'vehicle_image', '_vehicle_image',
+      'featured_image', '_featured_image',
+      'gallery_images', '_gallery_images',
+      'main_image', '_main_image',
+      'product_image', '_product_image'
+    ];
+
+    imageFields.forEach(field => {
+      const imageFromMeta = getMeta(field);
+      if (imageFromMeta) {
+        if (Array.isArray(imageFromMeta)) {
+          imageUrls.push(...imageFromMeta);
+        } else if (typeof imageFromMeta === 'string' && imageFromMeta.includes('http')) {
+          imageUrls.push(imageFromMeta);
+        }
+      }
+    });
+
     // Remove duplicates and invalid URLs
-    return [...new Set(imageUrls)].filter(url => url && url.includes('http'));
+    const uniqueUrls = [...new Set(imageUrls)].filter(url => url && url.includes('http') && !url.includes('/api/placeholder'));
+
+    console.log(`🖼️ Extracted ${uniqueUrls.length} images for ${product.name}:`, uniqueUrls.slice(0, 2));
+
+    return uniqueUrls;
   };
 
   return {
