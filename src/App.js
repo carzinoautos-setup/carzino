@@ -12,7 +12,7 @@ import {
   PaginationErrorBoundary,
   VehicleCardErrorBoundary
 } from './components/SpecializedErrorBoundaries';
-import { useBatchLazyLoading } from './hooks/useLazyLoading';
+// Removed batch loading import
 import { useDebouncedFilters } from './hooks/useDebounce';
 import { optimizeChunkLoading } from './utils/bundleAnalyzer';
 import BundleAnalysisPanel from './components/BundleAnalysisPanel';
