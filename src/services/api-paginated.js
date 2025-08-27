@@ -139,6 +139,19 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
     });
 
     console.log('✅ Filtered to', filteredVehicles.length, 'vehicles for filter options');
+
+    // 🚀 PERFORMANCE: Cache filter options result
+    try {
+      localStorage.setItem(filterCacheKey, JSON.stringify({
+        data: filteredVehicles,
+        timestamp: Date.now(),
+        filters: filters
+      }));
+      console.log(`💾 FILTER CACHE: Stored ${filteredVehicles.length} vehicles for filter options`);
+    } catch (e) {
+      console.warn('⚠️ Filter cache storage failed:', e.message);
+    }
+
     return filteredVehicles;
 
   } catch (error) {
