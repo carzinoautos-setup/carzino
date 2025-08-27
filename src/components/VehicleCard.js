@@ -517,7 +517,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     img.onerror = () => {
       console.warn(`⚠️ Image failed to load: ${vehicle.title}`);
     };
-  }, [vehicle]);
+  }, [vehicle, getFeaturedImage]);
 
   return (
     <>
