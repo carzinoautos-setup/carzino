@@ -1779,34 +1779,9 @@ const VehicleSearchFilter = ({
                 />
               ))
             ) : (
-              <div className="space-y-1">
-                <CheckboxOption
-                  label="AWD/4WD"
-                  count={18943}
-                  value="AWD/4WD"
-                  category="driveType"
-                  checked={filters.driveType?.includes('AWD/4WD')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
-                <CheckboxOption
-                  label="FWD"
-                  count={12057}
-                  value="FWD"
-                  category="driveType"
-                  checked={filters.driveType?.includes('FWD')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
-                <CheckboxOption
-                  label="RWD"
-                  count={5883}
-                  value="RWD"
-                  category="driveType"
-                  checked={filters.driveType?.includes('RWD')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
+              <div className="text-sm text-gray-500 py-2">
+                🔍 Debug: No drive types found in WooCommerce data. Check field mapping.
+                <br />Expected fields: drivetrain, drive_type, transmission_type
               </div>
             )}
           </div>
