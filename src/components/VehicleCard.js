@@ -492,81 +492,25 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     }
   };
 
-  // 🚀 PERFORMANCE: Optimized image with WebP support and proper sizing
+  // Get the featured image (fixed - working version)
   const getFeaturedImage = () => {
-    let imageUrl;
     if (vehicle.images && vehicle.images.length > 0) {
-      imageUrl = vehicle.images[0];
-    } else {
-      imageUrl = vehicle.image || '/api/placeholder/380/200';
+      return vehicle.images[0];
     }
-
-    // Skip optimization for placeholder images
-    if (imageUrl.includes('/api/placeholder') || imageUrl.includes('placeholder')) {
-      return imageUrl;
-    }
-
-    // 🚀 PERFORMANCE: Add image optimization parameters
-    // Only optimize external URLs (not placeholders)
-    if (imageUrl.startsWith('http')) {
-      // Add query parameters for image optimization
-      const separator = imageUrl.includes('?') ? '&' : '?';
-      return `${imageUrl}${separator}w=380&h=200&fit=crop&auto=format,compress&q=85`;
-    }
-
-    return imageUrl;
+    return vehicle.image || '/api/placeholder/380/200';
   };
 
-  // 🚀 PERFORMANCE: Generate WebP fallback URLs
-  const getWebPImage = () => {
-    const originalUrl = getFeaturedImage();
-
-    // Skip WebP for placeholders
-    if (originalUrl.includes('/api/placeholder') || originalUrl.includes('placeholder')) {
-      return null;
-    }
-
-    // Only generate WebP for external URLs
-    if (originalUrl.startsWith('http')) {
-      const separator = originalUrl.includes('?') ? '&' : '?';
-      return `${originalUrl}${separator}w=380&h=200&fit=crop&auto=format,compress&q=85&fm=webp`;
-    }
-
-    return null;
-  };
-
-  // 🚀 PERFORMANCE: Enhanced image preloading with WebP support
+  // Simple image preloading (fixed version)
   useEffect(() => {
-    const originalUrl = getFeaturedImage();
-    const webpUrl = getWebPImage();
-
-    // Preload WebP version first (smaller file size)
-    if (webpUrl) {
-      const webpImg = new Image();
-      webpImg.src = webpUrl;
-      webpImg.onload = () => {
-        console.log(`⚡ WebP image preloaded: ${vehicle.title}`);
-      };
-      webpImg.onerror = () => {
-        // Fallback to original if WebP fails
-        const fallbackImg = new Image();
-        fallbackImg.src = originalUrl;
-        fallbackImg.onload = () => {
-          console.log(`✅ Fallback image preloaded: ${vehicle.title}`);
-        };
-      };
-    } else {
-      // Preload original image for placeholders or non-HTTP URLs
-      const img = new Image();
-      img.src = originalUrl;
-      img.onload = () => {
-        console.log(`✅ Image preloaded: ${vehicle.title}`);
-      };
-      img.onerror = () => {
-        console.warn(`⚠️ Image failed to preload: ${vehicle.title}`);
-      };
-    }
-
+    const imageUrl = getFeaturedImage();
+    const img = new Image();
+    img.src = imageUrl;
+    img.onload = () => {
+      console.log(`✅ Image preloaded: ${vehicle.title}`);
+    };
+    img.onerror = () => {
+      console.warn(`⚠️ Image failed to load: ${vehicle.title}`);
+    };
   }, [vehicle]);
 
   return (
@@ -897,34 +841,24 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       
       <div className="vehicle-card">
         <div className="image-container">
-          {/* 🚀 PERFORMANCE: Modern image with WebP support */}
-          <picture>
-            {getWebPImage() && (
-              <source srcSet={getWebPImage()} type="image/webp" />
-            )}
-            <img
-              src={getFeaturedImage()}
-              alt={vehicle.title}
-              className="vehicle-image"
-              loading="eager"
-              decoding="async"
-              width="380"
-              height="200"
-              style={{
-                transition: 'opacity 0.2s ease',
-                objectFit: 'cover',
-                backgroundColor: '#f3f4f6' // Show gray background while loading
-              }}
-              onLoad={(e) => {
-                e.target.style.opacity = '1';
-              }}
-              onError={(e) => {
-                console.warn(`Image failed to load for ${vehicle.title}`);
-                // Fallback to placeholder
-                e.target.src = '/api/placeholder/380/200';
-              }}
-            />
-          </picture>
+          <img
+            src={getFeaturedImage()}
+            alt={vehicle.title}
+            className="vehicle-image"
+            loading="eager"
+            decoding="async"
+            width="380"
+            height="200"
+            style={{
+              transition: 'opacity 0.2s ease',
+              objectFit: 'cover',
+              backgroundColor: '#f3f4f6'
+            }}
+            onError={(e) => {
+              console.warn(`Image failed to load for ${vehicle.title}`);
+              e.target.src = '/api/placeholder/380/200';
+            }}
+          />
 
           {vehicle.featured && (
             <div className="featured-badge">
