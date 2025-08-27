@@ -621,10 +621,26 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       images: vehicle.images,
       image: vehicle.image,
       vehicleId: vehicle.id,
-      hasWooCommerceImages: vehicle.images && Array.isArray(vehicle.images)
+      hasWooCommerceImages: vehicle.images && Array.isArray(vehicle.images),
+      rawData: vehicle.rawData,
+      featuredMediaUrl: vehicle.featured_media_url,
+      allVehicleKeys: Object.keys(vehicle)
     });
 
-    // Priority 1: WooCommerce product images (most common format)
+    // Priority 1: WordPress Featured Media ID and URL
+    if (vehicle.featured_media && vehicle.featured_media > 0) {
+      // Try to get the media URL from WordPress
+      const mediaUrl = vehicle.featured_media_url ||
+                      vehicle._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
+                      vehicle._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.full?.source_url;
+
+      if (mediaUrl && mediaUrl.startsWith('http') && !mediaUrl.includes('/api/placeholder')) {
+        console.log(`✅ Using WordPress featured media: ${mediaUrl}`);
+        return mediaUrl;
+      }
+    }
+
+    // Priority 2: WooCommerce product images array
     if (vehicle.images && Array.isArray(vehicle.images) && vehicle.images.length > 0) {
       const imageUrl = vehicle.images[0];
       // Ensure it's a real image URL, not a placeholder
@@ -634,41 +650,94 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       }
     }
 
-    // Priority 2: WooCommerce images object format (images.featured)
-    if (vehicle.images && typeof vehicle.images === 'object' && vehicle.images.featured) {
-      const imageUrl = vehicle.images.featured;
+    // Priority 3: WooCommerce images object format (images.featured)
+    if (vehicle.images && typeof vehicle.images === 'object' && !Array.isArray(vehicle.images)) {
+      const imageUrl = vehicle.images.featured || vehicle.images.src || vehicle.images.url;
       if (imageUrl && !imageUrl.includes('/api/placeholder') && imageUrl.startsWith('http')) {
-        console.log(`✅ Using featured image: ${imageUrl}`);
+        console.log(`✅ Using featured image object: ${imageUrl}`);
         return imageUrl;
       }
     }
 
-    // Priority 3: Direct image field from WooCommerce
-    if (vehicle.image && !vehicle.image.includes('/api/placeholder') && !vehicle.image.includes('unsplash') && vehicle.image.startsWith('http')) {
+    // Priority 4: Direct image field from WooCommerce
+    if (vehicle.image && !vehicle.image.includes('/api/placeholder') && vehicle.image.startsWith('http')) {
       console.log(`✅ Using direct image field: ${vehicle.image}`);
       return vehicle.image;
     }
 
-    // Priority 4: Check ACF image fields
+    // Priority 5: Check ACF image fields (expanded list)
     const metaData = vehicle.meta_data || [];
-    const imageFields = ['featured_image', 'product_image', 'vehicle_image', 'main_image', 'primary_image'];
+    const imageFields = [
+      '_thumbnail_id',        // WordPress featured image ID
+      'featured_image',
+      'product_image',
+      'vehicle_image',
+      'main_image',
+      'primary_image',
+      'car_image',
+      'vehicle_photo',
+      'main_photo',
+      'listing_image',
+      'gallery_image_1',
+      'image_url'
+    ];
 
     for (const fieldName of imageFields) {
       const imageField = metaData.find(meta => meta.key === fieldName);
-      if (imageField && imageField.value && imageField.value.startsWith('http')) {
-        console.log(`✅ Using ACF image field ${fieldName}: ${imageField.value}`);
-        return imageField.value;
+      if (imageField && imageField.value) {
+        let imageUrl = imageField.value;
+
+        // If it's an attachment ID, we need to construct the URL
+        if (fieldName === '_thumbnail_id' && !isNaN(imageUrl)) {
+          // For now, we can't easily resolve attachment IDs without additional API calls
+          // This would require a separate WordPress media API call
+          continue;
+        }
+
+        if (imageUrl && imageUrl.startsWith('http') && !imageUrl.includes('/api/placeholder')) {
+          console.log(`✅ Using ACF image field ${fieldName}: ${imageUrl}`);
+          return imageUrl;
+        }
       }
     }
 
-    // Priority 5: WordPress featured media URL
-    if (vehicle.featured_media_url && vehicle.featured_media_url.startsWith('http')) {
-      console.log(`✅ Using WordPress featured media: ${vehicle.featured_media_url}`);
-      return vehicle.featured_media_url;
+    // Priority 6: Check ACF object fields (in case images are stored as objects)
+    if (vehicle.acf) {
+      const acfImageFields = ['featured_image', 'vehicle_image', 'main_image', 'product_image'];
+      for (const fieldName of acfImageFields) {
+        const acfField = vehicle.acf[fieldName];
+        if (acfField) {
+          // ACF image field might be an object with url property
+          const imageUrl = typeof acfField === 'object' ? acfField.url : acfField;
+          if (imageUrl && imageUrl.startsWith('http') && !imageUrl.includes('/api/placeholder')) {
+            console.log(`✅ Using ACF object image field ${fieldName}: ${imageUrl}`);
+            return imageUrl;
+          }
+        }
+      }
     }
 
-    // Only use fallback image as last resort
-    console.warn(`⚠️ No real product images found for ${vehicle.title}, using generic car placeholder`);
+    // Priority 7: Check rawData for additional image sources
+    if (vehicle.rawData && vehicle.rawData.images && vehicle.rawData.images.length > 0) {
+      const rawImage = vehicle.rawData.images[0];
+      const imageUrl = rawImage.src || rawImage.url;
+      if (imageUrl && imageUrl.startsWith('http') && !imageUrl.includes('/api/placeholder')) {
+        console.log(`✅ Using raw data image: ${imageUrl}`);
+        return imageUrl;
+      }
+    }
+
+    // Only use fallback image as absolute last resort
+    console.warn(`⚠️ No real product images found for ${vehicle.title}. Available data:`, {
+      hasImages: !!vehicle.images,
+      hasImage: !!vehicle.image,
+      hasFeaturedMedia: !!vehicle.featured_media,
+      hasACF: !!vehicle.acf,
+      hasMetaData: !!vehicle.meta_data,
+      metaDataKeys: vehicle.meta_data?.map(m => m.key) || []
+    });
+
+    // Return a more appropriate car placeholder
     return `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=380&h=200&fit=crop&auto=format&q=80`;
   }, [vehicle]);
 
