@@ -1064,7 +1064,7 @@ function App() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <PaginationErrorBoundary onRetry={() => fetchVehiclesPage(currentPage, filters)}>
+              <PaginationErrorBoundary onRetry={() => fetchVehiclesPage(currentPage, debouncedFilters)}>
                 <Suspense fallback={<div className="flex justify-center py-4"><div className="loading-spinner"></div></div>}>
                   <Pagination
                     currentPage={currentPage}
