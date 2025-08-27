@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Gauge, Settings, Heart, Check } from 'lucide-react';
 
 const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
@@ -493,7 +493,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   // Get the featured image (with debugging)
-  const getFeaturedImage = () => {
+  const getFeaturedImage = useCallback(() => {
     console.log(`🖼️ Image data for ${vehicle.title}:`, {
       images: vehicle.images,
       image: vehicle.image,
@@ -504,7 +504,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return vehicle.images[0];
     }
     return vehicle.image || '/api/placeholder/380/200';
-  };
+  }, [vehicle]);
 
   // Simple image preloading (fixed version)
   useEffect(() => {
