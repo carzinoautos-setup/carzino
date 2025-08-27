@@ -778,6 +778,7 @@ function App() {
     console.log('  Makes found:', options.makes.length, '→', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Models found:', options.models.length, '→', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Conditions found:', options.conditions.length, '→', options.conditions.map(c => `${c.name} (${c.count})`));
+    console.log('  🚗 VEHICLE TYPES found:', options.bodyTypes.length, '��', options.bodyTypes.map(v => `${v.name} (${v.count})`));
 
     // ACF USAGE SUMMARY
     console.log('\n🔧 ACF DATA USAGE SUMMARY:');
@@ -1121,7 +1122,7 @@ function App() {
           setOptimisticLoading(false);
         }, 5000);
 
-        console.warn('   ✅ Loading fallback data to keep app functional...');
+        console.warn('   ��� Loading fallback data to keep app functional...');
       } else {
         console.log('🎯 API failed, loading fallback demo data to keep app functional');
 
