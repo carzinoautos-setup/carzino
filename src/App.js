@@ -206,8 +206,19 @@ function App() {
     };
   };
 
-  // State management
-  const [filters, setFilters] = useState(getInitialFilters);
+  // State management with debounced filters
+  const initialFilters = getInitialFilters();
+  const {
+    filters,
+    debouncedFilters,
+    updateFilter,
+    resetFilters,
+    forceUpdate: forceUpdateFilters,
+    isPending: filtersArePending
+  } = useDebouncedFilters(initialFilters, 500, (newFilters) => {
+    console.log('🔄 Debounced filters updated:', newFilters);
+    debouncedFilterChange(newFilters);
+  });
 
   // Data state
   const [vehicles, setVehicles] = useState([]);
