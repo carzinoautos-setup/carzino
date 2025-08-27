@@ -164,17 +164,17 @@ const styles = `
 // FILTER SECTION COMPONENTS
 // ============================================
 
-const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) => {
+const FilterSection = memo(({ title, isCollapsed, onToggle, children, count, isMobile = false }) => {
   return (
-    <div className="border-b border-gray-200 pb-3 mb-3">
+    <div className={`border-b border-gray-200 mb-4 ${isMobile ? 'pb-4' : 'pb-3'}`}>
       <div
-        className="flex items-center justify-between cursor-pointer py-2 hover:bg-gray-50 px-1 -mx-1 rounded"
+        className={`flex items-center justify-between cursor-pointer hover:bg-gray-50 px-2 -mx-2 rounded-lg ${isMobile ? 'py-4' : 'py-2'}`}
         onClick={onToggle}
       >
-        <h3 className="carzino-filter-title pointer-events-none">{title}</h3>
+        <h3 className={`font-semibold pointer-events-none ${isMobile ? 'text-lg' : 'text-base'}`}>{title}</h3>
         <div className="flex items-center gap-2 pointer-events-none">
-          <ChevronDown 
-            className={`w-5 h-5 text-red-600 transition-transform ${
+          <ChevronDown
+            className={`text-red-600 transition-transform ${isMobile ? 'w-6 h-6' : 'w-5 h-5'} ${
               !isCollapsed ? 'rotate-180' : ''
             }`}
             style={{ color: '#dc2626' }}
@@ -182,7 +182,7 @@ const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) =
         </div>
       </div>
       {!isCollapsed && (
-        <div className="mt-2 animate-slide-down" onClick={(e) => e.stopPropagation()}>
+        <div className={`animate-slide-down ${isMobile ? 'mt-3' : 'mt-2'}`} onClick={(e) => e.stopPropagation()}>
           {children}
         </div>
       )}
