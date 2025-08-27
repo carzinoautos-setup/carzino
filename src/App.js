@@ -1186,10 +1186,6 @@ function App() {
             onClose={() => setShowBundleAnalysis(false)}
           />
 
-          {/* Image Diagnostic Tool */}
-          {showImageDiagnostic && (
-            <ImageDiagnostic />
-          )}
         </>
       )}
     </ErrorBoundary>
