@@ -780,14 +780,33 @@ function App() {
             </div>
           ) : (
             <div className={`vehicle-grid ${viewMode}-view p-2`}>
-              {vehicles.map((vehicle, index) => (
-                <VehicleCard
-                  key={`${vehicle.id}-${currentPage}-${index}`}
-                  vehicle={vehicle}
-                  favorites={favorites}
-                  onFavoriteToggle={toggleFavorite}
-                />
-              ))}
+              {vehicles.map((vehicle, index) => {
+                try {
+                  return (
+                    <VehicleCard
+                      key={`${vehicle.id}-${currentPage}-${index}`}
+                      vehicle={vehicle}
+                      favorites={favorites}
+                      onFavoriteToggle={toggleFavorite}
+                    />
+                  );
+                } catch (error) {
+                  console.error(`❌ VehicleCard error for vehicle ${index}:`, error);
+                  return (
+                    <div key={`fallback-${index}`} style={{
+                      border: '2px solid red',
+                      padding: '15px',
+                      margin: '10px',
+                      backgroundColor: '#ffe6e6',
+                      borderRadius: '8px'
+                    }}>
+                      <h3>🚗 {vehicle?.title || `Vehicle ${index}`}</h3>
+                      <p>Price: {vehicle?.price || 'N/A'}</p>
+                      <p>Error rendering VehicleCard component</p>
+                    </div>
+                  );
+                }
+              })}
             </div>
           )}
 
