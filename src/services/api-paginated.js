@@ -449,13 +449,10 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
     'Content-Type': 'application/json',
   };
 
-  // Try Basic Auth first, fallback to query params
-  let useQueryAuth = false;
-  if (process.env.REACT_APP_WC_CONSUMER_KEY) {
+  // Prepare Basic Auth headers (unless using query auth)
+  if (!shouldUseQueryAuth && process.env.REACT_APP_WC_CONSUMER_KEY) {
     const credentials = btoa(`${process.env.REACT_APP_WC_CONSUMER_KEY}:${process.env.REACT_APP_WC_CONSUMER_SECRET}`);
     headers['Authorization'] = `Basic ${credentials}`;
-  } else {
-    useQueryAuth = true;
   }
 
   console.log('🔄 WooCommerce API call...');
