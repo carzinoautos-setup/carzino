@@ -534,7 +534,7 @@ export const fetchVehicles = async (params = {}) => {
     // Check if environment variables are available
     if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
         WC_CONSUMER_KEY === 'missing' || WC_CONSUMER_SECRET === 'missing') {
-      console.warn('⚠️ Missing or invalid API credentials, using fallback data');
+      console.warn('���️ Missing or invalid API credentials, using fallback data');
       return getFallbackVehicles();
     }
 
@@ -771,22 +771,32 @@ export const fetchVehicles = async (params = {}) => {
         price: product.price || product.regular_price,
         sale_price: product.sale_price,
         stock_status: product.stock_status,
-        images: {
-          featured: product.images[0]?.src || '',
-          gallery: product.images.map(img => img.src) || []
-        },
+        // Enhanced image handling to properly extract WooCommerce images
+        images: product.images && product.images.length > 0 ? product.images.map(img => img.src) : [],
+        image: product.images && product.images.length > 0 ? product.images[0].src : null,
+        featured_media_url: product.featured_media_url || null,
         categories: product.categories.map(cat => ({
           id: cat.id,
           name: cat.name,
           slug: cat.slug
         })),
         attributes: product.attributes || [],
+        // Include all meta_data for ACF fields
         meta_data: product.meta_data || [],
+        // Include ACF fields if available
+        acf: product.acf || {},
         // CRITICAL: Include seller_data from WordPress API response
         seller_data: product.seller_data || null,
         description: product.description || product.short_description || '',
         date_created: product.date_created,
-        featured: product.featured || false
+        featured: product.featured || false,
+        // Add raw product data for debugging
+        rawData: {
+          images: product.images,
+          featured_media: product.featured_media,
+          featured_media_src: product.featured_media_src,
+          all_meta: product.meta_data
+        }
       })),
       total: parseInt(response.headers.get('X-WP-Total') || products.length.toString()),
       totalPages: parseInt(response.headers.get('X-WP-TotalPages') || '1'),
