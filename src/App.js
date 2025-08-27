@@ -346,15 +346,43 @@ function App() {
   const extractFilterOptions = useCallback((vehicles) => {
     console.log('📊 Calculating filter options from', vehicles.length, 'vehicles (FULL INVENTORY)');
 
-    // DEBUG: Show first few vehicles to understand data structure
-    console.log('🔍 DEBUGGING VEHICLE DATA STRUCTURE:');
+    // DEBUG: Show comprehensive vehicle data structure to identify real field names
+    console.log('🔍 COMPREHENSIVE WOOCOMMERCE DATA DEBUGGING:');
     vehicles.slice(0, 3).forEach((vehicle, i) => {
-      console.log(`Vehicle ${i + 1}: ${vehicle.title}`);
-      console.log('  Meta data:', vehicle.meta_data?.length || 0, 'fields');
-      console.log('  Sample meta:', vehicle.meta_data?.slice(0, 5).map(m => `${m.key}: ${m.value}`));
-      console.log('  Attributes:', vehicle.attributes?.length || 0);
-      console.log('  Categories:', vehicle.categories?.map(c => c.name));
+      console.log(`\n=== VEHICLE ${i + 1}: ${vehicle.title} ===`);
+      console.log('📋 Meta Data Fields (', vehicle.meta_data?.length || 0, 'total):');
+      if (vehicle.meta_data && vehicle.meta_data.length > 0) {
+        vehicle.meta_data.forEach((meta, idx) => {
+          console.log(`  [${idx}] ${meta.key} = "${meta.value}"`);
+        });
+      } else {
+        console.log('  ❌ NO META DATA FOUND');
+      }
+
+      console.log('🏷️ Attributes (', vehicle.attributes?.length || 0, 'total):');
+      if (vehicle.attributes && vehicle.attributes.length > 0) {
+        vehicle.attributes.forEach((attr, idx) => {
+          console.log(`  [${idx}] ${attr.name} = [${attr.options?.join(', ')}]`);
+        });
+      } else {
+        console.log('  ❌ NO ATTRIBUTES FOUND');
+      }
+
+      console.log('📂 Categories:', vehicle.categories?.map(c => `${c.name} (${c.slug})`));
+      console.log('🆔 Vehicle ID:', vehicle.id);
+      console.log('💰 Price:', vehicle.price);
+      console.log('📸 Images:', vehicle.images?.length || 0);
     });
+
+    // Show ALL unique meta field keys across all vehicles to understand field naming
+    const allMetaKeys = new Set();
+    vehicles.forEach(vehicle => {
+      vehicle.meta_data?.forEach(meta => {
+        if (meta.key) allMetaKeys.add(meta.key);
+      });
+    });
+    console.log('\n🔑 ALL UNIQUE META FIELD KEYS FOUND:');
+    console.log(Array.from(allMetaKeys).sort());
 
     // Create cache key based on vehicle IDs and count
     const cacheKey = vehicles.map(v => v.id).sort().join('-') + '-' + vehicles.length;
@@ -1068,7 +1096,7 @@ function App() {
 
   // Handle individual filter changes (for text inputs, etc.)
   const handleSingleFilterChange = useCallback((key, value, immediate = false) => {
-    console.log(`🔄 Single filter changed: ${key} = ${value} (immediate: ${immediate})`);
+    console.log(`���� Single filter changed: ${key} = ${value} (immediate: ${immediate})`);
 
     // Track filter change
     performanceMonitor.trackFilterChange(key, value);
