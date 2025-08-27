@@ -775,7 +775,7 @@ function App() {
 
   // Handle items per page change
   const handleItemsPerPageChange = useCallback((newItemsPerPage) => {
-    console.log(`📋 Items per page changed to: ${newItemsPerPage}`);
+    console.log(`���� Items per page changed to: ${newItemsPerPage}`);
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(1);
     fetchVehiclesPage(1, debouncedFilters);
@@ -789,6 +789,16 @@ function App() {
 
     // Optimize chunk loading for better performance
     optimizeChunkLoading();
+
+    // Start performance monitoring in development
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📊 Performance monitoring started');
+      // Log bundle info periodically in development
+      setTimeout(() => {
+        const { logBundleInfo } = require('./utils/bundleAnalyzer');
+        logBundleInfo();
+      }, 5000);
+    }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle browser back/forward navigation
