@@ -874,11 +874,12 @@ const VehicleSearchFilter = ({
         </div>
 
         {/* Make */}
-        <FilterSection 
+        <FilterSection
           title="Make"
           isCollapsed={collapsedFilters.make}
           onToggle={() => toggleFilter('make')}
           count={getFilterCount('make')}
+          isMobile={isMobile}
         >
           <div className="space-y-1">
             {allMakes.length > 0 ? (
