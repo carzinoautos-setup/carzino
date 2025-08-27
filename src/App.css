@@ -355,9 +355,6 @@ body {
   min-width: 0; /* Prevents flex item from overflowing */
   display: flex;
   flex-direction: column;
-  padding: 20px;
-  overflow: visible;
-  min-height: 500px; /* Ensure minimum height for content */
 }
 
 /* Hide filter sidebar on mobile */
