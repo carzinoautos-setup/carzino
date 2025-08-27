@@ -62,10 +62,11 @@ const SearchResultsHeader = ({
   showingFavorites = false,
   onToggleFavorites,
   onSearch,
-  isMobile = false
+  isMobile = false,
+  mobileFiltersOpen = false
 }) => {
   // State Management
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  // Note: mobileFiltersOpen is now passed as a prop from App.js
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [screenSize, setScreenSize] = useState('desktop');
@@ -634,7 +635,7 @@ const SearchResultsHeader = ({
             </div>
             
             {/* STICKY SECTION: Filters & Controls (stays on top) */}
-            <div className="mobile-sticky-wrapper">
+            <div className={mobileFiltersOpen ? '' : 'mobile-sticky-wrapper'}>
               
               {/* Applied Filter Pills (part of sticky) */}
               {activeFilters.length > 0 && (

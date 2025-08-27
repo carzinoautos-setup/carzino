@@ -668,6 +668,7 @@ function App() {
             showingFavorites={showingFavorites}
             onToggleFavorites={handleToggleFavorites}
             isMobile={isMobile}
+            mobileFiltersOpen={isMobileFiltersOpen}
           />
 
           {/* Vehicle Grid */}
