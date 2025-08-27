@@ -32,22 +32,52 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     }
   }, [vehicle.seller_data, vehicle.meta_data, vehicle.title]);
 
-  // Helper functions to extract seller data
-  const getSellerField = (fieldName) => {
-    // Check account number for debugging
+  // Helper functions to extract ACF and meta data
+  const getACFField = (fieldName) => {
     const metaData = vehicle.meta_data || [];
-    const accountField = metaData.find(m => m.key === 'account_number_seller');
-    const accountNumber = accountField?.value;
 
-    // Debug: Log account numbers for ALL vehicles (more aggressive debugging)
-    if (fieldName === 'acount_name_seller') {
-      console.log(`🔍 Vehicle: ${vehicle.title}`);
-      console.log(`🔍 Account: "${accountNumber}" | Type: ${typeof accountNumber}`);
-      console.log(`🔍 Raw meta_data:`, metaData);
-      console.log(`🔍 Account field:`, accountField);
-      console.log(`🔍 String comparison: "${String(accountNumber).trim()}" === "73" is ${String(accountNumber).trim() === '73'}`);
+    // Try exact field name first
+    const exactField = metaData.find(meta => meta.key === fieldName);
+    if (exactField && exactField.value) {
+      console.log(`✅ ACF Field ${fieldName}: ${exactField.value}`);
+      return exactField.value;
     }
 
+    // Try common ACF field name variations
+    const fieldVariations = {
+      'make': ['vehicle_make', 'car_make', 'make', 'manufacturer'],
+      'model': ['vehicle_model', 'car_model', 'model'],
+      'year': ['vehicle_year', 'car_year', 'year', 'model_year'],
+      'condition': ['vehicle_condition', 'car_condition', 'condition', 'status'],
+      'mileage': ['vehicle_mileage', 'car_mileage', 'mileage', 'odometer'],
+      'transmission': ['vehicle_transmission', 'car_transmission', 'transmission', 'trans'],
+      'drivetrain': ['vehicle_drivetrain', 'car_drivetrain', 'drivetrain', 'drive_type', 'drive'],
+      'fuel_type': ['vehicle_fuel_type', 'car_fuel_type', 'fuel_type', 'fuel'],
+      'body_type': ['vehicle_body_type', 'car_body_type', 'body_type', 'style'],
+      'exterior_color': ['vehicle_exterior_color', 'car_exterior_color', 'exterior_color', 'color'],
+      'interior_color': ['vehicle_interior_color', 'car_interior_color', 'interior_color'],
+      'trim': ['vehicle_trim', 'car_trim', 'trim', 'trim_level'],
+      'doors': ['vehicle_doors', 'car_doors', 'doors', 'door_count'],
+      'engine': ['vehicle_engine', 'car_engine', 'engine', 'engine_size'],
+      'price': ['vehicle_price', 'car_price', 'price', 'sale_price', 'asking_price']
+    };
+
+    const variations = fieldVariations[fieldName] || [fieldName];
+
+    for (const variation of variations) {
+      const field = metaData.find(meta => meta.key === variation);
+      if (field && field.value) {
+        console.log(`✅ ACF Field ${fieldName} (as ${variation}): ${field.value}`);
+        return field.value;
+      }
+    }
+
+    console.log(`⚠️ ACF Field ${fieldName} not found in meta_data`);
+    return null;
+  };
+
+  // Helper functions to extract seller data
+  const getSellerField = (fieldName) => {
     // First, try the enhanced seller_data from WordPress API
     if (vehicle.seller_data) {
       // Map field names to match WordPress seller_data structure
@@ -75,14 +105,6 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       }
     }
 
-    // Debug: Log when seller_data is missing
-    if (fieldName === 'acount_name_seller') {
-      console.log(`🔍 Vehicle: ${vehicle.title}`);
-      console.log(`🔍 Account: "${accountNumber}" | Type: ${typeof accountNumber}`);
-      console.log(`🔍 Has seller_data:`, !!vehicle.seller_data);
-      console.log(`🔍 Seller data content:`, vehicle.seller_data);
-    }
-
     // Second, try the enhanced seller data (from WordPress API)
     if (enhancedSellerData) {
       // Map field names to match WordPress seller_data structure
@@ -99,24 +121,10 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       }
     }
 
-    // Fallback to meta_data for backward compatibility (metaData already declared above)
+    // Fallback to meta_data for backward compatibility
+    const metaData = vehicle.meta_data || [];
     const sellerField = metaData.find(meta => meta.key === fieldName);
     const value = sellerField?.value || '';
-
-    // Debug logging for troubleshooting
-    if (fieldName === 'acount_name_seller' || fieldName === 'account_name_seller') {
-      console.log('🔍 Seller data for vehicle:', vehicle.title);
-      console.log('Enhanced seller_data:', vehicle.seller_data);
-      console.log('Meta data seller fields:', metaData.filter(m => m.key.includes('seller')));
-      console.log(`📝 Field '${fieldName}' value:`, value);
-
-      // Show what's in the account_number_seller field
-      const accountField = metaData.find(m => m.key === 'account_number_seller');
-      if (accountField) {
-        console.log('🔗 Account number value:', accountField.value);
-        console.log('🔗 Account number type:', typeof accountField.value);
-      }
-    }
 
     return value;
   };
@@ -172,21 +180,63 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getCondition = () => {
+    // Try ACF condition fields first
+    const acfCondition = getACFField('condition');
+    if (acfCondition && acfCondition.trim() !== '') {
+      return acfCondition;
+    }
+
+    // Try seller condition fields
     const condition = getSellerField('condition');
     if (condition && condition.trim() !== '') {
       return condition;
     }
+
     // Check other possible condition field names
     const vehicleCondition = getSellerField('vehicle_condition') || getSellerField('condition_seller');
     if (vehicleCondition && vehicleCondition.trim() !== '') {
       return vehicleCondition;
     }
+
     // Only use stock status as last resort, with different text
-    return vehicle.stock_status === 'instock' ? 'In Stock' : 'Sold';
+    return vehicle.stock_status === 'instock' ? 'Available' : 'Sold';
   };
 
   const getDrivetrain = () => {
-    return getSellerField('drivetrain') || getSellerField('drive_type') || 'N/A';
+    // Try ACF drivetrain fields first
+    const acfDrivetrain = getACFField('drivetrain');
+    if (acfDrivetrain) {
+      return acfDrivetrain;
+    }
+
+    return getSellerField('drivetrain') || getSellerField('drive_type') || 'FWD';
+  };
+
+  // Get vehicle specifications from ACF fields
+  const getVehicleSpec = (specType) => {
+    // Try ACF fields first
+    const acfValue = getACFField(specType);
+    if (acfValue) {
+      return acfValue;
+    }
+
+    // Try attributes as fallback
+    const attributes = vehicle.attributes || [];
+    const attr = attributes.find(attr =>
+      attr.name.toLowerCase().includes(specType.toLowerCase())
+    );
+    if (attr && attr.options && attr.options[0]) {
+      return attr.options[0];
+    }
+
+    // Default values based on spec type
+    const defaults = {
+      'mileage': '0',
+      'transmission': 'Automatic',
+      'doors': '4'
+    };
+
+    return defaults[specType] || 'N/A';
   };
 
   const getSellerName = () => {
@@ -498,54 +548,54 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       images: vehicle.images,
       image: vehicle.image,
       vehicleId: vehicle.id,
-      rawData: vehicle.rawData ? {
-        hasImages: !!vehicle.rawData.images,
-        imageCount: vehicle.rawData.images?.length || 0,
-        featuredMedia: vehicle.rawData.featured_media,
-        featuredMediaSrc: vehicle.rawData.featured_media_src,
-        firstImageData: vehicle.rawData.images?.[0]
-      } : 'No raw data'
+      hasWooCommerceImages: vehicle.images && Array.isArray(vehicle.images)
     });
 
-    // Priority 1: Use WooCommerce images array
-    if (vehicle.images && vehicle.images.length > 0) {
+    // Priority 1: WooCommerce product images (most common format)
+    if (vehicle.images && Array.isArray(vehicle.images) && vehicle.images.length > 0) {
       const imageUrl = vehicle.images[0];
-      console.log(`✅ Using inventory image: ${imageUrl}`);
-      return imageUrl;
+      // Ensure it's a real image URL, not a placeholder
+      if (imageUrl && !imageUrl.includes('/api/placeholder') && !imageUrl.includes('data:image') && imageUrl.startsWith('http')) {
+        console.log(`✅ Using WooCommerce product image: ${imageUrl}`);
+        return imageUrl;
+      }
     }
 
-    // Priority 2: Use vehicle.image field if available and not a placeholder
-    if (vehicle.image && !vehicle.image.includes('/api/placeholder') && !vehicle.image.includes('unsplash')) {
-      console.log(`✅ Using vehicle.image field: ${vehicle.image}`);
+    // Priority 2: WooCommerce images object format (images.featured)
+    if (vehicle.images && typeof vehicle.images === 'object' && vehicle.images.featured) {
+      const imageUrl = vehicle.images.featured;
+      if (imageUrl && !imageUrl.includes('/api/placeholder') && imageUrl.startsWith('http')) {
+        console.log(`✅ Using featured image: ${imageUrl}`);
+        return imageUrl;
+      }
+    }
+
+    // Priority 3: Direct image field from WooCommerce
+    if (vehicle.image && !vehicle.image.includes('/api/placeholder') && !vehicle.image.includes('unsplash') && vehicle.image.startsWith('http')) {
+      console.log(`✅ Using direct image field: ${vehicle.image}`);
       return vehicle.image;
     }
 
-    // Priority 3: Check raw data for additional image sources
-    if (vehicle.rawData) {
-      const rawData = vehicle.rawData;
+    // Priority 4: Check ACF image fields
+    const metaData = vehicle.meta_data || [];
+    const imageFields = ['featured_image', 'product_image', 'vehicle_image', 'main_image', 'primary_image'];
 
-      // Check featured_media_src
-      if (rawData.featured_media_src) {
-        console.log(`✅ Using featured_media_src: ${rawData.featured_media_src}`);
-        return rawData.featured_media_src;
-      }
-
-      // Check if images array exists in raw data
-      if (rawData.images && rawData.images.length > 0) {
-        const firstImage = rawData.images[0];
-        if (firstImage.src) {
-          console.log(`✅ Using raw data image src: ${firstImage.src}`);
-          return firstImage.src;
-        }
-        if (firstImage.url) {
-          console.log(`✅ Using raw data image url: ${firstImage.url}`);
-          return firstImage.url;
-        }
+    for (const fieldName of imageFields) {
+      const imageField = metaData.find(meta => meta.key === fieldName);
+      if (imageField && imageField.value && imageField.value.startsWith('http')) {
+        console.log(`✅ Using ACF image field ${fieldName}: ${imageField.value}`);
+        return imageField.value;
       }
     }
 
-    // Fallback: No inventory images found
-    console.warn(`⚠️ No inventory images found for ${vehicle.title}, using placeholder`);
+    // Priority 5: WordPress featured media URL
+    if (vehicle.featured_media_url && vehicle.featured_media_url.startsWith('http')) {
+      console.log(`✅ Using WordPress featured media: ${vehicle.featured_media_url}`);
+      return vehicle.featured_media_url;
+    }
+
+    // Only use fallback image as last resort
+    console.warn(`⚠️ No real product images found for ${vehicle.title}, using generic car placeholder`);
     return `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=380&h=200&fit=crop&auto=format&q=80`;
   }, [vehicle]);
 
