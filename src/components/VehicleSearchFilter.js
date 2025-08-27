@@ -333,20 +333,20 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
   );
 });
 
-const ColorSwatch = memo(({ color, name, count, checked, onChange, category }) => (
-  <label className="flex items-center text-sm cursor-pointer hover:bg-gray-50 p-1 rounded">
-    <input 
-      type="checkbox" 
-      className="carzino-checkbox mr-2"
+const ColorSwatch = memo(({ color, name, count, checked, onChange, category, isMobile = false }) => (
+  <label className={`flex items-center cursor-pointer hover:bg-gray-50 rounded-lg transition-colors ${isMobile ? 'p-3' : 'p-1'}`}>
+    <input
+      type="checkbox"
+      className={`carzino-checkbox ${isMobile ? 'mr-3' : 'mr-2'}`}
       checked={checked}
       onChange={(e) => onChange(category, name, e.target.checked)}
     />
-    <div 
-      className="w-4 h-4 rounded border border-gray-300 mr-2" 
+    <div
+      className={`rounded border border-gray-300 ${isMobile ? 'w-6 h-6 mr-3' : 'w-4 h-4 mr-2'}`}
       style={{ backgroundColor: color }}
     />
-    <span className="carzino-filter-option flex-1">{name}</span>
-    <span className="carzino-filter-count ml-1">({count.toLocaleString()})</span>
+    <span className={`flex-1 ${isMobile ? 'text-lg' : 'text-sm'}`}>{name}</span>
+    <span className={`ml-2 text-gray-500 ${isMobile ? 'text-base' : 'text-sm'}`}>({count.toLocaleString()})</span>
   </label>
 ));
 
