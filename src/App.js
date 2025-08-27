@@ -761,6 +761,18 @@ function App() {
             isMobile={isMobile}
           />
 
+          {/* TEST DIV */}
+          <div style={{
+            backgroundColor: 'lime',
+            padding: '20px',
+            margin: '20px 0',
+            border: '3px solid purple',
+            fontSize: '18px',
+            fontWeight: 'bold'
+          }}>
+            🚨 TEST DIV: This should always be visible! vehiclesLength={vehicles.length}
+          </div>
+
           {/* Vehicle Grid */}
           {loading ? (
             <div className={`vehicle-grid ${viewMode}-view p-2`}>
