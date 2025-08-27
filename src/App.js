@@ -642,7 +642,7 @@ function App() {
           loading={loading}
           filterOptions={filterOptions}
           isOpen={isMobileFiltersOpen}
-          onClose={() => setIsMobileFiltersOpen(false)}
+          onClose={isMobile ? () => setIsMobileFiltersOpen(false) : null}
           isMobile={isMobile}
         />
 
