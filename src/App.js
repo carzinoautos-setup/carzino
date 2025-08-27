@@ -697,7 +697,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, itemsPerPage, filters, updateURL, canUseSequentialCache, filterCachedVehicles, apiConnected, fullInventory.length, fetchFullInventoryForFilters, totalPages, loading, preloadNextPage]);
+  }, [currentPage, itemsPerPage, debouncedFilters, updateURL, canUseSequentialCache, filterCachedVehicles, apiConnected, fullInventory.length, fetchFullInventoryForFilters, totalPages, loading, preloadNextPage, resetBatches]);
 
   // Handle page changes with preloaded data for instant loading
   const handlePageChange = useCallback((newPage) => {
