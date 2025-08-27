@@ -1,4 +1,4 @@
-import React, { useState, memo, useCallback, useMemo } from 'react';
+import React, { useState, memo, useCallback, useMemo, useEffect } from 'react';
 import { Search, ChevronDown, X } from 'lucide-react';
 
 // Filter Section Components
