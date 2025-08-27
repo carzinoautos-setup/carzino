@@ -617,43 +617,101 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
   // Get the featured image prioritizing real inventory images
   const getFeaturedImage = useCallback(() => {
-    console.log(`🖼️ CHECKING Image data for ${vehicle.title}:`, {
-      hasImagesArray: vehicle.images && Array.isArray(vehicle.images),
-      imagesCount: vehicle.images?.length || 0,
-      firstImage: vehicle.images?.[0],
-      hasDirectImage: !!vehicle.image,
-      directImage: vehicle.image,
-      featuredMediaUrl: vehicle.featured_media_url
+    // DETAILED DEBUG: Log the complete vehicle object structure
+    console.log(`🔍 DEBUGGING ${vehicle.title} - Complete vehicle object:`, {
+      vehicleKeys: Object.keys(vehicle),
+      vehicleType: typeof vehicle,
+      vehicleId: vehicle.id,
+
+      // Images data
+      images: vehicle.images,
+      imagesType: typeof vehicle.images,
+      imagesIsArray: Array.isArray(vehicle.images),
+      imagesLength: vehicle.images?.length,
+
+      // Direct image field
+      image: vehicle.image,
+      imageType: typeof vehicle.image,
+
+      // Featured media
+      featured_media_url: vehicle.featured_media_url,
+      featured_media: vehicle.featured_media,
+
+      // Raw data inspection
+      rawData: vehicle.rawData,
+      rawDataKeys: vehicle.rawData ? Object.keys(vehicle.rawData) : null,
+
+      // Check for alternative image field names
+      alternativeFields: {
+        imageUrls: vehicle.imageUrls,
+        vehicleImages: vehicle.vehicleImages,
+        productImages: vehicle.productImages,
+        gallery: vehicle.gallery,
+        photos: vehicle.photos
+      }
     });
 
     // PRIORITY 1: Use the extracted images array (this is what the diagnostic shows working)
     if (vehicle.images && Array.isArray(vehicle.images) && vehicle.images.length > 0) {
       const imageUrl = vehicle.images[0];
-      if (imageUrl && imageUrl.startsWith('http') && !imageUrl.includes('/api/placeholder')) {
+      console.log(`🔍 First image in array:`, imageUrl, typeof imageUrl);
+
+      if (imageUrl && typeof imageUrl === 'string' && imageUrl.startsWith('http') && !imageUrl.includes('/api/placeholder')) {
         console.log(`✅ SUCCESS: Using extracted image: ${imageUrl}`);
+        return imageUrl;
+      } else {
+        console.log(`❌ First image invalid:`, { imageUrl, type: typeof imageUrl, isString: typeof imageUrl === 'string', startsWithHttp: imageUrl?.startsWith?.('http') });
+      }
+    } else {
+      console.log(`❌ Images array invalid:`, {
+        hasImages: !!vehicle.images,
+        isArray: Array.isArray(vehicle.images),
+        length: vehicle.images?.length,
+        actualValue: vehicle.images
+      });
+    }
+
+    // PRIORITY 2: Use direct image field
+    if (vehicle.image && typeof vehicle.image === 'string' && vehicle.image.startsWith('http') && !vehicle.image.includes('/api/placeholder')) {
+      console.log(`✅ SUCCESS: Using direct image field: ${vehicle.image}`);
+      return vehicle.image;
+    } else {
+      console.log(`❌ Direct image invalid:`, {
+        hasImage: !!vehicle.image,
+        type: typeof vehicle.image,
+        value: vehicle.image,
+        startsWithHttp: vehicle.image?.startsWith?.('http')
+      });
+    }
+
+    // PRIORITY 3: Use featured media URL
+    if (vehicle.featured_media_url && typeof vehicle.featured_media_url === 'string' && vehicle.featured_media_url.startsWith('http')) {
+      console.log(`✅ SUCCESS: Using featured media URL: ${vehicle.featured_media_url}`);
+      return vehicle.featured_media_url;
+    } else {
+      console.log(`❌ Featured media URL invalid:`, {
+        hasFeaturedMediaUrl: !!vehicle.featured_media_url,
+        type: typeof vehicle.featured_media_url,
+        value: vehicle.featured_media_url
+      });
+    }
+
+    // PRIORITY 4: Check rawData for images
+    if (vehicle.rawData && vehicle.rawData.images && Array.isArray(vehicle.rawData.images) && vehicle.rawData.images.length > 0) {
+      const rawImage = vehicle.rawData.images[0];
+      const imageUrl = rawImage?.src || rawImage?.url || rawImage;
+      console.log(`🔍 Raw data first image:`, { rawImage, imageUrl, type: typeof imageUrl });
+
+      if (imageUrl && typeof imageUrl === 'string' && imageUrl.startsWith('http') && !imageUrl.includes('/api/placeholder')) {
+        console.log(`✅ SUCCESS: Using raw data image: ${imageUrl}`);
         return imageUrl;
       }
     }
 
-    // PRIORITY 2: Use direct image field
-    if (vehicle.image && vehicle.image.startsWith('http') && !vehicle.image.includes('/api/placeholder')) {
-      console.log(`✅ SUCCESS: Using direct image field: ${vehicle.image}`);
-      return vehicle.image;
-    }
-
-    // PRIORITY 3: Use featured media URL
-    if (vehicle.featured_media_url && vehicle.featured_media_url.startsWith('http')) {
-      console.log(`✅ SUCCESS: Using featured media URL: ${vehicle.featured_media_url}`);
-      return vehicle.featured_media_url;
-    }
-
-    // Only use fallback if absolutely no images found
+    // Final debug before fallback
     console.error(`❌ NO IMAGES FOUND for ${vehicle.title} despite diagnostic showing images available!`, {
-      vehicleData: vehicle,
-      hasImages: !!vehicle.images,
-      imagesArray: vehicle.images,
-      hasDirectImage: !!vehicle.image,
-      directImageValue: vehicle.image
+      completeVehicleObject: vehicle,
+      stringifiedVehicle: JSON.stringify(vehicle, null, 2)
     });
 
     return `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=380&h=200&fit=crop&auto=format&q=80`;
