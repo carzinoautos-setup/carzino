@@ -1717,34 +1717,9 @@ const VehicleSearchFilter = ({
                 />
               ))
             ) : (
-              <div className="space-y-1">
-                <CheckboxOption
-                  label="New"
-                  count={125989}
-                  value="New"
-                  category="condition"
-                  checked={filters.condition?.includes('New')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
-                <CheckboxOption
-                  label="Used"
-                  count={78800}
-                  value="Used"
-                  category="condition"
-                  checked={filters.condition?.includes('Used')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
-                <CheckboxOption
-                  label="Certified"
-                  count={9889}
-                  value="Certified"
-                  category="condition"
-                  checked={filters.condition?.includes('Certified')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
+              <div className="text-sm text-gray-500 py-2">
+                🔍 Debug: No conditions found in WooCommerce data. Check field mapping.
+                <br />Expected fields: condition, _condition, status, vehicle_condition
               </div>
             )}
           </div>
