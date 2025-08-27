@@ -470,14 +470,14 @@ const VehicleSearchFilter = ({
         {/* Backdrop */}
         <div
           className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
-            onClose ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           onClick={onClose}
         />
 
         {/* Off-canvas menu */}
         <div className={`fixed left-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-xl z-50 transition-transform duration-300 ease-out ${
-          onClose ? 'translate-x-0' : '-translate-x-full'
+          isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           <div className="h-full overflow-y-auto overflow-x-hidden" style={{ padding: '20px', paddingBottom: '80px' }}>
             <FilterContent />
