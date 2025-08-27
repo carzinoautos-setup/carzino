@@ -531,13 +531,23 @@ function App() {
       });
 
       // Extract from ACF (Advanced Custom Fields) if available
+      console.log(`🔧 ACF DEBUG for vehicle ${vehicle.title}:`, {
+        hasACF: !!vehicle.acf,
+        acfType: typeof vehicle.acf,
+        acfKeys: vehicle.acf ? Object.keys(vehicle.acf) : [],
+        acfData: vehicle.acf
+      });
+
       if (vehicle.acf && typeof vehicle.acf === 'object') {
-        Object.entries(vehicle.acf).forEach(([acfKey, acfValue]) => {
+        const acfEntries = Object.entries(vehicle.acf);
+        console.log(`🎯 Processing ${acfEntries.length} ACF fields for ${vehicle.title}`);
+
+        acfEntries.forEach(([acfKey, acfValue]) => {
           if (acfValue && acfValue.toString().trim() !== '') {
             const key = acfKey.toLowerCase();
             const cleanValue = acfValue.toString().trim();
 
-            console.log(`🔧 ACF Field: ${acfKey} = ${cleanValue}`);
+            console.log(`✅ ACF Field Found: ${acfKey} = ${cleanValue}`);
 
             // Apply same field matching logic to ACF fields
             if (key.includes('condition') || key.includes('status')) {
