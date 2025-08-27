@@ -879,12 +879,13 @@ function App() {
         <div className="main-container">
           {/* Search and Filter Section - Sidebar */}
           <FilterErrorBoundary
-            onRetry={() => fetchVehiclesPage(currentPage, filters)}
-            onReset={() => {
-              setFilters(getInitialFilters());
-              fetchVehiclesPage(1, getInitialFilters());
-            }}
-          >
+          onRetry={() => fetchVehiclesPage(currentPage, debouncedFilters)}
+          onReset={() => {
+            const initial = getInitialFilters();
+            resetFilters(initial);
+            fetchVehiclesPage(1, initial);
+          }}
+        >
             <VehicleSearchFilter
               filters={filters}
               onFiltersChange={handleFilterChange}
