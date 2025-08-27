@@ -702,6 +702,11 @@ const VehicleSearchFilter = ({
   const [showMoreMakes, setShowMoreMakes] = useState(false);
   const [showMoreModels, setShowMoreModels] = useState(false);
   const [showMoreTrims, setShowMoreTrims] = useState(false);
+
+  // Focus states for better styling
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [zipFocused, setZipFocused] = useState(false);
+  const [radiusFocused, setRadiusFocused] = useState(false);
   
   // Collapsed sections state
   const [collapsedFilters, setCollapsedFilters] = useState({
