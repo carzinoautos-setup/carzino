@@ -16,6 +16,7 @@ import { useBatchLazyLoading } from './hooks/useLazyLoading';
 import { useDebouncedFilters } from './hooks/useDebounce';
 import { optimizeChunkLoading } from './utils/bundleAnalyzer';
 import BundleAnalysisPanel from './components/BundleAnalysisPanel';
+import { performanceMonitor } from './services/performanceMonitor';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
@@ -775,7 +776,7 @@ function App() {
 
   // Handle items per page change
   const handleItemsPerPageChange = useCallback((newItemsPerPage) => {
-    console.log(`���� Items per page changed to: ${newItemsPerPage}`);
+    console.log(`📋 Items per page changed to: ${newItemsPerPage}`);
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(1);
     fetchVehiclesPage(1, debouncedFilters);
