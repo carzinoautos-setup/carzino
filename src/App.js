@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
 import './App.css';
 import VehicleSearchFilter from './components/VehicleSearchFilter';
-import VehicleCard from './components/VehicleCard';
+// import VehicleCard from './components/VehicleCard'; // Using inline cards for now
 import VehicleCardSkeleton from './components/VehicleCardSkeleton';
 import SearchResultsHeader from './components/SearchResultsHeader';
 import { fetchVehiclesPaginated } from './services/api-paginated';
