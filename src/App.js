@@ -505,7 +505,7 @@ function App() {
 
   // Handle page changes
   const handlePageChange = useCallback((newPage) => {
-    console.log(`📄 Page changed to: ${newPage}`);
+    console.log(`���� Page changed to: ${newPage}`);
     setCurrentPage(newPage);
     fetchVehiclesPage(newPage, filters);
     
@@ -762,17 +762,7 @@ function App() {
           />
 
           {/* Vehicle Grid */}
-          {(() => {
-            console.log('🔍 RENDER DEBUG:', {
-              loading,
-              error,
-              vehiclesLength: vehicles.length,
-              totalResults,
-              showingFirstVehicle: vehicles[0]?.title || 'No vehicles'
-            });
-            return null;
-          })()}
-          {loading ? (
+          {true ? ( /* Temporarily force loading state */
             <div className={`vehicle-grid ${viewMode}-view p-2`}>
               {/* Show skeleton cards during loading */}
               {Array.from({ length: itemsPerPage }, (_, index) => (
