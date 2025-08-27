@@ -456,29 +456,76 @@ function App() {
         counts[`model_${model}`] = (counts[`model_${model}`] || 0) + 1;
       }
 
-      // Extract other fields from meta_data
+      // COMPREHENSIVE field extraction from meta_data with flexible matching
       metaData.forEach(meta => {
-        const key = meta.key;
+        const key = (meta.key || '').toLowerCase();
         const value = meta.value;
 
         if (value && value.toString().trim() !== '') {
-          // Use broader key matching to catch different naming conventions
-          if (key.includes('condition')) {
-            counts[`condition_${value}`] = (counts[`condition_${value}`] || 0) + 1;
-          } else if (key.includes('body') || key.includes('type') || key === 'vehicleType') {
-            counts[`bodyType_${value}`] = (counts[`bodyType_${value}`] || 0) + 1;
-          } else if (key.includes('drive') || key.includes('drivetrain')) {
-            counts[`drivetrain_${value}`] = (counts[`drivetrain_${value}`] || 0) + 1;
-          } else if (key.includes('transmission')) {
-            counts[`transmission_${value}`] = (counts[`transmission_${value}`] || 0) + 1;
-          } else if (key.includes('exterior') && key.includes('color')) {
-            counts[`exteriorColor_${value}`] = (counts[`exteriorColor_${value}`] || 0) + 1;
-          } else if (key.includes('interior') && key.includes('color')) {
-            counts[`interiorColor_${value}`] = (counts[`interiorColor_${value}`] || 0) + 1;
-          } else if (key.includes('fuel')) {
-            counts[`fuelType_${value}`] = (counts[`fuelType_${value}`] || 0) + 1;
-          } else if (key.includes('trim')) {
-            counts[`trim_${value}`] = (counts[`trim_${value}`] || 0) + 1;
+          const cleanValue = value.toString().trim();
+
+          // CONDITION field mapping - cast wider net
+          if (key.includes('condition') || key.includes('status') || key === 'vehicle_condition' ||
+              key === 'listing_status' || key === 'car_condition') {
+            counts[`condition_${cleanValue}`] = (counts[`condition_${cleanValue}`] || 0) + 1;
+            console.log(`✅ Found condition: ${key} = ${cleanValue}`);
+          }
+
+          // VEHICLE TYPE / BODY TYPE - try multiple patterns
+          else if (key.includes('body') || key.includes('type') || key === 'vehicletype' ||
+                   key === 'vehicle_type' || key === 'body_style' || key === 'category' ||
+                   key === 'car_type' || key === 'auto_type') {
+            counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
+            console.log(`✅ Found body type: ${key} = ${cleanValue}`);
+          }
+
+          // DRIVETRAIN / DRIVE TYPE - comprehensive patterns
+          else if (key.includes('drive') || key.includes('drivetrain') || key.includes('wheel') ||
+                   key === 'drive_type' || key === 'drivetrain_type' || key === 'transmission_type' ||
+                   key === 'drive_wheels' || key === 'wheel_drive') {
+            counts[`drivetrain_${cleanValue}`] = (counts[`drivetrain_${cleanValue}`] || 0) + 1;
+            console.log(`✅ Found drivetrain: ${key} = ${cleanValue}`);
+          }
+
+          // TRANSMISSION - various patterns
+          else if (key.includes('transmission') || key.includes('gearbox') || key === 'trans_type') {
+            counts[`transmission_${cleanValue}`] = (counts[`transmission_${cleanValue}`] || 0) + 1;
+            console.log(`✅ Found transmission: ${key} = ${cleanValue}`);
+          }
+
+          // EXTERIOR COLOR - multiple patterns
+          else if ((key.includes('exterior') && key.includes('color')) || key === 'exterior_color' ||
+                   key === 'paint_color' || key === 'car_color' || key === 'vehicle_color' ||
+                   key === 'ext_color' || key === 'color_exterior') {
+            counts[`exteriorColor_${cleanValue}`] = (counts[`exteriorColor_${cleanValue}`] || 0) + 1;
+            console.log(`✅ Found exterior color: ${key} = ${cleanValue}`);
+          }
+
+          // INTERIOR COLOR - multiple patterns
+          else if ((key.includes('interior') && key.includes('color')) || key === 'interior_color' ||
+                   key === 'upholstery_color' || key === 'int_color' || key === 'color_interior') {
+            counts[`interiorColor_${cleanValue}`] = (counts[`interiorColor_${cleanValue}`] || 0) + 1;
+            console.log(`✅ Found interior color: ${key} = ${cleanValue}`);
+          }
+
+          // FUEL TYPE - comprehensive patterns
+          else if (key.includes('fuel') || key.includes('engine') || key === 'fuel_type' ||
+                   key === 'engine_type' || key === 'power_type' || key.includes('gas')) {
+            counts[`fuelType_${cleanValue}`] = (counts[`fuelType_${cleanValue}`] || 0) + 1;
+            console.log(`✅ Found fuel type: ${key} = ${cleanValue}`);
+          }
+
+          // TRIM LEVEL - various patterns
+          else if (key.includes('trim') || key === 'trim_level' || key === 'grade' ||
+                   key === 'edition' || key === 'variant' || key === 'trim_name') {
+            counts[`trim_${cleanValue}`] = (counts[`trim_${cleanValue}`] || 0) + 1;
+            console.log(`✅ Found trim: ${key} = ${cleanValue}`);
+          }
+
+          // Log unmatched fields for debugging
+          else if (!key.includes('price') && !key.includes('image') && !key.includes('url') &&
+                   !key.includes('id') && !key.includes('_') && key.length > 2) {
+            console.log(`❓ Unmatched field: ${key} = ${cleanValue}`);
           }
         }
       });
@@ -1096,7 +1143,7 @@ function App() {
 
   // Handle individual filter changes (for text inputs, etc.)
   const handleSingleFilterChange = useCallback((key, value, immediate = false) => {
-    console.log(`���� Single filter changed: ${key} = ${value} (immediate: ${immediate})`);
+    console.log(`🔄 Single filter changed: ${key} = ${value} (immediate: ${immediate})`);
 
     // Track filter change
     performanceMonitor.trackFilterChange(key, value);
