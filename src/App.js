@@ -862,7 +862,10 @@ function App() {
 
         // Show brief error message for other failures
         setError('Unable to connect to vehicle database. Using demo data.');
-        setTimeout(() => setError(null), 3000);
+        setTimeout(() => {
+          setError(null);
+          setOptimisticLoading(false);
+        }, 3000);
       }
 
       // Use fallback demo data
