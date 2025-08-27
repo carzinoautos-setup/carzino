@@ -492,29 +492,60 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     }
   };
 
-  // Get the featured image with better fallbacks
+  // Get the featured image prioritizing real inventory images
   const getFeaturedImage = useCallback(() => {
-    console.log(`🖼️ Image data for ${vehicle.title}:`, {
+    console.log(`🖼️ DETAILED Image data for ${vehicle.title}:`, {
       images: vehicle.images,
       image: vehicle.image,
-      vehicleId: vehicle.id
+      vehicleId: vehicle.id,
+      rawData: vehicle.rawData ? {
+        hasImages: !!vehicle.rawData.images,
+        imageCount: vehicle.rawData.images?.length || 0,
+        featuredMedia: vehicle.rawData.featured_media,
+        featuredMediaSrc: vehicle.rawData.featured_media_src,
+        firstImageData: vehicle.rawData.images?.[0]
+      } : 'No raw data'
     });
 
-    // Use actual vehicle images first
+    // Priority 1: Use WooCommerce images array
     if (vehicle.images && vehicle.images.length > 0) {
-      return vehicle.images[0];
+      const imageUrl = vehicle.images[0];
+      console.log(`✅ Using inventory image: ${imageUrl}`);
+      return imageUrl;
     }
 
-    // Use vehicle.image field if available
-    if (vehicle.image && !vehicle.image.includes('/api/placeholder')) {
+    // Priority 2: Use vehicle.image field if available and not a placeholder
+    if (vehicle.image && !vehicle.image.includes('/api/placeholder') && !vehicle.image.includes('unsplash')) {
+      console.log(`✅ Using vehicle.image field: ${vehicle.image}`);
       return vehicle.image;
     }
 
-    // Generate a realistic vehicle image based on vehicle type/make
-    const make = vehicle.title.split(' ')[1]?.toLowerCase() || 'vehicle';
-    const vehicleType = vehicle.meta_data?.find(m => m.key === 'body_type')?.value?.toLowerCase() || 'car';
+    // Priority 3: Check raw data for additional image sources
+    if (vehicle.rawData) {
+      const rawData = vehicle.rawData;
 
-    // Use a more realistic vehicle image from a reliable source
+      // Check featured_media_src
+      if (rawData.featured_media_src) {
+        console.log(`✅ Using featured_media_src: ${rawData.featured_media_src}`);
+        return rawData.featured_media_src;
+      }
+
+      // Check if images array exists in raw data
+      if (rawData.images && rawData.images.length > 0) {
+        const firstImage = rawData.images[0];
+        if (firstImage.src) {
+          console.log(`✅ Using raw data image src: ${firstImage.src}`);
+          return firstImage.src;
+        }
+        if (firstImage.url) {
+          console.log(`✅ Using raw data image url: ${firstImage.url}`);
+          return firstImage.url;
+        }
+      }
+    }
+
+    // Fallback: No inventory images found
+    console.warn(`⚠️ No inventory images found for ${vehicle.title}, using placeholder`);
     return `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=380&h=200&fit=crop&auto=format&q=80`;
   }, [vehicle]);
 
