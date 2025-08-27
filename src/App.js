@@ -836,8 +836,17 @@ function App() {
       // Clean up failed request from deduplication map
       activeRequests.current.delete(requestKey);
 
-      // Provide fallback data instead of empty state
-      console.log('🎯 API failed, loading fallback demo data to keep app functional');
+      // Specific handling for timeout errors
+      if (error.message.includes('timeout')) {
+        console.warn('⏰ API TIMEOUT: WooCommerce API is taking too long to respond');
+        console.warn('   This is usually due to:');
+        console.warn('   • WordPress server being slow or under load');
+        console.warn('   • Large inventory taking time to process');
+        console.warn('   • Network connectivity issues');
+        console.warn('   ✅ Loading fallback data to keep app functional...');
+      } else {
+        console.log('🎯 API failed, loading fallback demo data to keep app functional');
+      }
 
       // Use fallback demo data
       const fallbackData = {
