@@ -4,7 +4,7 @@ import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import VehicleCardSkeleton from './components/VehicleCardSkeleton';
 import SearchResultsHeader from './components/SearchResultsHeader';
-import { fetchVehiclesPaginated } from './services/api-paginated';
+import { fetchVehiclesPaginated, fetchAllFilteredVehicles } from './services/api-paginated';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
@@ -201,6 +201,7 @@ function App() {
   // Data state
   const [vehicles, setVehicles] = useState([]);
   const [filterOptions, setFilterOptions] = useState({});
+  const [fullInventory, setFullInventory] = useState([]); // Store full inventory for accurate filter counts
   const [loading, setLoading] = useState(true);
   const [optimisticLoading, setOptimisticLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -309,18 +310,19 @@ function App() {
   // Cache for filter options to avoid expensive recalculations
   const filterOptionsCache = useRef(new Map());
 
-  // Extract filter options from vehicle data with memoization
+  // Extract filter options from vehicle data with memoization - now uses FULL inventory
   const extractFilterOptions = useCallback((vehicles) => {
+    console.log('📊 Calculating filter options from', vehicles.length, 'vehicles (FULL INVENTORY)');
+
     // Create cache key based on vehicle IDs and count
     const cacheKey = vehicles.map(v => v.id).sort().join('-') + '-' + vehicles.length;
 
     // Return cached result if available
     if (filterOptionsCache.current.has(cacheKey)) {
-      // console.log('🚀 Using cached filter options');
+      console.log('🚀 Using cached filter options');
       return filterOptionsCache.current.get(cacheKey);
     }
 
-    // console.log('⚙️ Calculating filter options for', vehicles.length, 'vehicles');
     const options = {
       makes: [],
       models: [],
@@ -336,7 +338,7 @@ function App() {
     };
 
     const counts = {};
-    
+
     vehicles.forEach(vehicle => {
       // Extract make from title or meta data
       const title = vehicle.title || '';
@@ -350,7 +352,7 @@ function App() {
         counts[`make_${make}`] = (counts[`make_${make}`] || 0) + 1;
       }
 
-      // Models  
+      // Models
       if (model && model.trim() !== '') {
         counts[`model_${model}`] = (counts[`model_${model}`] || 0) + 1;
       }
@@ -362,11 +364,11 @@ function App() {
 
       // Extract from meta_data if available
       const metaData = vehicle.meta_data || [];
-      
+
       metaData.forEach(meta => {
         const key = meta.key;
         const value = meta.value;
-        
+
         if (value && value.toString().trim() !== '') {
           if (key === 'condition') {
             counts[`condition_${value}`] = (counts[`condition_${value}`] || 0) + 1;
@@ -398,7 +400,7 @@ function App() {
     Object.keys(counts).forEach(key => {
       const [category, value] = key.split('_');
       const count = counts[key];
-      
+
       if (category === 'make') {
         options.makes.push({ name: value, count });
       } else if (category === 'model') {
@@ -438,11 +440,36 @@ function App() {
       filterOptionsCache.current.delete(firstKey);
     }
 
+    console.log('✅ Filter options calculated:', {
+      makes: options.makes.length,
+      models: options.models.length,
+      conditions: options.conditions.length,
+      fromVehicles: vehicles.length
+    });
+
     return options;
   }, []);
 
   // Request deduplication map
   const activeRequests = useRef(new Map());
+
+  // Fetch full inventory for accurate filter counts (separate from pagination)
+  const fetchFullInventoryForFilters = useCallback(async () => {
+    try {
+      console.log('📊 Fetching FULL inventory for accurate filter counts...');
+      const fullVehicles = await fetchAllFilteredVehicles({});
+      setFullInventory(fullVehicles);
+
+      // Calculate filter options from FULL inventory
+      const fullFilterOptions = extractFilterOptions(fullVehicles);
+      setFilterOptions(fullFilterOptions);
+
+      console.log(`✅ Full inventory loaded: ${fullVehicles.length} vehicles for accurate filter counts`);
+    } catch (error) {
+      console.warn('⚠️ Could not fetch full inventory for filters:', error.message);
+      // Fallback to current page filter options if needed
+    }
+  }, [extractFilterOptions]);
 
   // Function to fetch vehicles with server-side pagination
   const fetchVehiclesPage = useCallback(async (page = currentPage, newFilters = filters) => {
@@ -451,7 +478,6 @@ function App() {
 
     // Check if same request is already in progress
     if (activeRequests.current.has(requestKey)) {
-      // console.log('🔄 DEDUP: Request already in progress, skipping duplicate');
       return activeRequests.current.get(requestKey);
     }
 
@@ -462,7 +488,6 @@ function App() {
       const startTime = Date.now();
 
       // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
-      // Only use caching when we have a reliable API connection
       if (apiConnected && canUseSequentialCache(newFilters, filters)) {
         const makeFilter = newFilters.make[0];
         const cacheKey = `make_${makeFilter}`;
@@ -490,10 +515,6 @@ function App() {
           setApiConnected(true);
           setError(null);
 
-          // Update filter options from cached data
-          const filterOptionsExtracted = extractFilterOptions(cachedResult.vehicles);
-          setFilterOptions(filterOptionsExtracted);
-
           updateURL(newFilters, page);
           setLoading(false);
 
@@ -514,12 +535,12 @@ function App() {
 
       const endTime = Date.now();
       const responseTime = endTime - startTime;
-      
+
       if (result.error) {
         throw new Error(result.error);
       }
 
-      // Update state with paginated results (could be real API data or demo data)
+      // Update state with paginated results
       setVehicles(result.vehicles);
       setTotalResults(result.totalResults);
       setTotalPages(result.totalPages);
@@ -529,34 +550,29 @@ function App() {
       // Properly detect if we're using real API data vs demo data
       const isRealAPIData = !result.isDemo;
       setApiConnected(isRealAPIData);
-
-      // API connection confirmed
-
-      // Clear any previous errors if we successfully got data (even if demo)
       setError(null);
 
-      // Clear any previous errors since we got data
-      setError(null);
+      // 🚀 CRITICAL FIX: Don't update filter options from current page!
+      // Filter options should come from FULL inventory, not current page
+      // This was the main cause of incorrect filter counts
 
-      // FAST LOADING: Use current page vehicles for immediate filter options
-      const quickFilterOptions = extractFilterOptions(result.vehicles);
-      setFilterOptions(quickFilterOptions);
+      // Only update full inventory and filter options on initial load or filter changes
+      if (page === 1 || fullInventory.length === 0) {
+        fetchFullInventoryForFilters();
+      }
 
-      // 🚀 PERFORMANCE: Skip background fetch for immediate speed
-      // Use only current page filter options for ultra-fast loading
-
-      console.log(`🎯 Total: ${result.totalResults.toLocaleString()} vehicles in ${result.searchTime || responseTime}ms`);
+      console.log(`🎯 Page ${page}: ${result.vehicles.length} vehicles loaded in ${result.searchTime || responseTime}ms`);
+      console.log(`📊 Total inventory: ${result.totalResults.toLocaleString()} vehicles`);
 
       // 🚀 SMART CACHING: Store make-specific data for Ford → Explorer scenarios
       if (isRealAPIData && newFilters.make && newFilters.make.length === 1 && !newFilters.model?.length) {
         const makeFilter = newFilters.make[0];
         const cacheKey = `make_${makeFilter}`;
 
-        // Cache the full result for this make (e.g., all Ford vehicles)
         setCachedVehicles(prev => {
           const updated = new Map(prev);
           updated.set(cacheKey, {
-            vehicles: result.allVehicles || result.vehicles, // Store all vehicles if available
+            vehicles: result.allVehicles || result.vehicles,
             timestamp: Date.now(),
             totalResults: result.totalResults
           });
@@ -576,16 +592,13 @@ function App() {
       // Clean up failed request from deduplication map
       activeRequests.current.delete(requestKey);
 
-      // This should rarely happen now since API service handles fallbacks
-      // But just in case, provide a minimal fallback
       setVehicles([]);
       setTotalResults(0);
       setTotalPages(0);
-      setFilterOptions({});
     } finally {
       setLoading(false);
     }
-  }, [currentPage, itemsPerPage, filters, updateURL, extractFilterOptions, canUseSequentialCache, filterCachedVehicles, apiConnected]);
+  }, [currentPage, itemsPerPage, filters, updateURL, canUseSequentialCache, filterCachedVehicles, apiConnected, fullInventory.length, fetchFullInventoryForFilters]);
 
   // Handle page changes
   const handlePageChange = useCallback((newPage) => {
@@ -643,7 +656,9 @@ function App() {
 
   // Initial data load
   useEffect(() => {
+    console.log('🚀 App initialized - loading first page and full inventory for filters');
     fetchVehiclesPage(currentPage, filters);
+    // Note: fetchFullInventoryForFilters is called within fetchVehiclesPage for page 1
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle browser back/forward navigation
