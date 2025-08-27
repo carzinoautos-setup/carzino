@@ -487,17 +487,55 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
     console.error('  - URL attempted:', fullUrl);
     console.error('  - Headers used:', headers);
 
-    // Check if it's a CORS error
-    if (networkError.message.includes('CORS') || networkError.message.includes('fetch')) {
-      console.error('🚫 CORS Error Detected - API may not be accessible from browser');
-    }
+    // Check if it's a CORS error and we can retry with query auth
+    if ((networkError.message.includes('CORS') || networkError.message.includes('fetch'))
+        && !shouldUseQueryAuth && process.env.REACT_APP_WC_CONSUMER_KEY) {
+      console.warn('🔄 CORS Error - Retrying with query parameter authentication...');
 
-    // Check if it's a timeout
-    if (networkError.name === 'AbortError') {
-      console.error('⏰ Request Timeout - API took longer than 10 seconds');
-    }
+      try {
+        // Rebuild URL with query auth
+        const retryParams = { ...allParams };
+        retryParams.consumer_key = process.env.REACT_APP_WC_CONSUMER_KEY;
+        retryParams.consumer_secret = process.env.REACT_APP_WC_CONSUMER_SECRET;
 
-    throw new Error(`Network error: Unable to connect to WooCommerce API. ${networkError.message}`);
+        const retryUrlParams = new URLSearchParams(retryParams);
+        const retryUrl = `${API_BASE}/products?${retryUrlParams}`;
+
+        console.log('🔄 Retry URL:', retryUrl);
+
+        const retryController = new AbortController();
+        const retryTimeoutId = setTimeout(() => retryController.abort(), 10000);
+
+        const retryResponse = await fetch(retryUrl, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }, // No Authorization header for query auth
+          signal: retryController.signal
+        });
+
+        clearTimeout(retryTimeoutId);
+
+        if (retryResponse.ok) {
+          console.log('✅ Query parameter authentication succeeded!');
+          response = retryResponse; // Use this response instead
+        } else {
+          throw new Error(`Query auth also failed: ${retryResponse.status}`);
+        }
+
+      } catch (retryError) {
+        console.error('❌ Query parameter authentication also failed:', retryError.message);
+        throw new Error(`Both Basic Auth and Query Auth failed. Basic: ${networkError.message}, Query: ${retryError.message}`);
+      }
+    } else {
+      // Check if it's a timeout
+      if (networkError.name === 'AbortError') {
+        console.error('⏰ Request Timeout - API took longer than 10 seconds');
+      }
+
+      throw new Error(`Network error: Unable to connect to WooCommerce API. ${networkError.message}`);
+    }
   }
 
   if (!response.ok) {
