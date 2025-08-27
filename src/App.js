@@ -1354,7 +1354,13 @@ function App() {
           </div>
           <div className="connection-status">
             {loading ? (
-              <p>🔄 Loading vehicles...</p>
+              <div>
+                <p>🔄 Loading vehicles...</p>
+                {/* Show additional message if loading takes more than 5 seconds */}
+                <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
+                  {searchTime > 5000 && 'Please wait, connecting to WooCommerce...'}
+                </div>
+              </div>
             ) : error ? (
               <p className="error">❌ {error}</p>
             ) : (
