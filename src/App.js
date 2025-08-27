@@ -758,7 +758,7 @@ function App() {
     // Track page change performance
     const endTime = performance.now();
     performanceMonitor.trackPageChange(newPage, endTime - startTime);
-  }, [debouncedFilters, fetchVehiclesPage, preloadedPages, updateURL, preloadNextPage, resetBatches]);
+  }, [debouncedFilters, fetchVehiclesPage, preloadedPages, updateURL, preloadNextPage]);
 
   // Debounced filter handler to prevent rapid API calls
   const debouncedFilterChange = useCallback((newFilters) => {
