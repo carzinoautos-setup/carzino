@@ -761,71 +761,45 @@ function App() {
             isMobile={isMobile}
           />
 
-          {/* TEST DIV */}
+          {/* Vehicle Grid - Simplified Test */}
           <div style={{
-            backgroundColor: 'lime',
+            backgroundColor: 'orange',
             padding: '20px',
-            margin: '20px 0',
-            border: '3px solid purple',
-            fontSize: '18px',
-            fontWeight: 'bold'
+            border: '2px solid blue',
+            margin: '20px 0'
           }}>
-            🚨 TEST DIV: This should always be visible! vehiclesLength={vehicles.length}
+            🔧 VEHICLE GRID: loading={loading?.toString()}, error={error || 'none'}, vehicles={vehicles.length}
+
+            {vehicles.length > 0 && (
+              <div>
+                ✅ Found {vehicles.length} vehicles:
+                <div className={`vehicle-grid ${viewMode}-view p-2`}>
+                  {vehicles.slice(0, 3).map((vehicle, index) => (
+                    <div key={index} style={{
+                      border: '1px solid green',
+                      padding: '10px',
+                      margin: '10px 0',
+                      backgroundColor: 'lightgreen'
+                    }}>
+                      🚗 Vehicle {index}: {vehicle?.title || 'No title'}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Vehicle Grid */}
-          {loading ? (
-            <div className={`vehicle-grid ${viewMode}-view p-2`}>
-              {/* Show skeleton cards during loading */}
-              {Array.from({ length: itemsPerPage }, (_, index) => (
-                <VehicleCardSkeleton key={`skeleton-${index}`} />
-              ))}
-            </div>
-          ) : error ? (
-            <div className="error-container">
-              <p>Error loading vehicles: {error}</p>
-              <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
-            </div>
-          ) : vehicles.length === 0 ? (
-            <div className="no-results">
-              <h3>No vehicles found</h3>
-              <p>Try adjusting your search filters</p>
-            </div>
-          ) : (
-            <>
-              {/* Vehicle Cards */}
-              <div className={`vehicle-grid ${viewMode}-view p-2`}>
-                {vehicles.map((vehicle, index) => {
-                  console.log(`🚗 Mapping vehicle ${index}:`, vehicle?.title || 'No title', vehicle?.id || 'No ID');
-                  try {
-                    return (
-                      <VehicleCard
-                        key={`${vehicle.id}-${currentPage}-${index}`}
-                        vehicle={vehicle}
-                        favorites={favorites}
-                        onFavoriteToggle={toggleFavorite}
-                      />
-                    );
-                  } catch (error) {
-                    console.error(`❌ Error rendering vehicle ${index}:`, error);
-                    return <div key={`error-${index}`} style={{border: '1px solid red', padding: '10px'}}>Error rendering vehicle {index}</div>;
-                  }
-                })}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <Suspense fallback={<div className="flex justify-center py-4"><div className="loading-spinner"></div></div>}>
-                  <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    totalResults={totalResults}
-                    resultsPerPage={itemsPerPage}
-                    onPageChange={handlePageChange}
-                  />
-                </Suspense>
-              )}
-            </>
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <Suspense fallback={<div className="flex justify-center py-4"><div className="loading-spinner"></div></div>}>
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalResults={totalResults}
+                resultsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+              />
+            </Suspense>
           )}
         </div>
       </div>
