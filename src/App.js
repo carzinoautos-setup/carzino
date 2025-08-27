@@ -850,8 +850,11 @@ function App() {
         // Show user-friendly message about the timeout
         setError('API is taking longer than expected. Loading backup data...');
 
-        // Auto-clear the error message after a few seconds
-        setTimeout(() => setError(null), 5000);
+        // Auto-clear the error message and loading states after a few seconds
+        setTimeout(() => {
+          setError(null);
+          setOptimisticLoading(false);
+        }, 5000);
 
         console.warn('   ✅ Loading fallback data to keep app functional...');
       } else {
