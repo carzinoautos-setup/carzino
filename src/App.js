@@ -780,140 +780,14 @@ function App() {
             </div>
           ) : (
             <div className={`vehicle-grid ${viewMode}-view p-2`}>
-              {vehicles.map((vehicle, index) => {
-                // Extract vehicle data safely
-                const getMeta = (key) => {
-                  const meta = vehicle.meta_data?.find(m => m.key === key);
-                  return meta ? meta.value : '';
-                };
-
-                const vehiclePrice = getMeta('price') || vehicle.price || 'Call for Price';
-                const vehicleMileage = getMeta('mileage') || 'N/A';
-
-                return (
-                  <div key={`${vehicle.id}-${index}`} className="vehicle-card">
-                    {/* Featured Badge */}
-                    <div style={{position: 'relative'}}>
-                      <div style={{
-                        position: 'absolute',
-                        top: '12px',
-                        left: '12px',
-                        backgroundColor: '#dc2626',
-                        color: 'white',
-                        padding: '4px 8px',
-                        borderRadius: '4px',
-                        fontSize: '12px',
-                        fontWeight: '500',
-                        zIndex: 2
-                      }}>
-                        FEATURED
-                      </div>
-
-                      {/* Vehicle Image */}
-                      <div style={{
-                        height: '200px',
-                        backgroundColor: '#f3f4f6',
-                        borderRadius: '12px 12px 0 0',
-                        backgroundImage: 'url(' + (vehicle.featured_image || '/placeholder-car.jpg') + ')',
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        color: '#6b7280'
-                      }}>
-                        {!vehicle.featured_image && '🚗 Vehicle Image'}
-                      </div>
-                    </div>
-
-                    {/* Card Content */}
-                    <div style={{padding: '16px'}}>
-                      {/* Vehicle Title */}
-                      <h3 style={{
-                        fontSize: '16px',
-                        fontWeight: '600',
-                        color: '#111827',
-                        margin: '0 0 8px 0',
-                        lineHeight: '1.4'
-                      }}>
-                        {vehicle.title}
-                      </h3>
-
-                      {/* Vehicle Details */}
-                      <div style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        fontSize: '12px',
-                        color: '#6b7280',
-                        marginBottom: '12px'
-                      }}>
-                        <span>{vehicleMileage} miles</span>
-                        <span>Stock: {vehicle.id}</span>
-                      </div>
-
-                      {/* Price */}
-                      <div style={{
-                        fontSize: '20px',
-                        fontWeight: '700',
-                        color: '#dc2626',
-                        marginBottom: '12px'
-                      }}>
-                        ${typeof vehiclePrice === 'number' ? vehiclePrice.toLocaleString() : vehiclePrice}
-                      </div>
-
-                      {/* Payment Info */}
-                      <div style={{
-                        fontSize: '12px',
-                        color: '#6b7280',
-                        marginBottom: '16px'
-                      }}>
-                        $299/mo • 72 months @ 8% APR
-                      </div>
-
-                      {/* Dealer Info */}
-                      <div style={{
-                        fontSize: '10px',
-                        color: '#9ca3af',
-                        marginBottom: '16px',
-                        borderTop: '1px solid #e5e7eb',
-                        paddingTop: '8px'
-                      }}>
-                        {getMeta('dealer_name') || 'Carzino Dealer'} • {getMeta('dealer_location') || 'Seattle, WA'}
-                      </div>
-
-                      {/* Action Buttons */}
-                      <div style={{display: 'flex', gap: '8px'}}>
-                        <button style={{
-                          flex: 1,
-                          padding: '10px',
-                          backgroundColor: '#dc2626',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '6px',
-                          fontSize: '14px',
-                          fontWeight: '500',
-                          cursor: 'pointer'
-                        }}>
-                          View Details
-                        </button>
-                        <button
-                          onClick={() => toggleFavorite(vehicle.id, vehicle)}
-                          style={{
-                            padding: '10px',
-                            backgroundColor: favorites[vehicle.id] ? '#dc2626' : 'transparent',
-                            color: favorites[vehicle.id] ? 'white' : '#dc2626',
-                            border: '1px solid #dc2626',
-                            borderRadius: '6px',
-                            cursor: 'pointer'
-                          }}
-                        >
-                          ♥
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+              {vehicles.map((vehicle, index) => (
+                <VehicleCard
+                  key={`${vehicle.id}-${currentPage}-${index}`}
+                  vehicle={vehicle}
+                  favorites={favorites}
+                  onFavoriteToggle={toggleFavorite}
+                />
+              ))}
             </div>
           )}
 
