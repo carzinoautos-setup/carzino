@@ -710,6 +710,7 @@ function App() {
   // Handle page changes with preloaded data for instant loading
   const handlePageChange = useCallback((newPage) => {
     console.log(`📄 Page changed to: ${newPage}`);
+    const startTime = performance.now();
 
     const preloadKey = `page_${newPage}_${JSON.stringify(debouncedFilters)}`;
     const preloadedData = preloadedPages.get(preloadKey);
