@@ -945,14 +945,14 @@ function App() {
 
             {/* Vehicle Grid */}
             <VehicleGridErrorBoundary
-              onRetry={() => fetchVehiclesPage(currentPage, filters)}
-              onReset={() => {
-                // Clear cache and reset to first page
-                setCachedVehicles(new Map());
-                setPreloadedPages(new Map());
-                fetchVehiclesPage(1, filters);
-              }}
-            >
+            onRetry={() => fetchVehiclesPage(currentPage, debouncedFilters)}
+            onReset={() => {
+              // Clear cache and reset to first page
+              setCachedVehicles(new Map());
+              setPreloadedPages(new Map());
+              fetchVehiclesPage(1, debouncedFilters);
+            }}
+          >
               {loading ? (
                 <div className={`vehicle-grid ${viewMode}-view p-2`}>
                   {Array.from({ length: itemsPerPage }, (_, index) => (
