@@ -581,8 +581,15 @@ function App() {
             // Apply same field matching logic to ACF fields
             if (key.includes('condition') || key.includes('status')) {
               counts[`condition_${cleanValue}`] = (counts[`condition_${cleanValue}`] || 0) + 1;
-            } else if (key.includes('body') || key.includes('type') || key.includes('category')) {
+              console.log(`🔧 ACF Condition: ${acfKey} = ${cleanValue}`);
+            } else if (key.includes('body') || key.includes('type') || key.includes('category') ||
+                      key.includes('style') || key.includes('class') || key.includes('form') ||
+                      key.includes('suv') || key.includes('sedan') || key.includes('truck') ||
+                      key.includes('coupe') || key.includes('hatch') || key.includes('wagon') ||
+                      // ACF patterns
+                      key.startsWith('field_') || key.startsWith('acf_')) {
               counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
+              console.log(`🔧 ACF VEHICLE TYPE: ${acfKey} = ${cleanValue}`);
             } else if (key.includes('drive') || key.includes('drivetrain')) {
               counts[`drivetrain_${cleanValue}`] = (counts[`drivetrain_${cleanValue}`] || 0) + 1;
             } else if (key.includes('transmission')) {
@@ -951,7 +958,7 @@ function App() {
     try {
       const startTime = Date.now();
 
-      // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
+      // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford �� Explorer)
       if (apiConnected && canUseSequentialCache(newFilters, filters)) {
         const makeFilter = newFilters.make[0];
         const cacheKey = `make_${makeFilter}`;
