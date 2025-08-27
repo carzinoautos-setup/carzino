@@ -450,14 +450,9 @@ body {
 ============================================ */
 
 .vehicle-grid {
-  display: grid !important;
+  display: grid;
   gap: var(--spacing-xl);
   width: 100%;
-  margin-top: 20px;
-  padding: 20px;
-  background-color: #ffffff;
-  min-height: 200px; /* Ensure grid is visible even without content */
-  border: 1px solid #e5e7eb; /* Temporary border to see the grid area */
 }
 
 /* Grid View */
