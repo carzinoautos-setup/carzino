@@ -229,6 +229,7 @@ function App() {
   const [optimisticLoading, setOptimisticLoading] = useState(false);
   const [error, setError] = useState(null);
   const [apiConnected, setApiConnected] = useState(false);
+  const [loadingStartTime, setLoadingStartTime] = useState(Date.now());
 
   // Caching state for sequential filtering performance
   const [cachedVehicles, setCachedVehicles] = useState(new Map());
