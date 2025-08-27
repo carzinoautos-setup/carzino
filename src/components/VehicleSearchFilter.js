@@ -2,187 +2,342 @@ import React, { useState, memo, useCallback, useMemo, useEffect } from 'react';
 import { Search, ChevronDown, Check, X } from 'lucide-react';
 
 // ============================================
-// STYLES
+// BUILDER.IO COMPATIBLE STYLES
 // ============================================
-const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap');
+const styles = {
+  container: {
+    fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+    backgroundColor: '#ffffff',
+    width: '100%'
+  },
 
-  .carzino-filter-container {
-    font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  }
+  filterSection: {
+    borderBottom: '1px solid #e5e7eb',
+    paddingBottom: '12px',
+    marginBottom: '16px'
+  },
 
-  /* Typography Classes */
-  .carzino-filter-title { 
-    font-size: 16px !important; 
-    font-weight: 600 !important; 
-  }
-  
-  .carzino-filter-option { 
-    font-size: 14px !important; 
-    font-weight: 400 !important; 
-  }
-  
-  .carzino-filter-count { 
-    font-size: 14px !important; 
-    font-weight: 400 !important; 
-    color: #6B7280 !important; 
-  }
-  
-  .carzino-search-input { 
-    font-size: 14px !important; 
-    font-weight: 400 !important; 
-  }
-  
-  .carzino-location-label { 
-    font-size: 14px !important; 
-    font-weight: 500 !important; 
-  }
-  
-  .carzino-dropdown-option { 
-    font-size: 14px !important; 
-    font-weight: 400 !important; 
-  }
-  
-  .carzino-vehicle-type-name { 
-    font-size: 12px !important; 
-    font-weight: 500 !important; 
-  }
-  
-  .carzino-vehicle-type-count { 
-    font-size: 11px !important; 
-    font-weight: 400 !important; 
-    color: #6B7280 !important; 
-  }
-  
-  .carzino-show-more { 
-    font-size: 14px !important; 
-    font-weight: 500 !important; 
-  }
+  filterHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    cursor: 'pointer',
+    padding: '8px 8px',
+    marginLeft: '-8px',
+    marginRight: '-8px',
+    borderRadius: '8px',
+    transition: 'background-color 0.15s'
+  },
 
-  /* Mobile Typography */
-  @media (max-width: 640px) {
-    .carzino-filter-title { font-size: 18px !important; }
-    .carzino-filter-option { font-size: 16px !important; }
-    .carzino-filter-count { font-size: 16px !important; }
-    .carzino-search-input { font-size: 16px !important; }
-    .carzino-location-label { font-size: 16px !important; }
-    .carzino-dropdown-option { font-size: 16px !important; }
-    .carzino-vehicle-type-name { font-size: 14px !important; }
-    .carzino-vehicle-type-count { font-size: 13px !important; }
-    .carzino-show-more { font-size: 16px !important; }
-  }
+  filterHeaderHover: {
+    backgroundColor: '#f9fafb'
+  },
 
-  /* Custom Checkbox */
-  .carzino-checkbox {
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border: 1px solid #d1d5db;
-    border-radius: 3px;
-    background-color: white;
-    position: relative;
-    cursor: pointer;
-    transition: all 150ms ease;
-    flex-shrink: 0;
-  }
-  
-  .carzino-checkbox:hover {
-    border-color: #6b7280;
-    background-color: #f9fafb;
-  }
-  
-  .carzino-checkbox:checked {
-    background-color: #dc2626;
-    border-color: #dc2626;
-  }
-  
-  .carzino-checkbox:checked::after {
-    content: '✓';
-    position: absolute;
-    color: white;
-    font-size: 12px;
-    top: -2px;
-    left: 2px;
-  }
+  filterTitle: {
+    fontSize: '16px',
+    fontWeight: 600,
+    margin: 0,
+    pointerEvents: 'none',
+    color: '#111827'
+  },
 
-  .carzino-checkbox:focus {
-    outline: 2px solid #dc2626;
-    outline-offset: 2px;
-  }
+  filterTitleMobile: {
+    fontSize: '18px'
+  },
 
-  /* Inputs and Selects */
-  .carzino-input,
-  .carzino-select {
-    transition: all 150ms ease;
-  }
+  chevron: {
+    width: '20px',
+    height: '20px',
+    color: '#dc2626',
+    transition: 'transform 0.2s',
+    pointerEvents: 'none'
+  },
 
-  .carzino-input:focus,
-  .carzino-select:focus {
-    outline: none;
-    border-color: #dc2626;
-    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
-  }
+  chevronMobile: {
+    width: '24px',
+    height: '24px'
+  },
 
-  /* Applied Filter Pills */
-  .carzino-filter-pill {
-    background-color: #000000;
-    color: #ffffff;
-    border-radius: 9999px;
-    font-size: 12px;
-    padding: 4px 10px;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
+  chevronRotated: {
+    transform: 'rotate(180deg)'
+  },
 
-  /* Mobile specific */
-  @media (max-width: 640px) {
-    .carzino-filter-pill {
-      font-size: 12px;
-      padding: 6px 12px;
-    }
-  }
+  checkboxWrapper: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: '8px',
+    borderRadius: '8px',
+    cursor: 'pointer',
+    transition: 'background-color 0.15s',
+    position: 'relative'
+  },
 
-  /* Animations */
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
+  checkboxWrapperMobile: {
+    padding: '12px'
+  },
 
-  .animate-slide-down {
-    animation: slideDown 200ms ease-out;
+  checkboxWrapperHover: {
+    backgroundColor: '#f9fafb'
+  },
+
+  checkbox: {
+    appearance: 'none',
+    WebkitAppearance: 'none',
+    width: '16px',
+    height: '16px',
+    border: '1px solid #d1d5db',
+    borderRadius: '3px',
+    backgroundColor: 'white',
+    position: 'relative',
+    cursor: 'pointer',
+    transition: 'all 150ms ease',
+    flexShrink: 0,
+    marginRight: '8px'
+  },
+
+  checkboxMobile: {
+    width: '18px',
+    height: '18px',
+    marginRight: '12px'
+  },
+
+  checkboxChecked: {
+    backgroundColor: '#dc2626',
+    borderColor: '#dc2626'
+  },
+
+  checkboxCheckmark: {
+    position: 'absolute',
+    left: '2px',
+    top: '-2px',
+    color: 'white',
+    fontSize: '12px',
+    pointerEvents: 'none'
+  },
+
+  optionLabel: {
+    fontSize: '14px',
+    fontWeight: 400,
+    flex: 1,
+    color: '#374151'
+  },
+
+  optionLabelMobile: {
+    fontSize: '16px'
+  },
+
+  optionCount: {
+    fontSize: '14px',
+    fontWeight: 400,
+    color: '#6B7280',
+    marginLeft: '8px'
+  },
+
+  optionCountMobile: {
+    fontSize: '16px'
+  },
+
+  searchInput: {
+    width: '100%',
+    padding: '12px 16px',
+    paddingRight: '48px',
+    border: '1px solid #d1d5db',
+    borderRadius: '12px',
+    fontSize: '14px',
+    outline: 'none',
+    transition: 'border-color 0.15s, box-shadow 0.15s',
+    fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+  },
+
+  searchInputMobile: {
+    fontSize: '16px',
+    padding: '16px 20px',
+    paddingRight: '56px'
+  },
+
+  searchInputFocus: {
+    borderColor: '#dc2626',
+    boxShadow: '0 0 0 3px rgba(220, 38, 38, 0.1)'
+  },
+
+  input: {
+    padding: '10px 12px',
+    border: '1px solid #d1d5db',
+    borderRadius: '8px',
+    fontSize: '14px',
+    outline: 'none',
+    transition: 'border-color 0.15s, box-shadow 0.15s',
+    fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+  },
+
+  inputMobile: {
+    fontSize: '16px',
+    padding: '16px'
+  },
+
+  inputFocus: {
+    borderColor: '#dc2626',
+    boxShadow: '0 0 0 3px rgba(220, 38, 38, 0.1)'
+  },
+
+  select: {
+    padding: '10px 12px',
+    border: '1px solid #d1d5db',
+    borderRadius: '8px',
+    fontSize: '14px',
+    outline: 'none',
+    transition: 'border-color 0.15s, box-shadow 0.15s',
+    fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+    backgroundColor: 'white'
+  },
+
+  selectMobile: {
+    fontSize: '16px',
+    padding: '16px'
+  },
+
+  selectFocus: {
+    borderColor: '#dc2626',
+    boxShadow: '0 0 0 3px rgba(220, 38, 38, 0.1)'
+  },
+
+  filterPill: {
+    backgroundColor: '#000000',
+    color: '#ffffff',
+    borderRadius: '9999px',
+    fontSize: '12px',
+    padding: '6px 12px',
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    margin: '2px'
+  },
+
+  filterPillMobile: {
+    fontSize: '14px',
+    padding: '8px 16px'
+  },
+
+  clearButton: {
+    backgroundColor: '#dc2626',
+    color: 'white',
+    padding: '6px 16px',
+    borderRadius: '9999px',
+    fontSize: '12px',
+    fontWeight: 500,
+    border: 'none',
+    cursor: 'pointer',
+    transition: 'background-color 0.15s'
+  },
+
+  clearButtonMobile: {
+    fontSize: '14px',
+    padding: '8px 20px'
+  },
+
+  clearButtonHover: {
+    backgroundColor: '#b91c1c'
+  },
+
+  showMoreButton: {
+    color: '#dc2626',
+    fontSize: '14px',
+    fontWeight: 500,
+    border: 'none',
+    background: 'none',
+    cursor: 'pointer',
+    padding: '8px 0',
+    marginTop: '8px'
+  },
+
+  showMoreButtonMobile: {
+    fontSize: '16px'
+  },
+
+  colorSwatch: {
+    width: '16px',
+    height: '16px',
+    borderRadius: '2px',
+    border: '1px solid #d1d5db',
+    marginRight: '8px',
+    flexShrink: 0
+  },
+
+  colorSwatchMobile: {
+    width: '20px',
+    height: '20px',
+    marginRight: '12px'
+  },
+
+  distanceContainer: {
+    marginBottom: '24px',
+    border: '1px solid #e5e7eb',
+    borderRadius: '12px',
+    padding: '16px'
+  },
+
+  distanceContainerMobile: {
+    backgroundColor: '#f9fafb',
+    padding: '20px'
+  },
+
+  sectionLabel: {
+    fontSize: '14px',
+    fontWeight: 600,
+    marginBottom: '12px',
+    display: 'block',
+    color: '#111827'
+  },
+
+  sectionLabelMobile: {
+    fontSize: '18px',
+    marginBottom: '16px'
   }
-`;
+};
+
+// Add global font import
+const addGlobalStyles = () => {
+  // Add Google Fonts
+  if (!document.querySelector('link[href*="Albert+Sans"]')) {
+    const fontLink = document.createElement('link');
+    fontLink.href = 'https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap';
+    fontLink.rel = 'stylesheet';
+    document.head.appendChild(fontLink);
+  }
+};
 
 // ============================================
 // FILTER SECTION COMPONENTS
 // ============================================
 
 const FilterSection = memo(({ title, isCollapsed, onToggle, children, count, isMobile = false }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <div className={`border-b border-gray-200 mb-4 ${isMobile ? 'pb-4' : 'pb-3'}`}>
+    <div style={styles.filterSection}>
       <div
-        className={`flex items-center justify-between cursor-pointer hover:bg-gray-50 px-2 -mx-2 rounded-lg ${isMobile ? 'py-4' : 'py-2'}`}
+        style={{
+          ...styles.filterHeader,
+          ...(isHovered ? styles.filterHeaderHover : {})
+        }}
         onClick={onToggle}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        <h3 className={`font-semibold pointer-events-none ${isMobile ? 'text-lg' : 'text-base'}`}>{title}</h3>
-        <div className="flex items-center gap-2 pointer-events-none">
-          <ChevronDown
-            className={`text-red-600 transition-transform ${isMobile ? 'w-6 h-6' : 'w-5 h-5'} ${
-              !isCollapsed ? 'rotate-180' : ''
-            }`}
-            style={{ color: '#dc2626' }}
-          />
-        </div>
+        <h3 style={{
+          ...styles.filterTitle,
+          ...(isMobile ? styles.filterTitleMobile : {})
+        }}>{title}</h3>
+        <ChevronDown
+          style={{
+            ...styles.chevron,
+            ...(isMobile ? styles.chevronMobile : {}),
+            ...(!isCollapsed ? styles.chevronRotated : {})
+          }}
+        />
       </div>
       {!isCollapsed && (
-        <div className={`animate-slide-down ${isMobile ? 'mt-3' : 'mt-2'}`} onClick={(e) => e.stopPropagation()}>
+        <div style={{ marginTop: isMobile ? '12px' : '8px' }} onClick={(e) => e.stopPropagation()}>
           {children}
         </div>
       )}
@@ -199,17 +354,44 @@ const CheckboxOption = memo(({
   category,
   isMobile = false
 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <label className={`flex items-center hover:bg-gray-50 rounded-lg cursor-pointer transition-colors ${isMobile ? 'p-3' : 'p-1'}`}>
+    <label
+      style={{
+        ...styles.checkboxWrapper,
+        ...(isMobile ? styles.checkboxWrapperMobile : {}),
+        ...(isHovered ? styles.checkboxWrapperHover : {})
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       <input
         type="checkbox"
-        className={`carzino-checkbox ${isMobile ? 'mr-3' : 'mr-2'}`}
+        style={{
+          ...styles.checkbox,
+          ...(isMobile ? styles.checkboxMobile : {}),
+          ...(checked ? styles.checkboxChecked : {})
+        }}
         checked={checked}
         onChange={(e) => onChange(category, value, e.target.checked)}
       />
-      <span className={`flex-1 ${isMobile ? 'text-lg' : 'text-sm'}`}>{label}</span>
+      {checked && (
+        <span style={{
+          ...styles.checkboxCheckmark,
+          left: isMobile ? '14px' : '10px',
+          top: isMobile ? '14px' : '6px'
+        }}>✓</span>
+      )}
+      <span style={{
+        ...styles.optionLabel,
+        ...(isMobile ? styles.optionLabelMobile : {})
+      }}>{label}</span>
       {count !== undefined && (
-        <span className={`ml-2 text-gray-500 ${isMobile ? 'text-base' : 'text-sm'}`}>({count.toLocaleString()})</span>
+        <span style={{
+          ...styles.optionCount,
+          ...(isMobile ? styles.optionCountMobile : {})
+        }}>({count.toLocaleString()})</span>
       )}
     </label>
   );
@@ -333,22 +515,54 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
   );
 });
 
-const ColorSwatch = memo(({ color, name, count, checked, onChange, category, isMobile = false }) => (
-  <label className={`flex items-center cursor-pointer hover:bg-gray-50 rounded-lg transition-colors ${isMobile ? 'p-3' : 'p-1'}`}>
-    <input
-      type="checkbox"
-      className={`carzino-checkbox ${isMobile ? 'mr-3' : 'mr-2'}`}
-      checked={checked}
-      onChange={(e) => onChange(category, name, e.target.checked)}
-    />
-    <div
-      className={`rounded border border-gray-300 ${isMobile ? 'w-6 h-6 mr-3' : 'w-4 h-4 mr-2'}`}
-      style={{ backgroundColor: color }}
-    />
-    <span className={`flex-1 ${isMobile ? 'text-lg' : 'text-sm'}`}>{name}</span>
-    <span className={`ml-2 text-gray-500 ${isMobile ? 'text-base' : 'text-sm'}`}>({count.toLocaleString()})</span>
-  </label>
-));
+const ColorSwatch = memo(({ color, name, count, checked, onChange, category, isMobile = false }) => {
+  const [isHovered, setIsHovered] = useState(false);
+
+  return (
+    <label
+      style={{
+        ...styles.checkboxWrapper,
+        ...(isMobile ? styles.checkboxWrapperMobile : {}),
+        ...(isHovered ? styles.checkboxWrapperHover : {})
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <input
+        type="checkbox"
+        style={{
+          ...styles.checkbox,
+          ...(isMobile ? styles.checkboxMobile : {}),
+          ...(checked ? styles.checkboxChecked : {})
+        }}
+        checked={checked}
+        onChange={(e) => onChange(category, name, e.target.checked)}
+      />
+      {checked && (
+        <span style={{
+          ...styles.checkboxCheckmark,
+          left: isMobile ? '14px' : '10px',
+          top: isMobile ? '14px' : '6px'
+        }}>✓</span>
+      )}
+      <div
+        style={{
+          ...styles.colorSwatch,
+          ...(isMobile ? styles.colorSwatchMobile : {}),
+          backgroundColor: color
+        }}
+      />
+      <span style={{
+        ...styles.optionLabel,
+        ...(isMobile ? styles.optionLabelMobile : {})
+      }}>{name}</span>
+      <span style={{
+        ...styles.optionCount,
+        ...(isMobile ? styles.optionCountMobile : {})
+      }}>({count.toLocaleString()})</span>
+    </label>
+  );
+});
 
 // ============================================
 // MAIN FILTER COMPONENT
