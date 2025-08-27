@@ -79,7 +79,7 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
         headers: headers,
       });
     } catch (networkError) {
-      console.warn('��️ Network error fetching filter options, using demo data:', networkError.message);
+      console.warn('���️ Network error fetching filter options, using demo data:', networkError.message);
       const demoResult = getDemoDataFallback(1, 50, filters);
       return demoResult.vehicles;
     }
@@ -332,12 +332,30 @@ const getDemoDataFallback = (page = 1, limit = 20, filters = {}) => {
   const startIndex = (page - 1) * limit;
   const paginatedVehicles = filteredVehicles.slice(startIndex, startIndex + limit);
 
+  // 🚀 PERFORMANCE: Simulate realistic cache behavior in demo mode
+  // First load is slower, subsequent loads are faster (like cache hits)
+  const previousLoad = localStorage.getItem(`demo_cache_${JSON.stringify(filters)}_${page}`);
+  let searchTime;
+
+  if (previousLoad) {
+    // Simulate cache hit - very fast
+    searchTime = Math.floor(Math.random() * 10) + 2; // 2-12ms
+    console.log(`⚡ DEMO CACHE HIT: Simulating fast cached load (${searchTime}ms)`);
+  } else {
+    // Simulate first load - slower
+    searchTime = Math.floor(Math.random() * 2000) + 1000; // 1-3 seconds
+    console.log(`🔄 DEMO FIRST LOAD: Simulating initial API call (${searchTime}ms)`);
+
+    // Store in demo cache
+    localStorage.setItem(`demo_cache_${JSON.stringify(filters)}_${page}`, Date.now().toString());
+  }
+
   return {
     vehicles: paginatedVehicles,
     totalResults: filteredVehicles.length,
     totalPages: Math.ceil(filteredVehicles.length / limit),
     currentPage: page,
-    searchTime: 50,
+    searchTime: searchTime,
     isDemo: true
   };
 };
