@@ -789,9 +789,6 @@ function App() {
 
                 const vehiclePrice = getMeta('price') || vehicle.price || 'Call for Price';
                 const vehicleMileage = getMeta('mileage') || 'N/A';
-                const vehicleYear = vehicle.title?.split(' ')[0] || '';
-                const vehicleMake = vehicle.title?.split(' ')[1] || '';
-                const vehicleModel = vehicle.title?.split(' ').slice(2).join(' ') || '';
 
                 return (
                   <div key={`${vehicle.id}-${index}`} className="vehicle-card">
