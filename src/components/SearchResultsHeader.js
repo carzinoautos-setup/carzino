@@ -308,6 +308,16 @@ const SearchResultsHeader = ({
         /* Ensure it works on iOS Safari */
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
+        /* Additional mobile fixes */
+        will-change: transform;
+        contain: layout style paint;
+      }
+
+      /* Ensure parent container allows sticky positioning */
+      .mobile-header {
+        position: relative;
+        height: auto;
+        overflow: visible;
       }
     }
 
