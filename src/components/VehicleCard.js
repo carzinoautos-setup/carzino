@@ -500,11 +500,23 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return vehicle.image || '/api/placeholder/380/200';
   };
 
-  // Preload image for better performance
+  // Preload and optimize images for better pagination performance
   useEffect(() => {
     const imageUrl = getFeaturedImage();
+
+    // Immediate preload for current page images
     const img = new Image();
     img.src = imageUrl;
+
+    // Add to browser cache for instant loading on pagination
+    img.onload = () => {
+      console.log(`✅ Image preloaded: ${vehicle.title}`);
+    };
+
+    img.onerror = () => {
+      console.warn(`⚠️ Image failed to preload: ${vehicle.title}`);
+    };
+
   }, [vehicle]);
 
   return (
@@ -839,10 +851,11 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             src={getFeaturedImage()}
             alt={vehicle.title}
             className="vehicle-image"
-            loading="lazy"
+            loading="eager"
             decoding="async"
             width="380"
             height="200"
+            style={{ transition: 'opacity 0.2s ease' }}
           />
 
           {vehicle.featured && (
