@@ -1037,9 +1037,9 @@ function App() {
     fetchVehiclesPage(1, newFilters);
   }, [fetchVehiclesPage]);
 
-  // Handle filter changes with smart debouncing
-  const handleFilterChange = useCallback((key, value, immediate = false) => {
-    console.log(`🔄 Filter changed: ${key} = ${value} (immediate: ${immediate})`);
+  // Handle individual filter changes (for text inputs, etc.)
+  const handleSingleFilterChange = useCallback((key, value, immediate = false) => {
+    console.log(`🔄 Single filter changed: ${key} = ${value} (immediate: ${immediate})`);
 
     // Track filter change
     performanceMonitor.trackFilterChange(key, value);
@@ -1052,6 +1052,25 @@ function App() {
     // Update filter using debounced system
     updateFilter(key, value, immediate);
   }, [updateFilter]);
+
+  // Handle complete filter object changes (from VehicleSearchFilter)
+  const handleFilterChange = useCallback((newFilters) => {
+    console.log('🔄 Complete filter object changed:', newFilters);
+
+    // Find what changed and track it
+    const oldFilters = filters;
+    Object.keys(newFilters).forEach(key => {
+      if (JSON.stringify(oldFilters[key]) !== JSON.stringify(newFilters[key])) {
+        console.log(`  Changed: ${key} from`, oldFilters[key], 'to', newFilters[key]);
+        performanceMonitor.trackFilterChange(key, newFilters[key]);
+      }
+    });
+
+    // Force update all filters immediately
+    Object.keys(newFilters).forEach(key => {
+      updateFilter(key, newFilters[key], true);
+    });
+  }, [filters, updateFilter]);
 
   // Handle sort changes
   const handleSortChange = useCallback((newSortBy) => {
