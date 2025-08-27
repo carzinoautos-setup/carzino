@@ -761,6 +761,17 @@ function App() {
             isMobile={isMobile}
           />
 
+          {/* DEBUG INFO */}
+          <div style={{
+            backgroundColor: 'yellow',
+            padding: '10px',
+            margin: '10px 0',
+            border: '2px solid red',
+            fontSize: '14px'
+          }}>
+            DEBUG: loading={loading?.toString()}, error={error?.toString()}, vehiclesLength={vehicles?.length}, totalResults={totalResults}
+          </div>
+
           {/* Vehicle Grid */}
           {loading ? (
             <div className={`vehicle-grid ${viewMode}-view p-2`}>
