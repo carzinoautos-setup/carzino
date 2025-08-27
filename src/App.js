@@ -611,17 +611,34 @@ function App() {
         console.log(`❌ No ACF data found in direct acf field for ${vehicle.title}`);
       }
 
-      // Check if any ACF-like fields exist in meta_data
+      // ENHANCED ACF FIELD DETECTION - Cast wider net to catch all possible ACF fields
       const potentialACFFields = metaData.filter(meta => {
         const key = meta.key.toLowerCase();
         return key.startsWith('acf_') ||
                key.includes('field_') ||
                key.startsWith('_') ||
                key.includes('acf') ||
-               // Common ACF field patterns
+               // Vehicle-specific patterns
                key.includes('vehicle_') ||
                key.includes('car_') ||
-               key.includes('auto_');
+               key.includes('auto_') ||
+               // Body/Type patterns
+               key.includes('body') ||
+               key.includes('type') ||
+               key.includes('style') ||
+               key.includes('category') ||
+               key.includes('class') ||
+               // Condition patterns
+               key.includes('condition') ||
+               key.includes('status') ||
+               // Drive patterns
+               key.includes('drive') ||
+               key.includes('transmission') ||
+               // Color patterns
+               key.includes('color') ||
+               key.includes('paint') ||
+               // Any field that looks like it might contain vehicle data
+               key.length > 3 && !key.includes('price') && !key.includes('image') && !key.includes('url')
       });
 
       if (potentialACFFields.length > 0) {
