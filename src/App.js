@@ -752,10 +752,10 @@ function App() {
       const requestPromise = fetchVehiclesPaginated(page, itemsPerPage, newFilters);
       activeRequests.current.set(requestKey, requestPromise);
 
-      // Regular API call when cache not available with shorter timeout
+      // Regular API call when cache not available with reasonable timeout
       const result = await Promise.race([
         requestPromise,
-        new Promise((_, reject) => setTimeout(() => reject(new Error('API timeout after 5 seconds')), 5000))
+        new Promise((_, reject) => setTimeout(() => reject(new Error('API timeout after 20 seconds')), 20000))
       ]);
 
       // Clean up completed request from deduplication map
