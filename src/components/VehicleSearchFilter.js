@@ -715,7 +715,7 @@ const VehicleSearchFilter = ({
     mileage: true,
     make: false,
     model: false,
-    trim: true,
+    trim: false,  // Keep Trim expanded by default for better UX
     price: true,
     payment: true,
     bodyType: true,
