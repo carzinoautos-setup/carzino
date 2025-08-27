@@ -1017,7 +1017,7 @@ const VehicleSearchFilter = ({
 
   // Desktop sidebar
   return (
-    <div className="carzino-filter-container">
+    <div style={styles.container}>
       <FilterContent />
     </div>
   );
@@ -1029,33 +1029,71 @@ const VehicleSearchFilter = ({
         {/* Mobile header is now handled in the bottom sheet */}
 
         {/* Search Section */}
-        <div className={`mb-6 ${isMobile ? '' : 'pb-4 border-b border-gray-200'}`}>
-          <div className="relative">
+        <div style={{
+          marginBottom: '24px',
+          ...(isMobile ? {} : { paddingBottom: '16px', borderBottom: '1px solid #e5e7eb' })
+        }}>
+          <div style={{ position: 'relative' }}>
             <input
               type="text"
               placeholder="Search Vehicles"
-              className={`carzino-search-input carzino-input w-full px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-red-600 ${isMobile ? 'py-4 text-lg' : 'py-2.5'}`}
+              style={{
+                ...styles.searchInput,
+                ...(isMobile ? styles.searchInputMobile : {}),
+                ...(searchFocused ? styles.searchInputFocus : {})
+              }}
+              onFocus={() => setSearchFocused(true)}
+              onBlur={() => setSearchFocused(false)}
             />
-            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600 p-1">
-              <Search className={`${isMobile ? 'w-6 h-6' : 'w-4 h-4'}`} style={{ color: '#dc2626' }} />
+            <button style={{
+              position: 'absolute',
+              right: isMobile ? '20px' : '16px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: '#dc2626',
+              padding: '4px',
+              border: 'none',
+              background: 'none',
+              cursor: 'pointer'
+            }}>
+              <Search style={{
+                width: isMobile ? '24px' : '16px',
+                height: isMobile ? '24px' : '16px',
+                color: '#dc2626'
+              }} />
             </button>
           </div>
         </div>
 
         {/* Applied Filters */}
         {activeFilterCount > 0 && (
-          <div className={`mb-6 ${isMobile ? '' : 'pb-4 border-b border-gray-200'}`}>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className={`font-semibold ${isMobile ? 'text-lg' : 'text-base'}`}>Applied Filters</h3>
+          <div style={{
+            marginBottom: '24px',
+            ...(isMobile ? {} : { paddingBottom: '16px', borderBottom: '1px solid #e5e7eb' })
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: '12px'
+            }}>
+              <h3 style={{
+                ...styles.filterTitle,
+                ...(isMobile ? styles.filterTitleMobile : {})
+              }}>Applied Filters</h3>
               <button
                 onClick={clearAllFilters}
-                className={`bg-red-600 text-white rounded-full font-medium hover:bg-red-700 transition-colors ${isMobile ? 'px-4 py-2 text-sm' : 'px-3 py-1 text-xs'}`}
-                style={{ backgroundColor: '#dc2626' }}
+                onMouseEnter={(e) => e.target.style.backgroundColor = styles.clearButtonHover.backgroundColor}
+                onMouseLeave={(e) => e.target.style.backgroundColor = styles.clearButton.backgroundColor}
+                style={{
+                  ...styles.clearButton,
+                  ...(isMobile ? styles.clearButtonMobile : {})
+                }}
               >
                 Clear All
               </button>
             </div>
-            <div className="flex flex-wrap gap-2">
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {(() => {
                 const filterPills = [];
 
@@ -1078,12 +1116,25 @@ const VehicleSearchFilter = ({
                     value.forEach((item, index) => {
                       if (item && item.toString().trim() !== '') {
                         filterPills.push(
-                          <span key={`${category}-${index}`} className="carzino-filter-pill">
-                            <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                          <span key={`${category}-${index}`} style={{
+                            ...styles.filterPill,
+                            ...(isMobile ? styles.filterPillMobile : {})
+                          }}>
+                            <Check style={{ width: '12px', height: '12px', color: '#dc2626' }} />
                             {item}
                             <button
                               onClick={() => removeAppliedFilter(category, item)}
-                              className="ml-1 text-white hover:text-gray-300"
+                              style={{
+                                marginLeft: '4px',
+                                color: 'white',
+                                border: 'none',
+                                background: 'none',
+                                cursor: 'pointer',
+                                fontSize: '16px',
+                                lineHeight: '1'
+                              }}
+                              onMouseEnter={(e) => e.target.style.color = '#d1d5db'}
+                              onMouseLeave={(e) => e.target.style.color = 'white'}
                             >
                               ×
                             </button>
@@ -1093,12 +1144,25 @@ const VehicleSearchFilter = ({
                     });
                   } else if (value && typeof value === 'string' && value.trim() !== '' && value !== (defaultValues[category] || '')) {
                     filterPills.push(
-                      <span key={category} className="carzino-filter-pill">
-                        <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                      <span key={category} style={{
+                        ...styles.filterPill,
+                        ...(isMobile ? styles.filterPillMobile : {})
+                      }}>
+                        <Check style={{ width: '12px', height: '12px', color: '#dc2626' }} />
                         {value}
                         <button
                           onClick={() => removeAppliedFilter(category, value)}
-                          className="ml-1 text-white hover:text-gray-300"
+                          style={{
+                            marginLeft: '4px',
+                            color: 'white',
+                            border: 'none',
+                            background: 'none',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            lineHeight: '1'
+                          }}
+                          onMouseEnter={(e) => e.target.style.color = '#d1d5db'}
+                          onMouseLeave={(e) => e.target.style.color = 'white'}
                         >
                           ×
                         </button>
@@ -1119,12 +1183,25 @@ const VehicleSearchFilter = ({
                   }
                   if (priceRange.length > 0) {
                     filterPills.push(
-                      <span key="price" className="carzino-filter-pill">
-                        <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                      <span key="price" style={{
+                        ...styles.filterPill,
+                        ...(isMobile ? styles.filterPillMobile : {})
+                      }}>
+                        <Check style={{ width: '12px', height: '12px', color: '#dc2626' }} />
                         {priceRange.join(' to ')}
                         <button
                           onClick={() => removeAppliedFilter('priceMin', '')}
-                          className="ml-1 text-white hover:text-gray-300"
+                          style={{
+                            marginLeft: '4px',
+                            color: 'white',
+                            border: 'none',
+                            background: 'none',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            lineHeight: '1'
+                          }}
+                          onMouseEnter={(e) => e.target.style.color = '#d1d5db'}
+                          onMouseLeave={(e) => e.target.style.color = 'white'}
                         >
                           ×
                         </button>
@@ -1145,12 +1222,25 @@ const VehicleSearchFilter = ({
                   }
                   if (paymentRange.length > 0) {
                     filterPills.push(
-                      <span key="payment" className="carzino-filter-pill">
-                        <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                      <span key="payment" style={{
+                        ...styles.filterPill,
+                        ...(isMobile ? styles.filterPillMobile : {})
+                      }}>
+                        <Check style={{ width: '12px', height: '12px', color: '#dc2626' }} />
                         {paymentRange.join(' to ')}
                         <button
                           onClick={() => removeAppliedFilter('paymentMin', '')}
-                          className="ml-1 text-white hover:text-gray-300"
+                          style={{
+                            marginLeft: '4px',
+                            color: 'white',
+                            border: 'none',
+                            background: 'none',
+                            cursor: 'pointer',
+                            fontSize: '16px',
+                            lineHeight: '1'
+                          }}
+                          onMouseEnter={(e) => e.target.style.color = '#d1d5db'}
+                          onMouseLeave={(e) => e.target.style.color = 'white'}
                         >
                           ×
                         </button>
@@ -1166,20 +1256,42 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Distance */}
-        <div className={`mb-6 border border-gray-200 rounded-xl p-4 ${isMobile ? 'bg-gray-50' : ''}`}>
-          <label className={`font-semibold block mb-3 ${isMobile ? 'text-lg' : 'text-base'}`}>Distance</label>
-          <div className="space-y-3">
+        <div style={{
+          ...styles.distanceContainer,
+          ...(isMobile ? styles.distanceContainerMobile : {})
+        }}>
+          <label style={{
+            ...styles.sectionLabel,
+            ...(isMobile ? styles.sectionLabelMobile : {})
+          }}>Distance</label>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <input
               type="text"
               placeholder="ZIP Code"
               value={filters.zipCode || '98498'}
               onChange={(e) => handleFilterChange('zipCode', e.target.value, true)}
-              className={`carzino-search-input carzino-input w-full px-4 border border-gray-300 rounded-xl focus:outline-none ${isMobile ? 'py-4 text-lg' : 'py-2.5'}`}
+              onFocus={() => setZipFocused(true)}
+              onBlur={() => setZipFocused(false)}
+              style={{
+                ...styles.input,
+                ...(isMobile ? styles.inputMobile : {}),
+                ...(zipFocused ? styles.inputFocus : {}),
+                width: '100%',
+                borderRadius: '12px'
+              }}
             />
             <select
               value={filters.radius || '200'}
               onChange={(e) => handleFilterChange('radius', e.target.value, true)}
-              className={`carzino-select w-full px-4 border border-gray-300 rounded-xl focus:outline-none ${isMobile ? 'py-4 text-lg' : 'py-2.5'}`}
+              onFocus={() => setRadiusFocused(true)}
+              onBlur={() => setRadiusFocused(false)}
+              style={{
+                ...styles.select,
+                ...(isMobile ? styles.selectMobile : {}),
+                ...(radiusFocused ? styles.selectFocus : {}),
+                width: '100%',
+                borderRadius: '12px'
+              }}
             >
               <option value="10">10 miles</option>
               <option value="25">25 miles</option>
