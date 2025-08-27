@@ -559,6 +559,9 @@ export const fetchVehicles = async (params = {}) => {
       per_page: params.per_page || 100, // Reduce to 100 to avoid server limits
       page: params.page || 1,
       status: 'publish',
+      // CRITICAL: Include images and media in WooCommerce response
+      _embed: 'true',  // Include embedded media objects (featured images)
+      _fields: 'id,name,slug,permalink,price,regular_price,sale_price,stock_status,images,featured_media,categories,attributes,meta_data,description,short_description,date_created,featured,acf',
       // Include ACF fields and meta data in WooCommerce response
       acf: 'true',
       meta_data: 'true',
