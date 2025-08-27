@@ -790,6 +790,7 @@ function App() {
       const isRealAPIData = !result.isDemo;
       setApiConnected(isRealAPIData);
       setError(null);
+      setOptimisticLoading(false); // Clear any optimistic loading states
 
       // 🚀 CRITICAL FIX: Don't update filter options from current page!
       // Filter options should come from FULL inventory, not current page
