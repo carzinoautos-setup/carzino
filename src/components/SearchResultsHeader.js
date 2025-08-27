@@ -20,7 +20,8 @@ const SearchResultsHeader = ({
   onToggleFavorites,
   onRemoveFilter,
   onClearAllFilters,
-  onSearch
+  onSearch,
+  isMobile = false
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
