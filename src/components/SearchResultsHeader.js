@@ -550,15 +550,7 @@ const SearchResultsHeader = ({
             )}
             
             <div className="control-bar">
-              {!isMobile && (
-                <button className="filter-button" onClick={onMobileFiltersOpen}>
-                  <Filter className="w-4 h-4" />
-                  <span>Filter</span>
-                  {activeFilterCount > 0 && (
-                    <span className="filter-count">{activeFilterCount}</span>
-                  )}
-                </button>
-              )}
+              {/* Filter button removed on mobile - using fixed bottom button instead */}
               
               <div className="divider"></div>
               
