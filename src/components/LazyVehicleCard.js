@@ -51,7 +51,7 @@ const LazyVehicleCard = memo(({
   index = 0,
   priority = false // For above-the-fold content
 }) => {
-  const [ref, isVisible, hasLoaded] = useIntersectionObserver({
+  const [ref, isVisible] = useIntersectionObserver({
     rootMargin: priority ? '0px' : '200px 0px', // Load immediately if priority
     threshold: priority ? 0 : 0.1
   });
