@@ -733,6 +733,42 @@ function App() {
     console.log('  Models found:', options.models.length, '→', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Conditions found:', options.conditions.length, '→', options.conditions.map(c => `${c.name} (${c.count})`));
 
+    // ACF USAGE SUMMARY
+    console.log('\n🔧 ACF DATA USAGE SUMMARY:');
+    let vehiclesWithACF = 0;
+    let vehiclesWithACFMeta = 0;
+    let totalACFFields = 0;
+
+    vehicles.forEach(vehicle => {
+      if (vehicle.acf && Object.keys(vehicle.acf).length > 0) {
+        vehiclesWithACF++;
+        totalACFFields += Object.keys(vehicle.acf).length;
+      }
+
+      const acfLikeFields = (vehicle.meta_data || []).filter(meta => {
+        const key = meta.key.toLowerCase();
+        return key.startsWith('acf_') || key.includes('field_') || key.includes('vehicle_') || key.includes('car_');
+      });
+
+      if (acfLikeFields.length > 0) {
+        vehiclesWithACFMeta++;
+      }
+    });
+
+    console.log(`  Vehicles with direct ACF data: ${vehiclesWithACF}/${vehicles.length}`);
+    console.log(`  Vehicles with ACF-like meta fields: ${vehiclesWithACFMeta}/${vehicles.length}`);
+    console.log(`  Total ACF fields found: ${totalACFFields}`);
+
+    if (vehiclesWithACF === 0 && vehiclesWithACFMeta === 0) {
+      console.log('  ❌ NO ACF DATA DETECTED - Your WooCommerce API may not be returning ACF fields');
+      console.log('  💡 Check if:');
+      console.log('     • ACF plugin is installed and active');
+      console.log('     • ACF fields are set to show in REST API');
+      console.log('     • WooCommerce products have ACF fields assigned');
+    } else {
+      console.log('  ✅ ACF data is being used for filter extraction');
+    }
+
     // DEBUG: Show what was extracted before any fallbacks
     console.log('📊 EXTRACTION RESULTS BEFORE FALLBACKS:');
     console.log('  Makes extracted:', options.makes.length);
