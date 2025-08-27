@@ -1043,7 +1043,7 @@ function App() {
                     </div>
                   )}
 
-                  {/* Batch Loading Info for Development */}
+                  {/* Performance Info for Development */}
                   {process.env.NODE_ENV === 'development' && (
                     <div style={{
                       padding: '8px 16px',
@@ -1056,6 +1056,11 @@ function App() {
                     }}>
                       📊 Lazy Loading: Showing {batchInfo.itemsShown}/{batchInfo.totalItems} vehicles
                       (Batch {batchInfo.current}/{batchInfo.total})
+                      {filtersArePending && (
+                        <span style={{ marginLeft: '12px', color: '#dc2626' }}>
+                          ⏳ Filters pending debounce
+                        </span>
+                      )}
                     </div>
                   )}
                 </>
