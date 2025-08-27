@@ -453,7 +453,7 @@ const SearchResultsHeader = ({
       border: 1px solid #e5e7eb;
       border-radius: 0.5rem;
       box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-      z-index: 60;
+      z-index: 1000;
       min-width: 12rem;
     }
 
