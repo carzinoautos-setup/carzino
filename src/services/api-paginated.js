@@ -1000,12 +1000,45 @@ const transformWooCommerceVehicle = (product) => {
   // Get seller data if available
   const seller_data = product.seller_data || null;
 
+  // Extract all possible image sources from WooCommerce product
+  const extractImages = () => {
+    const imageUrls = [];
+
+    // Primary WooCommerce images array
+    if (product.images && Array.isArray(product.images)) {
+      product.images.forEach(img => {
+        if (img.src) imageUrls.push(img.src);
+        if (img.url) imageUrls.push(img.url);
+      });
+    }
+
+    // Featured image
+    if (product.featured_media_src) {
+      imageUrls.push(product.featured_media_src);
+    }
+
+    // Check meta data for image URLs
+    const imageFromMeta = getMeta('vehicle_image') || getMeta('_vehicle_image') ||
+                         getMeta('featured_image') || getMeta('_featured_image') ||
+                         getMeta('gallery_images') || getMeta('_gallery_images');
+    if (imageFromMeta) {
+      if (Array.isArray(imageFromMeta)) {
+        imageUrls.push(...imageFromMeta);
+      } else if (typeof imageFromMeta === 'string' && imageFromMeta.includes('http')) {
+        imageUrls.push(imageFromMeta);
+      }
+    }
+
+    // Remove duplicates and invalid URLs
+    return [...new Set(imageUrls)].filter(url => url && url.includes('http'));
+  };
+
   return {
     id: product.id,
     title: product.name,
     featured: product.featured || false,
     viewed: false,
-    images: product.images?.map(img => img.src) || [],
+    images: extractImages(),
     badges: product.tags?.map(tag => tag.name) || [],
     mileage: getMeta('mileage') || getMeta('_mileage') || '0',
     transmission: getMeta('transmission') || getMeta('_transmission') || 'Auto',
