@@ -239,6 +239,79 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return defaults[specType] || 'N/A';
   };
 
+  // Get vehicle title with proper year, make, model from ACF
+  const getVehicleTitle = () => {
+    const year = getACFField('year');
+    const make = getACFField('make');
+    const model = getACFField('model');
+    const trim = getACFField('trim');
+
+    if (year && make && model) {
+      let title = `${year} ${make} ${model}`;
+      if (trim && trim !== 'N/A') {
+        title += ` ${trim}`;
+      }
+      console.log(`✅ Built title from ACF: ${title}`);
+      return title;
+    }
+
+    // Fallback to original title
+    console.log(`⚠️ Using original title: ${vehicle.title}`);
+    return vehicle.title || 'Vehicle Details Available';
+  };
+
+  // Get vehicle price from ACF or WooCommerce
+  const getVehiclePrice = () => {
+    // Try ACF price fields first
+    const acfPrice = getACFField('price');
+    if (acfPrice) {
+      // Format price if it's a number
+      const numPrice = parseFloat(acfPrice.toString().replace(/[^0-9.]/g, ''));
+      if (!isNaN(numPrice)) {
+        return '$' + numPrice.toLocaleString();
+      }
+      return acfPrice;
+    }
+
+    // Try WooCommerce price fields
+    if (vehicle.sale_price && vehicle.sale_price !== '0') {
+      const numPrice = parseFloat(vehicle.sale_price);
+      if (!isNaN(numPrice)) {
+        return '$' + numPrice.toLocaleString();
+      }
+    }
+
+    if (vehicle.price && vehicle.price !== '0') {
+      const numPrice = parseFloat(vehicle.price);
+      if (!isNaN(numPrice)) {
+        return '$' + numPrice.toLocaleString();
+      }
+    }
+
+    // Try formatted price fields
+    if (vehicle.salePrice) {
+      return vehicle.salePrice;
+    }
+
+    return null;
+  };
+
+  // Get vehicle payment from ACF
+  const getVehiclePayment = () => {
+    const payment = getACFField('payment') || getACFField('monthly_payment');
+    if (payment) {
+      // Format payment if it's a number
+      const numPayment = parseFloat(payment.toString().replace(/[^0-9.]/g, ''));
+      if (!isNaN(numPayment)) {
+        return '$' + numPayment.toLocaleString();
+      }
+      return payment;
+    }
+
+    // Fallback to vehicle.payment if available
+    return vehicle.payment || null;
+  };
+
   const getSellerName = () => {
     // Step 1: Try seller_data from WordPress API first
     if (vehicle.seller_data) {
