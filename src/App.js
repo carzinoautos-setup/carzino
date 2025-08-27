@@ -1358,9 +1358,19 @@ function App() {
             {loading ? (
               <div>
                 <p>🔄 Loading vehicles...</p>
-                {/* Show additional message if loading takes more than 5 seconds */}
+                {/* Show progressive loading messages based on time elapsed */}
                 <div style={{ fontSize: '12px', color: '#666', marginTop: '4px' }}>
-                  {searchTime > 5000 && 'Please wait, connecting to WooCommerce...'}
+                  {(() => {
+                    const elapsed = Date.now() - loadingStartTime;
+                    if (elapsed > 15000) {
+                      return '⏳ WooCommerce is responding slowly, please wait...';
+                    } else if (elapsed > 8000) {
+                      return '🔗 Connecting to vehicle database...';
+                    } else if (elapsed > 3000) {
+                      return '📡 Fetching from WooCommerce API...';
+                    }
+                    return '';
+                  })()}
                 </div>
               </div>
             ) : error ? (
