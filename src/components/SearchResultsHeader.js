@@ -281,7 +281,6 @@ const SearchResultsHeader = ({
 
     /* ===== MOBILE STICKY HEADER ===== */
     .mobile-sticky-wrapper {
-      position: -webkit-sticky;
       position: sticky;
       top: 0;
       z-index: 999;
@@ -290,6 +289,41 @@ const SearchResultsHeader = ({
       box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
       -webkit-backdrop-filter: blur(8px);
       backdrop-filter: blur(8px);
+    }
+
+    /* Mobile-specific fixed positioning for better reliability */
+    @media (max-width: 991px) {
+      .mobile-sticky-wrapper {
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 999;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+        -webkit-backdrop-filter: blur(8px);
+        backdrop-filter: blur(8px);
+        /* Ensure it works on iOS Safari */
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+      }
+    }
+
+    /* Ultra-mobile devices - use fixed for maximum compatibility */
+    @media (max-width: 480px) {
+      .mobile-sticky-wrapper {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        z-index: 999 !important;
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+      }
     }
 
     /* Filter Pills */
@@ -576,6 +610,20 @@ const SearchResultsHeader = ({
     .mobile-section {
       padding: 0.75rem;
       background: white;
+    }
+
+    /* Add padding to main content to prevent overlap with fixed header on ultra-mobile */
+    @media (max-width: 480px) {
+      .mobile-header + * {
+        padding-top: 0;
+      }
+
+      /* Add spacer for fixed header */
+      .mobile-sticky-spacer {
+        height: 120px; /* Approximate height of fixed sticky section */
+        width: 100%;
+        display: block;
+      }
     }
 
     /* Responsive Breakpoints */
