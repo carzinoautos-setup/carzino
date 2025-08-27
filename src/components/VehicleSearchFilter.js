@@ -1773,34 +1773,9 @@ const VehicleSearchFilter = ({
                 />
               ))
             ) : (
-              <div className="space-y-1">
-                <CheckboxOption
-                  label="Sedan"
-                  count={1698}
-                  value="Sedan"
-                  category="vehicleType"
-                  checked={filters.vehicleType?.includes('Sedan')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
-                <CheckboxOption
-                  label="SUV"
-                  count={3405}
-                  value="SUV"
-                  category="vehicleType"
-                  checked={filters.vehicleType?.includes('SUV')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
-                <CheckboxOption
-                  label="Truck"
-                  count={2217}
-                  value="Truck"
-                  category="vehicleType"
-                  checked={filters.vehicleType?.includes('Truck')}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
+              <div className="text-sm text-gray-500 py-2">
+                🔍 Debug: No vehicle types found in WooCommerce data. Check field mapping.
+                <br />Available fields: {Object.keys(filterOptions).join(', ')}
               </div>
             )}
           </div>
