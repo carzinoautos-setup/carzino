@@ -1411,7 +1411,7 @@ export const testAPIConnection = async () => {
       headers: {
         'Accept': 'application/json'
       }
-    }, 10000); // 10 second timeout
+    }, 20000); // 20 second timeout (increased for better stability)
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ API response received in ${responseTime}ms`);
