@@ -1033,23 +1033,6 @@ function App() {
         <header className="app-header">
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
             <h1>Carzino Vehicle Search</h1>
-            {process.env.NODE_ENV === 'development' && (
-              <button
-                onClick={() => setShowImageDiagnostic(true)}
-                style={{
-                  padding: '8px 16px',
-                  backgroundColor: '#2563eb',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '6px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500'
-                }}
-              >
-                🖼️ Analyze Images
-              </button>
-            )}
           </div>
           <div className="connection-status">
             {loading ? (
