@@ -200,6 +200,15 @@ const VehicleSearchFilter = ({
   isOpen = false,
   onClose
 }) => {
+  // Lock body scroll when mobile filter is open
+  useEffect(() => {
+    if (isMobile && isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [isMobile, isOpen]);
   // Local state
   const [showMoreMakes, setShowMoreMakes] = useState(false);
   
@@ -476,7 +485,7 @@ const VehicleSearchFilter = ({
         />
 
         {/* Off-canvas menu */}
-        <div className={`fixed left-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-xl z-50 transition-transform duration-300 ease-out ${
+        <div className={`fixed left-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-50 transition-transform duration-300 ease-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}>
           <div className="h-full overflow-y-auto overflow-x-hidden" style={{ padding: '20px', paddingBottom: '80px' }}>
@@ -500,11 +509,12 @@ const VehicleSearchFilter = ({
       <div className={isMobile ? "p-0" : "p-4"}>
         {/* Mobile Header */}
         {isMobile && (
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 sticky top-0 bg-white z-10">
             <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
             <button
               onClick={onClose}
               className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Close filters"
             >
               <X className="w-5 h-5 text-gray-600" />
             </button>
@@ -1014,10 +1024,10 @@ const VehicleSearchFilter = ({
 
         {/* Mobile Footer */}
         {isMobile && (
-          <div className="fixed bottom-0 left-0 w-80 max-w-[85vw] bg-white border-t border-gray-200 p-4 flex gap-3 z-50">
+          <div className="fixed bottom-0 left-0 w-80 max-w-[85vw] bg-white border-t border-gray-200 p-4 flex gap-3 z-50 shadow-lg">
             <button
               onClick={clearAllFilters}
-              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
+              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50"
               disabled={activeFilterCount === 0}
             >
               Clear {activeFilterCount > 0 && `(${activeFilterCount})`}
