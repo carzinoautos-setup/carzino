@@ -1240,7 +1240,7 @@ function App() {
 
         console.log('✅ Demo data loaded due to timeout');
       }
-    }, 3000); // 3 second fallback timer
+    }, 8000); // 8 second fallback timer - balance between UX and giving API time
 
     fetchVehiclesPage(currentPage, debouncedFilters).finally(() => {
       clearTimeout(fallbackTimer);
