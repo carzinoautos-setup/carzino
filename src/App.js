@@ -5,6 +5,14 @@ import VehicleCard from './components/VehicleCard';
 import VehicleCardSkeleton from './components/VehicleCardSkeleton';
 import SearchResultsHeader from './components/SearchResultsHeader';
 import { fetchVehiclesPaginated, fetchAllFilteredVehicles } from './services/api-paginated';
+import ErrorBoundary from './components/ErrorBoundary';
+import {
+  VehicleGridErrorBoundary,
+  FilterErrorBoundary,
+  PaginationErrorBoundary,
+  VehicleCardErrorBoundary,
+  APIErrorBoundary
+} from './components/SpecializedErrorBoundaries';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
