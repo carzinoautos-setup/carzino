@@ -1165,7 +1165,7 @@ const VehicleSearchFilter = ({
 
   // Desktop sidebar
   return (
-    <div style={styles.container}>
+    <div className="carzino-filter-container" style={styles.container}>
       <FilterContent />
     </div>
   );
