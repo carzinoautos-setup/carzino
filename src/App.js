@@ -968,7 +968,7 @@ function App() {
               ) : error ? (
                 <div className="error-container">
                   <p>Error loading vehicles: {error}</p>
-                  <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
+                  <button onClick={() => fetchVehiclesPage(currentPage, debouncedFilters)}>Try Again</button>
                 </div>
               ) : vehicles.length === 0 ? (
                 <div className="no-results" style={isMobile ? {paddingLeft: '20px', paddingRight: '20px'} : {}}>
