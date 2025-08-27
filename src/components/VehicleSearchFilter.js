@@ -1921,44 +1921,6 @@ const VehicleSearchFilter = ({
           </FilterSection>
         )}
 
-        {/* Trim Levels */}
-        {allTrims.length > 0 && (
-          <FilterSection
-            title="Trim"
-            isCollapsed={collapsedFilters.trim}
-            onToggle={() => toggleFilter('trim')}
-            count={getFilterCount('trim')}
-            isMobile={isMobile}
-          >
-            <div className="space-y-1">
-              {displayedTrims.map((trim) => (
-                <CheckboxOption
-                  key={trim.name}
-                  label={trim.name}
-                  count={trim.count}
-                  value={trim.name}
-                  category="trim"
-                  checked={filters.trim?.includes(trim.name)}
-                  onChange={handleFilterChange}
-                  isMobile={isMobile}
-                />
-              ))}
-            </div>
-            {allTrims.length > 8 && (
-              <button
-                onClick={() => setShowMoreTrims(!showMoreTrims)}
-                style={{
-                  ...styles.showMoreButton,
-                  ...(isMobile ? styles.showMoreButtonMobile : {})
-                }}
-                onMouseEnter={(e) => e.target.style.color = '#b91c1c'}
-                onMouseLeave={(e) => e.target.style.color = '#dc2626'}
-              >
-                {showMoreTrims ? 'Show Less' : 'Show More'}
-              </button>
-            )}
-          </FilterSection>
-        )}
 
         {/* Mobile footer is now handled in the bottom sheet */}
       </div>
