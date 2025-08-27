@@ -1111,7 +1111,7 @@ function App() {
     // Add fallback timer - if loading takes too long, load demo data
     const fallbackTimer = setTimeout(() => {
       if (loading && vehicles.length === 0) {
-        console.log('⏰ Loading taking too long, switching to demo data immediately');
+        console.log('⏰ API taking longer than expected, switching to demo data for better UX');
         setLoading(false);
         setApiConnected(false);
 
