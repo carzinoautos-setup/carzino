@@ -655,27 +655,30 @@ function App() {
 
     // DEBUG: Show extracted filter options
     console.log('📊 EXTRACTED FILTER OPTIONS:');
-    console.log('  Makes found:', options.makes.length, '���', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
+    console.log('  Makes found:', options.makes.length, '→', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Models found:', options.models.length, '→', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Conditions found:', options.conditions.length, '→', options.conditions.map(c => `${c.name} (${c.count})`));
 
-    // Add fallback filter options if none were found from WooCommerce
-    if (options.makes.length === 0) {
-      console.log('⚠️ No makes found in WooCommerce data, adding fallback options');
-      options.makes = [
-        { name: 'Ford', count: 45 },
-        { name: 'Chevrolet', count: 38 },
-        { name: 'Toyota', count: 34 },
-        { name: 'Honda', count: 28 },
-        { name: 'Nissan', count: 25 }
-      ];
-    }
+    // DEBUG: Show what was extracted before any fallbacks
+    console.log('📊 EXTRACTION RESULTS BEFORE FALLBACKS:');
+    console.log('  Makes extracted:', options.makes.length);
+    console.log('  Models extracted:', options.models.length);
+    console.log('  Conditions extracted:', options.conditions.length);
+    console.log('  Body types extracted:', options.bodyTypes.length);
+    console.log('  Drivetrains extracted:', options.drivetrains.length);
+    console.log('  Transmissions extracted:', options.transmissions.length);
 
-    if (options.conditions.length === 0) {
-      options.conditions = [
-        { name: 'Used', count: 180 },
-        { name: 'New', count: 74 }
-      ];
+    // Only add minimal fallbacks if absolutely no data found
+    if (options.makes.length === 0 && options.models.length === 0 && options.conditions.length === 0) {
+      console.log('⚠️ NO DATA EXTRACTED AT ALL - WooCommerce field mapping failed completely');
+      console.log('🔧 This means your WooCommerce products may not have the expected meta fields');
+
+      // Add basic stock status as condition if no other conditions found
+      if (options.conditions.length === 0) {
+        options.conditions = [
+          { name: 'In Stock', count: vehicles.length },
+        ];
+      }
     }
 
     // Cache the result for future use
