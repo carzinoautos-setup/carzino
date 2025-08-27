@@ -764,6 +764,9 @@ function App() {
   const handleFilterChange = useCallback((key, value, immediate = false) => {
     console.log(`🔄 Filter changed: ${key} = ${value} (immediate: ${immediate})`);
 
+    // Track filter change
+    performanceMonitor.trackFilterChange(key, value);
+
     // Show optimistic loading for text inputs only
     if (!immediate && ['priceMin', 'priceMax', 'paymentMin', 'paymentMax', 'zipCode', 'interestRate', 'downPayment'].includes(key)) {
       setOptimisticLoading(true);
