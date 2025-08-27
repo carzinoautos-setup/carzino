@@ -744,7 +744,7 @@ function App() {
     if (resultsElement) {
       resultsElement.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [filters, fetchVehiclesPage, preloadedPages, updateURL, preloadNextPage]);
+  }, [debouncedFilters, fetchVehiclesPage, preloadedPages, updateURL, preloadNextPage, resetBatches]);
 
   // Debounced filter handler to prevent rapid API calls
   const debouncedFilterChange = useCallback((newFilters) => {
