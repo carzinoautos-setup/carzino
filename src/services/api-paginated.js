@@ -433,6 +433,13 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
     Object.assign(allParams, sortParams);
   }
 
+  // Add authentication via query params as alternative method
+  const shouldUseQueryAuth = process.env.REACT_APP_USE_QUERY_AUTH === 'true';
+  if (shouldUseQueryAuth && process.env.REACT_APP_WC_CONSUMER_KEY) {
+    allParams.consumer_key = process.env.REACT_APP_WC_CONSUMER_KEY;
+    allParams.consumer_secret = process.env.REACT_APP_WC_CONSUMER_SECRET;
+  }
+
   const params = new URLSearchParams(allParams);
   const fullUrl = `${API_BASE}/products?${params}`;
 
