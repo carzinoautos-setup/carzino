@@ -1,31 +1,92 @@
-import React, { useState } from 'react';
-import { Filter, Search, Heart, Check, ChevronDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+
+// ================================================================================
+// INLINE SVG ICONS (No external dependencies)
+// ================================================================================
+
+const SearchIcon = () => (
+  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+  </svg>
+);
+
+const SlidersIcon = () => (
+  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+  </svg>
+);
+
+const HeartIcon = ({ filled = false, className = "w-5 h-5" }) => (
+  <svg className={className} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+  </svg>
+);
+
+const CheckIcon = () => (
+  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} stroke="#dc2626" d="M5 13l4 4L19 7" />
+  </svg>
+);
+
+const XIcon = () => (
+  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+  </svg>
+);
+
+const SortIcon = () => (
+  <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M2 4h12M2 8h8M2 12h4" />
+  </svg>
+);
+
+// ================================================================================
+// MAIN COMPONENT
+// ================================================================================
 
 const SearchResultsHeader = ({
-  totalResults,
+  totalResults = 0,
   currentPage = 1,
   itemsPerPage = 20,
   startResult = 0,
   endResult = 0,
   searchTime = 0,
-  currentFilters,
-  viewMode,
+  currentFilters = {},
+  viewMode = 'all',
   onViewModeChange,
-  sortBy,
+  sortBy = 'relevance',
   onSortChange,
   onItemsPerPageChange,
   onMobileFiltersOpen,
   favoritesCount = 0,
   showingFavorites = false,
   onToggleFavorites,
-  onRemoveFilter,
-  onClearAllFilters,
   onSearch,
   isMobile = false
 }) => {
-  const [searchQuery, setSearchQuery] = useState('');
+  // State Management
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
-  // Remove local state since it's now passed as props
+  const [searchQuery, setSearchQuery] = useState('');
+  const [screenSize, setScreenSize] = useState('desktop');
+  
+  // Responsive Detection
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      if (width <= 640) {
+        setScreenSize('mobile');
+      } else if (width <= 991) {
+        setScreenSize('tablet');
+      } else {
+        setScreenSize('desktop');
+      }
+    };
+    
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Calculate active filters for display
   const getActiveFilters = () => {
@@ -86,6 +147,17 @@ const SearchResultsHeader = ({
   const activeFilters = getActiveFilters();
   const activeFilterCount = activeFilters.length;
 
+  // Filter Management Functions
+  const removeAppliedFilter = (category, value) => {
+    console.log('Remove filter:', category, value);
+    // This would typically call a parent function to update filters
+  };
+
+  const clearAllFilters = () => {
+    console.log('Clear all filters');
+    // This would typically call a parent function to clear all filters
+  };
+
   const handleSearch = (e) => {
     e.preventDefault();
     if (onSearch) {
@@ -93,589 +165,643 @@ const SearchResultsHeader = ({
     }
   };
 
-  const sortOptions = [
-    { value: 'relevance', label: 'Sort by Relevance' },
-    { value: 'price_low', label: 'Price: Low to High' },
-    { value: 'price_high', label: 'Price: High to Low' },
-    { value: 'year_new', label: 'Year: Newest First' },
-    { value: 'mileage_low', label: 'Mileage: Low to High' }
-  ];
+  const isMobileOrTablet = screenSize === 'mobile' || screenSize === 'tablet';
 
+  // ================================================================================
+  // ALL CSS STYLES (INLINE - NO EXTERNAL FILES)
+  // ================================================================================
+  
+  const styles = `
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    .search-header-container {
+      width: 100%;
+      background: white;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    }
+
+    /* Typography */
+    .header-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 0.75rem;
+    }
+
+    .header-title-desktop {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .header-subtitle {
+      color: #6b7280;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+    }
+
+    /* Search Input */
+    .search-container {
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.625rem 2.5rem 0.625rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #dc2626;
+    }
+
+    .search-button {
+      position: absolute;
+      right: 0.5rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #dc2626;
+      padding: 0.25rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* View Switcher */
+    .view-switcher {
+      display: inline-flex;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.375rem;
+      padding: 2px;
+    }
+
+    .view-switcher button {
+      padding: 6px 12px;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.375rem;
+      border: none;
+      cursor: pointer;
+      background: transparent;
+      color: #6b7280;
+    }
+
+    .view-switcher button.active {
+      background: #dc2626;
+      color: white;
+    }
+
+    .view-switcher button:not(.active):hover {
+      color: #374151;
+      background: #f9fafb;
+    }
+
+    /* ===== MOBILE STICKY HEADER ===== */
+    .mobile-sticky-wrapper {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: white;
+    }
+
+    /* Filter Pills */
+    .filter-pills-section {
+      padding: 0.75rem 0.75rem 0;
+      background: white;
+    }
+
+    .filter-pills-container {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding-bottom: 0.75rem;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .filter-pills-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.375rem 0.75rem;
+      background: black;
+      color: white;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+      border: none;
+      cursor: pointer;
+    }
+
+    .filter-pill-remove {
+      margin-left: 0.25rem;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .clear-all-button {
+      background: #dc2626;
+      color: white;
+    }
+
+    /* Mobile Controls Bar (Sticky Part) */
+    .mobile-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      border-bottom: 1px solid #9ca3af;
+      background: white;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+    }
+
+    .mobile-control-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #374151;
+    }
+
+    .mobile-control-button:hover {
+      color: #111827;
+    }
+
+    .mobile-control-button.favorites-active {
+      color: #dc2626;
+    }
+
+    .control-divider {
+      border-left: 1px solid #9ca3af;
+      height: 2rem;
+    }
+
+    .filter-count-badge {
+      background: #dc2626;
+      color: white;
+      border-radius: 50%;
+      width: 1.25rem;
+      height: 1.25rem;
+      font-size: 0.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      width: 3rem;
+      height: 1.5rem;
+      border-radius: 9999px;
+      transition: background-color 0.2s;
+    }
+
+    .toggle-switch.active {
+      background: #dc2626;
+    }
+
+    .toggle-switch.inactive {
+      background: #d1d5db;
+    }
+
+    .toggle-switch-handle {
+      position: absolute;
+      top: 0.125rem;
+      width: 1.25rem;
+      height: 1.25rem;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.2s;
+    }
+
+    .toggle-switch.active .toggle-switch-handle {
+      transform: translateX(1.5rem);
+    }
+
+    .toggle-switch.inactive .toggle-switch-handle {
+      transform: translateX(0.125rem);
+    }
+
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      margin-top: 0.25rem;
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+      z-index: 60;
+      min-width: 12rem;
+    }
+
+    .dropdown-item {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #374151;
+      transition: background-color 0.15s;
+    }
+
+    .dropdown-item:hover {
+      background: #f9fafb;
+    }
+
+    .dropdown-item:first-child {
+      border-radius: 0.5rem 0.5rem 0 0;
+    }
+
+    .dropdown-item:last-child {
+      border-radius: 0 0 0.5rem 0.5rem;
+    }
+
+    /* Results Count Bar */
+    .results-count {
+      padding: 0.5rem 0.75rem;
+      background: #f9fafb;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+    }
+
+    /* Desktop Styles */
+    .desktop-header {
+      padding: 1rem;
+      background: white;
+    }
+
+    .desktop-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .desktop-controls {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .desktop-select {
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      outline: none;
+      background: white;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .desktop-select:hover {
+      border-color: #9ca3af;
+    }
+
+    .desktop-select:focus {
+      border-color: #dc2626;
+    }
+
+    .favorites-button {
+      padding: 0.5rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      background: white;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .favorites-button:hover {
+      background: #f9fafb;
+      border-color: #9ca3af;
+    }
+
+    .favorites-button-icon {
+      color: #dc2626;
+    }
+
+    .favorites-button-icon.filled {
+      fill: #dc2626;
+    }
+
+    .favorites-count {
+      position: absolute;
+      top: -0.25rem;
+      right: -0.25rem;
+      background: black;
+      color: white;
+      font-size: 0.75rem;
+      border-radius: 50%;
+      width: 1.25rem;
+      height: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Mobile/Tablet Section */
+    .mobile-section {
+      padding: 0.75rem;
+      background: white;
+    }
+
+    /* Responsive Breakpoints */
+    @media (max-width: 640px) {
+      /* Mobile Only */
+      .desktop-header {
+        display: none !important;
+      }
+    }
+
+    @media (min-width: 641px) and (max-width: 991px) {
+      /* Tablet Only */
+      .desktop-header {
+        display: none !important;
+      }
+    }
+
+    @media (min-width: 992px) {
+      /* Desktop Only */
+      .mobile-header {
+        display: none !important;
+      }
+    }
+  `;
+
+  // ================================================================================
+  // COMPONENT RENDER
+  // ================================================================================
 
   return (
     <>
-      <style>{`
-        :root {
-          --primary-red: #dc2626;
-          --text-black: #000000;
-          --text-gray: #6b7280;
-          --text-gray-dark: #374151;
-          --border-gray: #e5e7eb;
-          --border-gray-dark: #9ca3af;
-          --bg-gray-light: #f9fafb;
-          --bg-white: #ffffff;
-          --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-          --transition-fast: 0.2s ease;
-        }
-
-        .search-header {
-          background: var(--bg-white);
-          border-bottom: 1px solid var(--border-gray);
-        }
-
-        /* Mobile Header (0-767px) */
-        .mobile-header {
-          display: block;
-        }
-
-        .header-top {
-          padding: 16px;
-        }
-
-        .page-title {
-          font-size: 24px;
-          font-weight: 700;
-          color: var(--text-black);
-          margin: 0 0 16px 0;
-        }
-
-        .search-container {
-          display: flex;
-          gap: 8px;
-          margin-bottom: 16px;
-        }
-
-        .search-input {
-          flex: 1;
-          padding: 12px 16px;
-          border: 1px solid var(--border-gray);
-          border-radius: 8px;
-          font-size: 16px;
-          outline: none;
-        }
-
-        .search-input:focus {
-          border-color: var(--primary-red);
-        }
-
-        .search-button {
-          padding: 12px;
-          background: var(--primary-red);
-          color: white;
-          border: none;
-          border-radius: 8px;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .search-button:hover {
-          background: #b91c1c;
-        }
-
-        .sticky-wrapper {
-          position: sticky;
-          top: 0;
-          z-index: 50;
-          background: var(--bg-white);
-          border-bottom: 1px solid var(--border-gray);
-        }
-
-        /* Applied Filters - Mobile Only */
-        .applied-filters {
-          padding: 12px 16px;
-          border-bottom: 1px solid var(--border-gray);
-        }
-
-        .filter-pills-container {
-          display: flex;
-          gap: 8px;
-          overflow-x: auto;
-          -webkit-overflow-scrolling: touch;
-          padding-bottom: 4px;
-          align-items: center;
-          max-width: 100%;
-        }
-
-        .clear-all-btn {
-          background: var(--bg-gray-light);
-          color: var(--text-gray-dark);
-          border: 1px solid var(--border-gray);
-          padding: 6px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 500;
-          white-space: nowrap;
-          cursor: pointer;
-          flex-shrink: 0;
-        }
-
-        .filter-pill {
-          background: var(--text-black);
-          color: white;
-          padding: 6px 15px 6px 10px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: 500;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          max-width: 200px;
-          flex-shrink: 0;
-        }
-
-        .filter-pill .check-icon {
-          width: 12px;
-          height: 12px;
-          color: var(--primary-red);
-          flex-shrink: 0;
-        }
-
-        .remove-filter {
-          background: none;
-          border: none;
-          color: white;
-          font-size: 16px;
-          cursor: pointer;
-          padding: 0;
-          margin-left: 4px;
-        }
-
-        .remove-filter-black {
-          background: var(--text-black);
-          border: none;
-          color: white;
-          font-size: 12px;
-          cursor: pointer;
-          padding: 0;
-          margin-left: 4px;
-          border-radius: 50%;
-          width: 20px;
-          height: 20px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-        }
-
-        .remove-filter-black:hover {
-          background: #374151;
-        }
-
-        .control-bar {
-          display: flex;
-          align-items: center;
-          padding: 12px 16px;
-          gap: 16px;
-        }
-
-        .filter-button {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 10px 16px;
-          border: 1px solid var(--border-gray);
-          border-radius: 8px;
-          background: white;
-          cursor: pointer;
-          position: relative;
-        }
-
-        .filter-count {
-          background: var(--primary-red);
-          color: white;
-          font-size: 12px;
-          padding: 2px 6px;
-          border-radius: 10px;
-          min-width: 18px;
-          text-align: center;
-        }
-
-        .divider {
-          width: 1px;
-          height: 24px;
-          background: var(--border-gray);
-        }
-
-        .sort-dropdown-container {
-          position: relative;
-        }
-
-        .sort-button {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 10px 16px;
-          border: 1px solid var(--border-gray);
-          border-radius: 8px;
-          background: white;
-          cursor: pointer;
-        }
-
-        .sort-dropdown-menu {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          right: 0;
-          background: white;
-          border: 1px solid var(--border-gray);
-          border-radius: 8px;
-          box-shadow: var(--shadow-md);
-          z-index: 100;
-          margin-top: 4px;
-        }
-
-        .sort-dropdown-menu button {
-          width: 100%;
-          padding: 12px 16px;
-          border: none;
-          background: white;
-          text-align: left;
-          cursor: pointer;
-        }
-
-        .sort-dropdown-menu button:hover {
-          background: var(--bg-gray-light);
-        }
-
-        .favorites-toggle {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          padding: 10px 16px;
-          border: 1px solid var(--border-gray);
-          border-radius: 8px;
-          background: white;
-          cursor: pointer;
-        }
-
-        .toggle-switch {
-          width: 48px;
-          height: 24px;
-          background: var(--border-gray-dark);
-          border-radius: 12px;
-          position: relative;
-          transition: background var(--transition-fast);
-        }
-
-        .toggle-switch.active {
-          background: var(--primary-red);
-        }
-
-        .toggle-slider {
-          width: 20px;
-          height: 20px;
-          background: white;
-          border-radius: 50%;
-          position: absolute;
-          top: 2px;
-          left: 2px;
-          transition: transform var(--transition-fast);
-        }
-
-        .toggle-switch.active .toggle-slider {
-          transform: translateX(24px);
-        }
-
-        .results-count-bar {
-          padding: 12px 16px;
-          background: var(--bg-gray-light);
-          border-bottom: 1px solid var(--border-gray);
-        }
-
-        .results-text {
-          font-size: 14px;
-          font-weight: 500;
-          color: var(--text-gray-dark);
-        }
-
-        /* Desktop Header (1024px+) */
-        .desktop-header {
-          display: none;
-          padding: 24px;
-        }
-
-        .header-container {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-        }
-
-        .header-left .page-title {
-          font-size: 28px;
-          font-weight: 700;
-          margin: 0 0 4px 0;
-        }
-
-        .subtitle {
-          color: var(--text-gray);
-          font-size: 16px;
-          margin: 0;
-        }
-
-        .header-controls {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .favorites-button {
-          position: relative;
-          padding: 10px 16px;
-          border: 1px solid var(--border-gray);
-          border-radius: 8px;
-          background: white;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-
-        .favorites-badge {
-          background: var(--primary-red);
-          color: white;
-          font-size: 12px;
-          padding: 2px 6px;
-          border-radius: 10px;
-          min-width: 18px;
-          text-align: center;
-        }
-
-        .view-switcher {
-          display: flex;
-          border: 1px solid var(--border-gray);
-          border-radius: 8px;
-          overflow: hidden;
-        }
-
-        .switcher-btn {
-          padding: 10px 16px;
-          border: none;
-          background: white;
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          transition: background var(--transition-fast);
-        }
-
-        .switcher-btn.active {
-          background: var(--primary-red);
-          color: white;
-        }
-
-        .switcher-btn:not(.active):hover {
-          background: var(--bg-gray-light);
-        }
-
-        .sort-select, .view-select {
-          padding: 10px 16px;
-          border: 1px solid var(--border-gray);
-          border-radius: 8px;
-          background: white;
-          font-size: 14px;
-          cursor: pointer;
-          outline: none;
-        }
-
-        .sort-select:focus, .view-select:focus {
-          border-color: var(--primary-red);
-        }
-
-        /* Tablet and Desktop Responsive - Hide Mobile Elements */
-        @media (min-width: 768px) {
-          .mobile-header {
-            display: none !important;
-          }
-          .applied-filters {
-            display: none !important;
-          }
-          .desktop-header {
-            display: block;
-          }
-        }
-
-        /* Mobile Only - Hide Desktop Elements */
-        @media (max-width: 767px) {
-          .desktop-header {
-            display: none !important;
-          }
-        }
-      `}</style>
-
-      <div className="search-header">
-        {/* Mobile Version */}
-        <div className="mobile-header">
-          <div className="header-top">
-            <h1 className="page-title">
-              {showingFavorites ? 'Saved Vehicles' : 'Vehicles for Sale'}
-            </h1>
+      <style>{styles}</style>
+      <div className="search-header-container">
+        
+        {/* ===== MOBILE/TABLET VIEW (≤991px) ===== */}
+        {isMobileOrTablet && (
+          <div className="mobile-header">
             
-            <form onSubmit={handleSearch} className="search-container">
-              <input 
-                type="text" 
-                className="search-input" 
-                placeholder="Search vehicles..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-              <button type="submit" className="search-button">
-                <Search className="w-5 h-5" />
-              </button>
-            </form>
-          </div>
-          
-          <div className="sticky-wrapper">
-            {activeFilters.length > 0 && (
-              <div className="applied-filters">
-                <div className="filter-pills-container">
-                  <button className="clear-all-btn" onClick={onClearAllFilters}>
-                    Clear All
-                  </button>
-                  {activeFilters.map((filter, index) => (
-                    <span key={`${filter.category}-${index}`} className="filter-pill">
-                      <Check className="check-icon" />
-                      <span className="truncate flex-1">{filter.value}</span>
-                      <button
-                        className="remove-filter-black"
-                        onClick={() => onRemoveFilter && onRemoveFilter(filter.category, filter.value)}
-                      >
-                        ×
-                      </button>
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-            
-            <div className="control-bar">
-              {/* Filter button removed on mobile - using fixed bottom button instead */}
+            {/* NON-STICKY SECTION: Title & Search (scrolls away) */}
+            <div className="mobile-section">
+              <h1 className="header-title">
+                {showingFavorites ? 'My Favorites' : 'Vehicles for Sale'}
+              </h1>
               
-              <div className="divider"></div>
-              
-              <div className="sort-dropdown-container">
-                <button 
-                  className="sort-button"
-                  onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
-                >
-                  <ChevronDown className="w-4 h-4" />
-                  <span>Sort</span>
+              <div className="search-container">
+                <input
+                  type="text"
+                  placeholder="Search vehicles..."
+                  className="search-input"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <button className="search-button" onClick={handleSearch}>
+                  <SearchIcon />
                 </button>
-                {sortDropdownOpen && (
-                  <div className="sort-dropdown-menu">
-                    {sortOptions.map(option => (
-                      <button
-                        key={option.value}
-                        onClick={() => {
-                          onSortChange(option.value);
-                          setSortDropdownOpen(false);
-                        }}
-                      >
-                        {option.label}
-                      </button>
+              </div>
+            </div>
+            
+            {/* STICKY SECTION: Filters & Controls (stays on top) */}
+            <div className={mobileFiltersOpen ? '' : 'mobile-sticky-wrapper'}>
+              
+              {/* Applied Filter Pills (part of sticky) */}
+              {activeFilters.length > 0 && (
+                <div className="filter-pills-section">
+                  <div className="filter-pills-container">
+                    <button 
+                      onClick={clearAllFilters}
+                      className="filter-pill clear-all-button"
+                    >
+                      Clear All
+                    </button>
+                    {activeFilters.map((filter, index) => (
+                      <span key={`${filter.category}-${index}`} className="filter-pill">
+                        <CheckIcon />
+                        {filter.value}
+                        <button 
+                          onClick={() => removeAppliedFilter(filter.category, filter.value)}
+                          className="filter-pill-remove"
+                        >
+                          ×
+                        </button>
+                      </span>
                     ))}
                   </div>
-                )}
-              </div>
-              
-              <div className="divider"></div>
-              
-              <button className="favorites-toggle" onClick={onToggleFavorites}>
-                <span>Favorites</span>
-                <div className={`toggle-switch ${showingFavorites ? 'active' : ''}`}>
-                  <div className="toggle-slider"></div>
                 </div>
-              </button>
-            </div>
-          </div>
-          
-          <div className="results-count-bar">
-            <span className="results-text">
-              {showingFavorites ?
-                `Saved Vehicles - ${favoritesCount} Results` :
-                `Showing ${startResult.toLocaleString()}-${endResult.toLocaleString()} of ${totalResults.toLocaleString()} vehicles`
-              }
-              {searchTime > 0 && !showingFavorites && (
-                <span className="search-time"> • {searchTime}ms</span>
               )}
-            </span>
-          </div>
-        </div>
-
-        {/* Desktop Version */}
-        <div className="desktop-header">
-          <div className="header-container">
-            <div className="header-left">
-              <h1 className="page-title">
-                {showingFavorites ? 'Saved Vehicles' : 'New and Used Vehicles for sale'}
-              </h1>
-              <p className="subtitle">
-                {showingFavorites ?
-                  `${favoritesCount} Saved` :
-                  `${startResult.toLocaleString()}-${endResult.toLocaleString()} of ${totalResults.toLocaleString()} vehicles`
-                }
-                {searchTime > 0 && !showingFavorites && (
-                  <span className="search-time"> • Search: {searchTime}ms</span>
-                )}
-                {totalResults > itemsPerPage && !showingFavorites && (
-                  <span className="page-info"> • Page {currentPage}</span>
-                )}
-              </p>
-            </div>
-            
-            <div className="header-controls">
-              {!showingFavorites ? (
-                <button className="favorites-button" onClick={onToggleFavorites}>
-                  <Heart className="w-4 h-4" />
-                  {favoritesCount > 0 && (
-                    <span className="favorites-badge">{favoritesCount}</span>
+              
+              {/* Control Bar: Filter | Sort | Favorites (sticky) */}
+              <div className="mobile-controls">
+                {/* Filter Button - Don't show since we have bottom filter button */}
+                {/* <button 
+                  className="mobile-control-button"
+                  onClick={() => onMobileFiltersOpen && onMobileFiltersOpen()}
+                >
+                  <SlidersIcon />
+                  Filter
+                  {activeFilterCount > 0 && (
+                    <span className="filter-count-badge">
+                      {activeFilterCount}
+                    </span>
                   )}
                 </button>
-              ) : (
-                <div className="view-switcher">
+                
+                <div className="control-divider" /> */}
+                
+                {/* Sort Dropdown */}
+                <div className="dropdown">
                   <button 
-                    className={`switcher-btn ${!showingFavorites ? 'active' : ''}`}
-                    onClick={() => onToggleFavorites && onToggleFavorites(false)}
+                    className="mobile-control-button"
+                    onClick={() => setSortDropdownOpen(!sortDropdownOpen)}
                   >
-                    All Results
+                    <SortIcon />
+                    Sort
                   </button>
-                  <button 
-                    className={`switcher-btn ${showingFavorites ? 'active' : ''}`}
-                    onClick={() => onToggleFavorites && onToggleFavorites(true)}
-                  >
-                    <Heart className="w-4 h-4" />
-                    Saved ({favoritesCount})
-                  </button>
+                  {sortDropdownOpen && (
+                    <div className="dropdown-menu">
+                      <button 
+                        onClick={() => { onSortChange('relevance'); setSortDropdownOpen(false); }} 
+                        className="dropdown-item"
+                      >
+                        Relevance
+                      </button>
+                      <button 
+                        onClick={() => { onSortChange('price_low'); setSortDropdownOpen(false); }} 
+                        className="dropdown-item"
+                      >
+                        Price: Low to High
+                      </button>
+                      <button 
+                        onClick={() => { onSortChange('price_high'); setSortDropdownOpen(false); }} 
+                        className="dropdown-item"
+                      >
+                        Price: High to Low
+                      </button>
+                      <button 
+                        onClick={() => { onSortChange('year_new'); setSortDropdownOpen(false); }} 
+                        className="dropdown-item"
+                      >
+                        Year: Newest
+                      </button>
+                      <button 
+                        onClick={() => { onSortChange('mileage_low'); setSortDropdownOpen(false); }} 
+                        className="dropdown-item"
+                      >
+                        Mileage: Lowest
+                      </button>
+                    </div>
+                  )}
                 </div>
+                
+                <div className="control-divider" />
+                
+                {/* Favorites Toggle */}
+                <button 
+                  className={`mobile-control-button ${showingFavorites ? 'favorites-active' : ''}`}
+                  onClick={() => onToggleFavorites && onToggleFavorites()}
+                >
+                  Favorites
+                  <div className={`toggle-switch ${showingFavorites ? 'active' : 'inactive'}`}>
+                    <div className="toggle-switch-handle" />
+                  </div>
+                </button>
+              </div>
+            </div>
+            
+            {/* Results Count */}
+            <div className="results-count">
+              {showingFavorites 
+                ? `${favoritesCount} Saved Vehicles` 
+                : `${totalResults.toLocaleString()} Results`}
+              {searchTime > 0 && !showingFavorites && (
+                <span> • {searchTime}ms</span>
               )}
-              
-              <select 
-                className="sort-select"
-                value={sortBy}
-                onChange={(e) => onSortChange(e.target.value)}
-              >
-                {sortOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              
-              <select
-                className="view-select"
-                value={itemsPerPage}
-                onChange={(e) => onItemsPerPageChange?.(Number(e.target.value))}
-              >
-                <option value={10}>View: 10</option>
-                <option value={20}>View: 20</option>
-                <option value={30}>View: 30</option>
-                <option value={50}>View: 50</option>
-                <option value={100}>View: 100</option>
-              </select>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* ===== DESKTOP VIEW (>991px) ===== */}
+        {!isMobileOrTablet && (
+          <div className="desktop-header">
+            <div className="desktop-container">
+              <div>
+                <h1 className="header-title-desktop">
+                  {showingFavorites ? 'My Favorites' : 'New and Used Vehicles for Sale'}
+                </h1>
+                <p className="header-subtitle">
+                  {showingFavorites ? `${favoritesCount} Vehicles` : `${totalResults.toLocaleString()} Matches`}
+                  {searchTime > 0 && !showingFavorites && (
+                    <span> • Search: {searchTime}ms</span>
+                  )}
+                  {totalResults > itemsPerPage && !showingFavorites && (
+                    <span> • Page {currentPage}</span>
+                  )}
+                </p>
+              </div>
+              
+              <div className="desktop-controls">
+                {/* Desktop View Switcher or Favorites Button */}
+                {showingFavorites ? (
+                  <div className="view-switcher">
+                    <button 
+                      className={!showingFavorites ? 'active' : ''}
+                      onClick={() => onToggleFavorites && onToggleFavorites()}
+                    >
+                      All Results
+                    </button>
+                    <button 
+                      className={showingFavorites ? 'active' : ''}
+                      onClick={() => onToggleFavorites && onToggleFavorites()}
+                    >
+                      <HeartIcon className="w-4 h-4" />
+                      Saved ({favoritesCount})
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    className="favorites-button"
+                    onClick={() => onToggleFavorites && onToggleFavorites()}
+                  >
+                    <span className={`favorites-button-icon ${favoritesCount > 0 ? 'filled' : ''}`}>
+                      <HeartIcon filled={favoritesCount > 0} />
+                    </span>
+                    {favoritesCount > 0 && (
+                      <span className="favorites-count">
+                        {favoritesCount}
+                      </span>
+                    )}
+                  </button>
+                )}
+                
+                {/* Sort Dropdown */}
+                <select 
+                  value={sortBy}
+                  onChange={(e) => onSortChange(e.target.value)}
+                  className="desktop-select"
+                >
+                  <option value="relevance">Sort by Relevance</option>
+                  <option value="price_low">Price: Low to High</option>
+                  <option value="price_high">Price: High to Low</option>
+                  <option value="year_new">Year: Newest First</option>
+                  <option value="mileage_low">Mileage: Low to High</option>
+                </select>
+                
+                {/* Items Per Page */}
+                <select 
+                  value={itemsPerPage}
+                  onChange={(e) => onItemsPerPageChange && onItemsPerPageChange(Number(e.target.value))}
+                  className="desktop-select"
+                >
+                  <option value={10}>View: 10</option>
+                  <option value={20}>View: 20</option>
+                  <option value={30}>View: 30</option>
+                  <option value={50}>View: 50</option>
+                  <option value={100}>View: 100</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );
