@@ -572,7 +572,7 @@ function App() {
     try {
       const startTime = Date.now();
 
-      // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
+      // ��� SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
       if (apiConnected && canUseSequentialCache(newFilters, filters)) {
         const makeFilter = newFilters.make[0];
         const cacheKey = `make_${makeFilter}`;
@@ -767,16 +767,16 @@ function App() {
     console.log(`🔄 Sort changed to: ${newSortBy}`);
     setSortBy(newSortBy);
     setCurrentPage(1);
-    fetchVehiclesPage(1, filters);
-  }, [filters, fetchVehiclesPage]);
+    fetchVehiclesPage(1, debouncedFilters);
+  }, [debouncedFilters, fetchVehiclesPage]);
 
   // Handle items per page change
   const handleItemsPerPageChange = useCallback((newItemsPerPage) => {
     console.log(`📋 Items per page changed to: ${newItemsPerPage}`);
     setItemsPerPage(newItemsPerPage);
     setCurrentPage(1);
-    fetchVehiclesPage(1, filters);
-  }, [filters, fetchVehiclesPage]);
+    fetchVehiclesPage(1, debouncedFilters);
+  }, [debouncedFilters, fetchVehiclesPage]);
 
   // Initial data load
   useEffect(() => {
