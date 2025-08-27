@@ -127,24 +127,28 @@ const getFallbackVehicles = () => {
         price: '22995',
         sale_price: '',
         stock_status: 'instock',
-        images: {
-          featured: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop',
-          gallery: ['https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop']
-        },
+        images: [
+          'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop'
+        ],
+        image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=450&h=300&fit=crop',
         categories: [{ id: 2, name: 'Sedan', slug: 'sedan' }],
         attributes: [],
         meta_data: [
           { key: 'make', value: 'Toyota' },
           { key: 'model', value: 'Camry' },
           { key: 'year', value: '2020' },
-          { key: 'condition', value: 'Available' },
+          { key: 'mileage', value: '45678' },
+          { key: 'condition', value: 'Good' },
           { key: 'body_type', value: 'Sedan' },
           { key: 'drivetrain', value: 'FWD' },
           { key: 'transmission', value: 'Automatic' },
           { key: 'fuel_type', value: 'Gasoline' },
           { key: 'trim', value: 'LE' },
+          { key: 'doors', value: '4' },
           { key: 'exterior_color', value: 'Blue' },
-          { key: 'interior_color', value: 'Gray' }
+          { key: 'interior_color', value: 'Gray' },
+          { key: 'price', value: '22995' },
+          { key: 'payment', value: '345' }
         ],
         description: 'Reliable sedan with excellent fuel economy.',
         date_created: new Date().toISOString(),
@@ -844,7 +848,7 @@ export const fetchVehicles = async (params = {}) => {
       console.log('');
       console.log('✅ Loading fallback data to keep app functional...');
       const fallbackData = getFallbackVehicles();
-      console.log('📊 Fallback vehicles loaded:', fallbackData.results.length);
+      console.log('��� Fallback vehicles loaded:', fallbackData.results.length);
       return fallbackData;
     }
 
