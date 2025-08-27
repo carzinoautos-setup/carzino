@@ -912,11 +912,12 @@ const VehicleSearchFilter = ({
 
         {/* Model - shows only when make is selected */}
         {filters.make?.length > 0 && (
-          <FilterSection 
+          <FilterSection
             title="Model"
             isCollapsed={collapsedFilters.model}
             onToggle={() => toggleFilter('model')}
             count={getFilterCount('model')}
+            isMobile={isMobile}
           >
             <div className="space-y-1">
               {allModels.length > 0 ? (
@@ -949,11 +950,12 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Filter by Price */}
-        <FilterSection 
+        <FilterSection
           title="Filter by Price"
           isCollapsed={collapsedFilters.price}
           onToggle={() => toggleFilter('price')}
           count={getFilterCount('price')}
+          isMobile={isMobile}
         >
           <PriceRangeInput 
             min={filters.priceMin}
@@ -964,11 +966,12 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Search by Payment */}
-        <FilterSection 
+        <FilterSection
           title="Search by Payment"
           isCollapsed={collapsedFilters.payment}
           onToggle={() => toggleFilter('payment')}
           count={getFilterCount('payment')}
+          isMobile={isMobile}
         >
           <PaymentCalculator 
             filters={filters}
@@ -977,11 +980,12 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Condition */}
-        <FilterSection 
+        <FilterSection
           title="Condition"
           isCollapsed={collapsedFilters.condition}
           onToggle={() => toggleFilter('condition')}
           count={getFilterCount('condition')}
+          isMobile={isMobile}
         >
           <div className="space-y-1">
             {allConditions.length > 0 ? (
@@ -1028,11 +1032,12 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Vehicle Type */}
-        <FilterSection 
+        <FilterSection
           title="Vehicle Type"
           isCollapsed={collapsedFilters.vehicleType}
           onToggle={() => toggleFilter('vehicleType')}
           count={getFilterCount('vehicleType')}
+          isMobile={isMobile}
         >
           <div className="space-y-1">
             {allVehicleTypes.length > 0 ? (
@@ -1079,11 +1084,12 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Drive Type */}
-        <FilterSection 
+        <FilterSection
           title="Drive Type"
           isCollapsed={collapsedFilters.driveType}
           onToggle={() => toggleFilter('driveType')}
           count={getFilterCount('driveType')}
+          isMobile={isMobile}
         >
           <div className="space-y-1">
             {allDriveTypes.length > 0 ? (
@@ -1135,6 +1141,7 @@ const VehicleSearchFilter = ({
           isCollapsed={collapsedFilters.transmissionSpeed}
           onToggle={() => toggleFilter('transmissionSpeed')}
           count={getFilterCount('transmissionSpeed')}
+          isMobile={isMobile}
         >
           <div className="space-y-1">
             {allTransmissions.length > 0 ? (
@@ -1158,11 +1165,12 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Exterior Color */}
-        <FilterSection 
+        <FilterSection
           title="Exterior Color"
           isCollapsed={collapsedFilters.exteriorColor}
           onToggle={() => toggleFilter('exteriorColor')}
           count={getFilterCount('exteriorColor')}
+          isMobile={isMobile}
         >
           <div className="space-y-1">
             {allExteriorColors.length > 0 ? (
@@ -1186,11 +1194,12 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Interior Color */}
-        <FilterSection 
+        <FilterSection
           title="Interior Color"
           isCollapsed={collapsedFilters.interiorColor}
           onToggle={() => toggleFilter('interiorColor')}
           count={getFilterCount('interiorColor')}
+          isMobile={isMobile}
         >
           <div className="space-y-1">
             {allInteriorColors.length > 0 ? (
@@ -1220,6 +1229,7 @@ const VehicleSearchFilter = ({
             isCollapsed={collapsedFilters.year}
             onToggle={() => toggleFilter('year')}
             count={getFilterCount('year')}
+            isMobile={isMobile}
           >
             <div className="space-y-1">
               {allYears.map((year) => (
@@ -1244,6 +1254,7 @@ const VehicleSearchFilter = ({
             isCollapsed={collapsedFilters.fuelType}
             onToggle={() => toggleFilter('fuelType')}
             count={getFilterCount('fuelType')}
+            isMobile={isMobile}
           >
             <div className="space-y-1">
               {allFuelTypes.map((fuelType) => (
@@ -1268,6 +1279,7 @@ const VehicleSearchFilter = ({
             isCollapsed={collapsedFilters.trim}
             onToggle={() => toggleFilter('trim')}
             count={getFilterCount('trim')}
+            isMobile={isMobile}
           >
             <div className="space-y-1">
               {displayedTrims.map((trim) => (
