@@ -210,6 +210,9 @@ function App() {
   // Caching state for sequential filtering performance
   const [cachedVehicles, setCachedVehicles] = useState(new Map());
 
+  // Page preloading cache for instant pagination
+  const [preloadedPages, setPreloadedPages] = useState(new Map());
+
   const [favorites, setFavorites] = useState({});
   const [currentPage, setCurrentPage] = useState(() => {
     try {
@@ -453,6 +456,56 @@ function App() {
   // Request deduplication map
   const activeRequests = useRef(new Map());
 
+  // Preload next page for instant pagination
+  const preloadNextPage = useCallback(async (currentPage, currentFilters) => {
+    const nextPage = currentPage + 1;
+
+    // Don't preload if we're already on the last page
+    if (nextPage > totalPages) return;
+
+    const preloadKey = `page_${nextPage}_${JSON.stringify(currentFilters)}`;
+
+    // Don't preload if already cached
+    if (preloadedPages.has(preloadKey)) {
+      console.log(`🚀 Page ${nextPage} already preloaded`);
+      return;
+    }
+
+    try {
+      console.log(`🚀 PRELOADING page ${nextPage} in background...`);
+      const preloadedData = await fetchVehiclesPaginated(nextPage, itemsPerPage, currentFilters);
+
+      setPreloadedPages(prev => {
+        const updated = new Map(prev);
+        updated.set(preloadKey, {
+          data: preloadedData,
+          timestamp: Date.now()
+        });
+
+        // Limit cache size to prevent memory issues
+        if (updated.size > 5) {
+          const firstKey = updated.keys().next().value;
+          updated.delete(firstKey);
+        }
+
+        return updated;
+      });
+
+      // Preload images for instant display
+      preloadedData.vehicles.forEach((vehicle) => {
+        const imageUrl = vehicle.images?.[0] || vehicle.image;
+        if (imageUrl && !imageUrl.includes('/api/placeholder')) {
+          const img = new Image();
+          img.src = imageUrl;
+        }
+      });
+
+      console.log(`✅ Page ${nextPage} preloaded with ${preloadedData.vehicles.length} vehicles`);
+    } catch (error) {
+      console.warn(`⚠️ Failed to preload page ${nextPage}:`, error.message);
+    }
+  }, [totalPages, itemsPerPage, preloadedPages]);
+
   // Fetch full inventory for accurate filter counts (separate from pagination)
   const fetchFullInventoryForFilters = useCallback(async () => {
     try {
@@ -584,6 +637,14 @@ function App() {
       // Update URL
       updateURL(newFilters, page);
 
+      // 🚀 PRELOAD NEXT PAGE for instant pagination
+      if (page < totalPages && !loading) {
+        // Small delay to not interfere with current page loading
+        setTimeout(() => {
+          preloadNextPage(page, newFilters);
+        }, 500);
+      }
+
     } catch (error) {
       console.error('❌ Unexpected error in fetchVehiclesPage:', error);
       setError(`Unexpected error: ${error.message}`);
@@ -598,19 +659,54 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, itemsPerPage, filters, updateURL, canUseSequentialCache, filterCachedVehicles, apiConnected, fullInventory.length, fetchFullInventoryForFilters]);
+  }, [currentPage, itemsPerPage, filters, updateURL, canUseSequentialCache, filterCachedVehicles, apiConnected, fullInventory.length, fetchFullInventoryForFilters, totalPages, loading, preloadNextPage]);
 
-  // Handle page changes
+  // Handle page changes with preloaded data for instant loading
   const handlePageChange = useCallback((newPage) => {
     console.log(`📄 Page changed to: ${newPage}`);
-    setCurrentPage(newPage);
-    fetchVehiclesPage(newPage, filters);
-    
+
+    const preloadKey = `page_${newPage}_${JSON.stringify(filters)}`;
+    const preloadedData = preloadedPages.get(preloadKey);
+
+    // Use preloaded data if available for INSTANT page changes
+    if (preloadedData && (Date.now() - preloadedData.timestamp < 30000)) {
+      console.log(`⚡ INSTANT LOAD: Using preloaded data for page ${newPage}`);
+
+      const data = preloadedData.data;
+      setVehicles(data.vehicles);
+      setTotalResults(data.totalResults);
+      setTotalPages(data.totalPages);
+      setCurrentPage(data.currentPage);
+      setSearchTime(data.searchTime || 1); // Show as very fast
+      setError(null);
+
+      updateURL(filters, newPage);
+
+      // Remove used preloaded data to save memory
+      setPreloadedPages(prev => {
+        const updated = new Map(prev);
+        updated.delete(preloadKey);
+        return updated;
+      });
+
+      // Preload the NEXT page now
+      setTimeout(() => {
+        preloadNextPage(newPage, filters);
+      }, 100);
+
+    } else {
+      // Fallback to regular loading if no preloaded data
+      console.log(`🔄 Regular load for page ${newPage} (no preloaded data)`);
+      setCurrentPage(newPage);
+      fetchVehiclesPage(newPage, filters);
+    }
+
+    // Smooth scroll to results
     const resultsElement = document.querySelector('.vehicle-grid');
     if (resultsElement) {
       resultsElement.scrollIntoView({ behavior: 'smooth' });
     }
-  }, [filters, fetchVehiclesPage]);
+  }, [filters, fetchVehiclesPage, preloadedPages, updateURL, preloadNextPage]);
 
   // Debounced filter handler to prevent rapid API calls
   const debouncedFilterChange = useCallback((newFilters) => {
