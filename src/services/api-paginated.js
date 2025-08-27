@@ -309,8 +309,71 @@ const getDemoDataFallback = (page = 1, limit = 20, filters = {}) => {
   };
 };
 
+// 🚀 PERFORMANCE: Cache management utilities
+const cleanExpiredCache = () => {
+  const maxAge = 5 * 60 * 1000; // 5 minutes
+  let cleanedCount = 0;
+
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('carzino_')) {
+      try {
+        const data = JSON.parse(localStorage.getItem(key));
+        if (Date.now() - data.timestamp > maxAge) {
+          localStorage.removeItem(key);
+          cleanedCount++;
+        }
+      } catch (e) {
+        localStorage.removeItem(key);
+        cleanedCount++;
+      }
+    }
+  }
+
+  if (cleanedCount > 0) {
+    console.log(`🧹 CACHE CLEANUP: Removed ${cleanedCount} expired entries`);
+  }
+};
+
+// 🚀 PERFORMANCE: Cache statistics for debugging
+const getCacheStats = () => {
+  const carzinoKeys = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('carzino_')) {
+      carzinoKeys.push(key);
+    }
+  }
+  return {
+    totalEntries: carzinoKeys.length,
+    keys: carzinoKeys.map(k => k.substring(0, 50) + '...'),
+    storageUsed: JSON.stringify(localStorage).length
+  };
+};
+
+// Export cache utilities for debugging in browser console
+if (typeof window !== 'undefined') {
+  window.carzinoCacheStats = getCacheStats;
+  window.carzinoClearCache = () => {
+    let cleared = 0;
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('carzino_')) {
+        localStorage.removeItem(key);
+        cleared++;
+      }
+    }
+    console.log(`🗑️ Cleared ${cleared} cache entries`);
+  };
+}
+
 export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {}, sortBy = 'relevance') => {
-  console.log('⚡ Fast API call...');
+  // Clean expired cache entries periodically
+  if (Math.random() < 0.1) { // 10% chance to run cleanup
+    cleanExpiredCache();
+  }
+
+  console.log('🚀 Fetching vehicles page:', page);
   console.log('🔧 Environment check:');
   console.log('  - WP_SITE_URL:', process.env.REACT_APP_WP_SITE_URL);
   console.log('  - API_BASE:', API_BASE);
@@ -406,19 +469,28 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   const filterParams = buildWooCommerceFilters(filters);
   const sortParams = buildWooCommerceSort(sortBy);
 
-  // 🚀 PERFORMANCE: Check cache first
-  const cacheKey = `wc_${page}_${limit}_${JSON.stringify(filters)}_${sortBy}`;
+  // 🚀 PERFORMANCE: Enhanced cache system with 5-minute duration
+  const startTime = Date.now();
+  const cacheKey = `carzino_wc_${page}_${limit}_${JSON.stringify(filters).substring(0, 100)}_${sortBy}`;
   const cached = localStorage.getItem(cacheKey);
+
   if (cached) {
     try {
       const cachedData = JSON.parse(cached);
       const cacheAge = Date.now() - cachedData.timestamp;
-      if (cacheAge < 30000) { // 30 seconds cache
-        console.log('⚡ CACHE HIT - returning cached data in ~5ms');
-        return { ...cachedData.data, searchTime: 5, isCached: true };
+      const maxCacheAge = 5 * 60 * 1000; // 5 minutes instead of 30 seconds
+
+      if (cacheAge < maxCacheAge) {
+        const cacheHitTime = Date.now() - startTime;
+        console.log(`⚡ CACHE HIT: Loaded ${cachedData.data.vehicles?.length || 0} vehicles in ${cacheHitTime}ms (cached ${Math.round(cacheAge/1000)}s ago)`);
+        return { ...cachedData.data, searchTime: cacheHitTime, isCached: true };
+      } else {
+        console.log(`🕒 CACHE EXPIRED: Removing stale data (${Math.round(cacheAge/1000)}s old)`);
+        localStorage.removeItem(cacheKey);
       }
     } catch (e) {
-      // Invalid cache, continue with API call
+      console.warn('⚠️ Invalid cache data, removing:', e.message);
+      localStorage.removeItem(cacheKey);
     }
   }
 
@@ -635,14 +707,35 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
     currentPage: page
   };
 
-  // 🚀 PERFORMANCE: Cache successful result for 30 seconds
+  // 🚀 PERFORMANCE: Cache successful result for 5 minutes
   try {
-    localStorage.setItem(cacheKey, JSON.stringify({
+    const cacheData = {
       data: result,
-      timestamp: Date.now()
-    }));
+      timestamp: Date.now(),
+      filters: filters,
+      page: page
+    };
+
+    localStorage.setItem(cacheKey, JSON.stringify(cacheData));
+    console.log(`💾 CACHED: Stored ${result.vehicles.length} vehicles for 5min instant loading`);
+
+    // Prevent localStorage from growing too large
+    if (localStorage.length > 100) {
+      cleanExpiredCache();
+    }
   } catch (e) {
-    // Ignore cache errors
+    console.warn('⚠️ Cache storage failed (localStorage full?):', e.message);
+    // Try to free space by clearing old carzino cache
+    try {
+      for (let i = localStorage.length - 1; i >= 0; i--) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('carzino_') && Math.random() < 0.5) {
+          localStorage.removeItem(key);
+        }
+      }
+    } catch (cleanupError) {
+      console.warn('Cache cleanup also failed');
+    }
   }
 
   return result;
