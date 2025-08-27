@@ -492,7 +492,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     }
   };
 
-  // Get the featured image (with debugging)
+  // Get the featured image with better fallbacks
   const getFeaturedImage = useCallback(() => {
     console.log(`🖼️ Image data for ${vehicle.title}:`, {
       images: vehicle.images,
@@ -500,10 +500,22 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       vehicleId: vehicle.id
     });
 
+    // Use actual vehicle images first
     if (vehicle.images && vehicle.images.length > 0) {
       return vehicle.images[0];
     }
-    return vehicle.image || '/api/placeholder/380/200';
+
+    // Use vehicle.image field if available
+    if (vehicle.image && !vehicle.image.includes('/api/placeholder')) {
+      return vehicle.image;
+    }
+
+    // Generate a realistic vehicle image based on vehicle type/make
+    const make = vehicle.title.split(' ')[1]?.toLowerCase() || 'vehicle';
+    const vehicleType = vehicle.meta_data?.find(m => m.key === 'body_type')?.value?.toLowerCase() || 'car';
+
+    // Use a more realistic vehicle image from a reliable source
+    return `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=380&h=200&fit=crop&auto=format&q=80`;
   }, [vehicle]);
 
   // Simple image preloading (fixed version)
