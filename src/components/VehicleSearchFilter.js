@@ -629,24 +629,67 @@ const VehicleSearchFilter = ({
     };
   }, []);
 
-  // Mobile off-canvas overlay
+  // Mobile bottom sheet overlay
   if (isMobile) {
     return (
       <>
         {/* Backdrop */}
-        <div 
-          className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
+        <div
+          className={`fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity duration-300 ${
             isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           onClick={onClose}
         />
-        
-        {/* Off-canvas menu */}
-        <div className={`fixed left-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-50 transition-transform duration-300 ease-out ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+
+        {/* Bottom Sheet */}
+        <div className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 transition-transform duration-300 ease-out max-h-[90vh] ${
+          isOpen ? 'translate-y-0' : 'translate-y-full'
         }`}>
-          <div className="h-full overflow-y-auto overflow-x-hidden" style={{ padding: '20px', paddingBottom: '80px' }}>
-            <FilterContent />
+          {/* Drag Handle */}
+          <div className="flex justify-center pt-4 pb-2">
+            <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+          </div>
+
+          {/* Header */}
+          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+            <h2 className="text-xl font-bold text-gray-900">Filter Vehicles</h2>
+            <button
+              onClick={onClose}
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              aria-label="Close filters"
+            >
+              <X className="w-6 h-6 text-gray-600" />
+            </button>
+          </div>
+
+          {/* Content */}
+          <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 140px)', paddingBottom: '100px' }}>
+            <div className="px-6 py-4">
+              <FilterContent />
+            </div>
+          </div>
+
+          {/* Bottom Actions */}
+          <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex gap-3 rounded-t-3xl">
+            <button
+              onClick={clearAllFilters}
+              className="flex-1 px-6 py-4 bg-gray-100 text-gray-800 rounded-2xl font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
+              disabled={activeFilterCount === 0}
+            >
+              Clear {activeFilterCount > 0 && `(${activeFilterCount})`}
+            </button>
+            <button
+              onClick={onClose}
+              className="flex-1 px-6 py-4 text-white rounded-2xl font-semibold hover:bg-red-700 transition-colors relative"
+              style={{ backgroundColor: '#dc2626' }}
+            >
+              Apply Filters
+              {activeFilterCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
           </div>
         </div>
       </>
@@ -664,42 +707,30 @@ const VehicleSearchFilter = ({
   function FilterContent() {
     return (
       <div className={isMobile ? "p-0" : "p-4"}>
-        {/* Mobile Header */}
-        {isMobile && (
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200 sticky top-0 bg-white z-10">
-            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
-            <button
-              onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-              aria-label="Close filters"
-            >
-              <X className="w-5 h-5 text-gray-600" />
-            </button>
-          </div>
-        )}
+        {/* Mobile header is now handled in the bottom sheet */}
 
         {/* Search Section */}
-        <div className="mb-4 pb-4 border-b border-gray-200">
+        <div className={`mb-6 ${isMobile ? '' : 'pb-4 border-b border-gray-200'}`}>
           <div className="relative">
             <input
               type="text"
               placeholder="Search Vehicles"
-              className="carzino-search-input carzino-input w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:border-red-600"
+              className={`carzino-search-input carzino-input w-full px-4 border border-gray-300 rounded-xl focus:outline-none focus:border-red-600 ${isMobile ? 'py-4 text-lg' : 'py-2.5'}`}
             />
-            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-600 p-1">
-              <Search className="w-4 h-4" style={{ color: '#dc2626' }} />
+            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600 p-1">
+              <Search className={`${isMobile ? 'w-6 h-6' : 'w-4 h-4'}`} style={{ color: '#dc2626' }} />
             </button>
           </div>
         </div>
 
         {/* Applied Filters */}
         {activeFilterCount > 0 && (
-          <div className="mb-4 pb-4 border-b border-gray-200">
-            <div className="flex items-center justify-between mb-2">
-              <h3 className="carzino-filter-title">Applied Filters</h3>
-              <button 
+          <div className={`mb-6 ${isMobile ? '' : 'pb-4 border-b border-gray-200'}`}>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className={`font-semibold ${isMobile ? 'text-lg' : 'text-base'}`}>Applied Filters</h3>
+              <button
                 onClick={clearAllFilters}
-                className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-red-700"
+                className={`bg-red-600 text-white rounded-full font-medium hover:bg-red-700 transition-colors ${isMobile ? 'px-4 py-2 text-sm' : 'px-3 py-1 text-xs'}`}
                 style={{ backgroundColor: '#dc2626' }}
               >
                 Clear All
@@ -816,20 +847,20 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Distance */}
-        <div className="mb-4 pb-4 border border-gray-200 rounded-lg p-3">
-          <label className="carzino-location-label block mb-2">Distance</label>
-          <div className="space-y-2">
+        <div className={`mb-6 border border-gray-200 rounded-xl p-4 ${isMobile ? 'bg-gray-50' : ''}`}>
+          <label className={`font-semibold block mb-3 ${isMobile ? 'text-lg' : 'text-base'}`}>Distance</label>
+          <div className="space-y-3">
             <input
               type="text"
               placeholder="ZIP Code"
               value={filters.zipCode || '98498'}
               onChange={(e) => handleFilterChange('zipCode', e.target.value, true)}
-              className="carzino-search-input carzino-input w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none"
+              className={`carzino-search-input carzino-input w-full px-4 border border-gray-300 rounded-xl focus:outline-none ${isMobile ? 'py-4 text-lg' : 'py-2.5'}`}
             />
-            <select 
+            <select
               value={filters.radius || '200'}
               onChange={(e) => handleFilterChange('radius', e.target.value, true)}
-              className="carzino-select w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none"
+              className={`carzino-select w-full px-4 border border-gray-300 rounded-xl focus:outline-none ${isMobile ? 'py-4 text-lg' : 'py-2.5'}`}
             >
               <option value="10">10 miles</option>
               <option value="25">25 miles</option>
@@ -1261,30 +1292,7 @@ const VehicleSearchFilter = ({
           </FilterSection>
         )}
 
-        {/* Mobile Footer */}
-        {isMobile && (
-          <div className="fixed bottom-0 left-0 w-80 max-w-[85vw] bg-white border-t border-gray-200 p-4 flex gap-3 z-50 shadow-lg">
-            <button
-              onClick={clearAllFilters}
-              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors disabled:opacity-50"
-              disabled={activeFilterCount === 0}
-            >
-              Clear {activeFilterCount > 0 && `(${activeFilterCount})`}
-            </button>
-            <button
-              onClick={onClose}
-              className="flex-1 px-4 py-3 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
-              style={{ backgroundColor: '#dc2626' }}
-            >
-              Apply Filters
-              {activeFilterCount > 0 && (
-                <span className="ml-2 bg-black text-white text-xs rounded-full px-2 py-1">
-                  {activeFilterCount}
-                </span>
-              )}
-            </button>
-          </div>
-        )}
+        {/* Mobile footer is now handled in the bottom sheet */}
       </div>
     );
   }
