@@ -635,8 +635,7 @@ function App() {
         result.isCached || false
       );
 
-      // Reset batch loading for new vehicle data
-      resetBatches();
+      // Batch loading removed - using standard pagination
 
       // Properly detect if we're using real API data vs demo data
       const isRealAPIData = !result.isDemo;
