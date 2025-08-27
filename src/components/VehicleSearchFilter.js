@@ -1,24 +1,188 @@
 import React, { useState, memo, useCallback, useMemo, useEffect } from 'react';
-import { Search, ChevronDown, X } from 'lucide-react';
+import { Search, ChevronDown, Check, X } from 'lucide-react';
 
-// Filter Section Components
+// ============================================
+// STYLES
+// ============================================
+const styles = `
+  @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap');
+
+  .carzino-filter-container {
+    font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  /* Typography Classes */
+  .carzino-filter-title { 
+    font-size: 16px !important; 
+    font-weight: 600 !important; 
+  }
+  
+  .carzino-filter-option { 
+    font-size: 14px !important; 
+    font-weight: 400 !important; 
+  }
+  
+  .carzino-filter-count { 
+    font-size: 14px !important; 
+    font-weight: 400 !important; 
+    color: #6B7280 !important; 
+  }
+  
+  .carzino-search-input { 
+    font-size: 14px !important; 
+    font-weight: 400 !important; 
+  }
+  
+  .carzino-location-label { 
+    font-size: 14px !important; 
+    font-weight: 500 !important; 
+  }
+  
+  .carzino-dropdown-option { 
+    font-size: 14px !important; 
+    font-weight: 400 !important; 
+  }
+  
+  .carzino-vehicle-type-name { 
+    font-size: 12px !important; 
+    font-weight: 500 !important; 
+  }
+  
+  .carzino-vehicle-type-count { 
+    font-size: 11px !important; 
+    font-weight: 400 !important; 
+    color: #6B7280 !important; 
+  }
+  
+  .carzino-show-more { 
+    font-size: 14px !important; 
+    font-weight: 500 !important; 
+  }
+
+  /* Mobile Typography */
+  @media (max-width: 640px) {
+    .carzino-filter-title { font-size: 18px !important; }
+    .carzino-filter-option { font-size: 16px !important; }
+    .carzino-filter-count { font-size: 16px !important; }
+    .carzino-search-input { font-size: 16px !important; }
+    .carzino-location-label { font-size: 16px !important; }
+    .carzino-dropdown-option { font-size: 16px !important; }
+    .carzino-vehicle-type-name { font-size: 14px !important; }
+    .carzino-vehicle-type-count { font-size: 13px !important; }
+    .carzino-show-more { font-size: 16px !important; }
+  }
+
+  /* Custom Checkbox */
+  .carzino-checkbox {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 3px;
+    background-color: white;
+    position: relative;
+    cursor: pointer;
+    transition: all 150ms ease;
+    flex-shrink: 0;
+  }
+  
+  .carzino-checkbox:hover {
+    border-color: #6b7280;
+    background-color: #f9fafb;
+  }
+  
+  .carzino-checkbox:checked {
+    background-color: #dc2626;
+    border-color: #dc2626;
+  }
+  
+  .carzino-checkbox:checked::after {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 12px;
+    top: -2px;
+    left: 2px;
+  }
+
+  .carzino-checkbox:focus {
+    outline: 2px solid #dc2626;
+    outline-offset: 2px;
+  }
+
+  /* Inputs and Selects */
+  .carzino-input,
+  .carzino-select {
+    transition: all 150ms ease;
+  }
+
+  .carzino-input:focus,
+  .carzino-select:focus {
+    outline: none;
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+
+  /* Applied Filter Pills */
+  .carzino-filter-pill {
+    background-color: #000000;
+    color: #ffffff;
+    border-radius: 9999px;
+    font-size: 12px;
+    padding: 4px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Mobile specific */
+  @media (max-width: 640px) {
+    .carzino-filter-pill {
+      font-size: 12px;
+      padding: 6px 12px;
+    }
+  }
+
+  /* Animations */
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-down {
+    animation: slideDown 200ms ease-out;
+  }
+`;
+
+// ============================================
+// FILTER SECTION COMPONENTS
+// ============================================
+
 const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) => {
   return (
-    <div className="py-1 border-b border-gray-200">
+    <div className="border-b border-gray-200 pb-3 mb-3">
       <div
-        className="flex items-center justify-between cursor-pointer py-1.5 hover:bg-gray-50 -mx-1 px-1 rounded"
+        className="flex items-center justify-between cursor-pointer py-2 hover:bg-gray-50 px-1 -mx-1 rounded"
         onClick={onToggle}
       >
-        <h3 className="text-sm font-medium text-gray-900 pointer-events-none flex-1" style={{ height: 'auto', alignSelf: 'stretch', padding: '12px 0' }}>{title}</h3>
-        <ChevronDown
-          className={`w-4 h-4 text-red-600 transition-transform duration-200 ${
-            !isCollapsed ? 'rotate-180' : 'rotate-0'
-          }`}
-          style={{ color: '#dc2626' }}
-        />
+        <h3 className="carzino-filter-title pointer-events-none">{title}</h3>
+        <div className="flex items-center gap-2 pointer-events-none">
+          <ChevronDown 
+            className={`w-5 h-5 text-red-600 transition-transform ${
+              !isCollapsed ? 'rotate-180' : ''
+            }`}
+            style={{ color: '#dc2626' }}
+          />
+        </div>
       </div>
       {!isCollapsed && (
-        <div className="mt-1 space-y-2" onClick={(e) => e.stopPropagation()}>
+        <div className="mt-2 animate-slide-down" onClick={(e) => e.stopPropagation()}>
           {children}
         </div>
       )}
@@ -26,25 +190,26 @@ const FilterSection = memo(({ title, isCollapsed, onToggle, children, count }) =
   );
 });
 
-const CheckboxOption = memo(({
-  label,
-  count,
-  checked,
-  onChange,
+const CheckboxOption = memo(({ 
+  label, 
+  count, 
+  checked, 
+  onChange, 
   value,
-  category
+  category 
 }) => {
   return (
-    <label className="flex items-center py-1.5 cursor-pointer hover:bg-gray-50 -mx-1 px-1 rounded">
-      <input
-        type="checkbox"
-        className="carzino-checkbox mr-4"
+    <label className="flex items-center hover:bg-gray-50 p-1 rounded cursor-pointer">
+      <input 
+        type="checkbox" 
+        className="carzino-checkbox mr-2"
         checked={checked}
         onChange={(e) => onChange(category, value, e.target.checked)}
       />
-      <span className="text-sm text-gray-800 flex-1" style={{ padding: '4px 0 5px 5px' }}>
-        {label} {count !== undefined && `(${count.toLocaleString()})`}
-      </span>
+      <span className="carzino-filter-option flex-1">{label}</span>
+      {count !== undefined && (
+        <span className="carzino-filter-count ml-1">({count.toLocaleString()})</span>
+      )}
     </label>
   );
 });
@@ -70,8 +235,7 @@ const PriceRangeInput = memo(({ min, max, onMinChange, onMaxChange }) => {
           value={localMin}
           onChange={(e) => setLocalMin(e.target.value.replace(/[^0-9]/g, ''))}
           onBlur={handleMinBlur}
-          className="carzino-search-input carzino-input w-1/2 px-2 py-5 border border-gray-300 rounded focus:outline-none"
-          style={{ height: '39px' }}
+          className="carzino-search-input carzino-input w-1/2 px-2 py-2 border border-gray-300 rounded focus:outline-none"
         />
         <input
           type="text"
@@ -79,8 +243,7 @@ const PriceRangeInput = memo(({ min, max, onMinChange, onMaxChange }) => {
           value={localMax}
           onChange={(e) => setLocalMax(e.target.value.replace(/[^0-9]/g, ''))}
           onBlur={handleMaxBlur}
-          className="carzino-search-input carzino-input w-1/2 px-2 py-5 border border-gray-300 rounded focus:outline-none"
-          style={{ height: '39px' }}
+          className="carzino-search-input carzino-input w-1/2 px-2 py-2 border border-gray-300 rounded focus:outline-none"
         />
       </div>
     </div>
@@ -98,8 +261,7 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
             placeholder="100"
             value={filters.paymentMin || ''}
             onChange={(e) => onChange('paymentMin', e.target.value.replace(/[^0-9]/g, ''), true)}
-            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-5 border border-gray-300 rounded focus:outline-none"
-            style={{ height: '39px' }}
+            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-2 border border-gray-300 rounded focus:outline-none"
           />
           <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">/mo</span>
         </div>
@@ -110,8 +272,7 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
             placeholder="2,000"
             value={filters.paymentMax || ''}
             onChange={(e) => onChange('paymentMax', e.target.value.replace(/[^0-9]/g, ''), true)}
-            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-5 border border-gray-300 rounded focus:outline-none"
-            style={{ height: '39px' }}
+            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-2 border border-gray-300 rounded focus:outline-none"
           />
           <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">/mo</span>
         </div>
@@ -124,8 +285,7 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
         <select
           value={filters.termLength || '72'}
           onChange={(e) => onChange('termLength', e.target.value, true)}
-          className="carzino-select w-full px-2 py-5 border border-gray-300 rounded focus:outline-none"
-          style={{ height: '39px' }}
+          className="carzino-select w-full px-2 py-2 border border-gray-300 rounded focus:outline-none"
         >
           <option value="36">36 months</option>
           <option value="48">48 months</option>
@@ -146,8 +306,7 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
               placeholder="8"
               value={filters.interestRate || ''}
               onChange={(e) => onChange('interestRate', e.target.value.replace(/[^0-9.]/g, ''), true)}
-              className="carzino-search-input carzino-input w-full pr-6 px-2 py-5 border border-gray-300 rounded focus:outline-none"
-              style={{ height: '39px' }}
+              className="carzino-search-input carzino-input w-full pr-6 px-2 py-2 border border-gray-300 rounded focus:outline-none"
             />
             <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">%</span>
           </div>
@@ -164,8 +323,7 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
               placeholder="2,000"
               value={filters.downPayment || ''}
               onChange={(e) => onChange('downPayment', e.target.value.replace(/[^0-9]/g, ''), true)}
-              className="carzino-search-input carzino-input w-full pl-6 px-2 py-5 border border-gray-300 rounded focus:outline-none"
-              style={{ height: '39px' }}
+              className="carzino-search-input carzino-input w-full pl-6 px-2 py-2 border border-gray-300 rounded focus:outline-none"
             />
           </div>
         </div>
@@ -175,23 +333,27 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
 });
 
 const ColorSwatch = memo(({ color, name, count, checked, onChange, category }) => (
-  <label className="flex items-center py-1.5 cursor-pointer hover:bg-gray-50 -mx-1 px-1 rounded">
-    <input
-      type="checkbox"
-      className="carzino-checkbox mr-4"
+  <label className="flex items-center text-sm cursor-pointer hover:bg-gray-50 p-1 rounded">
+    <input 
+      type="checkbox" 
+      className="carzino-checkbox mr-2"
       checked={checked}
       onChange={(e) => onChange(category, name, e.target.checked)}
     />
-    <div
-      className="w-4 h-4 rounded border border-gray-300 mr-3 flex-shrink-0"
+    <div 
+      className="w-4 h-4 rounded border border-gray-300 mr-2" 
       style={{ backgroundColor: color }}
     />
-    <span className="text-sm text-gray-800 flex-1" style={{ padding: '4px 0 5px 5px' }}>{name} ({count.toLocaleString()})</span>
+    <span className="carzino-filter-option flex-1">{name}</span>
+    <span className="carzino-filter-count ml-1">({count.toLocaleString()})</span>
   </label>
 ));
 
-// Main Filter Component
-const VehicleSearchFilter = ({
+// ============================================
+// MAIN FILTER COMPONENT
+// ============================================
+
+const VehicleSearchFilter = ({ 
   filters = {},
   onFiltersChange,
   filterOptions = {},
@@ -209,25 +371,34 @@ const VehicleSearchFilter = ({
       };
     }
   }, [isMobile, isOpen]);
+
   // Local state
   const [showMoreMakes, setShowMoreMakes] = useState(false);
+  const [showMoreModels, setShowMoreModels] = useState(false);
+  const [showMoreTrims, setShowMoreTrims] = useState(false);
   
-  // Collapsed sections state (default to collapsed to match your uploaded image)
+  // Collapsed sections state
   const [collapsedFilters, setCollapsedFilters] = useState({
+    vehicleType: true,
+    condition: false,
+    mileage: true,
     make: false,
     model: false,
-    trim: false,
-    price: false,
-    payment: false,
-    condition: false,
-    mileage: false,
-    vehicleType: false,
-    driveType: false,
-    transmissionSpeed: false,
-    exteriorColor: false,
-    interiorColor: false,
-    fuelType: false,
-    year: false
+    trim: true,
+    price: true,
+    payment: true,
+    bodyType: true,
+    driveType: true,
+    transmissionSpeed: true,
+    exteriorColor: true,
+    interiorColor: true,
+    fuelType: true,
+    year: true,
+    sellerType: true,
+    dealer: true,
+    state: true,
+    city: true,
+    zipCodeFilter: true
   });
 
   // Toggle filter section
@@ -242,9 +413,9 @@ const VehicleSearchFilter = ({
   const handleFilterChange = useCallback((category, value, checked) => {
     const currentValues = filters[category] || [];
     
-    if (category === 'condition' || category === 'make' || category === 'model' || category === 'trim' ||
-        category === 'vehicleType' || category === 'bodyType' || category === 'driveType' || category === 'exteriorColor' ||
-        category === 'interiorColor' || category === 'sellerType' || category === 'dealer' || category === 'state' || category === 'city' ||
+    if (category === 'condition' || category === 'make' || category === 'model' || category === 'trim' || 
+        category === 'vehicleType' || category === 'bodyType' || category === 'driveType' || category === 'exteriorColor' || 
+        category === 'interiorColor' || category === 'sellerType' || category === 'dealer' || category === 'state' || category === 'city' || 
         category === 'zipCodeFilter' || category === 'transmissionSpeed' || category === 'transmission' || category === 'year' || category === 'fuelType') {
       // Array-based filters
       let newValues;
@@ -273,6 +444,7 @@ const VehicleSearchFilter = ({
       make: [],
       model: [],
       trim: [],
+      year: [],
       vehicleType: [],
       bodyType: [],
       driveType: [],
@@ -280,6 +452,7 @@ const VehicleSearchFilter = ({
       exteriorColor: [],
       interiorColor: [],
       transmissionSpeed: [],
+      fuelType: [],
       sellerType: [],
       dealer: [],
       state: [],
@@ -289,8 +462,8 @@ const VehicleSearchFilter = ({
       priceMax: '',
       paymentMin: '',
       paymentMax: '',
-      zipCode: filters.zipCode || '',
-      radius: filters.radius || '10',
+      zipCode: filters.zipCode || '98498',
+      radius: filters.radius || '200',
       termLength: filters.termLength || '72',
       interestRate: filters.interestRate || '8',
       downPayment: filters.downPayment || '2000'
@@ -328,9 +501,10 @@ const VehicleSearchFilter = ({
     }
   }, [filters, onFiltersChange]);
 
-  // Real data from WooCommerce API
+  // Get data with fallbacks
   const allMakes = filterOptions.makes || [];
   const allModels = filterOptions.models || [];
+  const allTrims = filterOptions.trims || [];
   const allConditions = filterOptions.conditions || [];
   const allVehicleTypes = filterOptions.bodyTypes || [];
   const allDriveTypes = filterOptions.drivetrains || [];
@@ -338,33 +512,11 @@ const VehicleSearchFilter = ({
   const allExteriorColors = filterOptions.exteriorColors || [];
   const allInteriorColors = filterOptions.interiorColors || [];
   const allYears = filterOptions.years || [];
-  const allTrims = filterOptions.trims || [];
   const allFuelTypes = filterOptions.fuelTypes || [];
 
-  // Debug logging for conditional filtering
-  const hasActiveFilters = Object.entries(filters).some(([key, values]) => {
-    if (['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment', 'priceMin', 'priceMax', 'paymentMin', 'paymentMax'].includes(key)) {
-      return false;
-    }
-    return Array.isArray(values) ? values.length > 0 : (values && values.toString().trim() !== '');
-  });
-
-  if (hasActiveFilters && !isLoading) {
-    console.log('🔗 Conditional filtering active:', {
-      make: filters.make,
-      conditions: allConditions.length,
-      vehicleTypes: allVehicleTypes.length,
-      years: allYears.length,
-      driveTypes: allDriveTypes.length,
-      colors: allExteriorColors.length
-    });
-  }
-
-
-
-
-
   const displayedMakes = showMoreMakes ? allMakes : allMakes.slice(0, 8);
+  const displayedModels = showMoreModels ? allModels : allModels.slice(0, 8);
+  const displayedTrims = showMoreTrims ? allTrims : allTrims.slice(0, 8);
 
   // Helper function to get color hex values
   const getColorHex = useCallback((colorName) => {
@@ -392,7 +544,6 @@ const VehicleSearchFilter = ({
 
   // Get filter counts
   const getFilterCount = useCallback((category) => {
-    // Define default values that shouldn't count as applied filters
     const defaultValues = {
       zipCode: '98498',
       radius: '200',
@@ -421,7 +572,6 @@ const VehicleSearchFilter = ({
 
   // Calculate active filter count
   const activeFilterCount = useMemo(() => {
-    // Define default values that shouldn't count as applied filters
     const defaultValues = {
       zipCode: '98498',
       radius: '200',
@@ -431,12 +581,10 @@ const VehicleSearchFilter = ({
     };
 
     return Object.entries(filters).reduce((count, [key, value]) => {
-      // Skip configuration/default fields that shouldn't count as active filters
       if (key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') {
         return count;
       }
 
-      // Handle price range
       if (key === 'priceMin' || key === 'priceMax') {
         if (key === 'priceMin' && ((filters.priceMin && filters.priceMin.toString().trim() !== '') ||
             (filters.priceMax && filters.priceMax.toString().trim() !== ''))) {
@@ -447,7 +595,6 @@ const VehicleSearchFilter = ({
         }
       }
 
-      // Handle payment range
       if (key === 'paymentMin' || key === 'paymentMax') {
         if (key === 'paymentMin' && ((filters.paymentMin && filters.paymentMin.toString().trim() !== '') ||
             (filters.paymentMax && filters.paymentMax.toString().trim() !== ''))) {
@@ -458,12 +605,10 @@ const VehicleSearchFilter = ({
         }
       }
 
-      // Handle array-based filters
       if (Array.isArray(value)) {
         return count + value.length;
       }
 
-      // Handle single value filters (exclude empty values and default values)
       if (value && value.toString().trim() !== '' && value.toString() !== (defaultValues[key] || '')) {
         return count + 1;
       }
@@ -472,18 +617,30 @@ const VehicleSearchFilter = ({
     }, 0);
   }, [filters]);
 
+  // Add styles on mount
+  useEffect(() => {
+    const styleTag = document.createElement('style');
+    styleTag.innerHTML = styles;
+    document.head.appendChild(styleTag);
+    return () => {
+      if (document.head.contains(styleTag)) {
+        document.head.removeChild(styleTag);
+      }
+    };
+  }, []);
+
   // Mobile off-canvas overlay
   if (isMobile) {
     return (
       <>
         {/* Backdrop */}
-        <div
+        <div 
           className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
             isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           onClick={onClose}
         />
-
+        
         {/* Off-canvas menu */}
         <div className={`fixed left-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-2xl z-50 transition-transform duration-300 ease-out ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
@@ -522,16 +679,14 @@ const VehicleSearchFilter = ({
         )}
 
         {/* Search Section */}
-        <div className="mb-6">
-          <h3 className="text-sm font-medium text-gray-900 mb-3">Search Vehicles</h3>
-          <div className="relative rounded-md overflow-hidden">
+        <div className="mb-4 pb-4 border-b border-gray-200">
+          <div className="relative">
             <input
               type="text"
               placeholder="Search Vehicles"
-              className="carzino-search-input carzino-input w-full px-3 py-5 pr-12 border border-gray-300 rounded-md focus:outline-none focus:border-red-600 bg-white"
-              style={{ height: '39px' }}
+              className="carzino-search-input carzino-input w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none focus:border-red-600"
             />
-            <button className="absolute right-3 top-1/2 transform -translate-y-1/2 text-red-600">
+            <button className="absolute right-2 top-1/2 transform -translate-y-1/2 text-red-600 p-1">
               <Search className="w-4 h-4" style={{ color: '#dc2626' }} />
             </button>
           </div>
@@ -539,163 +694,162 @@ const VehicleSearchFilter = ({
 
         {/* Applied Filters */}
         {activeFilterCount > 0 && (
-          <div className="mb-6">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-medium text-gray-900">Applied Filters</h3>
-            <button
-              onClick={clearAllFilters}
-              className="bg-red-600 text-white px-3 py-1 rounded text-xs font-medium hover:bg-red-700"
-              style={{ backgroundColor: '#dc2626' }}
-            >
-              Clear All
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-2 max-w-full overflow-hidden">
-            {(() => {
-              const filterPills = [];
+          <div className="mb-4 pb-4 border-b border-gray-200">
+            <div className="flex items-center justify-between mb-2">
+              <h3 className="carzino-filter-title">Applied Filters</h3>
+              <button 
+                onClick={clearAllFilters}
+                className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-red-700"
+                style={{ backgroundColor: '#dc2626' }}
+              >
+                Clear All
+              </button>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {(() => {
+                const filterPills = [];
 
-              // Define default values that shouldn't show as applied filters
-              const defaultValues = {
-                zipCode: '98498',
-                radius: '200',
-                termLength: '72',
-                interestRate: '8',
-                downPayment: '2000'
-              };
+                const defaultValues = {
+                  zipCode: '98498',
+                  radius: '200',
+                  termLength: '72',
+                  interestRate: '8',
+                  downPayment: '2000'
+                };
 
-              // Handle array-based filters
-              Object.entries(filters).forEach(([category, value]) => {
-                // Skip configuration/default fields that shouldn't show as applied filters
-                if (category === 'radius' || category === 'termLength' || category === 'interestRate' ||
-                    category === 'downPayment' || category === 'zipCode' || category === 'priceMin' ||
-                    category === 'priceMax' || category === 'paymentMin' || category === 'paymentMax') {
-                  return;
+                Object.entries(filters).forEach(([category, value]) => {
+                  if (category === 'radius' || category === 'termLength' || category === 'interestRate' ||
+                      category === 'downPayment' || category === 'zipCode' || category === 'priceMin' ||
+                      category === 'priceMax' || category === 'paymentMin' || category === 'paymentMax') {
+                    return;
+                  }
+
+                  if (Array.isArray(value) && value.length > 0) {
+                    value.forEach((item, index) => {
+                      if (item && item.toString().trim() !== '') {
+                        filterPills.push(
+                          <span key={`${category}-${index}`} className="carzino-filter-pill">
+                            <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                            {item}
+                            <button
+                              onClick={() => removeAppliedFilter(category, item)}
+                              className="ml-1 text-white hover:text-gray-300"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        );
+                      }
+                    });
+                  } else if (value && typeof value === 'string' && value.trim() !== '' && value !== (defaultValues[category] || '')) {
+                    filterPills.push(
+                      <span key={category} className="carzino-filter-pill">
+                        <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                        {value}
+                        <button
+                          onClick={() => removeAppliedFilter(category, value)}
+                          className="ml-1 text-white hover:text-gray-300"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  }
+                });
+
+                // Handle price range
+                if ((filters.priceMin && filters.priceMin.toString().trim() !== '') ||
+                    (filters.priceMax && filters.priceMax.toString().trim() !== '')) {
+                  const priceRange = [];
+                  if (filters.priceMin && filters.priceMin.toString().trim() !== '') {
+                    priceRange.push(`$${filters.priceMin}+`);
+                  }
+                  if (filters.priceMax && filters.priceMax.toString().trim() !== '') {
+                    priceRange.push(`$${filters.priceMax}-`);
+                  }
+                  if (priceRange.length > 0) {
+                    filterPills.push(
+                      <span key="price" className="carzino-filter-pill">
+                        <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                        {priceRange.join(' to ')}
+                        <button
+                          onClick={() => removeAppliedFilter('priceMin', '')}
+                          className="ml-1 text-white hover:text-gray-300"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  }
                 }
 
-                if (Array.isArray(value) && value.length > 0) {
-                  value.forEach((item, index) => {
-                    if (item && item.toString().trim() !== '') {
-                      filterPills.push(
-                        <span key={`${category}-${index}`} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
-                          <span className="truncate flex-1">{item}</span>
-                          <button
-                            onClick={() => removeAppliedFilter(category, item)}
-                            className="text-white hover:text-gray-300 text-xs flex-shrink-0 ml-2"
-                          >
-                            ×
-                          </button>
-                        </span>
-                      );
-                    }
-                  });
-                } else if (value && typeof value === 'string' && value.trim() !== '' && value !== (defaultValues[category] || '')) {
-                  filterPills.push(
-                    <span key={category} className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
-                      <span className="truncate flex-1">{value}</span>
-                      <button
-                        onClick={() => removeAppliedFilter(category, value)}
-                        className="text-white hover:text-gray-300 text-xs flex-shrink-0 ml-2"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
+                // Handle payment range
+                if ((filters.paymentMin && filters.paymentMin.toString().trim() !== '') ||
+                    (filters.paymentMax && filters.paymentMax.toString().trim() !== '')) {
+                  const paymentRange = [];
+                  if (filters.paymentMin && filters.paymentMin.toString().trim() !== '') {
+                    paymentRange.push(`$${filters.paymentMin}+`);
+                  }
+                  if (filters.paymentMax && filters.paymentMax.toString().trim() !== '') {
+                    paymentRange.push(`$${filters.paymentMax}-`);
+                  }
+                  if (paymentRange.length > 0) {
+                    filterPills.push(
+                      <span key="payment" className="carzino-filter-pill">
+                        <Check className="w-3 h-3" style={{ color: '#dc2626' }} />
+                        {paymentRange.join(' to ')}
+                        <button
+                          onClick={() => removeAppliedFilter('paymentMin', '')}
+                          className="ml-1 text-white hover:text-gray-300"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    );
+                  }
                 }
-              });
 
-              // Handle price range (only if actual values are entered)
-              if ((filters.priceMin && filters.priceMin.toString().trim() !== '') ||
-                  (filters.priceMax && filters.priceMax.toString().trim() !== '')) {
-                const priceRange = [];
-                if (filters.priceMin && filters.priceMin.toString().trim() !== '') {
-                  priceRange.push(`$${filters.priceMin}+`);
-                }
-                if (filters.priceMax && filters.priceMax.toString().trim() !== '') {
-                  priceRange.push(`$${filters.priceMax}-`);
-                }
-                if (priceRange.length > 0) {
-                  filterPills.push(
-                    <span key="price" className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
-                      <span className="truncate flex-1">{priceRange.join(' to ')}</span>
-                      <button
-                        onClick={() => removeAppliedFilter('priceMin', '')}
-                        className="text-white hover:text-gray-300 text-xs flex-shrink-0 ml-2"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                }
-              }
-
-              // Handle payment range (only if actual values are entered)
-              if ((filters.paymentMin && filters.paymentMin.toString().trim() !== '') ||
-                  (filters.paymentMax && filters.paymentMax.toString().trim() !== '')) {
-                const paymentRange = [];
-                if (filters.paymentMin && filters.paymentMin.toString().trim() !== '') {
-                  paymentRange.push(`$${filters.paymentMin}+`);
-                }
-                if (filters.paymentMax && filters.paymentMax.toString().trim() !== '') {
-                  paymentRange.push(`$${filters.paymentMax}-`);
-                }
-                if (paymentRange.length > 0) {
-                  filterPills.push(
-                    <span key="payment" className="bg-black text-white rounded-full text-xs font-medium flex items-center max-w-full" style={{paddingLeft: '10px', paddingRight: '15px', paddingTop: '6px', paddingBottom: '6px'}}>
-                      <span className="truncate flex-1">{paymentRange.join(' to ')}</span>
-                      <button
-                        onClick={() => removeAppliedFilter('paymentMin', '')}
-                        className="text-white hover:text-gray-300 text-xs flex-shrink-0 ml-2"
-                      >
-                        ×
-                      </button>
-                    </span>
-                  );
-                }
-              }
-
-              return filterPills;
-            })()}
-          </div>
+                return filterPills;
+              })()}
+            </div>
           </div>
         )}
 
         {/* Distance */}
-        <div className="mb-6">
-          <label className="block mb-3 text-sm font-medium text-gray-900">Distance</label>
-          <div className="space-y-3">
+        <div className="mb-4 pb-4 border border-gray-200 rounded-lg p-3">
+          <label className="carzino-location-label block mb-2">Distance</label>
+          <div className="space-y-2">
             <input
               type="text"
               placeholder="ZIP Code"
               value={filters.zipCode || '98498'}
               onChange={(e) => handleFilterChange('zipCode', e.target.value, true)}
-              className="carzino-search-input carzino-input w-full px-3 py-5 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
-              style={{ height: '39px' }}
+              className="carzino-search-input carzino-input w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none"
             />
-            <select
+            <select 
               value={filters.radius || '200'}
               onChange={(e) => handleFilterChange('radius', e.target.value, true)}
-              className="carzino-select w-full px-3 py-5 border border-gray-300 rounded text-sm focus:outline-none focus:border-red-600 bg-white"
-              style={{ height: '39px' }}
+              className="carzino-select w-full px-3 py-2.5 border border-gray-300 rounded-md focus:outline-none"
             >
-              <option value="10">10 Miles</option>
-              <option value="25">25 Miles</option>
-              <option value="50">50 Miles</option>
-              <option value="100">100 Miles</option>
-              <option value="200">200 Miles</option>
-              <option value="500">500 Miles</option>
+              <option value="10">10 miles</option>
+              <option value="25">25 miles</option>
+              <option value="50">50 miles</option>
+              <option value="100">100 miles</option>
+              <option value="200">200 miles</option>
+              <option value="500">500 miles</option>
               <option value="any">Any</option>
             </select>
           </div>
         </div>
 
         {/* Make */}
-        <FilterSection
+        <FilterSection 
           title="Make"
           isCollapsed={collapsedFilters.make}
           onToggle={() => toggleFilter('make')}
           count={getFilterCount('make')}
         >
-          <div className="space-y-2">
+          <div className="space-y-1">
             {allMakes.length > 0 ? (
               displayedMakes.map((make) => (
                 <CheckboxOption
@@ -715,26 +869,26 @@ const VehicleSearchFilter = ({
             )}
           </div>
           {allMakes.length > 8 && (
-            <span
+            <button 
               onClick={() => setShowMoreMakes(!showMoreMakes)}
-              className="text-red-600 hover:text-red-700 text-sm mt-3 font-medium cursor-pointer"
+              className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
             >
               {showMoreMakes ? 'Show Less' : 'Show More'}
-            </span>
+            </button>
           )}
         </FilterSection>
 
-        {/* Model */}
+        {/* Model - shows only when make is selected */}
         {filters.make?.length > 0 && (
-          <FilterSection
-            title={`Model${hasActiveFilters ? ' (select multiple)' : ''}`}
+          <FilterSection 
+            title="Model"
             isCollapsed={collapsedFilters.model}
             onToggle={() => toggleFilter('model')}
             count={getFilterCount('model')}
           >
-            <div className="space-y-2">
+            <div className="space-y-1">
               {allModels.length > 0 ? (
-                allModels.map((model) => (
+                displayedModels.map((model) => (
                   <CheckboxOption
                     key={model.name}
                     label={model.name}
@@ -751,6 +905,14 @@ const VehicleSearchFilter = ({
                 </div>
               )}
             </div>
+            {allModels.length > 8 && (
+              <button 
+                onClick={() => setShowMoreModels(!showMoreModels)}
+                className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
+              >
+                {showMoreModels ? 'Show Less' : 'Show More'}
+              </button>
+            )}
           </FilterSection>
         )}
 
@@ -783,13 +945,13 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Condition */}
-        <FilterSection
-          title={hasActiveFilters ? "Condition (filtered)" : "Condition"}
+        <FilterSection 
+          title="Condition"
           isCollapsed={collapsedFilters.condition}
           onToggle={() => toggleFilter('condition')}
           count={getFilterCount('condition')}
         >
-          <div className="space-y-3">
+          <div className="space-y-1">
             {allConditions.length > 0 ? (
               allConditions.map((condition) => (
                 <CheckboxOption
@@ -803,21 +965,44 @@ const VehicleSearchFilter = ({
                 />
               ))
             ) : (
-              <div className="text-sm text-gray-500 py-2">
-                {isLoading ? 'Loading conditions...' : hasActiveFilters ? 'No conditions available for current selection' : 'Loading conditions...'}
+              <div className="space-y-1">
+                <CheckboxOption
+                  label="New"
+                  count={125989}
+                  value="New"
+                  category="condition"
+                  checked={filters.condition?.includes('New')}
+                  onChange={handleFilterChange}
+                />
+                <CheckboxOption
+                  label="Used"
+                  count={78800}
+                  value="Used"
+                  category="condition"
+                  checked={filters.condition?.includes('Used')}
+                  onChange={handleFilterChange}
+                />
+                <CheckboxOption
+                  label="Certified"
+                  count={9889}
+                  value="Certified"
+                  category="condition"
+                  checked={filters.condition?.includes('Certified')}
+                  onChange={handleFilterChange}
+                />
               </div>
             )}
           </div>
         </FilterSection>
 
-        {/* Search by Vehicle Type */}
-        <FilterSection
-          title={hasActiveFilters ? "Vehicle Type (filtered)" : "Search by Vehicle Type"}
+        {/* Vehicle Type */}
+        <FilterSection 
+          title="Vehicle Type"
           isCollapsed={collapsedFilters.vehicleType}
           onToggle={() => toggleFilter('vehicleType')}
           count={getFilterCount('vehicleType')}
         >
-          <div className="space-y-2">
+          <div className="space-y-1">
             {allVehicleTypes.length > 0 ? (
               allVehicleTypes.map((vehicleType) => (
                 <CheckboxOption
@@ -831,21 +1016,44 @@ const VehicleSearchFilter = ({
                 />
               ))
             ) : (
-              <div className="text-sm text-gray-500 py-2">
-                {isLoading ? 'Loading vehicle types...' : hasActiveFilters ? 'No vehicle types for current selection' : 'Loading vehicle types...'}
+              <div className="space-y-1">
+                <CheckboxOption
+                  label="Sedan"
+                  count={1698}
+                  value="Sedan"
+                  category="vehicleType"
+                  checked={filters.vehicleType?.includes('Sedan')}
+                  onChange={handleFilterChange}
+                />
+                <CheckboxOption
+                  label="SUV"
+                  count={3405}
+                  value="SUV"
+                  category="vehicleType"
+                  checked={filters.vehicleType?.includes('SUV')}
+                  onChange={handleFilterChange}
+                />
+                <CheckboxOption
+                  label="Truck"
+                  count={2217}
+                  value="Truck"
+                  category="vehicleType"
+                  checked={filters.vehicleType?.includes('Truck')}
+                  onChange={handleFilterChange}
+                />
               </div>
             )}
           </div>
         </FilterSection>
 
         {/* Drive Type */}
-        <FilterSection
-          title={hasActiveFilters ? "Drive Type (filtered)" : "Drive Type"}
+        <FilterSection 
+          title="Drive Type"
           isCollapsed={collapsedFilters.driveType}
           onToggle={() => toggleFilter('driveType')}
           count={getFilterCount('driveType')}
         >
-          <div className="space-y-2">
+          <div className="space-y-1">
             {allDriveTypes.length > 0 ? (
               allDriveTypes.map((driveType) => (
                 <CheckboxOption
@@ -859,8 +1067,31 @@ const VehicleSearchFilter = ({
                 />
               ))
             ) : (
-              <div className="text-sm text-gray-500 py-2">
-                {isLoading ? 'Loading drive types...' : hasActiveFilters ? 'No drive types for current selection' : 'Loading drive types...'}
+              <div className="space-y-1">
+                <CheckboxOption
+                  label="AWD/4WD"
+                  count={18943}
+                  value="AWD/4WD"
+                  category="driveType"
+                  checked={filters.driveType?.includes('AWD/4WD')}
+                  onChange={handleFilterChange}
+                />
+                <CheckboxOption
+                  label="FWD"
+                  count={12057}
+                  value="FWD"
+                  category="driveType"
+                  checked={filters.driveType?.includes('FWD')}
+                  onChange={handleFilterChange}
+                />
+                <CheckboxOption
+                  label="RWD"
+                  count={5883}
+                  value="RWD"
+                  category="driveType"
+                  checked={filters.driveType?.includes('RWD')}
+                  onChange={handleFilterChange}
+                />
               </div>
             )}
           </div>
@@ -873,7 +1104,7 @@ const VehicleSearchFilter = ({
           onToggle={() => toggleFilter('transmissionSpeed')}
           count={getFilterCount('transmissionSpeed')}
         >
-          <div className="space-y-2">
+          <div className="space-y-1">
             {allTransmissions.length > 0 ? (
               allTransmissions.map((transmission) => (
                 <CheckboxOption
@@ -895,13 +1126,13 @@ const VehicleSearchFilter = ({
         </FilterSection>
 
         {/* Exterior Color */}
-        <FilterSection
-          title={hasActiveFilters ? "Exterior Color (filtered)" : "Exterior Color"}
+        <FilterSection 
+          title="Exterior Color"
           isCollapsed={collapsedFilters.exteriorColor}
           onToggle={() => toggleFilter('exteriorColor')}
           count={getFilterCount('exteriorColor')}
         >
-          <div className="space-y-2">
+          <div className="space-y-1">
             {allExteriorColors.length > 0 ? (
               allExteriorColors.map((color) => (
                 <ColorSwatch
@@ -916,20 +1147,20 @@ const VehicleSearchFilter = ({
               ))
             ) : (
               <div className="text-sm text-gray-500 py-2">
-                {isLoading ? 'Loading exterior colors...' : hasActiveFilters ? 'No colors for current selection' : 'Loading exterior colors...'}
+                Loading exterior colors...
               </div>
             )}
           </div>
         </FilterSection>
 
         {/* Interior Color */}
-        <FilterSection
+        <FilterSection 
           title="Interior Color"
           isCollapsed={collapsedFilters.interiorColor}
           onToggle={() => toggleFilter('interiorColor')}
           count={getFilterCount('interiorColor')}
         >
-          <div className="space-y-2">
+          <div className="space-y-1">
             {allInteriorColors.length > 0 ? (
               allInteriorColors.map((color) => (
                 <ColorSwatch
@@ -953,12 +1184,12 @@ const VehicleSearchFilter = ({
         {/* Model Years */}
         {allYears.length > 0 && (
           <FilterSection
-            title={hasActiveFilters ? "Year (filtered)" : "Year"}
+            title="Year"
             isCollapsed={collapsedFilters.year}
             onToggle={() => toggleFilter('year')}
             count={getFilterCount('year')}
           >
-            <div className="space-y-2">
+            <div className="space-y-1">
               {allYears.map((year) => (
                 <CheckboxOption
                   key={year.name}
@@ -982,7 +1213,7 @@ const VehicleSearchFilter = ({
             onToggle={() => toggleFilter('fuelType')}
             count={getFilterCount('fuelType')}
           >
-            <div className="space-y-2">
+            <div className="space-y-1">
               {allFuelTypes.map((fuelType) => (
                 <CheckboxOption
                   key={fuelType.name}
@@ -1006,8 +1237,8 @@ const VehicleSearchFilter = ({
             onToggle={() => toggleFilter('trim')}
             count={getFilterCount('trim')}
           >
-            <div className="space-y-2">
-              {allTrims.map((trim) => (
+            <div className="space-y-1">
+              {displayedTrims.map((trim) => (
                 <CheckboxOption
                   key={trim.name}
                   label={trim.name}
@@ -1019,6 +1250,14 @@ const VehicleSearchFilter = ({
                 />
               ))}
             </div>
+            {allTrims.length > 8 && (
+              <button 
+                onClick={() => setShowMoreTrims(!showMoreTrims)}
+                className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
+              >
+                {showMoreTrims ? 'Show Less' : 'Show More'}
+              </button>
+            )}
           </FilterSection>
         )}
 
@@ -1038,6 +1277,11 @@ const VehicleSearchFilter = ({
               style={{ backgroundColor: '#dc2626' }}
             >
               Apply Filters
+              {activeFilterCount > 0 && (
+                <span className="ml-2 bg-black text-white text-xs rounded-full px-2 py-1">
+                  {activeFilterCount}
+                </span>
+              )}
             </button>
           </div>
         )}
