@@ -1,4 +1,5 @@
 // Performance Monitoring Service
+import React from 'react';
 
 class PerformanceMonitor {
   constructor() {
