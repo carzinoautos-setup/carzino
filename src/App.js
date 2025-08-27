@@ -761,33 +761,35 @@ function App() {
             isMobile={isMobile}
           />
 
-          {/* Vehicle Grid - Simplified Test */}
-          <div style={{
-            backgroundColor: 'orange',
-            padding: '20px',
-            border: '2px solid blue',
-            margin: '20px 0'
-          }}>
-            🔧 VEHICLE GRID: loading={loading?.toString()}, error={error || 'none'}, vehicles={vehicles.length}
-
-            {vehicles.length > 0 && (
-              <div>
-                ✅ Found {vehicles.length} vehicles:
-                <div className={`vehicle-grid ${viewMode}-view p-2`}>
-                  {vehicles.slice(0, 3).map((vehicle, index) => (
-                    <div key={index} style={{
-                      border: '1px solid green',
-                      padding: '10px',
-                      margin: '10px 0',
-                      backgroundColor: 'lightgreen'
-                    }}>
-                      🚗 Vehicle {index}: {vehicle?.title || 'No title'}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          {/* Vehicle Grid */}
+          {loading ? (
+            <div className={`vehicle-grid ${viewMode}-view p-2`}>
+              {Array.from({ length: itemsPerPage }, (_, index) => (
+                <VehicleCardSkeleton key={`skeleton-${index}`} />
+              ))}
+            </div>
+          ) : error ? (
+            <div className="error-container">
+              <p>Error loading vehicles: {error}</p>
+              <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
+            </div>
+          ) : vehicles.length === 0 ? (
+            <div className="no-results">
+              <h3>No vehicles found</h3>
+              <p>Try adjusting your search filters</p>
+            </div>
+          ) : (
+            <div className={`vehicle-grid ${viewMode}-view p-2`}>
+              {vehicles.map((vehicle, index) => (
+                <VehicleCard
+                  key={`${vehicle.id}-${currentPage}-${index}`}
+                  vehicle={vehicle}
+                  favorites={favorites}
+                  onFavoriteToggle={toggleFavorite}
+                />
+              ))}
+            </div>
+          )}
 
           {/* Pagination */}
           {totalPages > 1 && (
