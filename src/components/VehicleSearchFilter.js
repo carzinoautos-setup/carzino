@@ -959,57 +959,200 @@ const VehicleSearchFilter = ({
       <>
         {/* Backdrop */}
         <div
-          className={`fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity duration-300 ${
-            isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-          }`}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            backdropFilter: 'blur(4px)',
+            zIndex: 40,
+            opacity: isOpen ? 1 : 0,
+            pointerEvents: isOpen ? 'auto' : 'none',
+            transition: 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+          }}
           onClick={onClose}
         />
 
         {/* Bottom Sheet */}
-        <div className={`fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 transition-transform duration-300 ease-out max-h-[90vh] ${
-          isOpen ? 'translate-y-0' : 'translate-y-full'
-        }`}>
+        <div
+          style={{
+            position: 'fixed',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: '#ffffff',
+            borderTopLeftRadius: '24px',
+            borderTopRightRadius: '24px',
+            boxShadow: '0 -10px 25px rgba(0, 0, 0, 0.2), 0 -4px 12px rgba(0, 0, 0, 0.1)',
+            zIndex: 50,
+            maxHeight: '90vh',
+            transform: isOpen ? 'translateY(0)' : 'translateY(100%)',
+            transition: 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+            fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+          }}
+        >
           {/* Drag Handle */}
-          <div className="flex justify-center pt-4 pb-2">
-            <div className="w-12 h-1 bg-gray-300 rounded-full"></div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              paddingTop: '16px',
+              paddingBottom: '8px'
+            }}
+          >
+            <div
+              style={{
+                width: '48px',
+                height: '4px',
+                backgroundColor: '#d1d5db',
+                borderRadius: '2px'
+              }}
+            />
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-            <h2 className="text-xl font-bold text-gray-900">Filter Vehicles</h2>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              padding: '20px 24px',
+              borderBottom: '1px solid #f3f4f6'
+            }}
+          >
+            <h2
+              style={{
+                fontSize: '24px',
+                fontWeight: '700',
+                color: '#111827',
+                margin: 0
+              }}
+            >
+              Filter Vehicles
+            </h2>
             <button
               onClick={onClose}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+              style={{
+                padding: '8px',
+                backgroundColor: 'transparent',
+                border: 'none',
+                borderRadius: '50%',
+                cursor: 'pointer',
+                transition: 'background-color 0.2s ease',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#f9fafb'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = 'transparent'}
               aria-label="Close filters"
             >
-              <X className="w-6 h-6 text-gray-600" />
+              <X style={{ width: '24px', height: '24px', color: '#6b7280' }} />
             </button>
           </div>
 
           {/* Content */}
-          <div className="overflow-y-auto" style={{ maxHeight: 'calc(90vh - 140px)', paddingBottom: '100px' }}>
-            <div className="px-6 py-4">
+          <div
+            style={{
+              overflowY: 'auto',
+              maxHeight: 'calc(90vh - 160px)',
+              paddingBottom: '120px'
+            }}
+          >
+            <div style={{ padding: '24px' }}>
               <FilterContent />
             </div>
           </div>
 
           {/* Bottom Actions */}
-          <div className="absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex gap-3 rounded-t-3xl">
+          <div
+            style={{
+              position: 'absolute',
+              bottom: 0,
+              left: 0,
+              right: 0,
+              backgroundColor: '#ffffff',
+              borderTop: '1px solid #e5e7eb',
+              padding: '20px 24px',
+              display: 'flex',
+              gap: '12px',
+              borderTopLeftRadius: '24px',
+              borderTopRightRadius: '24px',
+              boxShadow: '0 -4px 20px rgba(0, 0, 0, 0.08)'
+            }}
+          >
             <button
               onClick={clearAllFilters}
-              className="flex-1 px-6 py-4 bg-gray-100 text-gray-800 rounded-2xl font-semibold hover:bg-gray-200 transition-colors disabled:opacity-50"
               disabled={activeFilterCount === 0}
+              style={{
+                flex: 1,
+                padding: '16px 24px',
+                backgroundColor: activeFilterCount === 0 ? '#f3f4f6' : '#f9fafb',
+                color: activeFilterCount === 0 ? '#9ca3af' : '#374151',
+                border: '1px solid #e5e7eb',
+                borderRadius: '16px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: activeFilterCount === 0 ? 'not-allowed' : 'pointer',
+                transition: 'all 0.2s ease',
+                fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, sans-serif"
+              }}
+              onMouseEnter={(e) => {
+                if (activeFilterCount > 0) {
+                  e.target.style.backgroundColor = '#f3f4f6';
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (activeFilterCount > 0) {
+                  e.target.style.backgroundColor = '#f9fafb';
+                }
+              }}
             >
               Clear {activeFilterCount > 0 && `(${activeFilterCount})`}
             </button>
             <button
               onClick={onClose}
-              className="flex-1 px-6 py-4 text-white rounded-2xl font-semibold hover:bg-red-700 transition-colors relative"
-              style={{ backgroundColor: '#dc2626' }}
+              style={{
+                flex: 1,
+                padding: '16px 24px',
+                backgroundColor: '#dc2626',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '16px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, sans-serif",
+                position: 'relative',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseEnter={(e) => e.target.style.backgroundColor = '#b91c1c'}
+              onMouseLeave={(e) => e.target.style.backgroundColor = '#dc2626'}
             >
               Apply Filters
               {activeFilterCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-black text-white text-xs rounded-full w-6 h-6 flex items-center justify-center">
+                <span
+                  style={{
+                    position: 'absolute',
+                    top: '-8px',
+                    right: '-8px',
+                    backgroundColor: '#000000',
+                    color: '#ffffff',
+                    fontSize: '12px',
+                    borderRadius: '50%',
+                    width: '24px',
+                    height: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: '700'
+                  }}
+                >
                   {activeFilterCount}
                 </span>
               )}
