@@ -783,14 +783,22 @@ function App() {
             <>
               {/* Vehicle Cards */}
               <div className={`vehicle-grid ${viewMode}-view p-2`}>
-                {vehicles.map((vehicle, index) => (
-                  <VehicleCard
-                    key={`${vehicle.id}-${currentPage}-${index}`}
-                    vehicle={vehicle}
-                    favorites={favorites}
-                    onFavoriteToggle={toggleFavorite}
-                  />
-                ))}
+                {vehicles.map((vehicle, index) => {
+                  console.log(`🚗 Mapping vehicle ${index}:`, vehicle?.title || 'No title', vehicle?.id || 'No ID');
+                  try {
+                    return (
+                      <VehicleCard
+                        key={`${vehicle.id}-${currentPage}-${index}`}
+                        vehicle={vehicle}
+                        favorites={favorites}
+                        onFavoriteToggle={toggleFavorite}
+                      />
+                    );
+                  } catch (error) {
+                    console.error(`❌ Error rendering vehicle ${index}:`, error);
+                    return <div key={`error-${index}`} style={{border: '1px solid red', padding: '10px'}}>Error rendering vehicle {index}</div>;
+                  }
+                })}
               </div>
 
               {/* Pagination */}
