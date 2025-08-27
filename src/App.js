@@ -823,153 +823,167 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <header className="app-header">
-        <h1>Carzino Vehicle Search</h1>
-        <div className="connection-status">
-          {loading ? (
-            <p>🔄 Loading vehicles...</p>
-          ) : error ? (
-            <p className="error">❌ {error}</p>
-          ) : (
-            <div className="status-info">
-              <p>{apiConnected ? '✅ Connected to WooCommerce inventory' : '🎯 Demo Mode - WooCommerce API unreachable'} ({totalResults.toLocaleString()} {apiConnected ? 'vehicles' : 'sample vehicles'})</p>
-              <div className="search-stats">
-                <span>📄 Showing {startResult.toLocaleString()}-{endResult.toLocaleString()}</span>
-                <span>⏱️ Search: {searchTime}ms{searchTime < 50 ? ' ⚡ CACHED' : ''}</span>
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
-
-      <div className="main-container">
-        {/* Search and Filter Section - Sidebar */}
-        <FilterErrorBoundary
-          onRetry={() => fetchVehiclesPage(currentPage, filters)}
-          onReset={() => {
-            setFilters(getInitialFilters());
-            fetchVehiclesPage(1, getInitialFilters());
-          }}
-        >
-          <VehicleSearchFilter
-            filters={filters}
-            onFiltersChange={handleFilterChange}
-            loading={loading}
-            filterOptions={filterOptions}
-            isOpen={isMobileFiltersOpen}
-            onClose={isMobile ? () => setIsMobileFiltersOpen(false) : null}
-            isMobile={isMobile}
-          />
-        </FilterErrorBoundary>
-
-
-        {/* Main Content Area */}
-        <div className="main-content">
-
-          {/* 🚀 Fast Loading Indicator for Filter Updates */}
-          {optimisticLoading && (
-            <div style={{
-              position: 'fixed',
-              top: '10px',
-              right: '10px',
-              background: 'rgba(34, 197, 94, 0.9)',
-              color: 'white',
-              padding: '8px 16px',
-              borderRadius: '20px',
-              fontSize: '14px',
-              fontWeight: '500',
-              zIndex: 1000,
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-              animation: 'pulse 1s infinite'
-            }}>
-              ⚡ Updating filters...
-            </div>
-          )}
-          {/* Results Header with Sort and View Options */}
-          <SearchResultsHeader
-            totalResults={totalResults}
-            currentPage={currentPage}
-            itemsPerPage={itemsPerPage}
-            startResult={startResult}
-            endResult={endResult}
-            sortBy={sortBy}
-            onSortChange={handleSortChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-            searchTime={optimisticLoading ? 'Updating...' : (searchTime < 100 && searchTime > 0 ? `${searchTime}ms ⚡ CACHED` : searchTime)}
-            currentFilters={filters}
-            viewMode={viewMode}
-            onViewModeChange={setViewMode}
-            onMobileFiltersOpen={isMobile ? () => setIsMobileFiltersOpen(true) : null}
-            favoritesCount={Object.values(favorites).filter(Boolean).length}
-            showingFavorites={showingFavorites}
-            onToggleFavorites={handleToggleFavorites}
-            isMobile={isMobile}
-            mobileFiltersOpen={isMobileFiltersOpen}
-          />
-
-          {/* Vehicle Grid */}
-          <VehicleGridErrorBoundary
-            onRetry={() => fetchVehiclesPage(currentPage, filters)}
-            onReset={() => {
-              // Clear cache and reset to first page
-              setCachedVehicles(new Map());
-              setPreloadedPages(new Map());
-              fetchVehiclesPage(1, filters);
-            }}
-          >
+    <ErrorBoundary
+      level="app"
+      onReset={() => {
+        // Complete app reset
+        setFilters(getInitialFilters());
+        setVehicles([]);
+        setCachedVehicles(new Map());
+        setPreloadedPages(new Map());
+        setCurrentPage(1);
+        setError(null);
+        fetchVehiclesPage(1, getInitialFilters());
+      }}
+    >
+      <div className="App">
+        <header className="app-header">
+          <h1>Carzino Vehicle Search</h1>
+          <div className="connection-status">
             {loading ? (
-              <div className={`vehicle-grid ${viewMode}-view p-2`}>
-                {Array.from({ length: itemsPerPage }, (_, index) => (
-                  <VehicleCardSkeleton key={`skeleton-${index}`} />
-                ))}
-              </div>
+              <p>🔄 Loading vehicles...</p>
             ) : error ? (
-              <div className="error-container">
-                <p>Error loading vehicles: {error}</p>
-                <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
-              </div>
-            ) : vehicles.length === 0 ? (
-              <div className="no-results" style={isMobile ? {paddingLeft: '20px', paddingRight: '20px'} : {}}>
-                <h3>No vehicles found</h3>
-                <p>Try adjusting your search filters</p>
-              </div>
+              <p className="error">❌ {error}</p>
             ) : (
-              <div className={`vehicle-grid ${viewMode}-view p-2`}>
-                {vehicles.map((vehicle, index) => (
-                  <VehicleCardErrorBoundary
-                    key={`boundary-${vehicle.id}-${currentPage}-${index}`}
-                    vehicleId={vehicle.id}
-                  >
-                    <VehicleCard
-                      key={`${vehicle.id}-${currentPage}-${index}`}
-                      vehicle={vehicle}
-                      favorites={favorites}
-                      onFavoriteToggle={toggleFavorite}
-                    />
-                  </VehicleCardErrorBoundary>
-                ))}
+              <div className="status-info">
+                <p>{apiConnected ? '✅ Connected to WooCommerce inventory' : '🎯 Demo Mode - WooCommerce API unreachable'} ({totalResults.toLocaleString()} {apiConnected ? 'vehicles' : 'sample vehicles'})</p>
+                <div className="search-stats">
+                  <span>📄 Showing {startResult.toLocaleString()}-{endResult.toLocaleString()}</span>
+                  <span>⏱️ Search: {searchTime}ms{searchTime < 50 ? ' ⚡ CACHED' : ''}</span>
+                </div>
               </div>
             )}
-          </VehicleGridErrorBoundary>
+          </div>
+        </header>
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <PaginationErrorBoundary onRetry={() => fetchVehiclesPage(currentPage, filters)}>
-              <Suspense fallback={<div className="flex justify-center py-4"><div className="loading-spinner"></div></div>}>
-                <Pagination
-                  currentPage={currentPage}
-                  totalPages={totalPages}
-                  totalResults={totalResults}
-                  resultsPerPage={itemsPerPage}
-                  onPageChange={handlePageChange}
-                />
-              </Suspense>
-            </PaginationErrorBoundary>
-          )}
+        <div className="main-container">
+          {/* Search and Filter Section - Sidebar */}
+          <FilterErrorBoundary
+            onRetry={() => fetchVehiclesPage(currentPage, filters)}
+            onReset={() => {
+              setFilters(getInitialFilters());
+              fetchVehiclesPage(1, getInitialFilters());
+            }}
+          >
+            <VehicleSearchFilter
+              filters={filters}
+              onFiltersChange={handleFilterChange}
+              loading={loading}
+              filterOptions={filterOptions}
+              isOpen={isMobileFiltersOpen}
+              onClose={isMobile ? () => setIsMobileFiltersOpen(false) : null}
+              isMobile={isMobile}
+            />
+          </FilterErrorBoundary>
+
+
+          {/* Main Content Area */}
+          <div className="main-content">
+
+            {/* 🚀 Fast Loading Indicator for Filter Updates */}
+            {optimisticLoading && (
+              <div style={{
+                position: 'fixed',
+                top: '10px',
+                right: '10px',
+                background: 'rgba(34, 197, 94, 0.9)',
+                color: 'white',
+                padding: '8px 16px',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '500',
+                zIndex: 1000,
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+                animation: 'pulse 1s infinite'
+              }}>
+                ⚡ Updating filters...
+              </div>
+            )}
+            {/* Results Header with Sort and View Options */}
+            <SearchResultsHeader
+              totalResults={totalResults}
+              currentPage={currentPage}
+              itemsPerPage={itemsPerPage}
+              startResult={startResult}
+              endResult={endResult}
+              sortBy={sortBy}
+              onSortChange={handleSortChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+              searchTime={optimisticLoading ? 'Updating...' : (searchTime < 100 && searchTime > 0 ? `${searchTime}ms ⚡ CACHED` : searchTime)}
+              currentFilters={filters}
+              viewMode={viewMode}
+              onViewModeChange={setViewMode}
+              onMobileFiltersOpen={isMobile ? () => setIsMobileFiltersOpen(true) : null}
+              favoritesCount={Object.values(favorites).filter(Boolean).length}
+              showingFavorites={showingFavorites}
+              onToggleFavorites={handleToggleFavorites}
+              isMobile={isMobile}
+              mobileFiltersOpen={isMobileFiltersOpen}
+            />
+
+            {/* Vehicle Grid */}
+            <VehicleGridErrorBoundary
+              onRetry={() => fetchVehiclesPage(currentPage, filters)}
+              onReset={() => {
+                // Clear cache and reset to first page
+                setCachedVehicles(new Map());
+                setPreloadedPages(new Map());
+                fetchVehiclesPage(1, filters);
+              }}
+            >
+              {loading ? (
+                <div className={`vehicle-grid ${viewMode}-view p-2`}>
+                  {Array.from({ length: itemsPerPage }, (_, index) => (
+                    <VehicleCardSkeleton key={`skeleton-${index}`} />
+                  ))}
+                </div>
+              ) : error ? (
+                <div className="error-container">
+                  <p>Error loading vehicles: {error}</p>
+                  <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
+                </div>
+              ) : vehicles.length === 0 ? (
+                <div className="no-results" style={isMobile ? {paddingLeft: '20px', paddingRight: '20px'} : {}}>
+                  <h3>No vehicles found</h3>
+                  <p>Try adjusting your search filters</p>
+                </div>
+              ) : (
+                <div className={`vehicle-grid ${viewMode}-view p-2`}>
+                  {vehicles.map((vehicle, index) => (
+                    <VehicleCardErrorBoundary
+                      key={`boundary-${vehicle.id}-${currentPage}-${index}`}
+                      vehicleId={vehicle.id}
+                    >
+                      <VehicleCard
+                        key={`${vehicle.id}-${currentPage}-${index}`}
+                        vehicle={vehicle}
+                        favorites={favorites}
+                        onFavoriteToggle={toggleFavorite}
+                      />
+                    </VehicleCardErrorBoundary>
+                  ))}
+                </div>
+              )}
+            </VehicleGridErrorBoundary>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <PaginationErrorBoundary onRetry={() => fetchVehiclesPage(currentPage, filters)}>
+                <Suspense fallback={<div className="flex justify-center py-4"><div className="loading-spinner"></div></div>}>
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    totalResults={totalResults}
+                    resultsPerPage={itemsPerPage}
+                    onPageChange={handlePageChange}
+                  />
+                </Suspense>
+              </PaginationErrorBoundary>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 }
 
