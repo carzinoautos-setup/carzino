@@ -779,34 +779,22 @@ function App() {
               <p>Try adjusting your search filters</p>
             </div>
           ) : (
-            <div className={`vehicle-grid ${viewMode}-view p-2`}>
-              {vehicles.map((vehicle, index) => {
-                try {
-                  return (
-                    <VehicleCard
-                      key={`${vehicle.id}-${currentPage}-${index}`}
-                      vehicle={vehicle}
-                      favorites={favorites}
-                      onFavoriteToggle={toggleFavorite}
-                    />
-                  );
-                } catch (error) {
-                  console.error(`❌ VehicleCard error for vehicle ${index}:`, error);
-                  return (
-                    <div key={`fallback-${index}`} style={{
-                      border: '2px solid red',
-                      padding: '15px',
-                      margin: '10px',
-                      backgroundColor: '#ffe6e6',
-                      borderRadius: '8px'
-                    }}>
-                      <h3>🚗 {vehicle?.title || `Vehicle ${index}`}</h3>
-                      <p>Price: {vehicle?.price || 'N/A'}</p>
-                      <p>Error rendering VehicleCard component</p>
-                    </div>
-                  );
-                }
-              })}
+            <div className={`vehicle-grid ${viewMode}-view p-2`} style={{border: '3px solid purple', padding: '20px', backgroundColor: 'yellow'}}>
+              <div style={{marginBottom: '10px', fontWeight: 'bold'}}>🧪 TESTING VEHICLE MAPPING ({vehicles.length} vehicles):</div>
+              {vehicles.map((vehicle, index) => (
+                <div key={`test-${index}`} style={{
+                  border: '2px solid blue',
+                  padding: '15px',
+                  margin: '10px 0',
+                  backgroundColor: 'lightblue',
+                  borderRadius: '8px'
+                }}>
+                  <h3>🚗 Vehicle {index + 1}</h3>
+                  <p><strong>Title:</strong> {vehicle?.title || 'No title'}</p>
+                  <p><strong>ID:</strong> {vehicle?.id || 'No ID'}</p>
+                  <p><strong>Price:</strong> {vehicle?.price || 'No price'}</p>
+                </div>
+              ))}
             </div>
           )}
 
