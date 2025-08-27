@@ -49,58 +49,104 @@ const filtersToURLParams = (filters, page = 1) => {
 };
 
 const URLParamsToFilters = (searchParams) => {
-  const filters = {
-    condition: [],
-    make: [],
-    model: [],
-    trim: [],
-    year: [],
-    vehicleType: [],
-    bodyType: [],
-    driveType: [],
-    transmission: [],
-    transmissionSpeed: [],
-    fuelType: [],
-    exteriorColor: [],
-    interiorColor: [],
-    mileage: '',
-    sellerType: [],
-    dealer: [],
-    state: [],
-    city: [],
-    zipCodeFilter: [],
-    priceMin: '',
-    priceMax: '',
-    paymentMin: '',
-    paymentMax: '',
-    zipCode: '98498',
-    radius: '200',
-    termLength: '72',
-    interestRate: '8',
-    downPayment: '2000'
-  };
+  try {
+    const filters = {
+      condition: [],
+      make: [],
+      model: [],
+      trim: [],
+      year: [],
+      vehicleType: [],
+      bodyType: [],
+      driveType: [],
+      transmission: [],
+      transmissionSpeed: [],
+      fuelType: [],
+      exteriorColor: [],
+      interiorColor: [],
+      mileage: '',
+      sellerType: [],
+      dealer: [],
+      state: [],
+      city: [],
+      zipCodeFilter: [],
+      priceMin: '',
+      priceMax: '',
+      paymentMin: '',
+      paymentMax: '',
+      zipCode: '98498',
+      radius: '200',
+      termLength: '72',
+      interestRate: '8',
+      downPayment: '2000'
+    };
 
-  for (const [key, value] of searchParams.entries()) {
-    if (key === 'page' || key === 'reload' || !value || value.length > 50) {
-      continue;
-    }
+    for (const [key, value] of searchParams.entries()) {
+      // Skip invalid or dangerous parameters
+      if (key === 'page' || key === 'reload' || !value || value.length > 100) {
+        continue;
+      }
 
-    if (/^\d{10,}$/.test(value)) {
-      continue;
-    }
+      // Skip extremely long numbers (potential attack)
+      if (/^\d{10,}$/.test(value)) {
+        continue;
+      }
 
-    if (filters.hasOwnProperty(key)) {
-      if (Array.isArray(filters[key])) {
-        if (!filters[key].includes(value)) {
-          filters[key].push(value);
+      // Decode URI components safely
+      let safeKey, safeValue;
+      try {
+        safeKey = decodeURIComponent(key);
+        safeValue = decodeURIComponent(value);
+      } catch (decodeError) {
+        console.warn('Failed to decode URL parameter:', key, value);
+        continue;
+      }
+
+      if (filters.hasOwnProperty(safeKey)) {
+        if (Array.isArray(filters[safeKey])) {
+          if (!filters[safeKey].includes(safeValue)) {
+            filters[safeKey].push(safeValue);
+          }
+        } else {
+          filters[safeKey] = safeValue;
         }
-      } else {
-        filters[key] = value;
       }
     }
-  }
 
-  return filters;
+    return filters;
+  } catch (error) {
+    console.warn('Failed to parse URL parameters, using defaults:', error);
+    return {
+      condition: [],
+      make: [],
+      model: [],
+      trim: [],
+      year: [],
+      vehicleType: [],
+      bodyType: [],
+      driveType: [],
+      transmission: [],
+      transmissionSpeed: [],
+      fuelType: [],
+      exteriorColor: [],
+      interiorColor: [],
+      mileage: '',
+      sellerType: [],
+      dealer: [],
+      state: [],
+      city: [],
+      zipCodeFilter: [],
+      priceMin: '',
+      priceMax: '',
+      paymentMin: '',
+      paymentMax: '',
+      zipCode: '98498',
+      radius: '200',
+      termLength: '72',
+      interestRate: '8',
+      downPayment: '2000'
+    };
+  }
 };
 
 // Demo data functions moved to API service for better organization
