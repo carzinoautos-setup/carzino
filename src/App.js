@@ -257,9 +257,6 @@ function App() {
   // Bundle analysis state (development only)
   const [showBundleAnalysis, setShowBundleAnalysis] = useState(false);
 
-  // Image diagnostic state (development only)
-  const [showImageDiagnostic, setShowImageDiagnostic] = useState(false);
-
   // Pagination state
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
