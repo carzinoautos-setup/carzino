@@ -501,7 +501,7 @@ function App() {
     } finally {
       setLoading(false);
     }
-  }, [currentPage, itemsPerPage, filters, updateURL, extractFilterOptions, canUseSequentialCache, filterCachedVehicles]);
+  }, [currentPage, itemsPerPage, filters, updateURL, extractFilterOptions, canUseSequentialCache, filterCachedVehicles, apiConnected]);
 
   // Handle page changes
   const handlePageChange = useCallback((newPage) => {
