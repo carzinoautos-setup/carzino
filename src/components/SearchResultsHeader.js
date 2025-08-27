@@ -586,27 +586,35 @@ const SearchResultsHeader = ({
       display: flex;
       align-items: center;
       justify-content: center;
+      min-width: 2.5rem;
+      min-height: 2.5rem;
     }
 
     .favorites-button:hover {
       background: #fef2f2;
+      border-color: #b91c1c;
     }
 
-    .favorites-button-icon {
+    .favorites-button:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.2);
+    }
+
+    /* Ensure heart icon displays correctly */
+    .favorites-button svg {
       color: #dc2626;
-    }
-
-    .favorites-button-icon.filled {
-      fill: #dc2626;
+      stroke: #dc2626 !important;
+      stroke-width: 2;
     }
 
     .favorites-count {
       position: absolute;
-      top: -0.25rem;
-      right: -0.25rem;
+      top: -0.375rem;
+      right: -0.375rem;
       background: #dc2626;
       color: white;
       font-size: 0.75rem;
+      font-weight: 600;
       border-radius: 50%;
       width: 1.25rem;
       height: 1.25rem;
@@ -614,6 +622,8 @@ const SearchResultsHeader = ({
       align-items: center;
       justify-content: center;
       font-family: 'Albert Sans', sans-serif;
+      border: 2px solid white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
     }
 
     /* Mobile/Tablet Section */
@@ -836,12 +846,16 @@ const SearchResultsHeader = ({
               </div>
               
               <div className="desktop-controls">
-                {/* Desktop Heart Icon - Always show with red outline */}
-                <button 
+                {/* Desktop Heart Icon - Outlined when no favorites, filled with count when favorites exist */}
+                <button
                   className="favorites-button"
                   onClick={() => onToggleFavorites && onToggleFavorites()}
+                  title={favoritesCount > 0 ? `${favoritesCount} Saved Vehicles` : 'Save Favorites'}
                 >
-                  <HeartIcon filled={favoritesCount > 0} className="w-5 h-5" />
+                  <HeartIcon
+                    filled={favoritesCount > 0}
+                    className="w-5 h-5"
+                  />
                   {favoritesCount > 0 && (
                     <span className="favorites-count">
                       {favoritesCount}
