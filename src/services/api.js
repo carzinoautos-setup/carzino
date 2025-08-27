@@ -542,6 +542,10 @@ export const fetchVehicles = async (params = {}) => {
       per_page: params.per_page || 100, // Reduce to 100 to avoid server limits
       page: params.page || 1,
       status: 'publish',
+      // Include ACF fields and meta data in WooCommerce response
+      acf: 'true',
+      meta_data: 'true',
+      include_meta: 'true',
       // Remove potentially invalid orderby parameters for WooCommerce products
       ...params
     });
