@@ -369,6 +369,79 @@ body {
   }
 }
 
+/* Mobile Off-Canvas Filter Styles */
+@media (max-width: 1024px) {
+  /* Ensure backdrop covers entire screen */
+  .mobile-filter-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 40;
+    transition: opacity 0.3s ease;
+  }
+
+  /* Off-canvas menu container */
+  .mobile-filter-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 320px;
+    max-width: 85vw;
+    background: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mobile-filter-menu.open {
+    transform: translateX(0);
+  }
+
+  /* Prevent body scroll when filter is open */
+  body.filter-open {
+    overflow: hidden !important;
+  }
+
+  /* Mobile filter content styling */
+  .mobile-filter-content {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    padding-bottom: 100px; /* Space for footer buttons */
+  }
+
+  /* Mobile filter header */
+  .mobile-filter-header {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 24px;
+  }
+
+  /* Mobile filter footer */
+  .mobile-filter-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 320px;
+    max-width: 85vw;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    padding: 16px;
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+  }
+}
+
 /* ============================================
    VEHICLE GRID
 ============================================ */
