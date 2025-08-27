@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, lazy, Suspense } from 'react';
 import './App.css';
 import VehicleSearchFilter from './components/VehicleSearchFilter';
-import VehicleCard from './components/VehicleCard';
 import VehicleCardSkeleton from './components/VehicleCardSkeleton';
 import LazyVehicleCard from './components/LazyVehicleCard';
 import SearchResultsHeader from './components/SearchResultsHeader';
@@ -11,12 +10,11 @@ import {
   VehicleGridErrorBoundary,
   FilterErrorBoundary,
   PaginationErrorBoundary,
-  VehicleCardErrorBoundary,
-  APIErrorBoundary
+  VehicleCardErrorBoundary
 } from './components/SpecializedErrorBoundaries';
-import { useBatchLazyLoading, getLazyLoadingMetrics } from './hooks/useLazyLoading';
-import { useDebouncedFilters, getDebounceMetrics } from './hooks/useDebounce';
-import { bundleMetrics, optimizeChunkLoading } from './utils/bundleAnalyzer';
+import { useBatchLazyLoading } from './hooks/useLazyLoading';
+import { useDebouncedFilters } from './hooks/useDebounce';
+import { optimizeChunkLoading } from './utils/bundleAnalyzer';
 import BundleAnalysisPanel from './components/BundleAnalysisPanel';
 
 // Lazy load heavy components for better performance
