@@ -831,17 +831,32 @@ function App() {
     // DEBUG: Show extracted filter options
     console.log('📊 EXTRACTED FILTER OPTIONS:');
     console.log('  Makes found:', options.makes.length, '→', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
-    console.log('  Models found:', options.models.length, '���', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
+    console.log('  Models found:', options.models.length, '→', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Conditions found:', options.conditions.length, '→', options.conditions.map(c => `${c.name} (${c.count})`));
     console.log('  🚗 VEHICLE TYPES found:', options.bodyTypes.length, '→', options.bodyTypes.map(v => `${v.name} (${v.count})`));
+    console.log('  🚙 DRIVETRAINS found:', options.drivetrains.length, '→', options.drivetrains.map(d => `${d.name} (${d.count})`));
+    console.log('  🎨 EXTERIOR COLORS found:', options.exteriorColors.length, '→', options.exteriorColors.slice(0, 5).map(c => `${c.name} (${c.count})`));
+    console.log('  🪑 INTERIOR COLORS found:', options.interiorColors.length, '→', options.interiorColors.slice(0, 5).map(c => `${c.name} (${c.count})`));
 
     // VEHICLE TYPE EXTRACTION SUMMARY
     if (options.bodyTypes.length === 0) {
       console.log('  ⚠️ NO VEHICLE TYPES EXTRACTED - Check if your ACF fields contain vehicle type data');
       console.log('  💡 Expected field names: vehicle_type, body_type, bodytype, category, style, class');
+      console.log('  💡 Or values like: SUV, Sedan, Truck, Coupe, Hatchback, Wagon, Convertible');
     } else {
       console.log(`  ✅ Successfully extracted ${options.bodyTypes.length} vehicle types from your data`);
     }
+
+    // COMPREHENSIVE EXTRACTION SUMMARY
+    console.log('\n📋 COMPLETE FILTER EXTRACTION SUMMARY:');
+    console.log(`  📊 Total filter categories with data: ${Object.keys(options).filter(key => options[key].length > 0).length}`);
+    Object.keys(options).forEach(category => {
+      if (options[category].length > 0) {
+        console.log(`    ✅ ${category}: ${options[category].length} options`);
+      } else {
+        console.log(`    ❌ ${category}: No data found`);
+      }
+    });
 
     // ACF USAGE SUMMARY
     console.log('\n🔧 ACF DATA USAGE SUMMARY:');
