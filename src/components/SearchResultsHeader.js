@@ -284,7 +284,7 @@ const SearchResultsHeader = ({
       position: -webkit-sticky;
       position: sticky;
       top: 0;
-      z-index: 50;
+      z-index: 999;
       background: white;
       border-bottom: 1px solid #e5e7eb;
       box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
