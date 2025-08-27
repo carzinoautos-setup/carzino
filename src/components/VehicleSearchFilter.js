@@ -893,6 +893,7 @@ const VehicleSearchFilter = ({
                   category="make"
                   checked={filters.make?.includes(make.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))
             ) : (
@@ -931,6 +932,7 @@ const VehicleSearchFilter = ({
                     category="model"
                     checked={filters.model?.includes(model.name)}
                     onChange={handleFilterChange}
+                    isMobile={isMobile}
                   />
                 ))
               ) : (
@@ -999,6 +1001,7 @@ const VehicleSearchFilter = ({
                   category="condition"
                   checked={filters.condition?.includes(condition.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))
             ) : (
@@ -1010,6 +1013,7 @@ const VehicleSearchFilter = ({
                   category="condition"
                   checked={filters.condition?.includes('New')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
                 <CheckboxOption
                   label="Used"
@@ -1018,6 +1022,7 @@ const VehicleSearchFilter = ({
                   category="condition"
                   checked={filters.condition?.includes('Used')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
                 <CheckboxOption
                   label="Certified"
@@ -1026,6 +1031,7 @@ const VehicleSearchFilter = ({
                   category="condition"
                   checked={filters.condition?.includes('Certified')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               </div>
             )}
