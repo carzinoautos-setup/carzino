@@ -503,9 +503,26 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   const filterParams = buildWooCommerceFilters(filters);
   const sortParams = buildWooCommerceSort(sortBy);
 
-  // 🚀 PERFORMANCE: Enhanced cache system with 5-minute duration
+  // 🚀 PERFORMANCE: Enhanced cache system with reliable key generation
   const startTime = Date.now();
-  const cacheKey = `carzino_wc_${page}_${limit}_${JSON.stringify(filters).substring(0, 100)}_${sortBy}`;
+
+  // Create deterministic cache key from filters
+  const createCacheKey = (filters) => {
+    const sortedKeys = Object.keys(filters).sort();
+    const filterParts = sortedKeys.map(key => {
+      const value = filters[key];
+      if (Array.isArray(value)) {
+        return `${key}:${value.sort().join(',')}`;
+      }
+      return `${key}:${value}`;
+    });
+    return filterParts.join('|');
+  };
+
+  const filterKey = createCacheKey(filters);
+  const cacheKey = `carzino_wc_${page}_${limit}_${filterKey}_${sortBy}`;
+  console.log(`🔑 Cache key: ${cacheKey.substring(0, 80)}...`);
+
   const cached = localStorage.getItem(cacheKey);
 
   if (cached) {
