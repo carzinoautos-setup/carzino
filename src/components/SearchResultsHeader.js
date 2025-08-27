@@ -618,11 +618,11 @@ const SearchResultsHeader = ({
         padding-top: 0;
       }
 
-      /* Add spacer for fixed header */
+      /* Add spacer for fixed header - show only when needed */
       .mobile-sticky-spacer {
         height: 120px; /* Approximate height of fixed sticky section */
         width: 100%;
-        display: block;
+        display: block !important;
       }
     }
 
