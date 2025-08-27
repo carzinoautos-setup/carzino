@@ -311,6 +311,11 @@ const getDemoDataFallback = (page = 1, limit = 20, filters = {}) => {
 
 export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {}, sortBy = 'relevance') => {
   console.log('⚡ Fast API call...');
+  console.log('🔧 Environment check:');
+  console.log('  - WP_SITE_URL:', process.env.REACT_APP_WP_SITE_URL);
+  console.log('  - API_BASE:', API_BASE);
+  console.log('  - Has credentials:', !!(process.env.REACT_APP_WC_CONSUMER_KEY && process.env.REACT_APP_WC_CONSUMER_SECRET));
+  console.log('  - Page:', page, 'Limit:', limit, 'Filters:', Object.keys(filters).length, 'Sort:', sortBy);
 
   // 🚀 PERFORMANCE: Add overall timeout
   return Promise.race([
@@ -328,7 +333,16 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
       setTimeout(() => reject(new Error('Request timeout after 15 seconds')), 15000)
     )
   ]).catch(error => {
-    console.error('❌ API failed:', error.message);
+    console.error('❌ API failed with error:', error.message);
+    console.error('❌ Full error object:', error);
+
+    // Check if it's a network connectivity issue
+    if (error.message.includes('fetch') || error.message.includes('Network')) {
+      console.warn('🌐 Network connectivity issue detected - falling back to demo data');
+    } else {
+      console.warn('🔧 API configuration issue - falling back to demo data');
+    }
+
     // Only fall back to demo data after real API attempt fails
     return getDemoDataFallback(page, limit, filters);
   });
@@ -435,6 +449,10 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
   }
 
   console.log('🔄 WooCommerce API call...');
+  console.log('🌐 API_BASE:', API_BASE);
+  console.log('📡 Full URL:', fullUrl);
+  console.log('🔑 Auth headers:', headers.Authorization ? 'Present' : 'Missing');
+  console.log('📝 Request params:', allParams);
 
   // 🚀 PERFORMANCE: Add 10 second timeout to prevent hanging
   const controller = new AbortController();
@@ -453,7 +471,25 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
 
   } catch (networkError) {
     clearTimeout(timeoutId);
-    console.error('❌ Network Error:', networkError.message);
+
+    // Enhanced error logging
+    console.error('❌ Network Error Details:');
+    console.error('  - Message:', networkError.message);
+    console.error('  - Name:', networkError.name);
+    console.error('  - Stack:', networkError.stack);
+    console.error('  - URL attempted:', fullUrl);
+    console.error('  - Headers used:', headers);
+
+    // Check if it's a CORS error
+    if (networkError.message.includes('CORS') || networkError.message.includes('fetch')) {
+      console.error('🚫 CORS Error Detected - API may not be accessible from browser');
+    }
+
+    // Check if it's a timeout
+    if (networkError.name === 'AbortError') {
+      console.error('⏰ Request Timeout - API took longer than 10 seconds');
+    }
+
     throw new Error(`Network error: Unable to connect to WooCommerce API. ${networkError.message}`);
   }
 
@@ -476,8 +512,16 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
       response: errorText,
       apiEndpoint: API_BASE,
       wpSiteUrl: process.env.REACT_APP_WP_SITE_URL,
-      type: 'HTTP_ERROR'
+      type: 'HTTP_ERROR',
+      timestamp: new Date().toISOString()
     };
+
+    // Enhanced HTTP error logging
+    console.error('❌ HTTP Error Details:');
+    console.error('  - Status:', response.status, response.statusText);
+    console.error('  - URL:', fullUrl);
+    console.error('  - Response:', errorText);
+    console.error('  - Response Headers:', Object.fromEntries(response.headers.entries()));
 
     console.error('❌ DETAILED WooCommerce API HTTP Error:', JSON.stringify(errorDetails, null, 2));
 
