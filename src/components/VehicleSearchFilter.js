@@ -462,21 +462,23 @@ const VehicleSearchFilter = ({
     }, 0);
   }, [filters]);
 
-  // Mobile overlay
+  // Mobile off-canvas overlay
   if (isMobile) {
     return (
       <>
-        <div 
-          className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity ${
+        {/* Backdrop */}
+        <div
+          className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
             onClose ? 'opacity-100' : 'opacity-0 pointer-events-none'
           }`}
           onClick={onClose}
         />
-        
-        <div className={`fixed left-0 top-0 h-full w-full bg-white shadow-xl z-50 transition-transform duration-300 ${
+
+        {/* Off-canvas menu */}
+        <div className={`fixed left-0 top-0 h-full w-80 max-w-[85vw] bg-white shadow-xl z-50 transition-transform duration-300 ease-out ${
           onClose ? 'translate-x-0' : '-translate-x-full'
         }`}>
-          <div className="h-full overflow-y-auto overflow-x-hidden w-full" style={{ padding: '20px' }}>
+          <div className="h-full overflow-y-auto overflow-x-hidden" style={{ padding: '20px', paddingBottom: '80px' }}>
             <FilterContent />
           </div>
         </div>
@@ -497,11 +499,11 @@ const VehicleSearchFilter = ({
       <div className={isMobile ? "p-0" : "p-4"}>
         {/* Mobile Header */}
         {isMobile && (
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-normal text-gray-900">Filters</h2>
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
             <button
               onClick={onClose}
-              className="p-1"
+              className="p-2 hover:bg-gray-100 rounded-full transition-colors"
             >
               <X className="w-5 h-5 text-gray-600" />
             </button>
@@ -1011,17 +1013,17 @@ const VehicleSearchFilter = ({
 
         {/* Mobile Footer */}
         {isMobile && (
-          <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4 flex gap-3 z-50">
+          <div className="fixed bottom-0 left-0 w-80 max-w-[85vw] bg-white border-t border-gray-200 p-4 flex gap-3 z-50">
             <button
               onClick={clearAllFilters}
-              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded font-medium hover:bg-gray-200"
+              className="flex-1 px-4 py-3 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-gray-200 transition-colors"
               disabled={activeFilterCount === 0}
             >
               Clear {activeFilterCount > 0 && `(${activeFilterCount})`}
             </button>
             <button
               onClick={onClose}
-              className="flex-1 px-4 py-3 text-white rounded font-medium hover:bg-red-700"
+              className="flex-1 px-4 py-3 text-white rounded-lg font-medium hover:bg-red-700 transition-colors"
               style={{ backgroundColor: '#dc2626' }}
             >
               Apply Filters
