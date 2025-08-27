@@ -531,12 +531,23 @@ function App() {
       });
 
       // Extract from ACF (Advanced Custom Fields) if available
-      console.log(`🔧 ACF DEBUG for vehicle ${vehicle.title}:`, {
-        hasACF: !!vehicle.acf,
-        acfType: typeof vehicle.acf,
-        acfKeys: vehicle.acf ? Object.keys(vehicle.acf) : [],
-        acfData: vehicle.acf
-      });
+      // COMPREHENSIVE ACF DEBUG - check all possible ACF data sources
+      console.log(`🔧 COMPREHENSIVE ACF DEBUG for vehicle ${vehicle.title}:`);
+      console.log('  📋 Direct ACF field:', { hasACF: !!vehicle.acf, acfData: vehicle.acf });
+      console.log('  🗃️ Meta data ACF fields:', metaData.filter(m => m.key.includes('acf') || m.key.startsWith('_')));
+      console.log('  🏷️ All meta keys:', metaData.map(m => m.key));
+
+      // Check for ACF fields in meta_data (common location)
+      const acfMetaFields = metaData.filter(meta =>
+        meta.key.startsWith('acf_') ||
+        meta.key.includes('field_') ||
+        meta.key.startsWith('_') ||
+        meta.key.includes('acf')
+      );
+
+      if (acfMetaFields.length > 0) {
+        console.log(`🎯 Found ${acfMetaFields.length} potential ACF fields in meta_data:`, acfMetaFields);
+      }
 
       if (vehicle.acf && typeof vehicle.acf === 'object') {
         const acfEntries = Object.entries(vehicle.acf);
