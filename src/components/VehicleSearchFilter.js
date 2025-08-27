@@ -356,25 +356,53 @@ const CheckboxOption = memo(({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  const handleClick = (e) => {
+    console.log('🖱️ CheckboxOption clicked:', { category, value, label, checked });
+
+    // Ensure onChange is called properly
+    if (typeof onChange === 'function') {
+      onChange(category, value, !checked);
+    } else {
+      console.error('❌ onChange is not a function!', { onChange, category, value });
+    }
+  };
+
+  const handleInputChange = (e) => {
+    console.log('✅ Input change triggered:', { category, value, label, newChecked: e.target.checked });
+    if (typeof onChange === 'function') {
+      onChange(category, value, e.target.checked);
+    } else {
+      console.error('❌ onChange is not a function in input!', { onChange, category, value });
+    }
+  };
+
   return (
     <label
       style={{
         ...styles.checkboxWrapper,
         ...(isMobile ? styles.checkboxWrapperMobile : {}),
-        ...(isHovered ? styles.checkboxWrapperHover : {})
+        ...(isHovered ? styles.checkboxWrapperHover : {}),
+        // Ensure pointer cursor for clickable appearance
+        cursor: 'pointer',
+        // Ensure label is not blocking events
+        pointerEvents: 'auto'
       }}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={handleClick}
     >
       <input
         type="checkbox"
         style={{
           ...styles.checkbox,
           ...(isMobile ? styles.checkboxMobile : {}),
-          ...(checked ? styles.checkboxChecked : {})
+          ...(checked ? styles.checkboxChecked : {}),
+          // Ensure checkbox is clickable
+          cursor: 'pointer',
+          pointerEvents: 'auto'
         }}
         checked={checked}
-        onChange={(e) => onChange(category, value, e.target.checked)}
+        onChange={handleInputChange}
       />
       {checked && (
         <span style={{
@@ -385,12 +413,16 @@ const CheckboxOption = memo(({
       )}
       <span style={{
         ...styles.optionLabel,
-        ...(isMobile ? styles.optionLabelMobile : {})
+        ...(isMobile ? styles.optionLabelMobile : {}),
+        // Ensure label text doesn't block clicks
+        pointerEvents: 'none'
       }}>{label}</span>
       {count !== undefined && (
         <span style={{
           ...styles.optionCount,
-          ...(isMobile ? styles.optionCountMobile : {})
+          ...(isMobile ? styles.optionCountMobile : {}),
+          // Ensure count doesn't block clicks
+          pointerEvents: 'none'
         }}>({count.toLocaleString()})</span>
       )}
     </label>
