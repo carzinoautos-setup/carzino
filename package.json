@@ -20,7 +20,10 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "analyze": "npm run build && npx webpack-bundle-analyzer build/static/js/*.js",
+    "build:analyze": "ANALYZE=true npm run build",
+    "size": "npm run build && du -sh build/ && du -sh build/static/js/ && du -sh build/static/css/"
   },
   "eslintConfig": {
     "extends": [
