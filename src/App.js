@@ -779,20 +779,75 @@ function App() {
               <p>Try adjusting your search filters</p>
             </div>
           ) : (
-            <div className={`vehicle-grid ${viewMode}-view p-2`} style={{border: '3px solid purple', padding: '20px', backgroundColor: 'yellow'}}>
-              <div style={{marginBottom: '10px', fontWeight: 'bold'}}>🧪 TESTING VEHICLE MAPPING ({vehicles.length} vehicles):</div>
+            <div className={`vehicle-grid ${viewMode}-view p-2`}>
               {vehicles.map((vehicle, index) => (
-                <div key={`test-${index}`} style={{
-                  border: '2px solid blue',
-                  padding: '15px',
-                  margin: '10px 0',
-                  backgroundColor: 'lightblue',
-                  borderRadius: '8px'
+                <div key={`vehicle-${vehicle.id}-${index}`} style={{
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '12px',
+                  padding: '20px',
+                  backgroundColor: 'white',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  transition: 'transform 0.2s, box-shadow 0.2s'
+                }}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = 'translateY(-2px)';
+                  e.target.style.boxShadow = '0 4px 16px rgba(0,0,0,0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = 'translateY(0)';
+                  e.target.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
                 }}>
-                  <h3>🚗 Vehicle {index + 1}</h3>
-                  <p><strong>Title:</strong> {vehicle?.title || 'No title'}</p>
-                  <p><strong>ID:</strong> {vehicle?.id || 'No ID'}</p>
-                  <p><strong>Price:</strong> {vehicle?.price || 'No price'}</p>
+                  <div style={{
+                    height: '200px',
+                    backgroundColor: '#f3f4f6',
+                    borderRadius: '8px',
+                    marginBottom: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#6b7280'
+                  }}>
+                    🚗 Vehicle Image
+                  </div>
+                  <h3 style={{
+                    fontSize: '18px',
+                    fontWeight: '600',
+                    margin: '0 0 8px 0',
+                    color: '#111827'
+                  }}>
+                    {vehicle?.title || `Vehicle ${index + 1}`}
+                  </h3>
+                  <p style={{
+                    fontSize: '14px',
+                    color: '#6b7280',
+                    margin: '0 0 12px 0'
+                  }}>
+                    ID: {vehicle?.id || 'N/A'}
+                  </p>
+                  <div style={{
+                    fontSize: '20px',
+                    fontWeight: '700',
+                    color: '#dc2626',
+                    marginBottom: '16px'
+                  }}>
+                    {vehicle?.price ? `$${vehicle.price}` : 'Price on Request'}
+                  </div>
+                  <button style={{
+                    width: '100%',
+                    padding: '12px',
+                    backgroundColor: '#dc2626',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    fontSize: '14px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s'
+                  }}
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#b91c1c'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = '#dc2626'}>
+                    View Details
+                  </button>
                 </div>
               ))}
             </div>
