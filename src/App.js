@@ -582,6 +582,59 @@ function App() {
             }
           }
         });
+      } else {
+        console.log(`❌ No ACF data found in direct acf field for ${vehicle.title}`);
+      }
+
+      // Check if any ACF-like fields exist in meta_data
+      const potentialACFFields = metaData.filter(meta => {
+        const key = meta.key.toLowerCase();
+        return key.startsWith('acf_') ||
+               key.includes('field_') ||
+               key.startsWith('_') ||
+               key.includes('acf') ||
+               // Common ACF field patterns
+               key.includes('vehicle_') ||
+               key.includes('car_') ||
+               key.includes('auto_');
+      });
+
+      if (potentialACFFields.length > 0) {
+        console.log(`🔍 Processing ${potentialACFFields.length} potential ACF fields from meta_data:`,
+          potentialACFFields.map(f => `${f.key} = ${f.value}`));
+
+        // Process these as if they were ACF fields
+        potentialACFFields.forEach(meta => {
+          const key = meta.key.toLowerCase();
+          const value = meta.value;
+          if (value && value.toString().trim() !== '') {
+            const cleanValue = value.toString().trim();
+            console.log(`🔧 Processing potential ACF: ${meta.key} = ${cleanValue}`);
+
+            // Apply same matching logic
+            if (key.includes('condition') || key.includes('status')) {
+              counts[`condition_${cleanValue}`] = (counts[`condition_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('body') || key.includes('type') || key.includes('category')) {
+              counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('drive') || key.includes('drivetrain')) {
+              counts[`drivetrain_${cleanValue}`] = (counts[`drivetrain_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('transmission')) {
+              counts[`transmission_${cleanValue}`] = (counts[`transmission_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('fuel')) {
+              counts[`fuelType_${cleanValue}`] = (counts[`fuelType_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('trim')) {
+              counts[`trim_${cleanValue}`] = (counts[`trim_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('color')) {
+              if (key.includes('exterior')) {
+                counts[`exteriorColor_${cleanValue}`] = (counts[`exteriorColor_${cleanValue}`] || 0) + 1;
+              } else if (key.includes('interior')) {
+                counts[`interiorColor_${cleanValue}`] = (counts[`interiorColor_${cleanValue}`] || 0) + 1;
+              }
+            }
+          }
+        });
+      } else {
+        console.log(`❌ No ACF-like fields found in meta_data for ${vehicle.title}`);
       }
 
       // Extract from WooCommerce Attributes
