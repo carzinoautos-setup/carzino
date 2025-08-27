@@ -1,4 +1,5 @@
 // Bundle Analysis and Optimization Utilities
+import React from 'react';
 
 /**
  * Dynamic import utility for code splitting
