@@ -836,16 +836,27 @@ function App() {
       // Clean up failed request from deduplication map
       activeRequests.current.delete(requestKey);
 
-      // Specific handling for timeout errors
+      // Specific handling for timeout errors with retry logic
       if (error.message.includes('timeout')) {
         console.warn('⏰ API TIMEOUT: WooCommerce API is taking too long to respond');
         console.warn('   This is usually due to:');
         console.warn('   • WordPress server being slow or under load');
         console.warn('   • Large inventory taking time to process');
         console.warn('   • Network connectivity issues');
+
+        // Show user-friendly message about the timeout
+        setError('API is taking longer than expected. Loading backup data...');
+
+        // Auto-clear the error message after a few seconds
+        setTimeout(() => setError(null), 5000);
+
         console.warn('   ✅ Loading fallback data to keep app functional...');
       } else {
         console.log('🎯 API failed, loading fallback demo data to keep app functional');
+
+        // Show brief error message for other failures
+        setError('Unable to connect to vehicle database. Using demo data.');
+        setTimeout(() => setError(null), 3000);
       }
 
       // Use fallback demo data
