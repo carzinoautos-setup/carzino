@@ -1010,41 +1010,41 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           </div>
 
           <h3 className="vehicle-title">
-            {vehicle.title}
+            {getVehicleTitle()}
           </h3>
 
           <div className="details-bar">
             <div className="detail-group">
               <Gauge />
-              <span className="detail-text">{vehicle.mileage} miles</span>
+              <span className="detail-text">{getVehicleSpec('mileage')} miles</span>
             </div>
             <div className="detail-group">
               <Settings />
-              <span className="detail-text">{vehicle.transmission}</span>
+              <span className="detail-text">{getVehicleSpec('transmission')}</span>
             </div>
             <div className="detail-group">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <rect x="3" y="4" width="18" height="16" rx="2"/>
                 <path d="M7 4v16"/>
               </svg>
-              <span className="detail-text">{vehicle.doors}</span>
+              <span className="detail-text">{getVehicleSpec('doors')} doors</span>
             </div>
           </div>
 
           <div className="pricing-section">
-            {vehicle.salePrice ? (
+            {getVehiclePrice() ? (
               <>
                 <div className="price-group">
                   <div className="price-label">Sale Price</div>
-                  <div className="price-value sale">{vehicle.salePrice}</div>
+                  <div className="price-value sale">{getVehiclePrice()}</div>
                 </div>
-                {vehicle.payment && (
+                {getVehiclePayment() && (
                   <>
                     <div className="price-divider"></div>
                     <div className="price-group">
                       <div className="price-label">Payments</div>
                       <div className="price-value payment">
-                        {vehicle.payment}
+                        {getVehiclePayment()}
                         <span style={{fontSize: '12px', fontWeight: '400', color: '#000000'}}>/mo*</span>
                       </div>
                     </div>
@@ -1053,7 +1053,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
               </>
             ) : (
               <div className="price-group">
-                <div className="price-label">No Sale Price Listed</div>
+                <div className="price-label">Contact Dealer</div>
                 <div className="price-value sale">Call For Pricing</div>
               </div>
             )}
