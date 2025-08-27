@@ -79,7 +79,7 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
         headers: headers,
       });
     } catch (networkError) {
-      console.warn('���️ Network error fetching filter options, using demo data:', networkError.message);
+      console.warn('��️ Network error fetching filter options, using demo data:', networkError.message);
       const demoResult = getDemoDataFallback(1, 50, filters);
       return demoResult.vehicles;
     }
@@ -409,13 +409,26 @@ if (typeof window !== 'undefined') {
     let cleared = 0;
     for (let i = localStorage.length - 1; i >= 0; i--) {
       const key = localStorage.key(i);
-      if (key && key.startsWith('carzino_')) {
+      if (key && (key.startsWith('carzino_') || key.startsWith('demo_cache_'))) {
         localStorage.removeItem(key);
         cleared++;
       }
     }
-    console.log(`🗑️ Cleared ${cleared} cache entries`);
+    console.log(`🗑️ Cleared ${cleared} cache entries (including demo cache)`);
   };
+
+  // Clear demo cache on initial load for testing
+  let demoCleared = 0;
+  for (let i = localStorage.length - 1; i >= 0; i--) {
+    const key = localStorage.key(i);
+    if (key && key.startsWith('demo_cache_')) {
+      localStorage.removeItem(key);
+      demoCleared++;
+    }
+  }
+  if (demoCleared > 0) {
+    console.log(`🧹 Cleared ${demoCleared} demo cache entries for fresh testing`);
+  }
 }
 
 export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {}, sortBy = 'relevance') => {
