@@ -397,78 +397,157 @@ const CheckboxOption = memo(({
   );
 });
 
-const PriceRangeInput = memo(({ min, max, onMinChange, onMaxChange }) => {
+const PriceRangeInput = memo(({ min, max, onMinChange, onMaxChange, isMobile = false }) => {
   const [localMin, setLocalMin] = useState(min || '');
   const [localMax, setLocalMax] = useState(max || '');
+  const [minFocused, setMinFocused] = useState(false);
+  const [maxFocused, setMaxFocused] = useState(false);
 
   const handleMinBlur = useCallback(() => {
     onMinChange(localMin);
+    setMinFocused(false);
   }, [localMin, onMinChange]);
 
   const handleMaxBlur = useCallback(() => {
     onMaxChange(localMax);
+    setMaxFocused(false);
   }, [localMax, onMaxChange]);
 
   return (
-    <div className="space-y-2" onClick={(e) => e.stopPropagation()}>
-      <div className="flex gap-2">
-        <input
-          type="text"
-          placeholder="$10,000"
-          value={localMin}
-          onChange={(e) => setLocalMin(e.target.value.replace(/[^0-9]/g, ''))}
-          onBlur={handleMinBlur}
-          className="carzino-search-input carzino-input w-1/2 px-2 py-2 border border-gray-300 rounded focus:outline-none"
-        />
-        <input
-          type="text"
-          placeholder="$100,000"
-          value={localMax}
-          onChange={(e) => setLocalMax(e.target.value.replace(/[^0-9]/g, ''))}
-          onBlur={handleMaxBlur}
-          className="carzino-search-input carzino-input w-1/2 px-2 py-2 border border-gray-300 rounded focus:outline-none"
-        />
-      </div>
+    <div style={{ display: 'flex', gap: '8px' }} onClick={(e) => e.stopPropagation()}>
+      <input
+        type="text"
+        placeholder="$10,000"
+        value={localMin}
+        onChange={(e) => setLocalMin(e.target.value.replace(/[^0-9]/g, ''))}
+        onBlur={handleMinBlur}
+        onFocus={() => setMinFocused(true)}
+        style={{
+          ...styles.input,
+          ...(isMobile ? styles.inputMobile : {}),
+          ...(minFocused ? styles.inputFocus : {}),
+          width: '50%'
+        }}
+      />
+      <input
+        type="text"
+        placeholder="$100,000"
+        value={localMax}
+        onChange={(e) => setLocalMax(e.target.value.replace(/[^0-9]/g, ''))}
+        onBlur={handleMaxBlur}
+        onFocus={() => setMaxFocused(true)}
+        style={{
+          ...styles.input,
+          ...(isMobile ? styles.inputMobile : {}),
+          ...(maxFocused ? styles.inputFocus : {}),
+          width: '50%'
+        }}
+      />
     </div>
   );
 });
 
-const PaymentCalculator = memo(({ filters, onChange }) => {
+const PaymentCalculator = memo(({ filters, onChange, isMobile = false }) => {
+  const [focusedInput, setFocusedInput] = useState(null);
+
+  const inputStyle = (inputName) => ({
+    ...styles.input,
+    ...(isMobile ? styles.inputMobile : {}),
+    ...(focusedInput === inputName ? styles.inputFocus : {}),
+    width: '100%'
+  });
+
+  const selectStyle = {
+    ...styles.select,
+    ...(isMobile ? styles.selectMobile : {}),
+    ...(focusedInput === 'termLength' ? styles.selectFocus : {}),
+    width: '100%'
+  };
+
   return (
-    <div className="space-y-3">
-      <div className="flex gap-2">
-        <div className="relative flex-1">
-          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+      <div style={{ display: 'flex', gap: '8px' }}>
+        <div style={{ position: 'relative', flex: 1 }}>
+          <span style={{
+            position: 'absolute',
+            left: isMobile ? '16px' : '12px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: '#6B7280',
+            fontSize: isMobile ? '16px' : '14px',
+            pointerEvents: 'none'
+          }}>$</span>
           <input
             type="text"
             placeholder="100"
             value={filters.paymentMin || ''}
             onChange={(e) => onChange('paymentMin', e.target.value.replace(/[^0-9]/g, ''), true)}
-            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-2 border border-gray-300 rounded focus:outline-none"
+            onFocus={() => setFocusedInput('paymentMin')}
+            onBlur={() => setFocusedInput(null)}
+            style={{
+              ...inputStyle('paymentMin'),
+              paddingLeft: isMobile ? '40px' : '32px',
+              paddingRight: isMobile ? '48px' : '40px'
+            }}
           />
-          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">/mo</span>
+          <span style={{
+            position: 'absolute',
+            right: isMobile ? '16px' : '12px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: '#6B7280',
+            fontSize: isMobile ? '14px' : '12px',
+            pointerEvents: 'none'
+          }}>/mo</span>
         </div>
-        <div className="relative flex-1">
-          <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+        <div style={{ position: 'relative', flex: 1 }}>
+          <span style={{
+            position: 'absolute',
+            left: isMobile ? '16px' : '12px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: '#6B7280',
+            fontSize: isMobile ? '16px' : '14px',
+            pointerEvents: 'none'
+          }}>$</span>
           <input
             type="text"
             placeholder="2,000"
             value={filters.paymentMax || ''}
             onChange={(e) => onChange('paymentMax', e.target.value.replace(/[^0-9]/g, ''), true)}
-            className="carzino-search-input carzino-input w-full pl-6 pr-8 py-2 border border-gray-300 rounded focus:outline-none"
+            onFocus={() => setFocusedInput('paymentMax')}
+            onBlur={() => setFocusedInput(null)}
+            style={{
+              ...inputStyle('paymentMax'),
+              paddingLeft: isMobile ? '40px' : '32px',
+              paddingRight: isMobile ? '48px' : '40px'
+            }}
           />
-          <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-xs">/mo</span>
+          <span style={{
+            position: 'absolute',
+            right: isMobile ? '16px' : '12px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            color: '#6B7280',
+            fontSize: isMobile ? '14px' : '12px',
+            pointerEvents: 'none'
+          }}>/mo</span>
         </div>
       </div>
-      
+
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label style={{
+          ...styles.sectionLabel,
+          ...(isMobile ? styles.sectionLabelMobile : {})
+        }}>
           Term Length
         </label>
         <select
           value={filters.termLength || '72'}
           onChange={(e) => onChange('termLength', e.target.value, true)}
-          className="carzino-select w-full px-2 py-2 border border-gray-300 rounded focus:outline-none"
+          onFocus={() => setFocusedInput('termLength')}
+          onBlur={() => setFocusedInput(null)}
+          style={selectStyle}
         >
           <option value="36">36 months</option>
           <option value="48">48 months</option>
@@ -477,36 +556,68 @@ const PaymentCalculator = memo(({ filters, onChange }) => {
           <option value="84">84 months</option>
         </select>
       </div>
-      
-      <div className="grid grid-cols-2 gap-2">
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label style={{
+            ...styles.sectionLabel,
+            ...(isMobile ? styles.sectionLabelMobile : {})
+          }}>
             Interest Rate
           </label>
-          <div className="relative">
+          <div style={{ position: 'relative' }}>
             <input
               type="text"
               placeholder="8"
               value={filters.interestRate || ''}
               onChange={(e) => onChange('interestRate', e.target.value.replace(/[^0-9.]/g, ''), true)}
-              className="carzino-search-input carzino-input w-full pr-6 px-2 py-2 border border-gray-300 rounded focus:outline-none"
+              onFocus={() => setFocusedInput('interestRate')}
+              onBlur={() => setFocusedInput(null)}
+              style={{
+                ...inputStyle('interestRate'),
+                paddingRight: isMobile ? '32px' : '28px'
+              }}
             />
-            <span className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">%</span>
+            <span style={{
+              position: 'absolute',
+              right: isMobile ? '16px' : '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: '#6B7280',
+              fontSize: isMobile ? '16px' : '14px',
+              pointerEvents: 'none'
+            }}>%</span>
           </div>
         </div>
-        
+
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label style={{
+            ...styles.sectionLabel,
+            ...(isMobile ? styles.sectionLabelMobile : {})
+          }}>
             Down Payment
           </label>
-          <div className="relative">
-            <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm">$</span>
+          <div style={{ position: 'relative' }}>
+            <span style={{
+              position: 'absolute',
+              left: isMobile ? '16px' : '12px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              color: '#6B7280',
+              fontSize: isMobile ? '16px' : '14px',
+              pointerEvents: 'none'
+            }}>$</span>
             <input
               type="text"
               placeholder="2,000"
               value={filters.downPayment || ''}
               onChange={(e) => onChange('downPayment', e.target.value.replace(/[^0-9]/g, ''), true)}
-              className="carzino-search-input carzino-input w-full pl-6 px-2 py-2 border border-gray-300 rounded focus:outline-none"
+              onFocus={() => setFocusedInput('downPayment')}
+              onBlur={() => setFocusedInput(null)}
+              style={{
+                ...inputStyle('downPayment'),
+                paddingLeft: isMobile ? '40px' : '32px'
+              }}
             />
           </div>
         </div>
@@ -832,16 +943,9 @@ const VehicleSearchFilter = ({
     }, 0);
   }, [filters]);
 
-  // Add styles on mount
+  // Add global styles on mount
   useEffect(() => {
-    const styleTag = document.createElement('style');
-    styleTag.innerHTML = styles;
-    document.head.appendChild(styleTag);
-    return () => {
-      if (document.head.contains(styleTag)) {
-        document.head.removeChild(styleTag);
-      }
-    };
+    addGlobalStyles();
   }, []);
 
   // Mobile bottom sheet overlay
