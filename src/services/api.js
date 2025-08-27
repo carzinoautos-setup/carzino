@@ -86,12 +86,10 @@ const getFallbackVehicles = () => {
         price: '28995',
         sale_price: '26995',
         stock_status: 'instock',
-        images: {
-          featured: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop',
-          gallery: [
-            'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop'
-          ]
-        },
+        images: [
+          'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop'
+        ],
+        image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=450&h=300&fit=crop',
         categories: [{ id: 1, name: 'SUV', slug: 'suv' }],
         attributes: [
           { name: 'Make', options: ['Toyota'] },
@@ -534,7 +532,7 @@ export const fetchVehicles = async (params = {}) => {
     // Check if environment variables are available
     if (!WC_CONSUMER_KEY || !WC_CONSUMER_SECRET || !process.env.REACT_APP_WP_SITE_URL ||
         WC_CONSUMER_KEY === 'missing' || WC_CONSUMER_SECRET === 'missing') {
-      console.warn('���️ Missing or invalid API credentials, using fallback data');
+      console.warn('⚠️ Missing or invalid API credentials, using fallback data');
       return getFallbackVehicles();
     }
 
