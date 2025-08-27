@@ -544,6 +544,17 @@ function App() {
       console.log('  🗃️ Meta data ACF fields:', metaData.filter(m => m.key.includes('acf') || m.key.startsWith('_')));
       console.log('  🏷️ All meta keys:', metaData.map(m => m.key));
 
+      // DETAILED ACF FIELD ANALYSIS
+      console.log('\n🔍 DETAILED ACF FIELD ANALYSIS:');
+      metaData.forEach(meta => {
+        const key = meta.key.toLowerCase();
+        if (key.includes('acf') || key.startsWith('field_') || key.startsWith('_') ||
+            key.includes('vehicle') || key.includes('body') || key.includes('type') ||
+            key.includes('category') || key.includes('style') || key.includes('class')) {
+          console.log(`  🔎 ${meta.key}: ${meta.value} (${typeof meta.value})`);
+        }
+      });
+
       // Check for ACF fields in meta_data (common location)
       const acfMetaFields = metaData.filter(meta =>
         meta.key.startsWith('acf_') ||
