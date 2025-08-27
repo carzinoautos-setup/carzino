@@ -550,7 +550,7 @@ const SearchResultsHeader = ({
             )}
             
             <div className="control-bar">
-              {!props.isMobile && (
+              {!isMobile && (
                 <button className="filter-button" onClick={onMobileFiltersOpen}>
                   <Filter className="w-4 h-4" />
                   <span>Filter</span>
