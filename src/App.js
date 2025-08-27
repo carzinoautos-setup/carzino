@@ -1060,15 +1060,35 @@ function App() {
                       border: '1px solid #bae6fd',
                       borderRadius: '6px',
                       fontSize: '12px',
-                      color: '#0369a1'
+                      color: '#0369a1',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center'
                     }}>
-                      📊 Lazy Loading: Showing {batchInfo.itemsShown}/{batchInfo.totalItems} vehicles
-                      (Batch {batchInfo.current}/{batchInfo.total})
-                      {filtersArePending && (
-                        <span style={{ marginLeft: '12px', color: '#dc2626' }}>
-                          ⏳ Filters pending debounce
-                        </span>
-                      )}
+                      <div>
+                        📊 Lazy Loading: Showing {batchInfo.itemsShown}/{batchInfo.totalItems} vehicles
+                        (Batch {batchInfo.current}/{batchInfo.total})
+                        {filtersArePending && (
+                          <span style={{ marginLeft: '12px', color: '#dc2626' }}>
+                            ⏳ Filters pending debounce
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        onClick={() => setShowBundleAnalysis(!showBundleAnalysis)}
+                        style={{
+                          padding: '4px 8px',
+                          fontSize: '11px',
+                          border: '1px solid #0369a1',
+                          borderRadius: '4px',
+                          backgroundColor: showBundleAnalysis ? '#0369a1' : 'transparent',
+                          color: showBundleAnalysis ? 'white' : '#0369a1',
+                          cursor: 'pointer',
+                          marginLeft: '8px'
+                        }}
+                      >
+                        📦 Bundle
+                      </button>
                     </div>
                   )}
                 </>
