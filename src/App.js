@@ -796,6 +796,14 @@ function App() {
   // Initial data load and bundle optimization
   useEffect(() => {
     console.log('🚀 App initialized - loading first page and full inventory for filters');
+
+    // Clear cache to force fresh data with new image extraction
+    const cacheKeys = Object.keys(localStorage).filter(key => key.startsWith('carzino_'));
+    cacheKeys.forEach(key => {
+      console.log(`🗑️ Clearing cache key: ${key}`);
+      localStorage.removeItem(key);
+    });
+
     fetchVehiclesPage(currentPage, debouncedFilters);
     // Note: fetchFullInventoryForFilters is called within fetchVehiclesPage for page 1
 
