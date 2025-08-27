@@ -663,7 +663,7 @@ function App() {
             currentFilters={filters}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
-            onMobileFiltersOpen={isMobile ? null : () => setIsMobileFiltersOpen(true)}
+            onMobileFiltersOpen={isMobile ? () => setIsMobileFiltersOpen(true) : null}
             favoritesCount={Object.values(favorites).filter(Boolean).length}
             showingFavorites={showingFavorites}
             onToggleFavorites={handleToggleFavorites}

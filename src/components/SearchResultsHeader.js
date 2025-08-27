@@ -280,12 +280,15 @@ const SearchResultsHeader = ({
 
     /* ===== MOBILE STICKY HEADER ===== */
     .mobile-sticky-wrapper {
+      position: -webkit-sticky;
       position: sticky;
       top: 0;
       z-index: 50;
       background: white;
       border-bottom: 1px solid #e5e7eb;
       box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
     }
 
     /* Filter Pills */
@@ -342,10 +345,12 @@ const SearchResultsHeader = ({
     .mobile-controls {
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 0.5rem;
       padding: 0.75rem;
       background: white;
+      flex-wrap: nowrap;
+      overflow-x: auto;
     }
 
     .mobile-control-button {
@@ -362,6 +367,8 @@ const SearchResultsHeader = ({
       color: #374151;
       font-family: 'Albert Sans', sans-serif;
       transition: all 0.2s;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .mobile-control-button:hover {
@@ -383,13 +390,17 @@ const SearchResultsHeader = ({
       background: #dc2626;
       color: white;
       border-radius: 50%;
-      width: 1.25rem;
+      min-width: 1.25rem;
+      width: auto;
       height: 1.25rem;
+      padding: 0 0.25rem;
       font-size: 0.75rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-family: 'Albert Sans', sans-serif;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     /* Toggle Switch */
