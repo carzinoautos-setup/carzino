@@ -1051,65 +1051,8 @@ function App() {
       setApiConnected(false); // Show demo mode
       setError(null); // Clear error to avoid error state
 
-      // Set basic filter options so filters aren't empty
-      setFilterOptions({
-        makes: [
-          { name: 'Ford', count: 9 },
-          { name: 'Chevrolet', count: 8 },
-          { name: 'Hyundai', count: 5 },
-          { name: 'Toyota', count: 2 },
-          { name: 'Kia', count: 5 }
-        ],
-        models: [
-          { name: 'F-150', count: 3 },
-          { name: 'Elantra', count: 2 },
-          { name: 'Camry', count: 1 }
-        ],
-        conditions: [
-          { name: 'Used', count: 100 },
-          { name: 'New', count: 154 }
-        ],
-        bodyTypes: [
-          { name: 'Truck', count: 50 },
-          { name: 'Sedan', count: 80 },
-          { name: 'SUV', count: 124 }
-        ],
-        years: [
-          { name: '2021', count: 45 },
-          { name: '2020', count: 67 },
-          { name: '2019', count: 43 },
-          { name: '2018', count: 99 }
-        ],
-        trims: [
-          { name: 'XLT', count: 12 },
-          { name: 'LE', count: 8 },
-          { name: 'GLS', count: 5 }
-        ],
-        drivetrains: [
-          { name: 'FWD', count: 120 },
-          { name: 'AWD', count: 89 },
-          { name: '4WD', count: 45 }
-        ],
-        transmissions: [
-          { name: 'Automatic', count: 230 },
-          { name: 'Manual', count: 24 }
-        ],
-        exteriorColors: [
-          { name: 'White', count: 45 },
-          { name: 'Black', count: 38 },
-          { name: 'Silver', count: 67 }
-        ],
-        interiorColors: [
-          { name: 'Black', count: 156 },
-          { name: 'Gray', count: 78 },
-          { name: 'Tan', count: 20 }
-        ],
-        fuelTypes: [
-          { name: 'Gasoline', count: 200 },
-          { name: 'Hybrid', count: 35 },
-          { name: 'Electric', count: 19 }
-        ]
-      });
+      // Don't set demo filter options - let real data extraction show results
+      console.log('📊 Not setting demo filter options - will use real data extraction from fallback vehicles');
 
       console.log('✅ Fallback data loaded - app is functional with demo inventory');
     } finally {
