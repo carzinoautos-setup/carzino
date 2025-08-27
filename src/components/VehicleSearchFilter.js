@@ -191,12 +191,13 @@ const ColorSwatch = memo(({ color, name, count, checked, onChange, category }) =
 ));
 
 // Main Filter Component
-const VehicleSearchFilter = ({ 
+const VehicleSearchFilter = ({
   filters = {},
   onFiltersChange,
   filterOptions = {},
   isLoading = false,
   isMobile = false,
+  isOpen = false,
   onClose
 }) => {
   // Local state
