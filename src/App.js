@@ -16,6 +16,8 @@ import {
 } from './components/SpecializedErrorBoundaries';
 import { useBatchLazyLoading, getLazyLoadingMetrics } from './hooks/useLazyLoading';
 import { useDebouncedFilters, getDebounceMetrics } from './hooks/useDebounce';
+import { bundleMetrics, optimizeChunkLoading } from './utils/bundleAnalyzer';
+import BundleAnalysisPanel from './components/BundleAnalysisPanel';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
