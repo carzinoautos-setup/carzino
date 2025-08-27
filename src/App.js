@@ -3,6 +3,7 @@ import './App.css';
 import VehicleSearchFilter from './components/VehicleSearchFilter';
 import VehicleCard from './components/VehicleCard';
 import VehicleCardSkeleton from './components/VehicleCardSkeleton';
+import LazyVehicleCard from './components/LazyVehicleCard';
 import SearchResultsHeader from './components/SearchResultsHeader';
 import { fetchVehiclesPaginated, fetchAllFilteredVehicles } from './services/api-paginated';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -760,7 +761,7 @@ function App() {
 
   // Initial data load
   useEffect(() => {
-    console.log('🚀 App initialized - loading first page and full inventory for filters');
+    console.log('�� App initialized - loading first page and full inventory for filters');
     fetchVehiclesPage(currentPage, filters);
     // Note: fetchFullInventoryForFilters is called within fetchVehiclesPage for page 1
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
