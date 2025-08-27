@@ -850,6 +850,26 @@ function App() {
 
         {/* Main Content Area */}
         <div className="main-content">
+
+          {/* 🚀 Fast Loading Indicator for Filter Updates */}
+          {optimisticLoading && (
+            <div style={{
+              position: 'fixed',
+              top: '10px',
+              right: '10px',
+              background: 'rgba(34, 197, 94, 0.9)',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              fontSize: '14px',
+              fontWeight: '500',
+              zIndex: 1000,
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+              animation: 'pulse 1s infinite'
+            }}>
+              ⚡ Updating filters...
+            </div>
+          )}
           {/* Results Header with Sort and View Options */}
           <SearchResultsHeader
             totalResults={totalResults}
