@@ -17,8 +17,8 @@ const SlidersIcon = () => (
 );
 
 const HeartIcon = ({ filled = false, className = "w-5 h-5" }) => (
-  <svg className={className} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+  <svg className={className} fill={filled ? "#dc2626" : "none"} stroke="#dc2626" strokeWidth="2" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
   </svg>
 );
 
@@ -168,10 +168,13 @@ const SearchResultsHeader = ({
   const isMobileOrTablet = screenSize === 'mobile' || screenSize === 'tablet';
 
   // ================================================================================
-  // ALL CSS STYLES (INLINE - NO EXTERNAL FILES)
+  // ALL CSS STYLES (INLINE - NO EXTERNAL FILES) - WITH ALBERT SANS FONT
   // ================================================================================
   
   const styles = `
+    /* Google Fonts - Albert Sans */
+    @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap');
+
     /* Reset & Base Styles */
     * {
       margin: 0;
@@ -182,7 +185,7 @@ const SearchResultsHeader = ({
     .search-header-container {
       width: 100%;
       background: white;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
     /* Typography */
@@ -191,18 +194,21 @@ const SearchResultsHeader = ({
       font-weight: 600;
       color: #111827;
       margin-bottom: 0.75rem;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     .header-title-desktop {
       font-size: 1.25rem;
       font-weight: 600;
       color: #111827;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     .header-subtitle {
       color: #6b7280;
       font-size: 0.875rem;
       margin-top: 0.25rem;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     /* Search Input */
@@ -218,6 +224,7 @@ const SearchResultsHeader = ({
       font-size: 0.875rem;
       outline: none;
       transition: border-color 0.2s;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     .search-input:focus {
@@ -258,6 +265,7 @@ const SearchResultsHeader = ({
       cursor: pointer;
       background: transparent;
       color: #6b7280;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     .view-switcher button.active {
@@ -276,6 +284,8 @@ const SearchResultsHeader = ({
       top: 0;
       z-index: 50;
       background: white;
+      border-bottom: 1px solid #e5e7eb;
+      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
     }
 
     /* Filter Pills */
@@ -310,6 +320,7 @@ const SearchResultsHeader = ({
       flex-shrink: 0;
       border: none;
       cursor: pointer;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     .filter-pill-remove {
@@ -333,35 +344,38 @@ const SearchResultsHeader = ({
       align-items: center;
       justify-content: space-between;
       gap: 0.5rem;
-      padding: 0.375rem 0.75rem;
-      border-bottom: 1px solid #9ca3af;
+      padding: 0.75rem;
       background: white;
-      box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
     }
 
     .mobile-control-button {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.375rem 0.75rem;
+      padding: 0.5rem 0.75rem;
       font-size: 0.875rem;
       font-weight: 500;
       background: none;
-      border: none;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.375rem;
       cursor: pointer;
       color: #374151;
+      font-family: 'Albert Sans', sans-serif;
+      transition: all 0.2s;
     }
 
     .mobile-control-button:hover {
-      color: #111827;
+      background: #f9fafb;
+      border-color: #9ca3af;
     }
 
     .mobile-control-button.favorites-active {
       color: #dc2626;
+      border-color: #dc2626;
     }
 
     .control-divider {
-      border-left: 1px solid #9ca3af;
+      border-left: 1px solid #e5e7eb;
       height: 2rem;
     }
 
@@ -375,6 +389,7 @@ const SearchResultsHeader = ({
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     /* Toggle Switch */
@@ -441,6 +456,7 @@ const SearchResultsHeader = ({
       cursor: pointer;
       color: #374151;
       transition: background-color 0.15s;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     .dropdown-item:hover {
@@ -462,6 +478,7 @@ const SearchResultsHeader = ({
       font-size: 0.875rem;
       font-weight: 500;
       color: #374151;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     /* Desktop Styles */
@@ -491,6 +508,7 @@ const SearchResultsHeader = ({
       background: white;
       cursor: pointer;
       transition: border-color 0.2s;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     .desktop-select:hover {
@@ -503,17 +521,19 @@ const SearchResultsHeader = ({
 
     .favorites-button {
       padding: 0.5rem;
-      border: 1px solid #d1d5db;
+      border: 1px solid #dc2626;
       border-radius: 0.375rem;
       background: white;
       position: relative;
       cursor: pointer;
       transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .favorites-button:hover {
-      background: #f9fafb;
-      border-color: #9ca3af;
+      background: #fef2f2;
     }
 
     .favorites-button-icon {
@@ -528,7 +548,7 @@ const SearchResultsHeader = ({
       position: absolute;
       top: -0.25rem;
       right: -0.25rem;
-      background: black;
+      background: #dc2626;
       color: white;
       font-size: 0.75rem;
       border-radius: 50%;
@@ -537,6 +557,7 @@ const SearchResultsHeader = ({
       display: flex;
       align-items: center;
       justify-content: center;
+      font-family: 'Albert Sans', sans-serif;
     }
 
     /* Mobile/Tablet Section */
@@ -632,8 +653,8 @@ const SearchResultsHeader = ({
               
               {/* Control Bar: Filter | Sort | Favorites (sticky) */}
               <div className="mobile-controls">
-                {/* Filter Button - Don't show since we have bottom filter button */}
-                {/* <button 
+                {/* Filter Button - Now showing as requested */}
+                <button 
                   className="mobile-control-button"
                   onClick={() => onMobileFiltersOpen && onMobileFiltersOpen()}
                 >
@@ -646,7 +667,7 @@ const SearchResultsHeader = ({
                   )}
                 </button>
                 
-                <div className="control-divider" /> */}
+                <div className="control-divider" />
                 
                 {/* Sort Dropdown */}
                 <div className="dropdown">
@@ -740,38 +761,18 @@ const SearchResultsHeader = ({
               </div>
               
               <div className="desktop-controls">
-                {/* Desktop View Switcher or Favorites Button */}
-                {showingFavorites ? (
-                  <div className="view-switcher">
-                    <button 
-                      className={!showingFavorites ? 'active' : ''}
-                      onClick={() => onToggleFavorites && onToggleFavorites()}
-                    >
-                      All Results
-                    </button>
-                    <button 
-                      className={showingFavorites ? 'active' : ''}
-                      onClick={() => onToggleFavorites && onToggleFavorites()}
-                    >
-                      <HeartIcon className="w-4 h-4" />
-                      Saved ({favoritesCount})
-                    </button>
-                  </div>
-                ) : (
-                  <button 
-                    className="favorites-button"
-                    onClick={() => onToggleFavorites && onToggleFavorites()}
-                  >
-                    <span className={`favorites-button-icon ${favoritesCount > 0 ? 'filled' : ''}`}>
-                      <HeartIcon filled={favoritesCount > 0} />
+                {/* Desktop Heart Icon - Always show with red outline */}
+                <button 
+                  className="favorites-button"
+                  onClick={() => onToggleFavorites && onToggleFavorites()}
+                >
+                  <HeartIcon filled={favoritesCount > 0} className="w-5 h-5" />
+                  {favoritesCount > 0 && (
+                    <span className="favorites-count">
+                      {favoritesCount}
                     </span>
-                    {favoritesCount > 0 && (
-                      <span className="favorites-count">
-                        {favoritesCount}
-                      </span>
-                    )}
-                  </button>
-                )}
+                  )}
+                </button>
                 
                 {/* Sort Dropdown */}
                 <select 

@@ -646,97 +646,6 @@ function App() {
           isMobile={isMobile}
         />
 
-        {/* Mobile Filter Button - Fixed at bottom */}
-        {isMobile && (
-          <div
-            style={{
-              position: 'fixed',
-              bottom: '20px',
-              left: '16px',
-              right: '16px',
-              zIndex: '60',
-              display: 'flex',
-              justifyContent: 'center'
-            }}
-          >
-            <button
-              onClick={() => setIsMobileFiltersOpen(true)}
-              style={{
-                width: '100%',
-                maxWidth: '400px',
-                backgroundColor: '#dc2626',
-                color: 'white',
-                padding: '16px 24px',
-                borderRadius: '50px',
-                border: 'none',
-                fontSize: '18px',
-                fontWeight: '600',
-                boxShadow: '0 10px 25px rgba(220, 38, 38, 0.3), 0 4px 12px rgba(0, 0, 0, 0.15)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '12px',
-                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, sans-serif",
-                position: 'relative',
-                overflow: 'hidden'
-              }}
-              onMouseDown={(e) => {
-                e.target.style.transform = 'scale(0.95)';
-              }}
-              onMouseUp={(e) => {
-                e.target.style.transform = 'scale(1)';
-              }}
-              onTouchStart={(e) => {
-                e.target.style.transform = 'scale(0.95)';
-              }}
-              onTouchEnd={(e) => {
-                e.target.style.transform = 'scale(1)';
-              }}
-            >
-              <svg
-                style={{
-                  width: '20px',
-                  height: '20px',
-                  fill: 'none',
-                  stroke: 'currentColor',
-                  strokeWidth: '2.5',
-                  strokeLinecap: 'round',
-                  strokeLinejoin: 'round'
-                }}
-                viewBox="0 0 24 24"
-              >
-                <path d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-              </svg>
-              <span>Filter Vehicles</span>
-              {Object.values(filters).some(v => Array.isArray(v) ? v.length > 0 : v && v !== '' && v !== '98498' && v !== '200' && v !== '72' && v !== '8' && v !== '2000') && (
-                <span
-                  style={{
-                    backgroundColor: '#000000',
-                    color: '#ffffff',
-                    fontSize: '14px',
-                    borderRadius: '50%',
-                    width: '24px',
-                    height: '24px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontWeight: '700',
-                    marginLeft: '4px'
-                  }}
-                >
-                  {Object.entries(filters).reduce((count, [key, value]) => {
-                    if (key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') return count;
-                    if (Array.isArray(value)) return count + value.length;
-                    if (value && value !== '' && value !== '98498' && value !== '200' && value !== '72' && value !== '8' && value !== '2000') return count + 1;
-                    return count;
-                  }, 0)}
-                </span>
-              )}
-            </button>
-          </div>
-        )}
 
         {/* Main Content Area */}
         <div className="main-content">
@@ -774,7 +683,7 @@ function App() {
               <button onClick={() => fetchVehiclesPage(currentPage, filters)}>Try Again</button>
             </div>
           ) : vehicles.length === 0 ? (
-            <div className="no-results">
+            <div className="no-results" style={isMobile ? {paddingLeft: '20px', paddingRight: '20px'} : {}}>
               <h3>No vehicles found</h3>
               <p>Try adjusting your search filters</p>
             </div>

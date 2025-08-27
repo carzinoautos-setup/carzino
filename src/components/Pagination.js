@@ -12,17 +12,17 @@ const Pagination = ({
 
   const getPaginationPages = () => {
     const pages = [];
-    const maxPagesToShow = 7;
+    const maxPagesToShow = window.innerWidth <= 640 ? 5 : 7; // Less pages on mobile
     
     if (totalPages <= maxPagesToShow) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      if (currentPage <= 4) {
-        pages.push(1, 2, 3, 4, 5, '...', totalPages);
-      } else if (currentPage >= totalPages - 3) {
-        pages.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
+      if (currentPage <= 3) {
+        pages.push(1, 2, 3, 4, '...', totalPages);
+      } else if (currentPage >= totalPages - 2) {
+        pages.push(1, '...', totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
       } else {
         pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
       }
@@ -35,11 +35,14 @@ const Pagination = ({
   return (
     <div className="bg-white">
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600;700;800&display=swap');
+
         .pagination-container {
           border-top: 1px solid #e5e7eb;
           background-color: white;
           padding: 16px;
           margin-top: 16px;
+          font-family: 'Albert Sans', -apple-system, BlinkMacSystemFont, sans-serif;
         }
 
         .pagination-content {
@@ -54,6 +57,7 @@ const Pagination = ({
           font-size: 14px;
           color: #374151;
           text-align: center;
+          font-family: 'Albert Sans', sans-serif;
         }
 
         .pagination-info .font-medium {
@@ -64,8 +68,8 @@ const Pagination = ({
           display: flex;
           align-items: center;
           gap: 4px;
-          overflow-x: auto;
-          max-width: 100%;
+          justify-content: center;
+          flex-wrap: wrap;
         }
 
         .pagination-btn {
@@ -79,6 +83,7 @@ const Pagination = ({
           cursor: pointer;
           transition: all 0.2s;
           flex-shrink: 0;
+          font-family: 'Albert Sans', sans-serif;
         }
 
         .pagination-btn:hover:not(:disabled) {
@@ -93,7 +98,8 @@ const Pagination = ({
         .pagination-numbers {
           display: flex;
           gap: 4px;
-          overflow-x: auto;
+          align-items: center;
+          justify-content: center;
         }
 
         .pagination-page-btn {
@@ -106,6 +112,7 @@ const Pagination = ({
           cursor: pointer;
           transition: all 0.2s;
           text-align: center;
+          font-family: 'Albert Sans', sans-serif;
         }
 
         .pagination-page-btn.active {
@@ -128,12 +135,19 @@ const Pagination = ({
           padding: 8px;
           color: #6b7280;
           flex-shrink: 0;
+          font-family: 'Albert Sans', sans-serif;
         }
 
         @media (max-width: 640px) {
+          .pagination-container {
+            padding: 12px 20px; /* Add the requested 20px left/right padding on mobile */
+          }
+
           .pagination-controls {
             width: 100%;
             justify-content: center;
+            /* Remove overflow-x scroll and sliding behavior */
+            overflow-x: visible;
           }
 
           .pagination-btn {
@@ -145,6 +159,12 @@ const Pagination = ({
             padding: 8px 10px;
             font-size: 13px;
             min-width: 36px;
+          }
+
+          .pagination-numbers {
+            /* No horizontal scrolling - just wrap if needed */
+            flex-wrap: wrap;
+            justify-content: center;
           }
         }
       `}</style>
