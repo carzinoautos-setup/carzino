@@ -923,25 +923,25 @@ function App() {
           )}
             {/* Results Header with Sort and View Options */}
             <SearchResultsHeader
-              totalResults={totalResults}
-              currentPage={currentPage}
-              itemsPerPage={itemsPerPage}
-              startResult={startResult}
-              endResult={endResult}
-              sortBy={sortBy}
-              onSortChange={handleSortChange}
-              onItemsPerPageChange={handleItemsPerPageChange}
-              searchTime={optimisticLoading ? 'Updating...' : (searchTime < 100 && searchTime > 0 ? `${searchTime}ms ⚡ CACHED` : searchTime)}
-              currentFilters={filters}
-              viewMode={viewMode}
-              onViewModeChange={setViewMode}
-              onMobileFiltersOpen={isMobile ? () => setIsMobileFiltersOpen(true) : null}
-              favoritesCount={Object.values(favorites).filter(Boolean).length}
-              showingFavorites={showingFavorites}
-              onToggleFavorites={handleToggleFavorites}
-              isMobile={isMobile}
-              mobileFiltersOpen={isMobileFiltersOpen}
-            />
+            totalResults={totalResults}
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            startResult={startResult}
+            endResult={endResult}
+            sortBy={sortBy}
+            onSortChange={handleSortChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+            searchTime={optimisticLoading || filtersArePending ? 'Updating...' : (searchTime < 100 && searchTime > 0 ? `${searchTime}ms ⚡ CACHED` : searchTime)}
+            currentFilters={debouncedFilters}
+            viewMode={viewMode}
+            onViewModeChange={setViewMode}
+            onMobileFiltersOpen={isMobile ? () => setIsMobileFiltersOpen(true) : null}
+            favoritesCount={Object.values(favorites).filter(Boolean).length}
+            showingFavorites={showingFavorites}
+            onToggleFavorites={handleToggleFavorites}
+            isMobile={isMobile}
+            mobileFiltersOpen={isMobileFiltersOpen}
+          />
 
             {/* Vehicle Grid */}
             <VehicleGridErrorBoundary
