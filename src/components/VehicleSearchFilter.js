@@ -832,7 +832,19 @@ const VehicleSearchFilter = ({
     }
   }, [filters, onFiltersChange]);
 
-  // Get data with fallbacks
+  // DEBUG: Show filter options being received
+  useEffect(() => {
+    console.log('🔧 VehicleSearchFilter received filterOptions:', {
+      totalOptions: Object.keys(filterOptions).length,
+      makes: filterOptions.makes?.length || 0,
+      models: filterOptions.models?.length || 0,
+      conditions: filterOptions.conditions?.length || 0,
+      firstMake: filterOptions.makes?.[0]?.name,
+      sampleOptions: filterOptions
+    });
+  }, [filterOptions]);
+
+  // Get data with fallbacks and debugging
   const allMakes = filterOptions.makes || [];
   const allModels = filterOptions.models || [];
   const allTrims = filterOptions.trims || [];
@@ -844,6 +856,18 @@ const VehicleSearchFilter = ({
   const allInteriorColors = filterOptions.interiorColors || [];
   const allYears = filterOptions.years || [];
   const allFuelTypes = filterOptions.fuelTypes || [];
+
+  // DEBUG: Log filter data availability
+  useEffect(() => {
+    console.log('🎯 FILTER DATA AVAILABILITY:', {
+      makes: allMakes.length,
+      models: allModels.length,
+      conditions: allConditions.length,
+      vehicleTypes: allVehicleTypes.length,
+      makeNames: allMakes.slice(0, 3).map(m => m.name),
+      isLoading
+    });
+  }, [allMakes.length, allModels.length, allConditions.length, allVehicleTypes.length, isLoading]);
 
   const displayedMakes = showMoreMakes ? allMakes : allMakes.slice(0, 8);
   const displayedModels = showMoreModels ? allModels : allModels.slice(0, 8);
