@@ -1368,6 +1368,28 @@ function App() {
               onClose={isMobile ? () => setIsMobileFiltersOpen(false) : null}
               isMobile={isMobile}
             />
+
+            {/* DEBUG: Filter status for testing */}
+            {process.env.NODE_ENV === 'development' && (
+              <div style={{
+                position: 'fixed',
+                bottom: '10px',
+                left: '10px',
+                background: 'rgba(0, 0, 0, 0.8)',
+                color: 'white',
+                padding: '10px',
+                borderRadius: '5px',
+                fontSize: '12px',
+                maxWidth: '300px',
+                zIndex: 1000
+              }}>
+                <div><strong>🔧 Filter Debug:</strong></div>
+                <div>API Connected: {apiConnected ? '✅ Yes' : '❌ No'}</div>
+                <div>Filter Options Available: {Object.keys(filterOptions).length}</div>
+                <div>Makes Available: {filterOptions.makes?.length || 0}</div>
+                <div>Active Filters: {JSON.stringify(filters, null, 1)}</div>
+              </div>
+            )}
           </FilterErrorBoundary>
 
 
