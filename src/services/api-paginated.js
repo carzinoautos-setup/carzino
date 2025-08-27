@@ -16,67 +16,7 @@ const ELASTICSEARCH_ENDPOINT = process.env.REACT_APP_ELASTICSEARCH_URL || `${pro
  */
 // Demo data functions removed - now handled in App.js
 
-/**
- * Test API connectivity with proper authentication and robust error handling
- */
-const testAPIConnectivity = async () => {
-  try {
-    const params = new URLSearchParams({
-      per_page: '1',
-      status: 'publish'
-    });
-
-    const testUrl = `${API_BASE}/products?${params}`;
-
-    // Prepare headers with Basic Auth and compression
-    const headers = {
-      'Accept': 'application/json',
-      'Accept-Encoding': 'gzip, deflate, br',
-    };
-
-    if (process.env.REACT_APP_WC_CONSUMER_KEY) {
-      const credentials = btoa(`${process.env.REACT_APP_WC_CONSUMER_KEY}:${process.env.REACT_APP_WC_CONSUMER_SECRET}`);
-      headers['Authorization'] = `Basic ${credentials}`;
-    }
-
-    // Use AbortController for timeout
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-
-    let response;
-    try {
-      response = await fetch(testUrl, {
-        method: 'GET',
-        headers: headers,
-        signal: controller.signal
-      });
-      clearTimeout(timeoutId);
-    } catch (networkError) {
-      clearTimeout(timeoutId);
-      // Silently handle network errors - API is clearly not reachable
-      console.warn('⚠️ API connectivity test: Network unreachable');
-      return false;
-    }
-
-    if (response.ok) {
-      try {
-        const data = await response.json();
-        console.log('✅ API connectivity test successful - found', data.length, 'products');
-        return true;
-      } catch (parseError) {
-        console.warn('⚠️ API connectivity test: Response parse error');
-        return false;
-      }
-    } else {
-      console.warn('⚠️ API connectivity test failed: HTTP', response.status);
-      return false;
-    }
-  } catch (error) {
-    // Catch any other unexpected errors
-    console.warn('⚠️ API connectivity test failed: Unexpected error');
-    return false;
-  }
-};
+// API connectivity testing functionality removed - handled inline in main functions
 
 /**
  * Fetch all vehicles matching filters for filter option extraction
