@@ -778,7 +778,15 @@ function App() {
     console.log('  Makes found:', options.makes.length, '→', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Models found:', options.models.length, '→', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Conditions found:', options.conditions.length, '→', options.conditions.map(c => `${c.name} (${c.count})`));
-    console.log('  🚗 VEHICLE TYPES found:', options.bodyTypes.length, '��', options.bodyTypes.map(v => `${v.name} (${v.count})`));
+    console.log('  🚗 VEHICLE TYPES found:', options.bodyTypes.length, '→', options.bodyTypes.map(v => `${v.name} (${v.count})`));
+
+    // VEHICLE TYPE EXTRACTION SUMMARY
+    if (options.bodyTypes.length === 0) {
+      console.log('  ⚠️ NO VEHICLE TYPES EXTRACTED - Check if your ACF fields contain vehicle type data');
+      console.log('  💡 Expected field names: vehicle_type, body_type, bodytype, category, style, class');
+    } else {
+      console.log(`  ✅ Successfully extracted ${options.bodyTypes.length} vehicle types from your data`);
+    }
 
     // ACF USAGE SUMMARY
     console.log('\n🔧 ACF DATA USAGE SUMMARY:');
