@@ -646,6 +646,32 @@ function App() {
           isMobile={isMobile}
         />
 
+        {/* Mobile Filter Button - Fixed at bottom */}
+        {isMobile && (
+          <div className="fixed bottom-4 left-4 right-4 z-40">
+            <button
+              onClick={() => setIsMobileFiltersOpen(true)}
+              className="w-full bg-red-600 hover:bg-red-700 text-white py-4 px-6 rounded-full font-semibold text-lg shadow-lg transition-all duration-200 flex items-center justify-center gap-2"
+              style={{ backgroundColor: '#dc2626' }}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              Filter Vehicles
+              {Object.values(filters).some(v => Array.isArray(v) ? v.length > 0 : v && v !== '' && v !== '98498' && v !== '200' && v !== '72' && v !== '8' && v !== '2000') && (
+                <span className="bg-black text-white text-sm rounded-full px-2 py-1 ml-2">
+                  {Object.entries(filters).reduce((count, [key, value]) => {
+                    if (key === 'radius' || key === 'termLength' || key === 'interestRate' || key === 'downPayment' || key === 'zipCode') return count;
+                    if (Array.isArray(value)) return count + value.length;
+                    if (value && value !== '' && value !== '98498' && value !== '200' && value !== '72' && value !== '8' && value !== '2000') return count + 1;
+                    return count;
+                  }, 0)}
+                </span>
+              )}
+            </button>
+          </div>
+        )}
+
         {/* Main Content Area */}
         <div className="main-content">
           {/* Results Header with Sort and View Options */}
@@ -662,10 +688,11 @@ function App() {
             currentFilters={filters}
             viewMode={viewMode}
             onViewModeChange={setViewMode}
-            onMobileFiltersOpen={() => setIsMobileFiltersOpen(true)}
+            onMobileFiltersOpen={isMobile ? null : () => setIsMobileFiltersOpen(true)}
             favoritesCount={Object.values(favorites).filter(Boolean).length}
             showingFavorites={showingFavorites}
             onToggleFavorites={handleToggleFavorites}
+            isMobile={isMobile}
           />
 
           {/* Vehicle Grid */}
