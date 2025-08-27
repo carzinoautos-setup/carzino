@@ -162,10 +162,9 @@ export const useImageLazyLoading = (imageUrl, options = {}) => {
     webpSupported: null
   });
 
-  const { 
-    enableWebP = true, 
-    priority = false,
-    sizes = '(max-width: 768px) 100vw, 50vw'
+  const {
+    enableWebP = true,
+    priority = false
   } = options;
 
   // Check WebP support
