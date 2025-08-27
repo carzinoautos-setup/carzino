@@ -620,6 +620,9 @@ function App() {
       setCurrentPage(result.currentPage);
       setSearchTime(result.searchTime || responseTime);
 
+      // Reset batch loading for new vehicle data
+      resetBatches();
+
       // Properly detect if we're using real API data vs demo data
       const isRealAPIData = !result.isDemo;
       setApiConnected(isRealAPIData);
@@ -1026,7 +1029,7 @@ function App() {
                           </>
                         ) : (
                           <>
-                            ⬇�� Load More Vehicles ({vehicles.length - visibleVehicles.length} remaining)
+                            ⬇️ Load More Vehicles ({vehicles.length - visibleVehicles.length} remaining)
                           </>
                         )}
                       </button>
