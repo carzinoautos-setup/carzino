@@ -753,6 +753,10 @@ function App() {
     if (resultsElement) {
       resultsElement.scrollIntoView({ behavior: 'smooth' });
     }
+
+    // Track page change performance
+    const endTime = performance.now();
+    performanceMonitor.trackPageChange(newPage, endTime - startTime);
   }, [debouncedFilters, fetchVehiclesPage, preloadedPages, updateURL, preloadNextPage, resetBatches]);
 
   // Debounced filter handler to prevent rapid API calls
