@@ -730,7 +730,7 @@ export const fetchVehicles = async (params = {}) => {
     const vehiclesWithSellerData = products.filter(p => p.seller_data);
     const vehiclesWithSellerMeta = products.filter(p => p.meta_data && p.meta_data.some(m => m.key.includes('seller')));
 
-    console.log(`🔍 COMPREHENSIVE SELLER DATA DEBUG:`);
+    console.log(`���� COMPREHENSIVE SELLER DATA DEBUG:`);
     console.log(`  Total vehicles: ${products.length}`);
     console.log(`  Vehicles with seller_data field: ${vehiclesWithSellerData.length}`);
     console.log(`  Vehicles with seller meta_data: ${vehiclesWithSellerMeta.length}`);
@@ -794,7 +794,12 @@ export const fetchVehicles = async (params = {}) => {
         // Enhanced image handling to properly extract WooCommerce images
         images: product.images && product.images.length > 0 ? product.images.map(img => img.src) : [],
         image: product.images && product.images.length > 0 ? product.images[0].src : null,
-        featured_media_url: product.featured_media_url || null,
+        // Extract featured media from embedded objects (with _embed=true)
+        featured_media: product.featured_media || null,
+        featured_media_url: product.featured_media_url ||
+                           product._embedded?.['wp:featuredmedia']?.[0]?.source_url ||
+                           product._embedded?.['wp:featuredmedia']?.[0]?.media_details?.sizes?.full?.source_url ||
+                           null,
         categories: product.categories.map(cat => ({
           id: cat.id,
           name: cat.name,
