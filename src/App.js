@@ -17,7 +17,6 @@ import { useDebouncedFilters } from './hooks/useDebounce';
 import { optimizeChunkLoading } from './utils/bundleAnalyzer';
 import BundleAnalysisPanel from './components/BundleAnalysisPanel';
 import { performanceMonitor } from './services/performanceMonitor';
-import ImageDiagnostic from './components/ImageDiagnostic';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
