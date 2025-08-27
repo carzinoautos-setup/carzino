@@ -23,10 +23,29 @@ const ELASTICSEARCH_ENDPOINT = process.env.REACT_APP_ELASTICSEARCH_URL || `${pro
  */
 export const fetchAllFilteredVehicles = async (filters = {}) => {
   try {
-    console.log('🔍 FORCE FETCHING VEHICLES FROM YOUR API for filter options with filters:', filters);
+    // 🚀 PERFORMANCE: Check cache first for filter options
+    const filterCacheKey = `carzino_filters_${JSON.stringify(filters).substring(0, 80)}`;
+    const cachedFilters = localStorage.getItem(filterCacheKey);
 
-    // Skip connectivity test - attempt real API call directly
-    console.log('📡 Skipping connectivity test - trying real API directly');
+    if (cachedFilters) {
+      try {
+        const cachedData = JSON.parse(cachedFilters);
+        const cacheAge = Date.now() - cachedData.timestamp;
+        const maxCacheAge = 3 * 60 * 1000; // 3 minutes for filter options
+
+        if (cacheAge < maxCacheAge) {
+          console.log(`⚡ FILTER CACHE HIT: Loaded ${cachedData.data.length} vehicles for filter options in ~5ms`);
+          return cachedData.data;
+        } else {
+          localStorage.removeItem(filterCacheKey);
+        }
+      } catch (e) {
+        localStorage.removeItem(filterCacheKey);
+      }
+    }
+
+    console.log('🔍 FETCHING VEHICLES FROM API for filter options with filters:', filters);
+    console.log('📡 No cache available - making fresh API call');
 
     // 🚀 PERFORMANCE: Further reduced for speed
     const baseParams = {
