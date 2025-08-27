@@ -534,6 +534,7 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
       if (cacheAge < maxCacheAge) {
         const cacheHitTime = Date.now() - startTime;
         console.log(`⚡ CACHE HIT: Loaded ${cachedData.data.vehicles?.length || 0} vehicles in ${cacheHitTime}ms (cached ${Math.round(cacheAge/1000)}s ago)`);
+        console.log(`🎯 Using cached data - this should be VERY fast!`);
         return { ...cachedData.data, searchTime: cacheHitTime, isCached: true };
       } else {
         console.log(`🕒 CACHE EXPIRED: Removing stale data (${Math.round(cacheAge/1000)}s old)`);
