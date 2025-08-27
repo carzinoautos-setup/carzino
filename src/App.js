@@ -263,15 +263,7 @@ function App() {
   const [itemsPerPage, setItemsPerPage] = useState(19); // 🚀 PERFORMANCE: Show 19 results as requested
   const [searchTime, setSearchTime] = useState(0);
 
-  // Lazy loading state with batch management
-  const {
-    visibleItems: visibleVehicles,
-    hasMoreBatches,
-    isLoading: batchLoading,
-    loadNextBatch,
-    resetBatches,
-    batchInfo
-  } = useBatchLazyLoading(vehicles, 6); // Load 6 vehicles at a time
+  // Removed batch loading - using standard pagination
 
   // Update URL when filters or page change
   const updateURL = useCallback((newFilters, page = currentPage) => {
