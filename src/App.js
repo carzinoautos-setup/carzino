@@ -785,65 +785,23 @@ function App() {
     } catch (error) {
       console.warn('⚠️ Could not fetch full inventory for filters:', error.message);
 
-      // Set fallback filter options to ensure filters work
-      console.log('🔧 Setting fallback filter options for working filters');
+      // Don't override with demo data - let real data extraction work
+      console.log('❌ Failed to fetch full inventory, but NOT setting demo data');
+      console.log('🔍 This will help us see what real data (if any) is being extracted');
+
+      // Set empty filter options so we can debug the real extraction
       setFilterOptions({
-        makes: [
-          { name: 'Ford', count: 45 },
-          { name: 'Chevrolet', count: 38 },
-          { name: 'Toyota', count: 34 },
-          { name: 'Honda', count: 28 },
-          { name: 'Nissan', count: 25 }
-        ],
-        models: [
-          { name: 'F-150', count: 12 },
-          { name: 'Camry', count: 8 },
-          { name: 'Civic', count: 7 },
-          { name: 'Silverado', count: 9 }
-        ],
-        conditions: [
-          { name: 'Used', count: 180 },
-          { name: 'New', count: 74 }
-        ],
-        bodyTypes: [
-          { name: 'Sedan', count: 85 },
-          { name: 'SUV', count: 92 },
-          { name: 'Truck', count: 57 }
-        ],
-        years: [
-          { name: '2023', count: 45 },
-          { name: '2022', count: 67 },
-          { name: '2021', count: 89 }
-        ],
-        trims: [
-          { name: 'XLE', count: 15 },
-          { name: 'XLT', count: 18 },
-          { name: 'LT', count: 12 }
-        ],
-        drivetrains: [
-          { name: 'FWD', count: 120 },
-          { name: 'AWD', count: 89 },
-          { name: '4WD', count: 45 }
-        ],
-        transmissions: [
-          { name: 'Automatic', count: 230 },
-          { name: 'Manual', count: 24 }
-        ],
-        exteriorColors: [
-          { name: 'White', count: 45 },
-          { name: 'Black', count: 38 },
-          { name: 'Silver', count: 67 }
-        ],
-        interiorColors: [
-          { name: 'Black', count: 156 },
-          { name: 'Gray', count: 78 },
-          { name: 'Tan', count: 20 }
-        ],
-        fuelTypes: [
-          { name: 'Gasoline', count: 200 },
-          { name: 'Hybrid', count: 35 },
-          { name: 'Electric', count: 19 }
-        ]
+        makes: [],
+        models: [],
+        conditions: [],
+        bodyTypes: [],
+        years: [],
+        trims: [],
+        drivetrains: [],
+        transmissions: [],
+        exteriorColors: [],
+        interiorColors: [],
+        fuelTypes: []
       });
     }
   }, [extractFilterOptions]);
