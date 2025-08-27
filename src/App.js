@@ -1038,10 +1038,17 @@ function App() {
 
       {/* Bundle Analysis Panel (Development Only) */}
       {process.env.NODE_ENV === 'development' && (
-        <BundleAnalysisPanel
-          isVisible={showBundleAnalysis}
-          onClose={() => setShowBundleAnalysis(false)}
-        />
+        <>
+          <BundleAnalysisPanel
+            isVisible={showBundleAnalysis}
+            onClose={() => setShowBundleAnalysis(false)}
+          />
+
+          {/* Image Diagnostic Tool */}
+          {showImageDiagnostic && (
+            <ImageDiagnostic />
+          )}
+        </>
       )}
     </ErrorBoundary>
   );
