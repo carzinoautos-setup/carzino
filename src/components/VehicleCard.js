@@ -492,8 +492,14 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     }
   };
 
-  // Get the featured image (fixed - working version)
+  // Get the featured image (with debugging)
   const getFeaturedImage = () => {
+    console.log(`🖼️ Image data for ${vehicle.title}:`, {
+      images: vehicle.images,
+      image: vehicle.image,
+      vehicleId: vehicle.id
+    });
+
     if (vehicle.images && vehicle.images.length > 0) {
       return vehicle.images[0];
     }
