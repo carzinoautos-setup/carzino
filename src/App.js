@@ -845,15 +845,23 @@ function App() {
 
       <div className="main-container">
         {/* Search and Filter Section - Sidebar */}
-        <VehicleSearchFilter
-          filters={filters}
-          onFiltersChange={handleFilterChange}
-          loading={loading}
-          filterOptions={filterOptions}
-          isOpen={isMobileFiltersOpen}
-          onClose={isMobile ? () => setIsMobileFiltersOpen(false) : null}
-          isMobile={isMobile}
-        />
+        <FilterErrorBoundary
+          onRetry={() => fetchVehiclesPage(currentPage, filters)}
+          onReset={() => {
+            setFilters(getInitialFilters());
+            fetchVehiclesPage(1, getInitialFilters());
+          }}
+        >
+          <VehicleSearchFilter
+            filters={filters}
+            onFiltersChange={handleFilterChange}
+            loading={loading}
+            filterOptions={filterOptions}
+            isOpen={isMobileFiltersOpen}
+            onClose={isMobile ? () => setIsMobileFiltersOpen(false) : null}
+            isMobile={isMobile}
+          />
+        </FilterErrorBoundary>
 
 
         {/* Main Content Area */}
