@@ -749,25 +749,18 @@ function App() {
     fetchVehiclesPage(1, newFilters);
   }, [fetchVehiclesPage]);
 
-  // Handle filter changes with optimistic loading and debouncing
-  const handleFilterChange = useCallback((newFilters) => {
-    console.log('🔄 Filters changed:', newFilters);
-    setFilters(newFilters);
+  // Handle filter changes with smart debouncing
+  const handleFilterChange = useCallback((key, value, immediate = false) => {
+    console.log(`🔄 Filter changed: ${key} = ${value} (immediate: ${immediate})`);
 
-    // Show instant optimistic loading state
-    setOptimisticLoading(true);
-
-    // Clear previous timeout
-    if (window.filterTimeout) {
-      clearTimeout(window.filterTimeout);
+    // Show optimistic loading for text inputs only
+    if (!immediate && ['priceMin', 'priceMax', 'paymentMin', 'paymentMax', 'zipCode', 'interestRate', 'downPayment'].includes(key)) {
+      setOptimisticLoading(true);
     }
 
-    // Debounce API calls by 300ms to prevent rapid requests
-    window.filterTimeout = setTimeout(() => {
-      setOptimisticLoading(false);
-      debouncedFilterChange(newFilters);
-    }, 300);
-  }, [debouncedFilterChange]);
+    // Update filter using debounced system
+    updateFilter(key, value, immediate);
+  }, [updateFilter]);
 
   // Handle sort changes
   const handleSortChange = useCallback((newSortBy) => {
