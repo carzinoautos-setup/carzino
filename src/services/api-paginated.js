@@ -457,7 +457,7 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
       }
     })(),
     new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Request timeout after 15 seconds')), 15000)
+      setTimeout(() => reject(new Error('Request timeout after 20 seconds')), 20000)
     )
   ]).catch(error => {
     console.error('❌ API failed with error:', error.message);
