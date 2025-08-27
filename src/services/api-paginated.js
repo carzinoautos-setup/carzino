@@ -1108,7 +1108,23 @@ const transformWooCommerceVehicle = (product) => {
       { key: 'interior_color', value: getMeta('interior_color') || getMeta('_interior_color') },
       { key: 'trim', value: getMeta('trim') || getMeta('_trim') }
     ].filter(meta => meta.value && meta.value.toString().trim() !== ''),
-    rawData: product
+    // Additional fields for compatibility with VehicleCard component
+    image: extractImages()[0] || null,  // First image for simple access
+    featured_media: product.featured_media || null,
+    featured_media_url: product._embedded?.['wp:featuredmedia']?.[0]?.source_url || null,
+    acf: product.acf || {},
+    price: product.price || product.regular_price || '',
+    sale_price: product.sale_price || '',
+    stock_status: product.stock_status || 'instock',
+    // Include complete raw data for debugging
+    rawData: {
+      ...product,
+      has_images: !!(product.images && product.images.length > 0),
+      has_featured_media: !!product.featured_media,
+      has_embedded: !!product._embedded,
+      embedded_media: product._embedded?.['wp:featuredmedia'] || null,
+      extracted_images_count: extractImages().length
+    }
   };
 };
 
