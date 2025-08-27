@@ -634,7 +634,7 @@ const SearchResultsHeader = ({
             </div>
             
             {/* STICKY SECTION: Filters & Controls (stays on top) */}
-            <div className={mobileFiltersOpen ? '' : 'mobile-sticky-wrapper'}>
+            <div className="mobile-sticky-wrapper">
               
               {/* Applied Filter Pills (part of sticky) */}
               {activeFilters.length > 0 && (
