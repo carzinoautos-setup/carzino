@@ -662,6 +662,27 @@ function App() {
         console.log(`❌ No ACF-like fields found in meta_data for ${vehicle.title}`);
       }
 
+      // ENHANCED VEHICLE TYPE DEBUG - Show ALL fields that might contain vehicle type
+      console.log('\n🚗 VEHICLE TYPE DEBUG - All fields that might contain vehicle type data:');
+      metaData.forEach(meta => {
+        const key = meta.key.toLowerCase();
+        const value = meta.value;
+        if (key.includes('type') || key.includes('body') || key.includes('style') ||
+            key.includes('category') || key.includes('class') || key.includes('vehicle') ||
+            key.includes('suv') || key.includes('sedan') || key.includes('truck') ||
+            key.includes('coupe') || key.includes('hatch') || key.includes('wagon') ||
+            key.startsWith('field_') || key.startsWith('acf_') || key.startsWith('_')) {
+          console.log(`  🚗 Potential vehicle type field: ${meta.key} = ${value}`);
+
+          // If this looks like vehicle type data, try to extract it
+          if (value && value.toString().trim() !== '') {
+            const cleanValue = value.toString().trim();
+            counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
+            console.log(`    ✅ Added to bodyType: ${cleanValue}`);
+          }
+        }
+      });
+
       // Extract from WooCommerce Attributes
       if (vehicle.attributes && vehicle.attributes.length > 0) {
         vehicle.attributes.forEach(attr => {
@@ -958,7 +979,7 @@ function App() {
     try {
       const startTime = Date.now();
 
-      // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford �� Explorer)
+      // 🚀 SMART SEQUENTIAL FILTERING: Check if we can use cached data (Ford → Explorer)
       if (apiConnected && canUseSequentialCache(newFilters, filters)) {
         const makeFilter = newFilters.make[0];
         const cacheKey = `make_${makeFilter}`;
@@ -1562,7 +1583,7 @@ function App() {
                 zIndex: 1000
               }}>
                 <div><strong>🔧 Filter Debug:</strong></div>
-                <div>API Connected: {apiConnected ? '✅ Yes' : '❌ No'}</div>
+                <div>API Connected: {apiConnected ? '✅ Yes' : '�� No'}</div>
                 <div>Filter Options Available: {Object.keys(filterOptions).length}</div>
                 <div>Makes Available: {filterOptions.makes?.length || 0}</div>
                 <div>Active Filters: {JSON.stringify(filters, null, 1)}</div>
