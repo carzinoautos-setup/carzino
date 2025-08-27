@@ -8,7 +8,7 @@ const styles = {
   container: {
     fontFamily: "'Albert Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
     backgroundColor: '#ffffff',
-    width: '100%'
+    width: '290px'
   },
 
   filterSection: {
