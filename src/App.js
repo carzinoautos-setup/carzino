@@ -693,6 +693,7 @@ function App() {
 
     } catch (error) {
       console.error('❌ Unexpected error in fetchVehiclesPage:', error);
+      performanceMonitor.trackError(error, 'fetchVehiclesPage');
       setError(`Unexpected error: ${error.message}`);
       setApiConnected(false);
 
