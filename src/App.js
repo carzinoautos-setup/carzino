@@ -783,11 +783,14 @@ function App() {
     fetchVehiclesPage(1, debouncedFilters);
   }, [debouncedFilters, fetchVehiclesPage]);
 
-  // Initial data load
+  // Initial data load and bundle optimization
   useEffect(() => {
     console.log('🚀 App initialized - loading first page and full inventory for filters');
     fetchVehiclesPage(currentPage, debouncedFilters);
     // Note: fetchFullInventoryForFilters is called within fetchVehiclesPage for page 1
+
+    // Optimize chunk loading for better performance
+    optimizeChunkLoading();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle browser back/forward navigation
