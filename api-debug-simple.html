@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WooCommerce API Test</title>
+</head>
+<body>
+    <h1>WooCommerce API Connectivity Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        const WP_SITE_URL = 'https://env-uploadbackup62225-czdev.kinsta.cloud';
+        const API_BASE = `${WP_SITE_URL}/wp-json/wc/v3`;
+        const CONSUMER_KEY = 'ck_ba9a8da8b8ad2ef3b1093ba34e4b2a25cd299b25';
+        const CONSUMER_SECRET = 'cs_029fd6b60c280bc10981d62871d1c0526990f607';
+        
+        async function testAPI() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Testing API connectivity...</p>';
+            
+            try {
+                // Test 1: Basic connectivity to WordPress
+                resultsDiv.innerHTML += '<p>🔍 Test 1: Testing WordPress site...</p>';
+                
+                const wpResponse = await fetch(WP_SITE_URL, { method: 'HEAD' });
+                resultsDiv.innerHTML += `<p>✅ WordPress site accessible: ${wpResponse.status}</p>`;
+                
+                // Test 2: WooCommerce REST API endpoint
+                resultsDiv.innerHTML += '<p>🔍 Test 2: Testing WooCommerce API endpoint...</p>';
+                
+                const params = new URLSearchParams({
+                    per_page: '1',
+                    status: 'publish'
+                });
+                
+                const apiUrl = `${API_BASE}/products?${params}`;
+                resultsDiv.innerHTML += `<p>📡 API URL: ${apiUrl}</p>`;
+                
+                // Try without authentication first
+                try {
+                    const basicResponse = await fetch(apiUrl);
+                    resultsDiv.innerHTML += `<p>🔓 No auth response: ${basicResponse.status}</p>`;
+                } catch (e) {
+                    resultsDiv.innerHTML += `<p>❌ No auth failed: ${e.message}</p>`;
+                }
+                
+                // Test 3: With Basic Auth
+                resultsDiv.innerHTML += '<p>🔍 Test 3: Testing with Basic Auth...</p>';
+                
+                const credentials = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`);
+                const headers = {
+                    'Accept': 'application/json',
+                    'Authorization': `Basic ${credentials}`
+                };
+                
+                const authResponse = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: headers
+                });
+                
+                resultsDiv.innerHTML += `<p>✅ Auth response: ${authResponse.status}</p>`;
+                resultsDiv.innerHTML += `<p>📄 Headers: ${JSON.stringify(Object.fromEntries(authResponse.headers.entries()), null, 2)}</p>`;
+                
+                if (authResponse.ok) {
+                    const data = await authResponse.json();
+                    resultsDiv.innerHTML += `<p>✅ Data received: ${data.length} products</p>`;
+                    resultsDiv.innerHTML += `<p>📊 Sample: ${JSON.stringify(data[0]?.name || 'No products', null, 2)}</p>`;
+                } else {
+                    const errorText = await authResponse.text();
+                    resultsDiv.innerHTML += `<p>❌ Error response: ${errorText}</p>`;
+                }
+                
+            } catch (error) {
+                resultsDiv.innerHTML += `<p>❌ Test failed: ${error.message}</p>`;
+                resultsDiv.innerHTML += `<p>🔍 Error details: ${JSON.stringify(error, Object.getOwnPropertyNames(error))}</p>`;
+            }
+        }
+        
+        // Auto-run test
+        testAPI();
+    </script>
+</body>
+</html>
