@@ -590,7 +590,7 @@ export const fetchVehicles = async (params = {}) => {
       headers: {
         'Accept': 'application/json'
       }
-    }, 10000); // 10 second timeout
+    }, 20000); // 20 second timeout (increased for WooCommerce stability)
 
     const responseTime = Date.now() - startTime;
     console.log(`⏱️ Vehicles loaded in ${responseTime}ms`);
