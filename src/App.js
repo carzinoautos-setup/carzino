@@ -708,6 +708,7 @@ function App() {
     }
 
     setLoading(true);
+    setLoadingStartTime(Date.now());
     setError(null);
 
     try {
