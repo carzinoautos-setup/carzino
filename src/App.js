@@ -530,18 +530,91 @@ function App() {
         }
       });
 
+      // Extract from ACF (Advanced Custom Fields) if available
+      if (vehicle.acf && typeof vehicle.acf === 'object') {
+        Object.entries(vehicle.acf).forEach(([acfKey, acfValue]) => {
+          if (acfValue && acfValue.toString().trim() !== '') {
+            const key = acfKey.toLowerCase();
+            const cleanValue = acfValue.toString().trim();
+
+            console.log(`🔧 ACF Field: ${acfKey} = ${cleanValue}`);
+
+            // Apply same field matching logic to ACF fields
+            if (key.includes('condition') || key.includes('status')) {
+              counts[`condition_${cleanValue}`] = (counts[`condition_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('body') || key.includes('type') || key.includes('category')) {
+              counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('drive') || key.includes('drivetrain')) {
+              counts[`drivetrain_${cleanValue}`] = (counts[`drivetrain_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('transmission')) {
+              counts[`transmission_${cleanValue}`] = (counts[`transmission_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('fuel')) {
+              counts[`fuelType_${cleanValue}`] = (counts[`fuelType_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('trim')) {
+              counts[`trim_${cleanValue}`] = (counts[`trim_${cleanValue}`] || 0) + 1;
+            } else if (key.includes('color')) {
+              if (key.includes('exterior')) {
+                counts[`exteriorColor_${cleanValue}`] = (counts[`exteriorColor_${cleanValue}`] || 0) + 1;
+              } else if (key.includes('interior')) {
+                counts[`interiorColor_${cleanValue}`] = (counts[`interiorColor_${cleanValue}`] || 0) + 1;
+              }
+            }
+          }
+        });
+      }
+
+      // Extract from WooCommerce Attributes
+      if (vehicle.attributes && vehicle.attributes.length > 0) {
+        vehicle.attributes.forEach(attr => {
+          if (attr.options && attr.options.length > 0) {
+            const attrName = (attr.name || '').toLowerCase();
+            attr.options.forEach(option => {
+              if (option && option.toString().trim() !== '') {
+                const cleanValue = option.toString().trim();
+
+                console.log(`🏷️ Attribute: ${attr.name} = ${cleanValue}`);
+
+                // Apply field matching to attributes
+                if (attrName.includes('condition') || attrName.includes('status')) {
+                  counts[`condition_${cleanValue}`] = (counts[`condition_${cleanValue}`] || 0) + 1;
+                } else if (attrName.includes('body') || attrName.includes('type') || attrName.includes('category')) {
+                  counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
+                } else if (attrName.includes('drive') || attrName.includes('drivetrain')) {
+                  counts[`drivetrain_${cleanValue}`] = (counts[`drivetrain_${cleanValue}`] || 0) + 1;
+                } else if (attrName.includes('transmission')) {
+                  counts[`transmission_${cleanValue}`] = (counts[`transmission_${cleanValue}`] || 0) + 1;
+                } else if (attrName.includes('fuel')) {
+                  counts[`fuelType_${cleanValue}`] = (counts[`fuelType_${cleanValue}`] || 0) + 1;
+                } else if (attrName.includes('trim')) {
+                  counts[`trim_${cleanValue}`] = (counts[`trim_${cleanValue}`] || 0) + 1;
+                } else if (attrName.includes('color')) {
+                  if (attrName.includes('exterior')) {
+                    counts[`exteriorColor_${cleanValue}`] = (counts[`exteriorColor_${cleanValue}`] || 0) + 1;
+                  } else if (attrName.includes('interior')) {
+                    counts[`interiorColor_${cleanValue}`] = (counts[`interiorColor_${cleanValue}`] || 0) + 1;
+                  }
+                }
+              }
+            });
+          }
+        });
+      }
+
       // Extract from categories for body types
       if (vehicle.categories && vehicle.categories.length > 0) {
         vehicle.categories.forEach(category => {
           if (category.name && category.name !== 'Uncategorized') {
             counts[`bodyType_${category.name}`] = (counts[`bodyType_${category.name}`] || 0) + 1;
+            console.log(`📂 Category: ${category.name}`);
           }
         });
       }
 
-      // Add some defaults to ensure filters aren't empty
+      // Add some defaults based on WooCommerce stock status
       if (vehicle.stock_status === 'instock') {
-        counts['condition_Available'] = (counts['condition_Available'] || 0) + 1;
+        counts['condition_In Stock'] = (counts['condition_In Stock'] || 0) + 1;
+      } else if (vehicle.stock_status === 'outofstock') {
+        counts['condition_Sold'] = (counts['condition_Sold'] || 0) + 1;
       }
     });
 
@@ -582,7 +655,7 @@ function App() {
 
     // DEBUG: Show extracted filter options
     console.log('📊 EXTRACTED FILTER OPTIONS:');
-    console.log('  Makes found:', options.makes.length, '→', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
+    console.log('  Makes found:', options.makes.length, '���', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Models found:', options.models.length, '→', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Conditions found:', options.conditions.length, '→', options.conditions.map(c => `${c.name} (${c.count})`));
 
