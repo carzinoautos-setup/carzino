@@ -255,6 +255,9 @@ function App() {
   const [isMobile, setIsMobile] = useState(false);
   const [showingFavorites, setShowingFavorites] = useState(false);
 
+  // Bundle analysis state (development only)
+  const [showBundleAnalysis, setShowBundleAnalysis] = useState(false);
+
   // Pagination state
   const [totalResults, setTotalResults] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
