@@ -1751,6 +1751,8 @@ const VehicleSearchFilter = ({
               <div className="text-sm text-gray-500 py-2">
                 🔍 Debug: No vehicle types found in WooCommerce data. Check field mapping.
                 <br />Available fields: {Object.keys(filterOptions).join(', ')}
+                <br />🚗 bodyTypes field: {JSON.stringify(filterOptions.bodyTypes)}
+                <br />📊 Total filter options: {Object.keys(filterOptions).length}
               </div>
             )}
           </div>
