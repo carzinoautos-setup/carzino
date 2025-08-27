@@ -1504,6 +1504,7 @@ const VehicleSearchFilter = ({
                   category="vehicleType"
                   checked={filters.vehicleType?.includes(vehicleType.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))
             ) : (
@@ -1515,6 +1516,7 @@ const VehicleSearchFilter = ({
                   category="vehicleType"
                   checked={filters.vehicleType?.includes('Sedan')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
                 <CheckboxOption
                   label="SUV"
@@ -1523,6 +1525,7 @@ const VehicleSearchFilter = ({
                   category="vehicleType"
                   checked={filters.vehicleType?.includes('SUV')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
                 <CheckboxOption
                   label="Truck"
@@ -1531,6 +1534,7 @@ const VehicleSearchFilter = ({
                   category="vehicleType"
                   checked={filters.vehicleType?.includes('Truck')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               </div>
             )}
@@ -1556,6 +1560,7 @@ const VehicleSearchFilter = ({
                   category="driveType"
                   checked={filters.driveType?.includes(driveType.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))
             ) : (
@@ -1567,6 +1572,7 @@ const VehicleSearchFilter = ({
                   category="driveType"
                   checked={filters.driveType?.includes('AWD/4WD')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
                 <CheckboxOption
                   label="FWD"
@@ -1575,6 +1581,7 @@ const VehicleSearchFilter = ({
                   category="driveType"
                   checked={filters.driveType?.includes('FWD')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
                 <CheckboxOption
                   label="RWD"
@@ -1583,6 +1590,7 @@ const VehicleSearchFilter = ({
                   category="driveType"
                   checked={filters.driveType?.includes('RWD')}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               </div>
             )}
@@ -1608,6 +1616,7 @@ const VehicleSearchFilter = ({
                   category="transmissionSpeed"
                   checked={filters.transmissionSpeed?.includes(transmission.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))
             ) : (
@@ -1637,6 +1646,7 @@ const VehicleSearchFilter = ({
                   category="exteriorColor"
                   checked={filters.exteriorColor?.includes(color.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))
             ) : (
@@ -1666,6 +1676,7 @@ const VehicleSearchFilter = ({
                   category="interiorColor"
                   checked={filters.interiorColor?.includes(color.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))
             ) : (
@@ -1695,6 +1706,7 @@ const VehicleSearchFilter = ({
                   category="year"
                   checked={filters.year?.includes(year.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))}
             </div>
@@ -1720,6 +1732,7 @@ const VehicleSearchFilter = ({
                   category="fuelType"
                   checked={filters.fuelType?.includes(fuelType.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))}
             </div>
@@ -1745,6 +1758,7 @@ const VehicleSearchFilter = ({
                   category="trim"
                   checked={filters.trim?.includes(trim.name)}
                   onChange={handleFilterChange}
+                  isMobile={isMobile}
                 />
               ))}
             </div>
