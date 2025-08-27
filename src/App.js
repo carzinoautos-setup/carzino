@@ -471,12 +471,19 @@ function App() {
             console.log(`✅ Found condition: ${key} = ${cleanValue}`);
           }
 
-          // VEHICLE TYPE / BODY TYPE - try multiple patterns
+          // VEHICLE TYPE / BODY TYPE - COMPREHENSIVE ACF PATTERNS
           else if (key.includes('body') || key.includes('type') || key === 'vehicletype' ||
                    key === 'vehicle_type' || key === 'body_style' || key === 'category' ||
-                   key === 'car_type' || key === 'auto_type') {
+                   key === 'car_type' || key === 'auto_type' || key === 'bodytype' ||
+                   key === 'body_type' || key === 'style' || key === 'vehicle_style' ||
+                   key === 'car_style' || key === 'form' || key === 'shape' ||
+                   key.includes('suv') || key.includes('sedan') || key.includes('truck') ||
+                   key.includes('coupe') || key.includes('hatch') || key.includes('wagon') ||
+                   key === 'class' || key === 'vehicle_class' || key === 'car_class' ||
+                   // ACF field variations
+                   key.startsWith('field_') || key.startsWith('acf_')) {
             counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
-            console.log(`✅ Found body type: ${key} = ${cleanValue}`);
+            console.log(`🚗 VEHICLE TYPE FOUND: ${key} = ${cleanValue}`);
           }
 
           // DRIVETRAIN / DRIVE TYPE - comprehensive patterns
