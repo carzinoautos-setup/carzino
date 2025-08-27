@@ -636,6 +636,13 @@ function App() {
       setCurrentPage(result.currentPage);
       setSearchTime(result.searchTime || responseTime);
 
+      // Track search performance
+      performanceMonitor.trackSearch(
+        result.searchTime || responseTime,
+        result.totalResults,
+        result.isCached || false
+      );
+
       // Reset batch loading for new vehicle data
       resetBatches();
 
