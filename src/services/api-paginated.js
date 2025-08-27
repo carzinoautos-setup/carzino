@@ -47,11 +47,12 @@ export const fetchAllFilteredVehicles = async (filters = {}) => {
     console.log('🔍 FETCHING VEHICLES FROM API for filter options with filters:', filters);
     console.log('📡 No cache available - making fresh API call');
 
-    // 🚀 PERFORMANCE: Further reduced for speed
+    // 🚀 PERFORMANCE: Minimal fields for filter options only
     const baseParams = {
-      per_page: '30', // Reduced from 50 for even faster loading
+      per_page: '50', // Increased back to 50 since we're fetching much less data per item
       status: 'publish',
-      _fields: 'id,name,meta_data' // Only essential fields for filter extraction
+      // 🎯 FILTER-ONLY: Just what we need for make/model/condition counts
+      _fields: 'id,name,meta_data.make,meta_data.model,meta_data.condition,meta_data.body_type'
     };
 
     const filterParams = buildWooCommerceFilters(filters);
