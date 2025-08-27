@@ -772,13 +772,21 @@ const VehicleSearchFilter = ({
     }));
   }, []);
 
-  // Handle filter changes
+  // Handle filter changes with debugging
   const handleFilterChange = useCallback((category, value, checked) => {
+    console.log('🔄 FILTER CHANGE TRIGGERED:', {
+      category,
+      value,
+      checked,
+      currentFilters: filters[category],
+      onFiltersChangeType: typeof onFiltersChange
+    });
+
     const currentValues = filters[category] || [];
-    
-    if (category === 'condition' || category === 'make' || category === 'model' || category === 'trim' || 
-        category === 'vehicleType' || category === 'bodyType' || category === 'driveType' || category === 'exteriorColor' || 
-        category === 'interiorColor' || category === 'sellerType' || category === 'dealer' || category === 'state' || category === 'city' || 
+
+    if (category === 'condition' || category === 'make' || category === 'model' || category === 'trim' ||
+        category === 'vehicleType' || category === 'bodyType' || category === 'driveType' || category === 'exteriorColor' ||
+        category === 'interiorColor' || category === 'sellerType' || category === 'dealer' || category === 'state' || category === 'city' ||
         category === 'zipCodeFilter' || category === 'transmissionSpeed' || category === 'transmission' || category === 'year' || category === 'fuelType') {
       // Array-based filters
       let newValues;
@@ -787,16 +795,35 @@ const VehicleSearchFilter = ({
       } else {
         newValues = currentValues.filter(v => v !== value);
       }
-      onFiltersChange({
+
+      const newFilters = {
         ...filters,
         [category]: newValues
+      };
+
+      console.log('📤 CALLING onFiltersChange with:', {
+        category,
+        oldValues: currentValues,
+        newValues,
+        fullNewFilters: newFilters
       });
+
+      onFiltersChange(newFilters);
     } else {
       // Single value filters
-      onFiltersChange({
+      const newFilters = {
         ...filters,
         [category]: checked ? value : ''
+      };
+
+      console.log('📤 CALLING onFiltersChange (single value) with:', {
+        category,
+        oldValue: filters[category],
+        newValue: checked ? value : '',
+        fullNewFilters: newFilters
       });
+
+      onFiltersChange(newFilters);
     }
   }, [filters, onFiltersChange]);
 
