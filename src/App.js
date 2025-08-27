@@ -652,7 +652,7 @@ function App() {
       console.log(`🎯 Page ${page}: ${result.vehicles.length} vehicles loaded in ${result.searchTime || responseTime}ms`);
       console.log(`📊 Total inventory: ${result.totalResults.toLocaleString()} vehicles`);
 
-      // ��� SMART CACHING: Store make-specific data for Ford → Explorer scenarios
+      // 🚀 SMART CACHING: Store make-specific data for Ford → Explorer scenarios
       if (isRealAPIData && newFilters.make && newFilters.make.length === 1 && !newFilters.model?.length) {
         const makeFilter = newFilters.make[0];
         const cacheKey = `make_${makeFilter}`;
@@ -838,7 +838,7 @@ function App() {
       const favoriteVehicles = vehicles.filter(v => favorites[v.id]);
       setVehicles(favoriteVehicles);
     } else {
-      fetchVehiclesPage(currentPage, filters);
+      fetchVehiclesPage(currentPage, debouncedFilters);
     }
   };
 
