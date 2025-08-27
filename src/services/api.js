@@ -162,24 +162,28 @@ const getFallbackVehicles = () => {
         price: '35995',
         sale_price: '',
         stock_status: 'instock',
-        images: {
-          featured: 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop',
-          gallery: ['https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop']
-        },
+        images: [
+          'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop'
+        ],
+        image: 'https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=450&h=300&fit=crop',
         categories: [{ id: 3, name: 'Truck', slug: 'truck' }],
         attributes: [],
         meta_data: [
           { key: 'make', value: 'Ford' },
           { key: 'model', value: 'F-150' },
           { key: 'year', value: '2019' },
-          { key: 'condition', value: 'Available' },
+          { key: 'mileage', value: '68543' },
+          { key: 'condition', value: 'Very Good' },
           { key: 'body_type', value: 'Truck' },
           { key: 'drivetrain', value: '4WD' },
           { key: 'transmission', value: 'Automatic' },
           { key: 'fuel_type', value: 'Gasoline' },
           { key: 'trim', value: 'XLT' },
+          { key: 'doors', value: '4' },
           { key: 'exterior_color', value: 'Red' },
-          { key: 'interior_color', value: 'Black' }
+          { key: 'interior_color', value: 'Black' },
+          { key: 'price', value: '35995' },
+          { key: 'payment', value: '525' }
         ],
         description: 'Reliable work truck with 4WD capability and towing package.',
         date_created: new Date().toISOString(),
