@@ -108,9 +108,13 @@ const URLParamsToFilters = (searchParams) => {
 function App() {
   // Initialize filters from URL parameters
   const getInitialFilters = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.toString()) {
-      return URLParamsToFilters(urlParams);
+    try {
+      const urlParams = new URLSearchParams(window.location.search || '');
+      if (urlParams.toString()) {
+        return URLParamsToFilters(urlParams);
+      }
+    } catch (error) {
+      console.warn('Failed to parse URL parameters:', error);
     }
 
     return {
@@ -161,9 +165,15 @@ function App() {
 
   const [favorites, setFavorites] = useState({});
   const [currentPage, setCurrentPage] = useState(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const pageParam = urlParams.get('page');
-    return pageParam ? parseInt(pageParam, 10) : 1;
+    try {
+      const urlParams = new URLSearchParams(window.location.search || '');
+      const pageParam = urlParams.get('page');
+      const parsedPage = pageParam ? parseInt(pageParam, 10) : 1;
+      return (parsedPage > 0 && parsedPage < 10000) ? parsedPage : 1; // Reasonable bounds
+    } catch (error) {
+      console.warn('Failed to parse page parameter:', error);
+      return 1;
+    }
   });
   const [viewMode, setViewMode] = useState('grid');
   const [sortBy, setSortBy] = useState('relevance');
@@ -593,13 +603,19 @@ function App() {
   // Handle browser back/forward navigation
   useEffect(() => {
     const handlePopState = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const newFilters = URLParamsToFilters(urlParams);
-      const newPage = parseInt(urlParams.get('page') || '1', 10);
+      try {
+        const urlParams = new URLSearchParams(window.location.search || '');
+        const newFilters = URLParamsToFilters(urlParams);
+        const pageParam = urlParams.get('page') || '1';
+        const newPage = parseInt(pageParam, 10);
+        const safePage = (newPage > 0 && newPage < 10000) ? newPage : 1;
 
-      setFilters(newFilters);
-      setCurrentPage(newPage);
-      fetchVehiclesPage(newPage, newFilters);
+        setFilters(newFilters);
+        setCurrentPage(safePage);
+        fetchVehiclesPage(safePage, newFilters);
+      } catch (error) {
+        console.warn('Failed to handle browser navigation:', error);
+      }
     };
 
     window.addEventListener('popstate', handlePopState);
