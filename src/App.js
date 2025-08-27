@@ -1110,6 +1110,14 @@ function App() {
           </div>
         </div>
       </div>
+
+      {/* Bundle Analysis Panel (Development Only) */}
+      {process.env.NODE_ENV === 'development' && (
+        <BundleAnalysisPanel
+          isVisible={showBundleAnalysis}
+          onClose={() => setShowBundleAnalysis(false)}
+        />
+      )}
     </ErrorBoundary>
   );
 }
