@@ -960,21 +960,95 @@ function App() {
                   <p>Try adjusting your search filters</p>
                 </div>
               ) : (
-                <div className={`vehicle-grid ${viewMode}-view p-2`}>
-                  {vehicles.map((vehicle, index) => (
-                    <VehicleCardErrorBoundary
-                      key={`boundary-${vehicle.id}-${currentPage}-${index}`}
-                      vehicleId={vehicle.id}
-                    >
-                      <VehicleCard
-                        key={`${vehicle.id}-${currentPage}-${index}`}
-                        vehicle={vehicle}
-                        favorites={favorites}
-                        onFavoriteToggle={toggleFavorite}
-                      />
-                    </VehicleCardErrorBoundary>
-                  ))}
-                </div>
+                <>
+                  <div className={`vehicle-grid ${viewMode}-view p-2`}>
+                    {visibleVehicles.map((vehicle, index) => (
+                      <VehicleCardErrorBoundary
+                        key={`boundary-${vehicle.id}-${currentPage}-${index}`}
+                        vehicleId={vehicle.id}
+                      >
+                        <LazyVehicleCard
+                          key={`${vehicle.id}-${currentPage}-${index}`}
+                          vehicle={vehicle}
+                          favorites={favorites}
+                          onFavoriteToggle={toggleFavorite}
+                          index={index}
+                          priority={index < 3} // First 3 cards load immediately
+                        />
+                      </VehicleCardErrorBoundary>
+                    ))}
+                  </div>
+
+                  {/* Load More Vehicles Button for Batch Loading */}
+                  {hasMoreBatches && (
+                    <div style={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      padding: '20px',
+                      borderTop: '1px solid #e5e7eb',
+                      marginTop: '20px'
+                    }}>
+                      <button
+                        onClick={loadNextBatch}
+                        disabled={batchLoading}
+                        style={{
+                          padding: '12px 24px',
+                          backgroundColor: batchLoading ? '#9ca3af' : '#2563eb',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '8px',
+                          fontWeight: '500',
+                          cursor: batchLoading ? 'not-allowed' : 'pointer',
+                          fontSize: '14px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          transition: 'all 0.2s ease'
+                        }}
+                        onMouseOver={(e) => {
+                          if (!batchLoading) e.target.style.backgroundColor = '#1d4ed8';
+                        }}
+                        onMouseOut={(e) => {
+                          if (!batchLoading) e.target.style.backgroundColor = '#2563eb';
+                        }}
+                      >
+                        {batchLoading ? (
+                          <>
+                            <div style={{
+                              width: '16px',
+                              height: '16px',
+                              border: '2px solid #ffffff',
+                              borderTop: '2px solid transparent',
+                              borderRadius: '50%',
+                              animation: 'spin 1s linear infinite'
+                            }}></div>
+                            Loading more vehicles...
+                          </>
+                        ) : (
+                          <>
+                            ⬇�� Load More Vehicles ({vehicles.length - visibleVehicles.length} remaining)
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Batch Loading Info for Development */}
+                  {process.env.NODE_ENV === 'development' && (
+                    <div style={{
+                      padding: '8px 16px',
+                      margin: '10px 0',
+                      backgroundColor: '#f0f9ff',
+                      border: '1px solid #bae6fd',
+                      borderRadius: '6px',
+                      fontSize: '12px',
+                      color: '#0369a1'
+                    }}>
+                      📊 Lazy Loading: Showing {batchInfo.itemsShown}/{batchInfo.totalItems} vehicles
+                      (Batch {batchInfo.current}/{batchInfo.total})
+                    </div>
+                  )}
+                </>
               )}
             </VehicleGridErrorBoundary>
 
