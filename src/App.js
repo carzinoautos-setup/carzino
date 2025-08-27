@@ -15,6 +15,7 @@ import {
   APIErrorBoundary
 } from './components/SpecializedErrorBoundaries';
 import { useBatchLazyLoading, getLazyLoadingMetrics } from './hooks/useLazyLoading';
+import { useDebouncedFilters, getDebounceMetrics } from './hooks/useDebounce';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
