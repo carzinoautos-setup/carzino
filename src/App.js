@@ -762,6 +762,16 @@ function App() {
           />
 
           {/* Vehicle Grid */}
+          {(() => {
+            console.log('🔍 RENDER DEBUG:', {
+              loading,
+              error,
+              vehiclesLength: vehicles.length,
+              totalResults,
+              showingFirstVehicle: vehicles[0]?.title || 'No vehicles'
+            });
+            return null;
+          })()}
           {loading ? (
             <div className={`vehicle-grid ${viewMode}-view p-2`}>
               {/* Show skeleton cards during loading */}
