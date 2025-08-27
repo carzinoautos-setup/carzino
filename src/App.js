@@ -900,7 +900,7 @@ function App() {
                           View Details
                         </button>
                         <button
-                          onClick={() => onFavoriteToggle(vehicle.id, vehicle)}
+                          onClick={() => toggleFavorite(vehicle.id, vehicle)}
                           style={{
                             padding: '10px',
                             backgroundColor: favorites[vehicle.id] ? '#dc2626' : 'transparent',
