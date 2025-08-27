@@ -700,6 +700,44 @@ function App() {
         }
       });
 
+      // FALLBACK: Process ALL meta fields and try to intelligently categorize them
+      console.log('\n🔍 FALLBACK EXTRACTION - Processing ALL meta fields:');
+      metaData.forEach(meta => {
+        const key = meta.key.toLowerCase();
+        const value = meta.value;
+
+        if (value && value.toString().trim() !== '' && !key.includes('price') && !key.includes('image') && !key.includes('url') && !key.includes('id')) {
+          const cleanValue = value.toString().trim();
+          console.log(`  🔍 Analyzing field: ${meta.key} = ${cleanValue}`);
+
+          // Smart categorization based on common values
+          const lowerValue = cleanValue.toLowerCase();
+
+          // Vehicle type detection by value
+          if (lowerValue.includes('suv') || lowerValue.includes('sedan') || lowerValue.includes('truck') ||
+              lowerValue.includes('coupe') || lowerValue.includes('hatchback') || lowerValue.includes('wagon') ||
+              lowerValue.includes('convertible') || lowerValue.includes('crossover') || lowerValue.includes('minivan')) {
+            counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
+            console.log(`    🚗 DETECTED VEHICLE TYPE BY VALUE: ${cleanValue}`);
+          }
+
+          // Condition detection by value
+          else if (lowerValue.includes('new') || lowerValue.includes('used') || lowerValue.includes('certified') ||
+                   lowerValue.includes('pre-owned') || lowerValue.includes('demo')) {
+            counts[`condition_${cleanValue}`] = (counts[`condition_${cleanValue}`] || 0) + 1;
+            console.log(`    ✅ DETECTED CONDITION BY VALUE: ${cleanValue}`);
+          }
+
+          // Drive type detection by value
+          else if (lowerValue.includes('awd') || lowerValue.includes('fwd') || lowerValue.includes('rwd') ||
+                   lowerValue.includes('4wd') || lowerValue.includes('all wheel') || lowerValue.includes('front wheel') ||
+                   lowerValue.includes('rear wheel') || lowerValue.includes('four wheel')) {
+            counts[`drivetrain_${cleanValue}`] = (counts[`drivetrain_${cleanValue}`] || 0) + 1;
+            console.log(`    🔧 DETECTED DRIVETRAIN BY VALUE: ${cleanValue}`);
+          }
+        }
+      });
+
       // Extract from WooCommerce Attributes
       if (vehicle.attributes && vehicle.attributes.length > 0) {
         vehicle.attributes.forEach(attr => {
@@ -793,7 +831,7 @@ function App() {
     // DEBUG: Show extracted filter options
     console.log('📊 EXTRACTED FILTER OPTIONS:');
     console.log('  Makes found:', options.makes.length, '→', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
-    console.log('  Models found:', options.models.length, '→', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
+    console.log('  Models found:', options.models.length, '���', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
     console.log('  Conditions found:', options.conditions.length, '→', options.conditions.map(c => `${c.name} (${c.count})`));
     console.log('  🚗 VEHICLE TYPES found:', options.bodyTypes.length, '→', options.bodyTypes.map(v => `${v.name} (${v.count})`));
 
