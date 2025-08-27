@@ -11,27 +11,41 @@ const Pagination = lazy(() => import('./components/Pagination'));
 
 // URL parameter helpers
 const filtersToURLParams = (filters, page = 1) => {
-  const params = new URLSearchParams();
+  try {
+    const params = new URLSearchParams();
 
-  Object.entries(filters).forEach(([key, value]) => {
-    if (!value ||
-        (Array.isArray(value) && value.length === 0) ||
-        ['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment'].includes(key)) {
-      return;
+    Object.entries(filters).forEach(([key, value]) => {
+      if (!value ||
+          (Array.isArray(value) && value.length === 0) ||
+          ['zipCode', 'radius', 'termLength', 'interestRate', 'downPayment'].includes(key)) {
+        return;
+      }
+
+      // Sanitize key and values
+      const safeKey = encodeURIComponent(key);
+
+      if (Array.isArray(value)) {
+        value.forEach(item => {
+          if (item && item.toString().trim()) {
+            const safeValue = encodeURIComponent(item.toString().trim());
+            params.append(safeKey, safeValue);
+          }
+        });
+      } else if (value.toString().trim() !== '') {
+        const safeValue = encodeURIComponent(value.toString().trim());
+        params.set(safeKey, safeValue);
+      }
+    });
+
+    if (page > 1) {
+      params.set('page', page.toString());
     }
 
-    if (Array.isArray(value)) {
-      value.forEach(item => params.append(key, item));
-    } else if (value.toString().trim() !== '') {
-      params.set(key, value.toString());
-    }
-  });
-
-  if (page > 1) {
-    params.set('page', page.toString());
+    return params.toString();
+  } catch (error) {
+    console.warn('URL params creation failed:', error);
+    return '';
   }
-
-  return params.toString();
 };
 
 const URLParamsToFilters = (searchParams) => {
@@ -165,11 +179,25 @@ function App() {
 
   // Update URL when filters or page change
   const updateURL = useCallback((newFilters, page = currentPage) => {
-    const params = filtersToURLParams(newFilters, page);
-    const newURL = params ? `${window.location.pathname}?${params}` : window.location.pathname;
+    try {
+      const params = filtersToURLParams(newFilters, page);
 
-    if (newURL !== window.location.pathname + window.location.search) {
-      window.history.pushState(null, '', newURL);
+      // Ensure we have a valid pathname
+      const pathname = window.location.pathname || '/';
+
+      // Construct the new URL properly
+      const newURL = params ? `${pathname}?${params}` : pathname;
+
+      // Validate the URL before pushing to history
+      const currentURL = window.location.pathname + window.location.search;
+
+      if (newURL !== currentURL && newURL.length < 2048) { // URL length limit
+        // Use replaceState instead of pushState to avoid history buildup
+        window.history.replaceState(null, '', newURL);
+      }
+    } catch (error) {
+      console.warn('URL update failed:', error);
+      // Fallback: don't update URL if there's an error
     }
   }, [currentPage]);
 
