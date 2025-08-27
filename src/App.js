@@ -14,6 +14,7 @@ import {
   VehicleCardErrorBoundary,
   APIErrorBoundary
 } from './components/SpecializedErrorBoundaries';
+import { useBatchLazyLoading, getLazyLoadingMetrics } from './hooks/useLazyLoading';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
@@ -761,7 +762,7 @@ function App() {
 
   // Initial data load
   useEffect(() => {
-    console.log('�� App initialized - loading first page and full inventory for filters');
+    console.log('🚀 App initialized - loading first page and full inventory for filters');
     fetchVehiclesPage(currentPage, filters);
     // Note: fetchFullInventoryForFilters is called within fetchVehiclesPage for page 1
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
