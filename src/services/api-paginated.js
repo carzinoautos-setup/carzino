@@ -448,6 +448,10 @@ const fetchFromWooCommerce = async (page, limit, filters, sortBy) => {
     headers['Authorization'] = `Basic ${credentials}`;
   }
 
+  // Add CORS headers to help with cross-origin requests
+  headers['Access-Control-Request-Headers'] = 'authorization,content-type';
+  headers['Access-Control-Request-Method'] = 'GET';
+
   console.log('🔄 WooCommerce API call...');
   console.log('🌐 API_BASE:', API_BASE);
   console.log('📡 Full URL:', fullUrl);
