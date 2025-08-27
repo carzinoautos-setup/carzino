@@ -1338,9 +1338,14 @@ const VehicleSearchFilter = ({
             )}
           </div>
           {allMakes.length > 8 && (
-            <button 
+            <button
               onClick={() => setShowMoreMakes(!showMoreMakes)}
-              className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
+              style={{
+                ...styles.showMoreButton,
+                ...(isMobile ? styles.showMoreButtonMobile : {})
+              }}
+              onMouseEnter={(e) => e.target.style.color = '#b91c1c'}
+              onMouseLeave={(e) => e.target.style.color = '#dc2626'}
             >
               {showMoreMakes ? 'Show Less' : 'Show More'}
             </button>
@@ -1377,9 +1382,14 @@ const VehicleSearchFilter = ({
               )}
             </div>
             {allModels.length > 8 && (
-              <button 
+              <button
                 onClick={() => setShowMoreModels(!showMoreModels)}
-                className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
+                style={{
+                  ...styles.showMoreButton,
+                  ...(isMobile ? styles.showMoreButtonMobile : {})
+                }}
+                onMouseEnter={(e) => e.target.style.color = '#b91c1c'}
+                onMouseLeave={(e) => e.target.style.color = '#dc2626'}
               >
                 {showMoreModels ? 'Show Less' : 'Show More'}
               </button>
@@ -1395,11 +1405,12 @@ const VehicleSearchFilter = ({
           count={getFilterCount('price')}
           isMobile={isMobile}
         >
-          <PriceRangeInput 
+          <PriceRangeInput
             min={filters.priceMin}
             max={filters.priceMax}
             onMinChange={(value) => handleFilterChange('priceMin', value, true)}
             onMaxChange={(value) => handleFilterChange('priceMax', value, true)}
+            isMobile={isMobile}
           />
         </FilterSection>
 
@@ -1411,9 +1422,10 @@ const VehicleSearchFilter = ({
           count={getFilterCount('payment')}
           isMobile={isMobile}
         >
-          <PaymentCalculator 
+          <PaymentCalculator
             filters={filters}
             onChange={handleFilterChange}
+            isMobile={isMobile}
           />
         </FilterSection>
 
@@ -1737,9 +1749,14 @@ const VehicleSearchFilter = ({
               ))}
             </div>
             {allTrims.length > 8 && (
-              <button 
+              <button
                 onClick={() => setShowMoreTrims(!showMoreTrims)}
-                className="carzino-show-more text-red-600 hover:text-red-700 text-sm mt-2"
+                style={{
+                  ...styles.showMoreButton,
+                  ...(isMobile ? styles.showMoreButtonMobile : {})
+                }}
+                onMouseEnter={(e) => e.target.style.color = '#b91c1c'}
+                onMouseLeave={(e) => e.target.style.color = '#dc2626'}
               >
                 {showMoreTrims ? 'Show Less' : 'Show More'}
               </button>
