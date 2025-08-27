@@ -700,7 +700,7 @@ function App() {
   const handlePageChange = useCallback((newPage) => {
     console.log(`📄 Page changed to: ${newPage}`);
 
-    const preloadKey = `page_${newPage}_${JSON.stringify(filters)}`;
+    const preloadKey = `page_${newPage}_${JSON.stringify(debouncedFilters)}`;
     const preloadedData = preloadedPages.get(preloadKey);
 
     // Use preloaded data if available for INSTANT page changes
@@ -715,7 +715,7 @@ function App() {
       setSearchTime(data.searchTime || 1); // Show as very fast
       setError(null);
 
-      updateURL(filters, newPage);
+      updateURL(debouncedFilters, newPage);
 
       // Remove used preloaded data to save memory
       setPreloadedPages(prev => {
@@ -726,14 +726,14 @@ function App() {
 
       // Preload the NEXT page now
       setTimeout(() => {
-        preloadNextPage(newPage, filters);
+        preloadNextPage(newPage, debouncedFilters);
       }, 100);
 
     } else {
       // Fallback to regular loading if no preloaded data
       console.log(`🔄 Regular load for page ${newPage} (no preloaded data)`);
       setCurrentPage(newPage);
-      fetchVehiclesPage(newPage, filters);
+      fetchVehiclesPage(newPage, debouncedFilters);
     }
 
     // Smooth scroll to results
