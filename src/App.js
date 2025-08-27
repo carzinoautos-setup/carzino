@@ -847,13 +847,14 @@ function App() {
       level="app"
       onReset={() => {
         // Complete app reset
-        setFilters(getInitialFilters());
+        const initial = getInitialFilters();
+        resetFilters(initial);
         setVehicles([]);
         setCachedVehicles(new Map());
         setPreloadedPages(new Map());
         setCurrentPage(1);
         setError(null);
-        fetchVehiclesPage(1, getInitialFilters());
+        fetchVehiclesPage(1, initial);
       }}
     >
       <div className="App">
