@@ -730,7 +730,7 @@ export const fetchVehicles = async (params = {}) => {
     const vehiclesWithSellerData = products.filter(p => p.seller_data);
     const vehiclesWithSellerMeta = products.filter(p => p.meta_data && p.meta_data.some(m => m.key.includes('seller')));
 
-    console.log(`���� COMPREHENSIVE SELLER DATA DEBUG:`);
+    console.log(`🔍 COMPREHENSIVE SELLER DATA DEBUG:`);
     console.log(`  Total vehicles: ${products.length}`);
     console.log(`  Vehicles with seller_data field: ${vehiclesWithSellerData.length}`);
     console.log(`  Vehicles with seller meta_data: ${vehiclesWithSellerMeta.length}`);
@@ -820,7 +820,12 @@ export const fetchVehicles = async (params = {}) => {
           images: product.images,
           featured_media: product.featured_media,
           featured_media_src: product.featured_media_src,
-          all_meta: product.meta_data
+          embedded_media: product._embedded?.['wp:featuredmedia'] || null,
+          all_embedded: product._embedded || null,
+          all_meta: product.meta_data,
+          has_images: !!(product.images && product.images.length > 0),
+          has_featured_media: !!product.featured_media,
+          has_embedded: !!product._embedded
         }
       })),
       total: parseInt(response.headers.get('X-WP-Total') || products.length.toString()),
@@ -866,7 +871,7 @@ export const fetchVehicles = async (params = {}) => {
       console.error('   �� Check WordPress site is accessible');
       console.error('   • Verify WooCommerce plugin is active');
       console.error('   • Check API credentials are correct');
-      console.error('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
+      console.error('━━━━━━���━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
       console.log('');
       console.log('✅ Loading fallback data to keep app functional...');
@@ -1571,7 +1576,7 @@ export const testAPIConnection = async () => {
  */
 export const fetchVehiclesPaginated = async (page = 1, perPage = DEFAULT_PER_PAGE, filters = {}) => {
   console.log(`🔍 Fetching page ${page} with ${perPage} items per page`);
-  console.log('🔧 Filters:', filters);
+  console.log('���� Filters:', filters);
 
   // Ensure perPage is within limits
   const safePerPage = Math.min(perPage, MAX_PER_PAGE);
