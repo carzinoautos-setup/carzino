@@ -791,13 +791,18 @@ const SearchResultsHeader = ({
             
             {/* Results Count */}
             <div className="results-count">
-              {showingFavorites 
-                ? `${favoritesCount} Saved Vehicles` 
+              {showingFavorites
+                ? `${favoritesCount} Saved Vehicles`
                 : `${totalResults.toLocaleString()} Results`}
               {searchTime > 0 && !showingFavorites && (
                 <span> • {searchTime}ms</span>
               )}
             </div>
+
+            {/* Spacer for ultra-mobile fixed positioning */}
+            {screenSize === 'mobile' && (
+              <div className="mobile-sticky-spacer" style={{display: 'none'}}></div>
+            )}
           </div>
         )}
 
