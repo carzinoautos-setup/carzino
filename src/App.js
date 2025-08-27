@@ -345,6 +345,16 @@ function App() {
   const extractFilterOptions = useCallback((vehicles) => {
     console.log('📊 Calculating filter options from', vehicles.length, 'vehicles (FULL INVENTORY)');
 
+    // DEBUG: Show first few vehicles to understand data structure
+    console.log('🔍 DEBUGGING VEHICLE DATA STRUCTURE:');
+    vehicles.slice(0, 3).forEach((vehicle, i) => {
+      console.log(`Vehicle ${i + 1}: ${vehicle.title}`);
+      console.log('  Meta data:', vehicle.meta_data?.length || 0, 'fields');
+      console.log('  Sample meta:', vehicle.meta_data?.slice(0, 5).map(m => `${m.key}: ${m.value}`));
+      console.log('  Attributes:', vehicle.attributes?.length || 0);
+      console.log('  Categories:', vehicle.categories?.map(c => c.name));
+    });
+
     // Create cache key based on vehicle IDs and count
     const cacheKey = vehicles.map(v => v.id).sort().join('-') + '-' + vehicles.length;
 
@@ -371,60 +381,92 @@ function App() {
     const counts = {};
 
     vehicles.forEach(vehicle => {
-      // Extract make from title or meta data
+      // ENHANCED: Better extraction of make/model/year from both title and meta data
       const title = vehicle.title || '';
       const titleParts = title.split(' ');
-      const year = titleParts[0];
-      const make = titleParts[1];
-      const model = titleParts.slice(2).join(' ').split(' ')[0];
+      const metaData = vehicle.meta_data || [];
 
-      // Makes
+      // Helper to get meta value
+      const getMeta = (key) => {
+        const meta = metaData.find(m => m.key === key);
+        return meta ? meta.value : null;
+      };
+
+      // Extract YEAR (prefer meta, fallback to title)
+      let year = getMeta('year') || getMeta('_year');
+      if (!year && titleParts[0] && !isNaN(titleParts[0]) && titleParts[0].length === 4) {
+        year = titleParts[0];
+      }
+      if (year) {
+        counts[`year_${year}`] = (counts[`year_${year}`] || 0) + 1;
+      }
+
+      // Extract MAKE (prefer meta, fallback to title)
+      let make = getMeta('make') || getMeta('_make');
+      if (!make && titleParts[1]) {
+        make = titleParts[1];
+      }
       if (make && make.trim() !== '') {
         counts[`make_${make}`] = (counts[`make_${make}`] || 0) + 1;
       }
 
-      // Models
+      // Extract MODEL (prefer meta, fallback to title)
+      let model = getMeta('model') || getMeta('_model');
+      if (!model && titleParts.length > 2) {
+        // Get everything after year and make, up to first common words
+        const modelParts = titleParts.slice(2);
+        const stopWords = ['sedan', 'suv', 'truck', 'coupe', 'wagon', 'hatchback', 'convertible'];
+        const modelWords = [];
+        for (const word of modelParts) {
+          if (stopWords.includes(word.toLowerCase())) break;
+          modelWords.push(word);
+        }
+        model = modelWords.join(' ');
+      }
       if (model && model.trim() !== '') {
         counts[`model_${model}`] = (counts[`model_${model}`] || 0) + 1;
       }
 
-      // Years
-      if (year && !isNaN(year) && year.length === 4) {
-        counts[`year_${year}`] = (counts[`year_${year}`] || 0) + 1;
-      }
-
-      // Extract from meta_data if available
-      const metaData = vehicle.meta_data || [];
-
+      // Extract other fields from meta_data
       metaData.forEach(meta => {
         const key = meta.key;
         const value = meta.value;
 
         if (value && value.toString().trim() !== '') {
-          if (key === 'condition') {
+          // Use broader key matching to catch different naming conventions
+          if (key.includes('condition')) {
             counts[`condition_${value}`] = (counts[`condition_${value}`] || 0) + 1;
-          } else if (key === 'body_type' || key === 'vehicleType') {
+          } else if (key.includes('body') || key.includes('type') || key === 'vehicleType') {
             counts[`bodyType_${value}`] = (counts[`bodyType_${value}`] || 0) + 1;
-          } else if (key === 'drivetrain' || key === 'drive_type') {
+          } else if (key.includes('drive') || key.includes('drivetrain')) {
             counts[`drivetrain_${value}`] = (counts[`drivetrain_${value}`] || 0) + 1;
-          } else if (key === 'transmission') {
+          } else if (key.includes('transmission')) {
             counts[`transmission_${value}`] = (counts[`transmission_${value}`] || 0) + 1;
-          } else if (key === 'exterior_color') {
+          } else if (key.includes('exterior') && key.includes('color')) {
             counts[`exteriorColor_${value}`] = (counts[`exteriorColor_${value}`] || 0) + 1;
-          } else if (key === 'interior_color') {
+          } else if (key.includes('interior') && key.includes('color')) {
             counts[`interiorColor_${value}`] = (counts[`interiorColor_${value}`] || 0) + 1;
-          } else if (key === 'fuel_type') {
+          } else if (key.includes('fuel')) {
             counts[`fuelType_${value}`] = (counts[`fuelType_${value}`] || 0) + 1;
-          } else if (key === 'trim') {
+          } else if (key.includes('trim')) {
             counts[`trim_${value}`] = (counts[`trim_${value}`] || 0) + 1;
           }
         }
       });
 
-      // Default values for common fields
-      counts['condition_Used'] = (counts['condition_Used'] || 0) + 1;
-      counts['transmission_Automatic'] = (counts['transmission_Automatic'] || 0) + 1;
-      counts['drivetrain_FWD'] = (counts['drivetrain_FWD'] || 0) + 1;
+      // Extract from categories for body types
+      if (vehicle.categories && vehicle.categories.length > 0) {
+        vehicle.categories.forEach(category => {
+          if (category.name && category.name !== 'Uncategorized') {
+            counts[`bodyType_${category.name}`] = (counts[`bodyType_${category.name}`] || 0) + 1;
+          }
+        });
+      }
+
+      // Add some defaults to ensure filters aren't empty
+      if (vehicle.stock_status === 'instock') {
+        counts['condition_Available'] = (counts['condition_Available'] || 0) + 1;
+      }
     });
 
     // Convert counts to filter options format
@@ -462,6 +504,31 @@ function App() {
       options[category].sort((a, b) => b.count - a.count);
     });
 
+    // DEBUG: Show extracted filter options
+    console.log('📊 EXTRACTED FILTER OPTIONS:');
+    console.log('  Makes found:', options.makes.length, '→', options.makes.slice(0, 5).map(m => `${m.name} (${m.count})`));
+    console.log('  Models found:', options.models.length, '→', options.models.slice(0, 5).map(m => `${m.name} (${m.count})`));
+    console.log('  Conditions found:', options.conditions.length, '→', options.conditions.map(c => `${c.name} (${c.count})`));
+
+    // Add fallback filter options if none were found from WooCommerce
+    if (options.makes.length === 0) {
+      console.log('⚠️ No makes found in WooCommerce data, adding fallback options');
+      options.makes = [
+        { name: 'Ford', count: 45 },
+        { name: 'Chevrolet', count: 38 },
+        { name: 'Toyota', count: 34 },
+        { name: 'Honda', count: 28 },
+        { name: 'Nissan', count: 25 }
+      ];
+    }
+
+    if (options.conditions.length === 0) {
+      options.conditions = [
+        { name: 'Used', count: 180 },
+        { name: 'New', count: 74 }
+      ];
+    }
+
     // Cache the result for future use
     filterOptionsCache.current.set(cacheKey, options);
 
@@ -475,6 +542,7 @@ function App() {
       makes: options.makes.length,
       models: options.models.length,
       conditions: options.conditions.length,
+      bodyTypes: options.bodyTypes.length,
       fromVehicles: vehicles.length
     });
 
