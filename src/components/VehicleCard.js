@@ -1396,8 +1396,11 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             onError={(e) => {
               console.error(`❌ Image failed to load for ${vehicle.title}:`, e.target.src);
               // Try a different fallback image if the current one fails
-              if (!e.target.src.includes('unsplash')) {
+              if (!e.target.src.includes('unsplash') && !e.target.src.includes('placeholder')) {
                 e.target.src = `https://images.unsplash.com/photo-1494976388531-d1058494cdd8?w=380&h=200&fit=crop&auto=format&q=80`;
+              } else {
+                // Final fallback
+                e.target.src = '/api/placeholder/380/200';
               }
             }}
             onLoad={() => {
@@ -1407,10 +1410,6 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
               transition: 'opacity 0.2s ease',
               objectFit: 'cover',
               backgroundColor: '#f3f4f6'
-            }}
-            onError={(e) => {
-              console.warn(`Image failed to load for ${vehicle.title}`);
-              e.target.src = '/api/placeholder/380/200';
             }}
           />
 
