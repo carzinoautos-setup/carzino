@@ -1305,7 +1305,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
               onClick={() => {
                 try {
                   // Enhanced Google Analytics tracking for phone clicks
-                  const sellerName = getSellerName();
+                  const sellerName = getSafeSellerName();
                   const phoneNumber = getSellerPhone();
 
                   // Google Analytics 4 (gtag)
