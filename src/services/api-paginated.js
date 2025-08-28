@@ -444,6 +444,18 @@ export const fetchVehiclesPaginated = async (page = 1, limit = 20, filters = {},
   console.log('  - Has credentials:', !!(process.env.REACT_APP_WC_CONSUMER_KEY && process.env.REACT_APP_WC_CONSUMER_SECRET));
   console.log('  - Page:', page, 'Limit:', limit, 'Filters:', Object.keys(filters).length, 'Sort:', sortBy);
 
+  // 🚨 IMMEDIATE ENVIRONMENT CHECK: Prevent fetch errors when env vars are missing
+  if (!process.env.REACT_APP_WP_SITE_URL || !process.env.REACT_APP_WC_CONSUMER_KEY || !process.env.REACT_APP_WC_CONSUMER_SECRET) {
+    console.warn('⚠️ ENVIRONMENT VARIABLES MISSING - Using demo data immediately');
+    console.warn('Missing variables:');
+    if (!process.env.REACT_APP_WP_SITE_URL) console.warn('  - REACT_APP_WP_SITE_URL');
+    if (!process.env.REACT_APP_WC_CONSUMER_KEY) console.warn('  - REACT_APP_WC_CONSUMER_KEY');
+    if (!process.env.REACT_APP_WC_CONSUMER_SECRET) console.warn('  - REACT_APP_WC_CONSUMER_SECRET');
+    console.warn('📝 Create .env.local file with your API credentials to connect to real data');
+
+    return getDemoDataFallback(page, limit, filters);
+  }
+
   // 🚀 PERFORMANCE: Add overall timeout
   return Promise.race([
     (async () => {
