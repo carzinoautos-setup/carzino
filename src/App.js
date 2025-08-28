@@ -17,6 +17,7 @@ import { useDebouncedFilters } from './hooks/useDebounce';
 import { optimizeChunkLoading } from './utils/bundleAnalyzer';
 import BundleAnalysisPanel from './components/BundleAnalysisPanel';
 import { performanceMonitor } from './services/performanceMonitor';
+import DataDebugPanel from './components/DataDebugPanel';
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
@@ -1455,16 +1456,41 @@ function App() {
     fetchVehiclesPage(1, debouncedFilters);
   }, [debouncedFilters, fetchVehiclesPage]);
 
-  // Initial data load and bundle optimization
+  // Environment validation
+  useEffect(() => {
+    console.log('🔧 ENVIRONMENT VALIDATION:');
+    console.log('  WP_SITE_URL:', process.env.REACT_APP_WP_SITE_URL || '❌ MISSING');
+    console.log('  WC_CONSUMER_KEY:', process.env.REACT_APP_WC_CONSUMER_KEY ? '✅ SET' : '❌ MISSING');
+    console.log('  WC_CONSUMER_SECRET:', process.env.REACT_APP_WC_CONSUMER_SECRET ? '✅ SET' : '❌ MISSING');
+
+    const missingVars = [];
+    if (!process.env.REACT_APP_WP_SITE_URL) missingVars.push('REACT_APP_WP_SITE_URL');
+    if (!process.env.REACT_APP_WC_CONSUMER_KEY) missingVars.push('REACT_APP_WC_CONSUMER_KEY');
+    if (!process.env.REACT_APP_WC_CONSUMER_SECRET) missingVars.push('REACT_APP_WC_CONSUMER_SECRET');
+
+    if (missingVars.length > 0) {
+      console.error('❌ MISSING ENVIRONMENT VARIABLES:', missingVars);
+      console.error('💡 Create a .env.local file with these variables:');
+      missingVars.forEach(varName => {
+        console.error(`   ${varName}=your_value_here`);
+      });
+    }
+  }, []);
+
+  // Initial data load and bundle optimization with timeout protection
   useEffect(() => {
     console.log('🚀 App initialized - loading first page and full inventory for filters');
 
-    // Clear cache to force fresh data with new image extraction
-    const cacheKeys = Object.keys(localStorage).filter(key => key.startsWith('carzino_'));
-    cacheKeys.forEach(key => {
-      console.log(`🗑️ Clearing cache key: ${key}`);
-      localStorage.removeItem(key);
-    });
+    // Set a maximum loading time to prevent infinite loading
+    const maxLoadingTime = 15000; // 15 seconds
+    const loadingTimeout = setTimeout(() => {
+      if (loading) {
+        console.warn('⏰ Loading timeout reached, forcing completion');
+        setLoading(false);
+        setError('Loading took too long - check environment variables');
+        setApiConnected(false);
+      }
+    }, maxLoadingTime);
 
     // Add fallback timer - if loading takes too long, load demo data
     const fallbackTimer = setTimeout(() => {
