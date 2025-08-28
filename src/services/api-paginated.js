@@ -1096,6 +1096,7 @@ const transformWooCommerceVehicle = (product) => {
     phone: seller_data?.phone || getMeta('phone') || getMeta('_phone') || '',
     seller_data: seller_data,
     meta_data: [
+      { key: 'mileage', value: getMeta('mileage') || getMeta('_mileage') },
       { key: 'make', value: getMeta('make') || getMeta('_make') },
       { key: 'model', value: getMeta('model') || getMeta('_model') },
       { key: 'year', value: getMeta('year') || getMeta('_year') },
