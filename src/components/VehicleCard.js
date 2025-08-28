@@ -72,14 +72,17 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       }
     }
 
-    console.log(`⚠�� ACF Field ${fieldName} not found in meta_data`);
+    console.log(`⚠️ ACF Field ${fieldName} not found in meta_data`);
     return null;
   };
 
   // Helper functions to extract seller data
   const getSellerField = (fieldName) => {
+    console.log(`    🔎 getSellerField called for: "${fieldName}"`);
+
     // First, try the enhanced seller_data from WordPress API
     if (vehicle.seller_data) {
+      console.log(`    📊 Checking seller_data for field: ${fieldName}`);
       // Map field names to match WordPress seller_data structure
       const fieldMap = {
         'acount_name_seller': 'account_name',
@@ -92,6 +95,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       };
 
       const mappedField = fieldMap[fieldName] || fieldName;
+      console.log(`    🗺️ Mapped "${fieldName}" to "${mappedField}"`);
 
       if (vehicle.seller_data[mappedField]) {
         console.log(`✅ SELLER DATA: Using ${fieldName} = ${vehicle.seller_data[mappedField]} from WordPress API`);
@@ -103,10 +107,15 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
         console.log(`✅ SELLER DATA: Using ${fieldName} = ${vehicle.seller_data[fieldName]} from WordPress API`);
         return vehicle.seller_data[fieldName];
       }
+
+      console.log(`    ❌ Field "${fieldName}" not found in seller_data`);
+    } else {
+      console.log(`    ❌ No seller_data available`);
     }
 
     // Second, try the enhanced seller data (from WordPress API)
     if (enhancedSellerData) {
+      console.log(`    📊 Checking enhancedSellerData for field: ${fieldName}`);
       // Map field names to match WordPress seller_data structure
       const fieldMap = {
         'acount_name_seller': 'account_name',
@@ -117,14 +126,28 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       };
       const mappedField = fieldMap[fieldName] || fieldName;
       if (enhancedSellerData[mappedField]) {
+        console.log(`✅ ENHANCED DATA: Using ${fieldName} = ${enhancedSellerData[mappedField]}`);
         return enhancedSellerData[mappedField];
       }
+      console.log(`    ❌ Field "${fieldName}" not found in enhancedSellerData`);
     }
 
     // Fallback to meta_data for backward compatibility
     const metaData = vehicle.meta_data || [];
+    console.log(`    📋 Checking meta_data (${metaData.length} items) for field: ${fieldName}`);
+
     const sellerField = metaData.find(meta => meta.key === fieldName);
+    if (sellerField) {
+      console.log(`    ✅ Found in meta_data: ${fieldName} = "${sellerField.value}"`);
+    } else {
+      console.log(`    ❌ Field "${fieldName}" not found in meta_data`);
+      // Log all meta keys for debugging
+      const allKeys = metaData.map(m => m.key);
+      console.log(`    📝 Available meta keys:`, allKeys);
+    }
+
     const value = sellerField?.value || '';
+    console.log(`    🎯 Final value for "${fieldName}": "${value}"`);
 
     return value;
   };
@@ -143,7 +166,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     if (hasEnhancedData) {
       console.log(`  ✅ Seller data content:`, vehicle.seller_data);
     } else {
-      console.log(`  �� No seller_data from WordPress API`);
+      console.log(`  ❌ No seller_data from WordPress API`);
     }
 
     if (vehicle.debug_seller_fields) {
