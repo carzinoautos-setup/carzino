@@ -32,9 +32,24 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     }
   }, [vehicle.seller_data, vehicle.meta_data, vehicle.title]);
 
-  // Helper functions to extract ACF and meta data
+  // Helper functions to extract ACF and meta data with enhanced field group support
   const getACFField = (fieldName) => {
     const metaData = vehicle.meta_data || [];
+
+    // Debug: Show all available meta keys for mileage troubleshooting
+    if (fieldName === 'mileage') {
+      console.log(`🔍 MILEAGE DEBUG for ${vehicle.title}:`);
+      console.log(`  Total meta fields: ${metaData.length}`);
+      console.log(`  All meta keys:`, metaData.map(m => m.key));
+
+      // Look for any field containing 'mile' or 'odometer'
+      const mileageRelated = metaData.filter(m =>
+        m.key.toLowerCase().includes('mile') ||
+        m.key.toLowerCase().includes('odometer') ||
+        m.key.toLowerCase().includes('kilo')
+      );
+      console.log(`  Mileage-related fields found:`, mileageRelated);
+    }
 
     // Try exact field name first
     const exactField = metaData.find(meta => meta.key === fieldName);
@@ -43,13 +58,25 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       return exactField.value;
     }
 
-    // Try common ACF field name variations
+    // Enhanced ACF field group patterns
     const fieldVariations = {
-      'make': ['vehicle_make', 'car_make', 'make', 'manufacturer'],
-      'model': ['vehicle_model', 'car_model', 'model'],
-      'year': ['vehicle_year', 'car_year', 'year', 'model_year'],
-      'condition': ['vehicle_condition', 'car_condition', 'condition', 'status'],
-      'mileage': ['vehicle_mileage', 'car_mileage', 'mileage', 'odometer'],
+      'make': ['vehicle_make', 'car_make', 'make', 'manufacturer', 'vehicle_details_make', 'car_info_make'],
+      'model': ['vehicle_model', 'car_model', 'model', 'vehicle_details_model', 'car_info_model'],
+      'year': ['vehicle_year', 'car_year', 'year', 'model_year', 'vehicle_details_year', 'car_info_year'],
+      'condition': ['vehicle_condition', 'car_condition', 'condition', 'status', 'vehicle_details_condition'],
+      'mileage': [
+        // Standard patterns
+        'vehicle_mileage', 'car_mileage', 'mileage', 'odometer',
+        // ACF Field Group patterns
+        'vehicle_details_mileage', 'car_details_mileage', 'car_info_mileage',
+        'vehicle_specs_mileage', 'car_specs_mileage', 'inventory_mileage',
+        'vehicle_data_mileage', 'auto_details_mileage', 'car_data_mileage',
+        // Alternative naming
+        'miles', 'odometer_reading', 'vehicle_miles', 'car_miles',
+        'kilometers', 'vehicle_kilometers', 'current_mileage',
+        // WordPress ACF patterns
+        'field_mileage', 'acf_mileage', '_mileage', '_vehicle_mileage'
+      ],
       'transmission': ['vehicle_transmission', 'car_transmission', 'transmission', 'trans', 'gearbox', 'transmission_type'],
       'drivetrain': ['vehicle_drivetrain', 'car_drivetrain', 'drivetrain', 'drive_type', 'drive'],
       'fuel_type': ['vehicle_fuel_type', 'car_fuel_type', 'fuel_type', 'fuel'],
@@ -69,6 +96,25 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       if (field && field.value) {
         console.log(`✅ ACF Field ${fieldName} (as ${variation}): ${field.value}`);
         return field.value;
+      }
+    }
+
+    // ACF Field Group wildcard search for mileage
+    if (fieldName === 'mileage') {
+      console.log(`🔍 WILDCARD SEARCH for mileage fields...`);
+
+      // Look for any field with 'mile' in the name
+      const wildcardField = metaData.find(meta =>
+        meta.key &&
+        meta.key.toLowerCase().includes('mile') &&
+        meta.value &&
+        meta.value.toString().trim() !== '' &&
+        !isNaN(parseFloat(meta.value.toString().replace(/[^0-9]/g, '')))
+      );
+
+      if (wildcardField) {
+        console.log(`✅ WILDCARD MATCH: ${wildcardField.key} = ${wildcardField.value}`);
+        return wildcardField.value;
       }
     }
 
