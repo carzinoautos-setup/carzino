@@ -1353,7 +1353,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             </div>
             <div className="detail-group">
               <Settings />
-              <span className="detail-text">{getVehicleSpec('transmission')}</span>
+              <span className="detail-text">{getTransmission()}</span>
             </div>
             <div className="detail-group">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
