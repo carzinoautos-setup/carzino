@@ -1149,32 +1149,52 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             </div>
           </div>
 
-          <div className="pricing-section">
-            {getVehiclePrice() ? (
-              <>
+          <div className="pricing-section" style={{
+            flexBasis: "0%",
+            flexGrow: "1",
+            fontWeight: "400",
+            gap: "24px",
+            justifyContent: "center",
+            minHeight: "0px",
+            display: "flex",
+            flexDirection: "column",
+            height: "54px"
+          }}>
+            <div style={{
+              gap: "20px",
+              display: "flex"
+            }} className="responsive-pricing-container">
+              <div className="pricing-column" style={{
+                display: "flex",
+                flexDirection: "column",
+                lineHeight: "normal",
+                width: "50%",
+                marginLeft: "0px"
+              }}>
                 <div className="price-group">
                   <div className="price-label">Sale Price</div>
-                  <div className="price-value sale">{getVehiclePrice()}</div>
+                  <div className="price-value sale">{getVehiclePrice() || "$7,995"}</div>
                 </div>
-                {getVehiclePayment() && (
-                  <>
-                    <div className="price-divider"></div>
-                    <div className="price-group">
-                      <div className="price-label">Payments</div>
-                      <div className="price-value payment">
-                        {getVehiclePayment()}
-                        <span style={{fontSize: '12px', fontWeight: '400', color: '#000000'}}>/mo*</span>
-                      </div>
-                    </div>
-                  </>
-                )}
-              </>
-            ) : (
-              <div className="price-group">
-                <div className="price-label">Contact Dealer</div>
-                <div className="price-value sale">Call For Pricing</div>
               </div>
-            )}
+              <div className="pricing-column" style={{
+                display: "flex",
+                flexDirection: "column",
+                lineHeight: "normal",
+                width: "50%",
+                marginLeft: "20px"
+              }}>
+                <div className="price-label">Sale Price</div>
+                <div className="price-value" style={{
+                  lineHeight: "24px",
+                  height: "auto",
+                  color: "rgb(0, 0, 0)",
+                  fontSize: "16px",
+                  fontWeight: "700"
+                }}>
+                  $Payment
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
