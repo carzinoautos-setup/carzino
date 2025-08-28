@@ -72,7 +72,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       }
     }
 
-    console.log(`⚠️ ACF Field ${fieldName} not found in meta_data`);
+    console.log(`⚠�� ACF Field ${fieldName} not found in meta_data`);
     return null;
   };
 
@@ -143,7 +143,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     if (hasEnhancedData) {
       console.log(`  ✅ Seller data content:`, vehicle.seller_data);
     } else {
-      console.log(`  ❌ No seller_data from WordPress API`);
+      console.log(`  �� No seller_data from WordPress API`);
     }
 
     if (vehicle.debug_seller_fields) {
@@ -313,28 +313,44 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
+    console.log(`🔍 DEBUG getSellerName for vehicle: ${vehicle.title} (ID: ${vehicle.id})`);
+
     // Step 1: Try seller_data from WordPress API first
     if (vehicle.seller_data) {
+      console.log(`  📊 seller_data found:`, vehicle.seller_data);
       if (vehicle.seller_data.account_name && !vehicle.seller_data.account_name.includes('Dealer Account')) {
+        console.log(`  ✅ Using seller_data.account_name: ${vehicle.seller_data.account_name}`);
         return vehicle.seller_data.account_name;
       }
       if (vehicle.seller_data.business_name && !vehicle.seller_data.business_name.includes('Dealer Account')) {
+        console.log(`  ✅ Using seller_data.business_name: ${vehicle.seller_data.business_name}`);
         return vehicle.seller_data.business_name;
       }
+    } else {
+      console.log(`  ❌ No seller_data found`);
     }
 
     // Step 2: Try ACF seller name fields directly
     const metaData = vehicle.meta_data || [];
+    console.log(`  📋 meta_data length: ${metaData.length}`);
+
+    // Log all seller-related meta fields
+    const sellerMeta = metaData.filter(m => m.key && m.key.includes('seller'));
+    console.log(`  🎯 Seller meta fields found (${sellerMeta.length}):`, sellerMeta);
 
     // Primary seller name field (with typo that matches WordPress)
     const primarySellerName = getSellerField('acount_name_seller');
+    console.log(`  🔍 acount_name_seller field result: "${primarySellerName}"`);
     if (primarySellerName && primarySellerName.trim() !== '' && !primarySellerName.includes('Dealer Account')) {
+      console.log(`  ✅ Using acount_name_seller: ${primarySellerName}`);
       return primarySellerName;
     }
 
     // Corrected field name as fallback
     const correctSellerName = getSellerField('account_name_seller');
+    console.log(`  🔍 account_name_seller field result: "${correctSellerName}"`);
     if (correctSellerName && correctSellerName.trim() !== '' && !correctSellerName.includes('Dealer Account')) {
+      console.log(`  ✅ Using account_name_seller: ${correctSellerName}`);
       return correctSellerName;
     }
 
