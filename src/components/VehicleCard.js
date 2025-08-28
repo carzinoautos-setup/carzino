@@ -1461,7 +1461,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           <div className="details-bar">
             <div className="detail-group">
               <Gauge />
-              <span className="detail-text">{getVehicleSpec('mileage')} miles</span>
+              <span className="detail-text">{getMileage()} miles</span>
             </div>
             <div className="detail-group">
               <Settings />
