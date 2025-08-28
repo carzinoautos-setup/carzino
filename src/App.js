@@ -18,6 +18,7 @@ import { optimizeChunkLoading } from './utils/bundleAnalyzer';
 import BundleAnalysisPanel from './components/BundleAnalysisPanel';
 import { performanceMonitor } from './services/performanceMonitor';
 import DataDebugPanel from './components/DataDebugPanel';
+import './utils/envTest'; // Load environment testing utilities
 
 // Lazy load heavy components for better performance
 const Pagination = lazy(() => import('./components/Pagination'));
