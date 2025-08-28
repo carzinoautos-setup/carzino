@@ -367,17 +367,17 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
     // Primary seller name field (with typo that matches WordPress)
     const primarySellerName = getSellerField('acount_name_seller');
-    console.log(`  🔍 acount_name_seller field result: "${primarySellerName}"`);
+    if (isDebugMode) console.log(`  🔍 acount_name_seller field result: "${primarySellerName}"`);
     if (primarySellerName && primarySellerName.trim() !== '' && !primarySellerName.includes('Dealer Account')) {
-      console.log(`  ✅ Using acount_name_seller: ${primarySellerName}`);
+      if (isDebugMode) console.log(`  ✅ Using acount_name_seller: ${primarySellerName}`);
       return primarySellerName;
     }
 
     // Corrected field name as fallback
     const correctSellerName = getSellerField('account_name_seller');
-    console.log(`  🔍 account_name_seller field result: "${correctSellerName}"`);
+    if (isDebugMode) console.log(`  🔍 account_name_seller field result: "${correctSellerName}"`);
     if (correctSellerName && correctSellerName.trim() !== '' && !correctSellerName.includes('Dealer Account')) {
-      console.log(`  ✅ Using account_name_seller: ${correctSellerName}`);
+      if (isDebugMode) console.log(`  ✅ Using account_name_seller: ${correctSellerName}`);
       return correctSellerName;
     }
 
