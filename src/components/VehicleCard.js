@@ -925,6 +925,33 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           flex: 1;
         }
 
+        .responsive-pricing-container {
+          gap: 20px;
+          display: flex;
+        }
+
+        @media (max-width: 991px) {
+          .responsive-pricing-container {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0px;
+          }
+        }
+
+        .pricing-column {
+          display: flex;
+          flex-direction: column;
+          line-height: normal;
+          width: 50%;
+        }
+
+        @media (max-width: 991px) {
+          .pricing-column {
+            width: 100%;
+            margin-left: 0;
+          }
+        }
+
         .price-group {
           display: flex;
           flex-direction: column;
