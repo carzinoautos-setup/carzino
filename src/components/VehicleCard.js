@@ -265,6 +265,30 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return getSellerField('drivetrain') || getSellerField('drive_type') || 'FWD';
   };
 
+  // Enhanced transmission detection for ACF fields
+  const getTransmission = () => {
+    // Try ACF transmission fields with enhanced detection
+    const acfTransmission = getACFField('transmission');
+    if (acfTransmission && acfTransmission.toString().trim() !== '') {
+      const transmission = acfTransmission.toString().trim();
+
+      // Standardize transmission values
+      const transmissionMap = {
+        'auto': 'Automatic',
+        'automatic': 'Automatic',
+        'manual': 'Manual',
+        'cvt': 'CVT',
+        'semi-auto': 'Semi-Automatic',
+        'dual-clutch': 'Dual-Clutch'
+      };
+
+      return transmissionMap[transmission.toLowerCase()] || transmission;
+    }
+
+    // Fallback to standard vehicle spec logic
+    return getVehicleSpec('transmission');
+  };
+
   // Get vehicle specifications from ACF fields with better formatting
   const getVehicleSpec = (specType) => {
     // Try ACF fields first
