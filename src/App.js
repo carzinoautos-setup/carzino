@@ -579,7 +579,23 @@ function App() {
             console.log(`✅ ACF Field Found: ${acfKey} = ${cleanValue}`);
 
             // Apply same field matching logic to ACF fields
-            if (key.includes('condition') || key.includes('status')) {
+            // MAKE field extraction from ACF
+            if (key === 'make' || key.includes('make') || key === 'brand' || key.includes('manufacturer')) {
+              counts[`make_${cleanValue}`] = (counts[`make_${cleanValue}`] || 0) + 1;
+              console.log(`🔧 ACF MAKE: ${acfKey} = ${cleanValue}`);
+            }
+            // MODEL field extraction from ACF
+            else if (key === 'model' || key.includes('model') || key === 'vehicle_model') {
+              counts[`model_${cleanValue}`] = (counts[`model_${cleanValue}`] || 0) + 1;
+              console.log(`🔧 ACF MODEL: ${acfKey} = ${cleanValue}`);
+            }
+            // YEAR field extraction from ACF
+            else if (key === 'year' || key.includes('year') || key === 'model_year') {
+              counts[`year_${cleanValue}`] = (counts[`year_${cleanValue}`] || 0) + 1;
+              console.log(`🔧 ACF YEAR: ${acfKey} = ${cleanValue}`);
+            }
+            // CONDITION field extraction from ACF
+            else if (key.includes('condition') || key.includes('status')) {
               counts[`condition_${cleanValue}`] = (counts[`condition_${cleanValue}`] || 0) + 1;
               console.log(`🔧 ACF Condition: ${acfKey} = ${cleanValue}`);
             } else if (key.includes('body') || key.includes('type') || key.includes('category') ||
