@@ -166,7 +166,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     if (hasEnhancedData) {
       console.log(`  ✅ Seller data content:`, vehicle.seller_data);
     } else {
-      console.log(`  ❌ No seller_data from WordPress API`);
+      console.log(`  ��� No seller_data from WordPress API`);
     }
 
     if (vehicle.debug_seller_fields) {
@@ -206,23 +206,53 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     // Try ACF condition fields first
     const acfCondition = getACFField('condition');
     if (acfCondition && acfCondition.trim() !== '') {
-      return acfCondition;
+      const condition = acfCondition.trim();
+      // Standardize condition values
+      const conditionMap = {
+        'new': 'New',
+        'used': 'Used',
+        'certified': 'Certified Pre-Owned',
+        'pre-owned': 'Pre-Owned',
+        'demo': 'Demo',
+        'excellent': 'Excellent',
+        'good': 'Good',
+        'fair': 'Fair'
+      };
+      return conditionMap[condition.toLowerCase()] || condition;
     }
 
     // Try seller condition fields
     const condition = getSellerField('condition');
     if (condition && condition.trim() !== '') {
-      return condition;
+      const conditionValue = condition.trim();
+      const conditionMap = {
+        'new': 'New',
+        'used': 'Used',
+        'certified': 'Certified Pre-Owned',
+        'pre-owned': 'Pre-Owned',
+        'demo': 'Demo'
+      };
+      return conditionMap[conditionValue.toLowerCase()] || conditionValue;
     }
 
     // Check other possible condition field names
     const vehicleCondition = getSellerField('vehicle_condition') || getSellerField('condition_seller');
     if (vehicleCondition && vehicleCondition.trim() !== '') {
-      return vehicleCondition;
+      return vehicleCondition.trim();
     }
 
-    // Only use stock status as last resort, with different text
-    return vehicle.stock_status === 'instock' ? 'Available' : 'Sold';
+    // Check meta data for condition-related fields
+    const metaData = vehicle.meta_data || [];
+    const conditionFields = ['status', 'vehicle_status', 'listing_status'];
+    for (const fieldName of conditionFields) {
+      const field = metaData.find(meta => meta.key === fieldName);
+      if (field && field.value && field.value.toString().trim() !== '') {
+        return field.value.toString().trim();
+      }
+    }
+
+    // Use stock status as last resort, with better text
+    return vehicle.stock_status === 'instock' ? 'Used' : 'Sold';
   };
 
   const getDrivetrain = () => {
@@ -235,12 +265,22 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return getSellerField('drivetrain') || getSellerField('drive_type') || 'FWD';
   };
 
-  // Get vehicle specifications from ACF fields
+  // Get vehicle specifications from ACF fields with better formatting
   const getVehicleSpec = (specType) => {
     // Try ACF fields first
     const acfValue = getACFField(specType);
-    if (acfValue) {
-      return acfValue;
+    if (acfValue && acfValue.toString().trim() !== '') {
+      const value = acfValue.toString().trim();
+
+      // Format mileage with commas
+      if (specType === 'mileage') {
+        const numMileage = parseFloat(value.replace(/[^0-9]/g, ''));
+        if (!isNaN(numMileage)) {
+          return numMileage.toLocaleString();
+        }
+      }
+
+      return value;
     }
 
     // Try attributes as fallback
@@ -249,10 +289,46 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       attr.name.toLowerCase().includes(specType.toLowerCase())
     );
     if (attr && attr.options && attr.options[0]) {
-      return attr.options[0];
+      const value = attr.options[0].toString().trim();
+
+      // Format mileage with commas
+      if (specType === 'mileage') {
+        const numMileage = parseFloat(value.replace(/[^0-9]/g, ''));
+        if (!isNaN(numMileage)) {
+          return numMileage.toLocaleString();
+        }
+      }
+
+      return value;
     }
 
-    // Default values based on spec type
+    // Try common field variations
+    const metaData = vehicle.meta_data || [];
+    const fieldVariations = {
+      'mileage': ['mileage', 'odometer', 'miles'],
+      'transmission': ['transmission', 'trans', 'gearbox'],
+      'doors': ['doors', 'door_count', 'num_doors']
+    };
+
+    const variations = fieldVariations[specType] || [specType];
+    for (const variation of variations) {
+      const field = metaData.find(meta => meta.key.toLowerCase() === variation);
+      if (field && field.value && field.value.toString().trim() !== '') {
+        const value = field.value.toString().trim();
+
+        // Format mileage with commas
+        if (specType === 'mileage') {
+          const numMileage = parseFloat(value.replace(/[^0-9]/g, ''));
+          if (!isNaN(numMileage)) {
+            return numMileage.toLocaleString();
+          }
+        }
+
+        return value;
+      }
+    }
+
+    // Smart defaults based on vehicle data
     const defaults = {
       'mileage': '0',
       'transmission': 'Automatic',
@@ -319,20 +395,40 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return null;
   };
 
-  // Get vehicle payment from ACF
+  // Get vehicle payment from ACF with smart calculation
   const getVehiclePayment = () => {
+    // Try ACF payment fields first
     const payment = getACFField('payment') || getACFField('monthly_payment');
     if (payment) {
       // Format payment if it's a number
       const numPayment = parseFloat(payment.toString().replace(/[^0-9.]/g, ''));
-      if (!isNaN(numPayment)) {
+      if (!isNaN(numPayment) && numPayment > 0) {
         return '$' + numPayment.toLocaleString();
       }
       return payment;
     }
 
-    // Fallback to vehicle.payment if available
-    return vehicle.payment || null;
+    // Try vehicle.payment if available
+    if (vehicle.payment) {
+      const numPayment = parseFloat(vehicle.payment.toString().replace(/[^0-9.]/g, ''));
+      if (!isNaN(numPayment) && numPayment > 0) {
+        return '$' + numPayment.toLocaleString();
+      }
+      return vehicle.payment;
+    }
+
+    // Smart calculation based on price (estimated)
+    const priceString = getVehiclePrice();
+    if (priceString) {
+      const price = parseFloat(priceString.replace(/[^0-9.]/g, ''));
+      if (!isNaN(price) && price > 0) {
+        // Rough calculation: price/72 months with estimated interest
+        const estimatedPayment = Math.round((price * 1.05) / 72);
+        return '$' + estimatedPayment.toLocaleString();
+      }
+    }
+
+    return null;
   };
 
   const getSellerName = () => {
@@ -1244,51 +1340,25 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
             </div>
           </div>
 
-          <div className="pricing-section" style={{
-            flexBasis: "0%",
-            flexGrow: "1",
-            fontWeight: "400",
-            gap: "24px",
-            justifyContent: "center",
-            minHeight: "0px",
-            display: "flex",
-            flexDirection: "column",
-            height: "54px"
-          }}>
-            <div style={{
-              gap: "20px",
-              display: "flex"
-            }} className="responsive-pricing-container">
-              <div className="pricing-column" style={{
-                display: "flex",
-                flexDirection: "column",
-                lineHeight: "normal",
-                width: "50%",
-                marginLeft: "0px"
-              }}>
+          <div className="pricing-section">
+            <div className="responsive-pricing-container">
+              <div className="pricing-column">
                 <div className="price-group">
                   <div className="price-label">Sale Price</div>
                   <div className="price-value sale">{getVehiclePrice() || "$7,995"}</div>
                 </div>
               </div>
-              <div className="pricing-column" style={{
-                display: "flex",
-                flexDirection: "column",
-                lineHeight: "normal",
-                width: "50%",
-                marginLeft: "20px"
-              }}>
-                <div className="price-label">Sale Price</div>
-                <div className="price-value" style={{
-                  lineHeight: "24px",
-                  height: "auto",
-                  color: "rgb(0, 0, 0)",
-                  fontSize: "16px",
-                  fontWeight: "700"
-                }}>
-                  $Payment
+              {getVehiclePayment() && (
+                <div className="price-divider"></div>
+              )}
+              {getVehiclePayment() && (
+                <div className="pricing-column">
+                  <div className="price-group">
+                    <div className="price-label">Monthly Payment</div>
+                    <div className="price-value payment">{getVehiclePayment()}/mo</div>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
           </div>
         </div>
