@@ -1520,7 +1520,15 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
           <div className="details-bar">
             <div className="detail-group">
               <Gauge />
-              <span className="detail-text">{getMileage()} miles</span>
+              <span className="detail-text">
+                {(() => {
+                  const mileage = getMileage();
+                  if (mileage === 'Contact Dealer' || mileage === 'N/A') {
+                    return mileage;
+                  }
+                  return `${mileage} miles`;
+                })()}
+              </span>
             </div>
             <div className="detail-group">
               <Settings />
