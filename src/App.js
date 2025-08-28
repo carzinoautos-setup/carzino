@@ -1867,6 +1867,15 @@ function App() {
 
         </>
       )}
+
+      {/* Data Debug Panel */}
+      <DataDebugPanel
+        vehicles={vehicles}
+        filterOptions={filterOptions}
+        loading={loading}
+        error={error}
+        apiConnected={apiConnected}
+      />
     </ErrorBoundary>
   );
 }
