@@ -50,7 +50,7 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       'year': ['vehicle_year', 'car_year', 'year', 'model_year'],
       'condition': ['vehicle_condition', 'car_condition', 'condition', 'status'],
       'mileage': ['vehicle_mileage', 'car_mileage', 'mileage', 'odometer'],
-      'transmission': ['vehicle_transmission', 'car_transmission', 'transmission', 'trans'],
+      'transmission': ['vehicle_transmission', 'car_transmission', 'transmission', 'trans', 'gearbox', 'transmission_type'],
       'drivetrain': ['vehicle_drivetrain', 'car_drivetrain', 'drivetrain', 'drive_type', 'drive'],
       'fuel_type': ['vehicle_fuel_type', 'car_fuel_type', 'fuel_type', 'fuel'],
       'body_type': ['vehicle_body_type', 'car_body_type', 'body_type', 'style'],
