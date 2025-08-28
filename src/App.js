@@ -564,7 +564,7 @@ function App() {
       );
 
       if (acfMetaFields.length > 0) {
-        console.log(`🎯 Found ${acfMetaFields.length} potential ACF fields in meta_data:`, acfMetaFields);
+        console.log(`�� Found ${acfMetaFields.length} potential ACF fields in meta_data:`, acfMetaFields);
       }
 
       if (vehicle.acf && typeof vehicle.acf === 'object') {
@@ -670,7 +670,23 @@ function App() {
             console.log(`🔧 Processing potential ACF: ${meta.key} = ${cleanValue}`);
 
             // Apply same matching logic
-            if (key.includes('condition') || key.includes('status')) {
+            // MAKE field extraction from potential ACF
+            if (key === 'make' || key.includes('make') || key === 'brand' || key.includes('manufacturer')) {
+              counts[`make_${cleanValue}`] = (counts[`make_${cleanValue}`] || 0) + 1;
+              console.log(`🔧 POTENTIAL ACF MAKE: ${meta.key} = ${cleanValue}`);
+            }
+            // MODEL field extraction from potential ACF
+            else if (key === 'model' || key.includes('model') || key === 'vehicle_model') {
+              counts[`model_${cleanValue}`] = (counts[`model_${cleanValue}`] || 0) + 1;
+              console.log(`🔧 POTENTIAL ACF MODEL: ${meta.key} = ${cleanValue}`);
+            }
+            // YEAR field extraction from potential ACF
+            else if (key === 'year' || key.includes('year') || key === 'model_year') {
+              counts[`year_${cleanValue}`] = (counts[`year_${cleanValue}`] || 0) + 1;
+              console.log(`🔧 POTENTIAL ACF YEAR: ${meta.key} = ${cleanValue}`);
+            }
+            // CONDITION field extraction from potential ACF
+            else if (key.includes('condition') || key.includes('status')) {
               counts[`condition_${cleanValue}`] = (counts[`condition_${cleanValue}`] || 0) + 1;
             } else if (key.includes('body') || key.includes('type') || key.includes('category')) {
               counts[`bodyType_${cleanValue}`] = (counts[`bodyType_${cleanValue}`] || 0) + 1;
