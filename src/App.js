@@ -564,7 +564,7 @@ function App() {
       );
 
       if (acfMetaFields.length > 0) {
-        console.log(`�� Found ${acfMetaFields.length} potential ACF fields in meta_data:`, acfMetaFields);
+        console.log(`🎯 Found ${acfMetaFields.length} potential ACF fields in meta_data:`, acfMetaFields);
       }
 
       if (vehicle.acf && typeof vehicle.acf === 'object') {
@@ -638,6 +638,15 @@ function App() {
                key.includes('vehicle_') ||
                key.includes('car_') ||
                key.includes('auto_') ||
+               // Make/Model/Year patterns
+               key === 'make' ||
+               key.includes('make') ||
+               key === 'model' ||
+               key.includes('model') ||
+               key === 'year' ||
+               key.includes('year') ||
+               key === 'brand' ||
+               key.includes('manufacturer') ||
                // Body/Type patterns
                key.includes('body') ||
                key.includes('type') ||
@@ -1387,7 +1396,7 @@ function App() {
 
   // Handle individual filter changes (for text inputs, etc.)
   const handleSingleFilterChange = useCallback((key, value, immediate = false) => {
-    console.log(`🔄 Single filter changed: ${key} = ${value} (immediate: ${immediate})`);
+    console.log(`�� Single filter changed: ${key} = ${value} (immediate: ${immediate})`);
 
     // Track filter change
     performanceMonitor.trackFilterChange(key, value);
