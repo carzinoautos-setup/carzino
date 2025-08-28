@@ -339,65 +339,125 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   const getMileage = () => {
     console.log(`🚗 ENHANCED MILEAGE DETECTION for: ${vehicle.title}`);
 
-    // Try ACF mileage fields first
-    const acfMileage = getACFField('mileage');
-    if (acfMileage && acfMileage.toString().trim() !== '') {
-      const mileage = acfMileage.toString().trim();
-      const numMileage = parseFloat(mileage.replace(/[^0-9]/g, ''));
-
-      if (!isNaN(numMileage) && numMileage > 0) {
-        console.log(`✅ MILEAGE FOUND from ACF: ${numMileage.toLocaleString()}`);
-        return numMileage.toLocaleString();
-      }
-    }
-
-    // Try direct meta_data search for common ACF group patterns
     const metaData = vehicle.meta_data || [];
 
-    // Common ACF group naming patterns
-    const commonGroupPatterns = [
-      'vehicle_details_mileage',
-      'car_details_mileage',
-      'vehicle_specs_mileage',
-      'car_specs_mileage',
-      'inventory_mileage',
-      'vehicle_info_mileage',
-      'car_info_mileage',
-      'auto_details_mileage'
+    // DETAILED DEBUG: Show ALL meta fields to understand the data structure
+    console.log(`📋 ALL META FIELDS for ${vehicle.title}:`);
+    metaData.forEach((meta, index) => {
+      console.log(`  [${index}] "${meta.key}" = "${meta.value}" (${typeof meta.value})`);
+    });
+
+    // Try ACF mileage fields first with expanded field variations
+    const mileageFieldNames = [
+      // Standard mileage fields
+      'mileage', '_mileage', 'vehicle_mileage', '_vehicle_mileage',
+      'odometer', '_odometer', 'miles', '_miles',
+
+      // ACF field group patterns
+      'vehicle_details_mileage', 'car_details_mileage', 'vehicle_specs_mileage',
+      'car_specs_mileage', 'inventory_mileage', 'vehicle_info_mileage',
+      'car_info_mileage', 'auto_details_mileage', 'vehicle_data_mileage',
+
+      // Common WooCommerce product attribute patterns
+      'product_mileage', '_product_mileage', 'woocommerce_mileage',
+      '_woocommerce_mileage', 'pa_mileage', '_pa_mileage',
+
+      // Alternative naming patterns found in WordPress/WooCommerce
+      'odometer_reading', '_odometer_reading', 'current_mileage', '_current_mileage',
+      'vehicle_miles', '_vehicle_miles', 'car_miles', '_car_miles',
+      'total_miles', '_total_miles', 'kilometers', '_kilometers',
+
+      // ACF field ID patterns (WordPress auto-generates these)
+      'field_mileage', 'field_vehicle_mileage', 'acf_mileage',
+
+      // Possible custom field names
+      'km', '_km', 'mileage_value', '_mileage_value'
     ];
 
-    for (const pattern of commonGroupPatterns) {
-      const field = metaData.find(meta => meta.key === pattern);
-      if (field && field.value && field.value.toString().trim() !== '') {
-        const numMileage = parseFloat(field.value.toString().replace(/[^0-9]/g, ''));
-        if (!isNaN(numMileage) && numMileage > 0) {
-          console.log(`✅ MILEAGE FOUND from pattern ${pattern}: ${numMileage.toLocaleString()}`);
-          return numMileage.toLocaleString();
+    console.log(`🔍 SEARCHING ${mileageFieldNames.length} possible mileage field names...`);
+
+    for (const fieldName of mileageFieldNames) {
+      const field = metaData.find(meta => meta.key === fieldName);
+      if (field && field.value !== null && field.value !== undefined) {
+        const rawValue = field.value.toString().trim();
+        console.log(`🎯 Found field "${fieldName}" with value: "${rawValue}"`);
+
+        if (rawValue !== '') {
+          // Extract numeric value from the field
+          const numericValue = rawValue.replace(/[^0-9]/g, '');
+          const numMileage = parseFloat(numericValue);
+
+          console.log(`  📊 Numeric extraction: "${rawValue}" → "${numericValue}" → ${numMileage}`);
+
+          if (!isNaN(numMileage) && numMileage >= 0) {
+            console.log(`✅ MILEAGE FOUND from field "${fieldName}": ${numMileage.toLocaleString()}`);
+            return numMileage.toLocaleString();
+          }
         }
       }
     }
 
-    // Last resort: search for ANY field containing mileage data
-    const mileageField = metaData.find(meta => {
-      const key = meta.key ? meta.key.toLowerCase() : '';
-      const hasKeyword = key.includes('mile') || key.includes('odometer') || key.includes('km');
-      const hasValue = meta.value && meta.value.toString().trim() !== '';
-      const isNumeric = hasValue && !isNaN(parseFloat(meta.value.toString().replace(/[^0-9]/g, '')));
-
-      return hasKeyword && hasValue && isNumeric;
+    // WILDCARD SEARCH: Look for any field containing "mile", "odometer", or "km"
+    console.log(`🔍 WILDCARD SEARCH: Looking for any field containing mileage keywords...`);
+    const wildcardFields = metaData.filter(meta => {
+      if (!meta.key) return false;
+      const key = meta.key.toLowerCase();
+      return (key.includes('mile') || key.includes('odometer') || key.includes('km')) &&
+             meta.value !== null && meta.value !== undefined && meta.value.toString().trim() !== '';
     });
 
-    if (mileageField) {
-      const numMileage = parseFloat(mileageField.value.toString().replace(/[^0-9]/g, ''));
-      if (!isNaN(numMileage) && numMileage > 0) {
-        console.log(`✅ MILEAGE FOUND from search ${mileageField.key}: ${numMileage.toLocaleString()}`);
+    console.log(`📋 Wildcard fields found:`, wildcardFields);
+
+    for (const field of wildcardFields) {
+      const rawValue = field.value.toString().trim();
+      const numericValue = rawValue.replace(/[^0-9]/g, '');
+      const numMileage = parseFloat(numericValue);
+
+      console.log(`🎯 Wildcard field "${field.key}": "${rawValue}" → ${numMileage}`);
+
+      if (!isNaN(numMileage) && numMileage >= 0) {
+        console.log(`✅ MILEAGE FOUND from wildcard "${field.key}": ${numMileage.toLocaleString()}`);
         return numMileage.toLocaleString();
       }
     }
 
-    // Fallback to getVehicleSpec
+    // Check WooCommerce attributes (product variations)
+    console.log(`🏷️ CHECKING WOOCOMMERCE ATTRIBUTES...`);
+    const attributes = vehicle.attributes || [];
+    console.log(`📋 Attributes found:`, attributes);
+
+    for (const attr of attributes) {
+      if (attr.name && attr.options && attr.options.length > 0) {
+        const attrName = attr.name.toLowerCase();
+        console.log(`🔍 Checking attribute: "${attr.name}" (${attrName})`);
+
+        if (attrName.includes('mile') || attrName.includes('odometer') || attrName.includes('km')) {
+          const value = attr.options[0].toString().trim();
+          const numMileage = parseFloat(value.replace(/[^0-9]/g, ''));
+
+          console.log(`🎯 Attribute "${attr.name}": "${value}" → ${numMileage}`);
+
+          if (!isNaN(numMileage) && numMileage >= 0) {
+            console.log(`✅ MILEAGE FOUND from attribute "${attr.name}": ${numMileage.toLocaleString()}`);
+            return numMileage.toLocaleString();
+          }
+        }
+      }
+    }
+
+    // Check if this is a real WooCommerce product vs demo data
+    if (vehicle.id && !vehicle.id.toString().startsWith('demo-') && !vehicle.id.toString().startsWith('fallback-')) {
+      console.log(`⚠️ REAL PRODUCT BUT NO MILEAGE FOUND for ${vehicle.title} (ID: ${vehicle.id})`);
+      console.log(`💡 This suggests mileage data isn't being stored in your WooCommerce product meta fields`);
+      console.log(`💡 Check your ACF fields or WooCommerce product attributes configuration`);
+
+      // For real products with no mileage, show a realistic placeholder
+      return 'Contact Dealer';
+    }
+
+    // Fallback for demo data
+    console.log(`⚠️ Using fallback mileage for demo/fallback vehicle`);
     const fallbackMileage = getVehicleSpec('mileage');
-    console.log(`⚠️ Using fallback mileage: ${fallbackMileage}`);
     return fallbackMileage;
   };
 
