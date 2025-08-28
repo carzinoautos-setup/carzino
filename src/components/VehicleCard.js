@@ -386,16 +386,23 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
       'business_name'
     ];
 
+    console.log(`  🔍 Trying business name fields...`);
     for (const fieldName of businessNameFields) {
       const value = getSellerField(fieldName);
+      console.log(`    📝 ${fieldName}: "${value}"`);
       if (value && value.trim() !== '' && !value.includes('Dealer Account')) {
+        console.log(`  ✅ Using business field ${fieldName}: ${value}`);
         return value;
       }
     }
 
     // Step 4: Map based on account number (for backend logic) but show proper dealer names
+    console.log(`  🔍 Trying account number mapping...`);
     const accountMeta = metaData.find(m => m.key === 'account_number_seller');
+    console.log(`  🔢 account_number_seller meta:`, accountMeta);
+
     if (accountMeta && accountMeta.value) {
+      console.log(`  🎯 Found account number: ${accountMeta.value}`);
       // Map account numbers to dealer names (NEVER show account number to users)
       const dealerMap = {
         '100082': 'Carson Cars',
@@ -409,24 +416,34 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
 
       const dealerName = dealerMap[accountMeta.value];
       if (dealerName) {
+        console.log(`  ✅ Using mapped dealer name: ${dealerName}`);
         return dealerName;
       }
 
       // If account number not in map, return generic dealer name (NEVER show account number)
+      console.log(`  ⚠️ Account number ${accountMeta.value} not in dealer map, using generic name`);
       return 'Contact Dealer';
+    } else {
+      console.log(`  ❌ No account_number_seller found`);
     }
 
     // Step 5: Check if this is demo/fallback data
+    console.log(`  🔍 Checking for demo/fallback data...`);
     if (vehicle.id && (vehicle.id.toString().startsWith('fallback-') || vehicle.id.toString().startsWith('demo-'))) {
-      return vehicle.dealer || 'Demo Dealer';
+      const demoDealer = vehicle.dealer || 'Demo Dealer';
+      console.log(`  ✅ Using demo dealer: ${demoDealer}`);
+      return demoDealer;
     }
 
     // Step 6: Final fallback - use the dealer prop from transformed data if it's not generic
+    console.log(`  🔍 Checking vehicle.dealer prop: "${vehicle.dealer}"`);
     if (vehicle.dealer && vehicle.dealer !== 'Carzino Dealer' && !vehicle.dealer.includes('Dealer Account')) {
+      console.log(`  ✅ Using vehicle.dealer: ${vehicle.dealer}`);
       return vehicle.dealer;
     }
 
     // Step 7: Last resort - NEVER show account numbers
+    console.log(`  🚨 Using last resort fallback: Contact Dealer`);
     return 'Contact Dealer';
   };
 
