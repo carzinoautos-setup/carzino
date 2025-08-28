@@ -336,21 +336,25 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
   };
 
   const getSellerName = () => {
-    console.log(`🔍 DEBUG getSellerName for vehicle: ${vehicle.title} (ID: ${vehicle.id})`);
+    const isDebugMode = process.env.NODE_ENV === 'development' || window.location.search.includes('debug=seller');
+
+    if (isDebugMode) {
+      console.log(`🔍 DEBUG getSellerName for vehicle: ${vehicle.title} (ID: ${vehicle.id})`);
+    }
 
     // Step 1: Try seller_data from WordPress API first
     if (vehicle.seller_data) {
-      console.log(`  📊 seller_data found:`, vehicle.seller_data);
+      if (isDebugMode) console.log(`  📊 seller_data found:`, vehicle.seller_data);
       if (vehicle.seller_data.account_name && !vehicle.seller_data.account_name.includes('Dealer Account')) {
-        console.log(`  ✅ Using seller_data.account_name: ${vehicle.seller_data.account_name}`);
+        if (isDebugMode) console.log(`  ✅ Using seller_data.account_name: ${vehicle.seller_data.account_name}`);
         return vehicle.seller_data.account_name;
       }
       if (vehicle.seller_data.business_name && !vehicle.seller_data.business_name.includes('Dealer Account')) {
-        console.log(`  ✅ Using seller_data.business_name: ${vehicle.seller_data.business_name}`);
+        if (isDebugMode) console.log(`  ✅ Using seller_data.business_name: ${vehicle.seller_data.business_name}`);
         return vehicle.seller_data.business_name;
       }
     } else {
-      console.log(`  ❌ No seller_data found`);
+      if (isDebugMode) console.log(`  ❌ No seller_data found`);
     }
 
     // Step 2: Try ACF seller name fields directly
