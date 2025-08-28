@@ -447,6 +447,14 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return 'Contact Dealer';
   };
 
+  // Safety wrapper for getSellerName to ensure it always returns a value
+  const getSafeSellerName = () => {
+    const sellerName = getSellerName();
+    const finalName = sellerName || 'Contact Dealer';
+    console.log(`🛡️ getSafeSellerName final result: "${finalName}"`);
+    return finalName;
+  };
+
   const getSellerLocation = () => {
     const city = getSellerField('city_seller');
     const state = getSellerField('state_seller');
