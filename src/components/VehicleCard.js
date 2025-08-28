@@ -335,6 +335,72 @@ const VehicleCard = ({ vehicle, favorites, onFavoriteToggle }) => {
     return getVehicleSpec('transmission');
   };
 
+  // Enhanced mileage detection specifically for ACF field groups
+  const getMileage = () => {
+    console.log(`🚗 ENHANCED MILEAGE DETECTION for: ${vehicle.title}`);
+
+    // Try ACF mileage fields first
+    const acfMileage = getACFField('mileage');
+    if (acfMileage && acfMileage.toString().trim() !== '') {
+      const mileage = acfMileage.toString().trim();
+      const numMileage = parseFloat(mileage.replace(/[^0-9]/g, ''));
+
+      if (!isNaN(numMileage) && numMileage > 0) {
+        console.log(`✅ MILEAGE FOUND from ACF: ${numMileage.toLocaleString()}`);
+        return numMileage.toLocaleString();
+      }
+    }
+
+    // Try direct meta_data search for common ACF group patterns
+    const metaData = vehicle.meta_data || [];
+
+    // Common ACF group naming patterns
+    const commonGroupPatterns = [
+      'vehicle_details_mileage',
+      'car_details_mileage',
+      'vehicle_specs_mileage',
+      'car_specs_mileage',
+      'inventory_mileage',
+      'vehicle_info_mileage',
+      'car_info_mileage',
+      'auto_details_mileage'
+    ];
+
+    for (const pattern of commonGroupPatterns) {
+      const field = metaData.find(meta => meta.key === pattern);
+      if (field && field.value && field.value.toString().trim() !== '') {
+        const numMileage = parseFloat(field.value.toString().replace(/[^0-9]/g, ''));
+        if (!isNaN(numMileage) && numMileage > 0) {
+          console.log(`✅ MILEAGE FOUND from pattern ${pattern}: ${numMileage.toLocaleString()}`);
+          return numMileage.toLocaleString();
+        }
+      }
+    }
+
+    // Last resort: search for ANY field containing mileage data
+    const mileageField = metaData.find(meta => {
+      const key = meta.key ? meta.key.toLowerCase() : '';
+      const hasKeyword = key.includes('mile') || key.includes('odometer') || key.includes('km');
+      const hasValue = meta.value && meta.value.toString().trim() !== '';
+      const isNumeric = hasValue && !isNaN(parseFloat(meta.value.toString().replace(/[^0-9]/g, '')));
+
+      return hasKeyword && hasValue && isNumeric;
+    });
+
+    if (mileageField) {
+      const numMileage = parseFloat(mileageField.value.toString().replace(/[^0-9]/g, ''));
+      if (!isNaN(numMileage) && numMileage > 0) {
+        console.log(`✅ MILEAGE FOUND from search ${mileageField.key}: ${numMileage.toLocaleString()}`);
+        return numMileage.toLocaleString();
+      }
+    }
+
+    // Fallback to getVehicleSpec
+    const fallbackMileage = getVehicleSpec('mileage');
+    console.log(`⚠️ Using fallback mileage: ${fallbackMileage}`);
+    return fallbackMileage;
+  };
+
   // Get vehicle specifications from ACF fields with better formatting
   const getVehicleSpec = (specType) => {
     // Try ACF fields first
