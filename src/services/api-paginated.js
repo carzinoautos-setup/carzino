@@ -23,6 +23,13 @@ const ELASTICSEARCH_ENDPOINT = process.env.REACT_APP_ELASTICSEARCH_URL || `${pro
  */
 export const fetchAllFilteredVehicles = async (filters = {}) => {
   try {
+    // 🚨 IMMEDIATE ENVIRONMENT CHECK: Prevent fetch errors when env vars are missing
+    if (!process.env.REACT_APP_WP_SITE_URL || !process.env.REACT_APP_WC_CONSUMER_KEY || !process.env.REACT_APP_WC_CONSUMER_SECRET) {
+      console.warn('⚠️ ENVIRONMENT VARIABLES MISSING - Using demo data for filter options');
+      const demoResult = getDemoDataFallback(1, 50, filters);
+      return demoResult.vehicles;
+    }
+
     // 🚀 PERFORMANCE: Check cache first for filter options
     const filterCacheKey = `carzino_filters_${JSON.stringify(filters).substring(0, 80)}`;
     const cachedFilters = localStorage.getItem(filterCacheKey);
