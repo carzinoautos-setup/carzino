@@ -1096,6 +1096,9 @@ const transformWooCommerceVehicle = (product) => {
     phone: seller_data?.phone || getMeta('phone') || getMeta('_phone') || '',
     seller_data: seller_data,
     meta_data: [
+      // Include original meta_data from API response to preserve all ACF fields
+      ...meta_data,
+      // Add normalized meta_data for compatibility
       { key: 'mileage', value: getMeta('mileage') || getMeta('_mileage') },
       { key: 'make', value: getMeta('make') || getMeta('_make') },
       { key: 'model', value: getMeta('model') || getMeta('_model') },
