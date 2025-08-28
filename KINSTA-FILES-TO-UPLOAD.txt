@@ -1,0 +1,45 @@
+🚀 KINSTA UPLOAD FILES - SIMPLE VERSION
+==========================================
+
+I've copied all the files you need to the main folder with "kinsta-" names so they're easy to find!
+
+📁 WHEN YOU DOWNLOAD THE PROJECT, LOOK FOR THESE FILES:
+
+1. kinsta-index.html               → Upload as: index.html
+2. kinsta-asset-manifest.json     → Upload as: asset-manifest.json  
+3. kinsta-main.css                 → Upload as: static/css/main.c985db4a.css
+4. kinsta-main.css.map             → Upload as: static/css/main.c985db4a.css.map
+5. kinsta-main.js                  → Upload as: static/js/main.df0fafdf.js
+6. kinsta-main.js.LICENSE.txt      → Upload as: static/js/main.df0fafdf.js.LICENSE.txt
+7. kinsta-main.js.map              → Upload as: static/js/main.df0fafdf.js.map
+
+📂 CREATE THIS FOLDER STRUCTURE ON KINSTA:
+==========================================
+
+/public_html/vehicle-search/
+├── index.html                    (from kinsta-index.html)
+├── asset-manifest.json           (from kinsta-asset-manifest.json)
+└── static/
+    ├── css/
+    │   ├── main.c985db4a.css      (from kinsta-main.css)
+    │   └── main.c985db4a.css.map  (from kinsta-main.css.map)
+    └── js/
+        ├── main.df0fafdf.js       (from kinsta-main.js)
+        ├── main.df0fafdf.js.LICENSE.txt (from kinsta-main.js.LICENSE.txt)
+        └── main.df0fafdf.js.map   (from kinsta-main.js.map)
+
+🎯 UPLOAD STEPS:
+================
+
+1. Download this project
+2. Find the 7 files with "kinsta-" names in the main folder  
+3. Create "vehicle-search" folder on your Kinsta site
+4. Create "static", "static/css", and "static/js" subfolders
+5. Upload the files with their correct names (remove "kinsta-" prefix)
+6. Keep the exact folder structure shown above
+
+✅ YOUR APP WILL BE AT:
+======================
+https://env-uploadbackup62225-czdev.kinsta.cloud/vehicle-search
+
+🎉 That's it! Much simpler now!

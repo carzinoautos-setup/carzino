@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Connectivity Diagnosis</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .warning { background-color: #fff3cd; border-color: #ffeaa7; }
+        pre { background: #f5f5f5; padding: 10px; overflow: auto; }
+        .loading { background-color: #cce7ff; border-color: #b3d9ff; }
+    </style>
+</head>
+<body>
+    <h1>WooCommerce API Connectivity Diagnosis</h1>
+    <button onclick="runAllTests()">Run All Tests</button>
+    <div id="results"></div>
+    
+    <script>
+        const WP_SITE_URL = 'https://env-uploadbackup62225-czdev.kinsta.cloud';
+        const API_BASE = `${WP_SITE_URL}/wp-json/wc/v3`;
+        const CONSUMER_KEY = 'ck_ba9a8da8b8ad2ef3b1093ba34e4b2a25cd299b25';
+        const CONSUMER_SECRET = 'cs_029fd6b60c280bc10981d62871d1c0526990f607';
+        
+        function addResult(title, content, className = '') {
+            const resultsDiv = document.getElementById('results');
+            const testDiv = document.createElement('div');
+            testDiv.className = `test ${className}`;
+            testDiv.innerHTML = `<h3>${title}</h3>${content}`;
+            resultsDiv.appendChild(testDiv);
+        }
+        
+        function addLoading(title) {
+            addResult(title, 'Testing...', 'loading');
+        }
+        
+        function updateLastResult(content, className = '') {
+            const lastTest = document.querySelector('.test:last-child');
+            lastTest.innerHTML = lastTest.innerHTML.split('</h3>')[0] + '</h3>' + content;
+            lastTest.className = `test ${className}`;
+        }
+        
+        async function testBasicConnectivity() {
+            addLoading('Test 1: Basic WordPress Site Connectivity');
+            
+            try {
+                const response = await fetch(WP_SITE_URL, { 
+                    method: 'HEAD',
+                    mode: 'no-cors' // Bypass CORS for basic connectivity
+                });
+                updateLastResult(`✅ WordPress site is reachable<br>Status: ${response.status || 'No status (CORS blocked)'}`, 'success');
+                return true;
+            } catch (error) {
+                updateLastResult(`❌ Cannot reach WordPress site<br>Error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function testWPAPIEndpoint() {
+            addLoading('Test 2: WordPress REST API Endpoint');
+            
+            try {
+                const wpApiUrl = `${WP_SITE_URL}/wp-json/wp/v2/posts?per_page=1`;
+                const response = await fetch(wpApiUrl);
+                
+                if (response.ok) {
+                    updateLastResult(`✅ WordPress REST API is accessible<br>Status: ${response.status}`, 'success');
+                    return true;
+                } else {
+                    updateLastResult(`⚠️ WordPress REST API returned error<br>Status: ${response.status} ${response.statusText}`, 'warning');
+                    return false;
+                }
+            } catch (error) {
+                updateLastResult(`❌ WordPress REST API failed<br>Error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function testWooCommerceEndpoint() {
+            addLoading('Test 3: WooCommerce API Endpoint (No Auth)');
+            
+            try {
+                const wooUrl = `${API_BASE}/products?per_page=1`;
+                const response = await fetch(wooUrl);
+                
+                const responseText = await response.text();
+                
+                if (response.status === 401) {
+                    updateLastResult(`✅ WooCommerce API endpoint exists (requires auth)<br>Status: ${response.status}<br>Response: ${responseText.substring(0, 200)}...`, 'success');
+                    return true;
+                } else if (response.ok) {
+                    updateLastResult(`✅ WooCommerce API accessible without auth<br>Status: ${response.status}`, 'success');
+                    return true;
+                } else {
+                    updateLastResult(`⚠️ WooCommerce API returned error<br>Status: ${response.status} ${response.statusText}<br>Response: ${responseText.substring(0, 200)}...`, 'warning');
+                    return false;
+                }
+            } catch (error) {
+                updateLastResult(`❌ WooCommerce API endpoint failed<br>Error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function testWithAuthentication() {
+            addLoading('Test 4: WooCommerce API with Authentication');
+            
+            try {
+                const wooUrl = `${API_BASE}/products?per_page=1&status=publish`;
+                const credentials = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`);
+                
+                const response = await fetch(wooUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Basic ${credentials}`
+                    }
+                });
+                
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                        updateLastResult(`✅ WooCommerce API authenticated successfully<br>Status: ${response.status}<br>Products found: ${data.length}<br>First product: ${data[0]?.name || 'No products'}`, 'success');
+                        return true;
+                    } catch (parseError) {
+                        updateLastResult(`⚠️ API responded but data format unexpected<br>Status: ${response.status}<br>Response: ${responseText.substring(0, 200)}...`, 'warning');
+                        return false;
+                    }
+                } else {
+                    updateLastResult(`❌ Authentication failed<br>Status: ${response.status} ${response.statusText}<br>Response: ${responseText.substring(0, 200)}...`, 'error');
+                    return false;
+                }
+            } catch (error) {
+                updateLastResult(`❌ Authentication test failed<br>Error: ${error.message}`, 'error');
+                return false;
+            }
+        }
+        
+        async function testCORSPolicy() {
+            addLoading('Test 5: CORS Policy Check');
+            
+            try {
+                const wooUrl = `${API_BASE}/products?per_page=1`;
+                const credentials = btoa(`${CONSUMER_KEY}:${CONSUMER_SECRET}`);
+                
+                const response = await fetch(wooUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Authorization': `Basic ${credentials}`,
+                        'Origin': window.location.origin
+                    }
+                });
+                
+                const corsHeaders = {\n                    'Access-Control-Allow-Origin': response.headers.get('Access-Control-Allow-Origin'),\n                    'Access-Control-Allow-Methods': response.headers.get('Access-Control-Allow-Methods'),\n                    'Access-Control-Allow-Headers': response.headers.get('Access-Control-Allow-Headers')\n                };\n                \n                updateLastResult(`✅ CORS headers received<br>Status: ${response.status}<br>CORS Headers: <pre>${JSON.stringify(corsHeaders, null, 2)}</pre>`, 'success');\n                return true;\n            } catch (error) {\n                if (error.message.includes('CORS')) {\n                    updateLastResult(`❌ CORS policy blocking request<br>Error: ${error.message}<br>Solution: Configure CORS headers on WordPress site`, 'error');\n                } else {\n                    updateLastResult(`❌ CORS test failed<br>Error: ${error.message}`, 'error');\n                }\n                return false;\n            }\n        }\n        \n        async function testAlternativeAuth() {\n            addLoading('Test 6: Alternative Authentication (Query Params)');\n            \n            try {\n                const wooUrl = `${API_BASE}/products?per_page=1&consumer_key=${CONSUMER_KEY}&consumer_secret=${CONSUMER_SECRET}`;\n                \n                const response = await fetch(wooUrl, {\n                    method: 'GET',\n                    headers: {\n                        'Accept': 'application/json'\n                    }\n                });\n                \n                const responseText = await response.text();\n                \n                if (response.ok) {\n                    const data = JSON.parse(responseText);\n                    updateLastResult(`✅ Query param authentication works<br>Status: ${response.status}<br>Products found: ${data.length}`, 'success');\n                    return true;\n                } else {\n                    updateLastResult(`❌ Query param authentication failed<br>Status: ${response.status}<br>Response: ${responseText.substring(0, 200)}...`, 'error');\n                    return false;\n                }\n            } catch (error) {\n                updateLastResult(`❌ Query param test failed<br>Error: ${error.message}`, 'error');\n                return false;\n            }\n        }\n        \n        async function runAllTests() {\n            document.getElementById('results').innerHTML = '';\n            \n            const tests = [\n                testBasicConnectivity,\n                testWPAPIEndpoint,\n                testWooCommerceEndpoint,\n                testWithAuthentication,\n                testCORSPolicy,\n                testAlternativeAuth\n            ];\n            \n            let successCount = 0;\n            \n            for (const test of tests) {\n                const result = await test();\n                if (result) successCount++;\n                await new Promise(resolve => setTimeout(resolve, 500)); // Brief pause between tests\n            }\n            \n            // Summary\n            const summary = `${successCount}/${tests.length} tests passed`;\n            if (successCount === tests.length) {\n                addResult('🎉 Summary', `All tests passed! (${summary})`, 'success');\n            } else if (successCount > 0) {\n                addResult('⚠️ Summary', `Partial success (${summary}) - some connectivity issues detected`, 'warning');\n            } else {\n                addResult('❌ Summary', `All tests failed (${summary}) - API is not accessible`, 'error');\n            }\n        }\n        \n        // Auto-run tests on page load\n        runAllTests();\n    </script>\n</body>\n</html>\n

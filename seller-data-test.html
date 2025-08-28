@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seller Data Test - WordPress Integration</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-container { max-width: 800px; margin: 0 auto; }
+        .test-result { background: #f9f9f9; padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background: #d4edda; border-left: 4px solid #28a745; }
+        .error { background: #f8d7da; border-left: 4px solid #dc3545; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; }
+        .json-output { background: #f1f1f1; padding: 15px; border-radius: 5px; font-family: monospace; white-space: pre-wrap; word-break: break-all; }
+        button { background: #007cba; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; margin: 5px; }
+        button:hover { background: #005a8b; }
+        .status { font-weight: bold; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🔍 Seller Data Resolution Test</h1>
+        <p>This page tests if your WordPress site is correctly resolving seller relationships and providing seller data to React.</p>
+        
+        <div class="test-result">
+            <div class="status">API Configuration:</div>
+            <div id="api-config">Checking...</div>
+        </div>
+        
+        <div class="test-result">
+            <div class="status">WordPress Connection:</div>
+            <div id="wp-connection">Testing...</div>
+        </div>
+        
+        <div class="test-result">
+            <div class="status">WooCommerce API:</div>
+            <div id="wc-api">Testing...</div>
+        </div>
+        
+        <div class="test-result">
+            <div class="status">Seller Data Resolution:</div>
+            <div id="seller-resolution">Testing...</div>
+        </div>
+        
+        <button onclick="runTests()">🔄 Run Tests Again</button>
+        <button onclick="testSingleProduct()">🚗 Test Single Product</button>
+        
+        <h2>📊 Raw API Response</h2>
+        <div class="json-output" id="raw-response">Click "Run Tests" to see API response...</div>
+        
+        <h2>📋 Seller Data Analysis</h2>
+        <div class="json-output" id="seller-analysis">Click "Run Tests" to see seller data analysis...</div>
+    </div>
+
+    <script>
+        // Configuration from environment
+        const API_CONFIG = {
+            WP_SITE_URL: 'https://env-uploadbackup62225-czdev.kinsta.cloud',
+            WC_CONSUMER_KEY: 'ck_ba9a8da8b8ad2ef3b1093ba34e4b2a25cd299b25',
+            WC_CONSUMER_SECRET: 'cs_029fd6b60c280bc10981d62871d1c0526990f607'
+        };
+
+        const WC_API_BASE = `${API_CONFIG.WP_SITE_URL}/wp-json/wc/v3`;
+
+        function displayStatus(elementId, status, message, isError = false) {
+            const element = document.getElementById(elementId);
+            const statusClass = isError ? 'error' : 'success';
+            element.innerHTML = `<div class="${statusClass}">${status}: ${message}</div>`;
+        }
+
+        function displayConfig() {
+            const configHtml = `
+                <strong>WordPress Site:</strong> ${API_CONFIG.WP_SITE_URL}<br>
+                <strong>Consumer Key:</strong> ${API_CONFIG.WC_CONSUMER_KEY.substring(0, 10)}...<br>
+                <strong>Consumer Secret:</strong> ${API_CONFIG.WC_CONSUMER_SECRET.substring(0, 10)}...<br>
+                <strong>API Base:</strong> ${WC_API_BASE}
+            `;
+            document.getElementById('api-config').innerHTML = configHtml;
+        }
+
+        async function testWordPressConnection() {
+            try {
+                displayStatus('wp-connection', '⏳ Testing', 'WordPress site accessibility...');
+                
+                const response = await fetch(API_CONFIG.WP_SITE_URL, {
+                    method: 'HEAD',
+                    mode: 'no-cors'
+                });
+                
+                displayStatus('wp-connection', '✅ Success', 'WordPress site is accessible');
+                return true;
+            } catch (error) {
+                displayStatus('wp-connection', '❌ Failed', `WordPress site not accessible: ${error.message}`, true);
+                return false;
+            }
+        }
+
+        async function testWooCommerceAPI() {
+            try {
+                displayStatus('wc-api', '⏳ Testing', 'WooCommerce API connection...');
+                
+                const url = `${WC_API_BASE}/products?per_page=3&consumer_key=${API_CONFIG.WC_CONSUMER_KEY}&consumer_secret=${API_CONFIG.WC_CONSUMER_SECRET}`;
+                
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': 'Carzino-Seller-Test/1.0'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                
+                displayStatus('wc-api', '✅ Success', `Retrieved ${data.length} products from WooCommerce API`);
+                
+                // Display raw response
+                document.getElementById('raw-response').textContent = JSON.stringify(data, null, 2);
+                
+                return data;
+            } catch (error) {
+                displayStatus('wc-api', '❌ Failed', `WooCommerce API error: ${error.message}`, true);
+                document.getElementById('raw-response').textContent = `Error: ${error.message}`;
+                return null;
+            }
+        }
+
+        function analyzeSellerData(products) {
+            if (!products || !Array.isArray(products)) {
+                displayStatus('seller-resolution', '❌ Failed', 'No products to analyze', true);
+                return;
+            }
+
+            const analysis = {
+                totalProducts: products.length,
+                productsWithSellerData: 0,
+                productsWithSellerMeta: 0,
+                sellerDataExamples: [],
+                metaDataExamples: []
+            };
+
+            products.forEach((product, index) => {
+                // Check for seller_data field (from our WordPress snippet)
+                if (product.seller_data) {
+                    analysis.productsWithSellerData++;
+                    if (analysis.sellerDataExamples.length < 2) {
+                        analysis.sellerDataExamples.push({
+                            productId: product.id,
+                            productName: product.name,
+                            sellerData: product.seller_data
+                        });
+                    }
+                }
+
+                // Check for seller meta fields
+                if (product.meta_data && Array.isArray(product.meta_data)) {
+                    const sellerMeta = product.meta_data.filter(meta => 
+                        meta.key && meta.key.includes('seller')
+                    );
+                    
+                    if (sellerMeta.length > 0) {
+                        analysis.productsWithSellerMeta++;
+                        if (analysis.metaDataExamples.length < 2) {
+                            analysis.metaDataExamples.push({
+                                productId: product.id,
+                                productName: product.name,
+                                sellerMetaFields: sellerMeta
+                            });
+                        }
+                    }
+                }
+            });
+
+            // Display results
+            if (analysis.productsWithSellerData > 0) {
+                displayStatus('seller-resolution', '✅ Success', 
+                    `${analysis.productsWithSellerData}/${analysis.totalProducts} products have resolved seller_data`);
+            } else if (analysis.productsWithSellerMeta > 0) {
+                displayStatus('seller-resolution', '⚠️ Partial', 
+                    `${analysis.productsWithSellerMeta}/${analysis.totalProducts} products have seller meta fields, but no resolved seller_data`);
+            } else {
+                displayStatus('seller-resolution', '❌ Failed', 
+                    'No seller data found in any products. WordPress snippet may not be active.', true);
+            }
+
+            // Display detailed analysis
+            document.getElementById('seller-analysis').textContent = JSON.stringify(analysis, null, 2);
+        }
+
+        async function testSingleProduct() {
+            try {
+                displayStatus('seller-resolution', '⏳ Testing', 'Fetching detailed product data...');
+                
+                const url = `${WC_API_BASE}/products?per_page=1&consumer_key=${API_CONFIG.WC_CONSUMER_KEY}&consumer_secret=${API_CONFIG.WC_CONSUMER_SECRET}`;
+                
+                const response = await fetch(url);
+                const products = await response.json();
+                
+                if (products && products.length > 0) {
+                    const product = products[0];
+                    
+                    // Detailed analysis of single product
+                    const detailedAnalysis = {
+                        productInfo: {
+                            id: product.id,
+                            name: product.name,
+                            status: product.status
+                        },
+                        hasSellerData: !!product.seller_data,
+                        sellerDataContent: product.seller_data || null,
+                        allMetaData: product.meta_data || [],
+                        sellerMetaFields: (product.meta_data || []).filter(meta => 
+                            meta.key && (meta.key.includes('seller') || meta.key.includes('account') || meta.key.includes('dealer'))
+                        ),
+                        rawProductObject: product
+                    };
+                    
+                    document.getElementById('seller-analysis').textContent = JSON.stringify(detailedAnalysis, null, 2);
+                    
+                    if (product.seller_data) {
+                        displayStatus('seller-resolution', '✅ Success', 
+                            `Product "${product.name}" has complete seller_data with account: ${product.seller_data.account_name || 'Unknown'}`);
+                    } else {
+                        displayStatus('seller-resolution', '⚠️ Missing', 
+                            `Product "${product.name}" does not have seller_data field. Check WordPress snippet.`);
+                    }
+                } else {
+                    displayStatus('seller-resolution', '❌ Failed', 'No products found', true);
+                }
+            } catch (error) {
+                displayStatus('seller-resolution', '❌ Failed', `Single product test error: ${error.message}`, true);
+            }
+        }
+
+        async function runTests() {
+            console.log('🚀 Starting seller data resolution tests...');
+            
+            // Display configuration
+            displayConfig();
+            
+            // Test WordPress connection
+            const wpConnected = await testWordPressConnection();
+            
+            if (wpConnected) {
+                // Test WooCommerce API and analyze seller data
+                const products = await testWooCommerceAPI();
+                if (products) {
+                    analyzeSellerData(products);
+                }
+            }
+        }
+
+        // Run tests on page load
+        window.addEventListener('load', runTests);
+    </script>
+</body>
+</html>
