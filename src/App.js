@@ -899,6 +899,16 @@ function App() {
       }
     });
 
+    // SPECIFIC ACF MAKE FIELD DEBUG
+    console.log('\n🚗 ACF MAKE FIELD EXTRACTION DEBUG:');
+    if (options.makes.length > 0) {
+      console.log(`  ✅ Successfully extracted ${options.makes.length} makes from ACF "make" field`);
+      console.log(`  🎯 Makes found: ${options.makes.slice(0, 10).map(m => m.name).join(', ')}`);
+    } else {
+      console.log('  ⚠️ No makes found from ACF "make" field');
+      console.log('  💡 Check if ACF field "make" exists and contains vehicle make data');
+    }
+
     // ACF USAGE SUMMARY
     console.log('\n🔧 ACF DATA USAGE SUMMARY:');
     let vehiclesWithACF = 0;
